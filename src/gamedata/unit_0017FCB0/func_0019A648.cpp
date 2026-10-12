@@ -1,11 +1,32 @@
-struct Obj { char pad[0xB4]; int fieldB4; int fieldB8; volatile int ready; int result; };
-extern "C" void func_00578B10(int);
-extern "C" int func_0019A648(Obj *self, int a, int b) {
-    self->ready = 0;
-    self->fieldB4 = a;
-    self->fieldB8 = b;
-    if (self->ready == 0) {
-        do { func_00578B10(0x3E80); } while (self->ready == 0);
+#include "types.h"
+#define NULL 0
+void *memcpy(void *, const void *, unsigned int);
+
+extern "C" {
+void func_00578B10(s32);                        /* extern, defined as void func_00578B10(void) */
+
+struct func_0019A648_arg0 {
+    char pad0[0xB4];
+    volatile s32 unkB4;
+    volatile s32 unkB8;
+    volatile s32 unkBC;
+    volatile s32 unkC0;
+};
+
+s32 func_0019A648(void *arg0, s32 arg1, s32 arg2) {
+    struct func_0019A648_arg0 *s = (struct func_0019A648_arg0 *)arg0;
+    s32 t;
+
+    s->unkBC = 0;
+    s->unkB4 = arg1;
+    t = s->unkBC;
+    s->unkB8 = arg2;
+    if (t == 0) {
+        do {
+            func_00578B10(0x3E80);
+        } while (s->unkBC == 0);
     }
-    return self->result;
+    return s->unkC0;
+}
+
 }
