@@ -14,7 +14,7 @@ extern "C" void func_0015F388(void *arg0, s32 arg1);
 extern "C" s32 func_0015F3E0(void *arg0, s32 arg1);
 extern "C" void func_0042FB48(s32 arg0);
 
-extern "C" void func_00166278(void *arg0, s32 arg1) {
+extern "C" void MGame__menuClearStack(void *arg0, s32 arg1) {
     struct Buf g;
     struct Inner *p;
 

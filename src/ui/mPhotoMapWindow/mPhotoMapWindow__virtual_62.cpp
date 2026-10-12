@@ -16,14 +16,14 @@ struct VEntry {
     void (*fn)(char *self, In *a);
 };
 
-extern "C" void func_002633E8(s32 arg0, In *arg1);
+extern "C" void mSceneViewFace__virtual_62(s32 arg0, In *arg1);
 extern "C" s32 func_00206868(S *arg0);
 extern "C" s32 func_0025C300(S *arg0);
 
-extern "C" void func_002079C0(s32 arg0, In *arg1) {
+extern "C" void mPhotoMapWindow__virtual_62(s32 arg0, In *arg1) {
     S *s;
 
-    func_002633E8(arg0, arg1);
+    mSceneViewFace__virtual_62(arg0, arg1);
     s = (S *)func_00206868((S *)arg0);
     if (s != 0) {
         do {

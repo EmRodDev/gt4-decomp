@@ -4,12 +4,12 @@ struct Obj3DF1B8 {
     int unk64;
 };
 
-extern "C" int func_003E06F8(struct Obj3DF1B8 *arg0, int arg1);
+extern "C" int RaceResultBase__isResultStarting(struct Obj3DF1B8 *arg0, int arg1);
 
-extern "C" int func_003DF1B8(struct Obj3DF1B8 *arg0, int arg1) {
+extern "C" int ResultArcade__isResultStarting(struct Obj3DF1B8 *arg0, int arg1) {
     int var = 0;
 
-    if (func_003E06F8(arg0, arg1) != 0 || arg1 == arg0->unk64) {
+    if (RaceResultBase__isResultStarting(arg0, arg1) != 0 || arg1 == arg0->unk64) {
         var = 1;
     }
     return var;

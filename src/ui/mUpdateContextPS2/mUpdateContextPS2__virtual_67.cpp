@@ -1,7 +1,7 @@
 typedef int s32;
 typedef unsigned int u32;
 
-extern "C" void func_002152B8(char *arg0, s32 arg1, s32 arg2)
+extern "C" void mUpdateContextPS2__virtual_67(char *arg0, s32 arg1, s32 arg2)
 {
     u32 *cnt = (u32 *)(arg0 + 0x358);
     u32 n = *cnt;

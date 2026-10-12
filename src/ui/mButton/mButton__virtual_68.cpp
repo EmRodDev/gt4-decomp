@@ -4,7 +4,7 @@ extern "C" void func_002F9B08(void *, void *);
 extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 extern "C" void func_002F9B38(void *, s32);
-extern "C" void func_002638D0(s32 *, s32);
+extern "C" void mTextFace__virtual_68(s32 *, s32);
 
 extern "C" void mButton__virtual_68(s32 *arg0, s32 arg1) {
     s32 buf0[4];
@@ -27,5 +27,5 @@ extern "C" void mButton__virtual_68(s32 *arg0, s32 arg1) {
         *p_s1 = newVal;
     }
     func_002F9B38(buf0, 2);
-    func_002638D0(arg0, arg1);
+    mTextFace__virtual_68(arg0, arg1);
 }

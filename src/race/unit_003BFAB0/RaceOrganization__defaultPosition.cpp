@@ -18,7 +18,7 @@ struct Outer {
     Tab *tab;    /* 0x60 */
 };
 
-extern "C" void func_003C0608(Outer *arg0) {
+extern "C" void RaceOrganization__defaultPosition(Outer *arg0) {
     Tab *t = arg0->tab;
     u32 i = 0;
 

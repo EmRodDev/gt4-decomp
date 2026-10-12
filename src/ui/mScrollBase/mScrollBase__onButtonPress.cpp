@@ -12,12 +12,12 @@ struct mScrollBaseArg2 {
     u16 unk20;
 };
 
-extern "C" s32 func_00264338(struct mScrollBase *self, s32 arg1, void *arg2);
-extern "C" s32 func_002D2DB8(s32 arg0, s32 arg1, void *arg2);
-extern "C" s32 func_002D2F00(s32 arg0, s32 arg1, void *arg2);
+extern "C" s32 mWidget__onButtonPress(struct mScrollBase *self, s32 arg1, void *arg2);
+extern "C" s32 mScrollWindow__onHBaseButtonPress(s32 arg0, s32 arg1, void *arg2);
+extern "C" s32 mScrollWindow__onVBaseButtonPress(s32 arg0, s32 arg1, void *arg2);
 
-extern "C" s32 func_002D0FE8(struct mScrollBase *arg0, s32 arg1, struct mScrollBaseArg2 *arg2) {
-    s32 r = func_00264338(arg0, arg1, arg2);
+extern "C" s32 mScrollBase__onButtonPress(struct mScrollBase *arg0, s32 arg1, struct mScrollBaseArg2 *arg2) {
+    s32 r = mWidget__onButtonPress(arg0, arg1, arg2);
     if (arg2->unk20 != 1) {
         return r;
     }
@@ -27,8 +27,8 @@ extern "C" s32 func_002D0FE8(struct mScrollBase *arg0, s32 arg1, struct mScrollB
             return 0;
         }
         if (arg0->unkB4 != 0) {
-            return func_002D2DB8(temp_a0, arg1, arg2);
+            return mScrollWindow__onHBaseButtonPress(temp_a0, arg1, arg2);
         }
-        return func_002D2F00(temp_a0, arg1, arg2);
+        return mScrollWindow__onVBaseButtonPress(temp_a0, arg1, arg2);
     }
 }

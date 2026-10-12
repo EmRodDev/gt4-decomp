@@ -13,7 +13,7 @@ struct Obj {
     VEntry *vtbl;
 };
 
-extern "C" void func_0038A1A8(struct Obj *arg0) {
+extern "C" void RaceBase__handleTimeLimit(struct Obj *arg0) {
     VEntry *e = (VEntry *)((char *)arg0->vtbl + 0x2B8);
 
     e->fn((char *)arg0 + e->delta, 6, 0.0f, 0.0f);

@@ -11,7 +11,7 @@ struct Obj
 };
 extern void func_00328A00(struct Obj *arg0);
 extern void func_00574DA8(void *arg0, int arg1);
-extern void func_00575DA0(int arg0);
+extern void free(int arg0);
 extern void func_005C1628(int arg0);
 extern void func_00328860(struct Obj *arg0, int arg1)
 {
@@ -25,7 +25,7 @@ extern void func_00328860(struct Obj *arg0, int arg1)
       cur = new_var->next;
       if (new_var != 0)
       {
-        func_00575DA0((int) new_var);
+        free((int) new_var);
       }
       cur = cur;
     }

@@ -40,7 +40,7 @@ extern "C" void func_0027F378(void *arg0, void *arg1);
 extern "C" void func_0028EA10(S_0028EA10 *arg0, s32 arg1);
 extern "C" void func_0028EA70(s8 *arg0, s32 arg1);
 
-extern "C" void func_0027F748(void *arg0, void *arg1, s32 arg2, Obj **args) {
+extern "C" void MButtonEvent__global_008333D8(void *arg0, void *arg1, s32 arg2, Obj **args) {
     s32 buf[4];
     s32 p1[4];
     s32 p2[4];

@@ -5,7 +5,7 @@ void *memcpy(void *, const void *, unsigned int);
 
 M2C_UNK func_002D1FF8();                    /* extern */
 
-void func_002D33E8(void *arg0, s32 arg1) {
+void mScrollWindow__virtual_68(void *arg0, s32 arg1) {
     func_002D1FF8(arg0 + 0xC4);
     func_002D1FF8(arg0 + 0xFC, arg1);
     M2C_FIELD(arg0, s32 *, 0xC0) = 0;

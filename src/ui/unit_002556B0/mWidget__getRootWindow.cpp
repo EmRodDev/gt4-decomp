@@ -14,7 +14,7 @@ struct WObj_C1E8 {
     WObj_C1E8 *next;
 };
 
-extern "C" void *func_0025C1E8(void *arg0) {
+extern "C" void *mWidget__getRootWindow(void *arg0) {
     WObj_C1E8 *self = (WObj_C1E8 *)arg0;
     s32 r;
     for (;;) {

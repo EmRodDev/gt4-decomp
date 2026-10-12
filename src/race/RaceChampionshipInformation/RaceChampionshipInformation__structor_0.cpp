@@ -1,11 +1,11 @@
 typedef int s32;
-extern "C" void *func_003BB340(s32 *arg0);
+extern "C" void *RaceInformation__structor_0(s32 *arg0);
 extern "C" s32 func_00444190(s32 arg0);
-extern "C" char D_006850C0[];
+extern "C" char RaceChampionshipInformation__vtable[];
 
-extern "C" void func_003EE590(void *arg0) {
-    func_003BB340((s32 *)arg0);
-    *(s32 *)((char *)arg0 + 0x12C) = (s32)D_006850C0;
+extern "C" void RaceChampionshipInformation__structor_0(void *arg0) {
+    RaceInformation__structor_0((s32 *)arg0);
+    *(s32 *)((char *)arg0 + 0x12C) = (s32)RaceChampionshipInformation__vtable;
 
     char *p = (char *)arg0 + 0x180;
     for (s32 i = 5; i != -1; i--) {

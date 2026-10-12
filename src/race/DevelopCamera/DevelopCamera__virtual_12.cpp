@@ -11,7 +11,7 @@ struct Obj_00371CA8 {
     VEntry_00371CA8 *vtbl;
 };
 
-extern "C" f32 func_00371CA8(Obj_00371CA8 *arg0) {
+extern "C" f32 DevelopCamera__virtual_12(Obj_00371CA8 *arg0) {
     VEntry_00371CA8 *e = (VEntry_00371CA8 *)((char *)arg0->vtbl + 0x70);
     f32 v = e->fn((char *)arg0 + e->delta);
 

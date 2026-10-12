@@ -13,7 +13,7 @@ struct Target001DD380 {
 extern "C" void func_001DC650(void *arg0, void *arg1);
 extern "C" void func_001DC5F8(void *arg0, int arg1);
 
-extern "C" void func_001DD380(void *arg0, void *arg1) {
+extern "C" void MNetwork__endEnableAbort(void *arg0, void *arg1) {
     struct Buf001DD380 buf;
     struct Target001DD380 *p;
 

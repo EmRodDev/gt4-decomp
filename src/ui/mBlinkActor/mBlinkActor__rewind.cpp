@@ -24,7 +24,7 @@ struct Self {
     f32 f38;
 };
 
-extern "C" void func_002798C8(Self *self) {
+extern "C" void mBlinkActor__rewind(Self *self) {
     Tgt *t = self->p14;
     self->f18 = self->f38;
     if (t != 0) {

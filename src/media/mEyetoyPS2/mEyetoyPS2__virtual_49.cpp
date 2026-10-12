@@ -18,7 +18,7 @@ struct Obj {
 
 extern "C" void *func_001C5898(s32 arg0);
 
-extern "C" void func_001BF010(Obj *self) {
+extern "C" void mEyetoyPS2__virtual_49(Obj *self) {
     self->unk14 = func_001C5898(self->unk10);
     VEntry *e = (VEntry *)(self->vtbl + 0x2A8);
     e->fn((char *)self + e->delta);

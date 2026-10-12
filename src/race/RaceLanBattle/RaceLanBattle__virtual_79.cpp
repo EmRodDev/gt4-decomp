@@ -2,7 +2,7 @@ typedef short s16;
 typedef int s32;
 typedef float f32;
 
-extern "C" void func_0033CCF0(struct RacePS2Base *arg0);
+extern "C" void RacePS2Base__raceEnd(struct RacePS2Base *arg0);
 
 struct RacePS2Base {
     char pad0[0xCE0];
@@ -13,7 +13,7 @@ struct RacePS2Base {
     s32 unkF370;
 };
 
-extern "C" void func_003370C0(struct RacePS2Base *arg0) {
+extern "C" void RaceLanBattle__virtual_79(struct RacePS2Base *arg0) {
     struct RacePS2Base *self = arg0;
     if (self->unkE468 == 0) {
         s32 flags = self->unkF370 | 0x20;
@@ -21,5 +21,5 @@ extern "C" void func_003370C0(struct RacePS2Base *arg0) {
         self->unkF370 = flags | field;
         return;
     }
-    func_0033CCF0(self);
+    RacePS2Base__raceEnd(self);
 }

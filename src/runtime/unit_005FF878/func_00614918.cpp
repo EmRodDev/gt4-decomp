@@ -2,7 +2,7 @@
 typedef int s32;
 typedef unsigned char u8;
 s32 func_00593020(s32, s32);
-s32 func_00596EF0(void *);
+s32 _IO_getc(void *);
 struct X
 {
   void *unk0;
@@ -48,7 +48,7 @@ s32 func_00614918(void **arg0)
   {
     return -1;
   }
-  r = func_00596EF0(((struct X *) (*arg0))->unk0);
+  r = _IO_getc(((struct X *) (*arg0))->unk0);
   if (r == (-1))
   {
     ;

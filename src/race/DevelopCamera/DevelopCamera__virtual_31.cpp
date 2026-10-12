@@ -40,7 +40,7 @@ struct Obj : Base {
     int m9BC;
 };
 
-extern "C" u8 func_003739F0(Obj *arg0) {
+extern "C" u8 DevelopCamera__virtual_31(Obj *arg0) {
     Res *r = (Res *)arg0->v26(arg0->m9BC);
     if (r == 0) {
         return 1;

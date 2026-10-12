@@ -20,7 +20,7 @@ struct func_0039BB38_mtx
   s32 z38;
   f32 m3C;
 };
-extern void func_0039BB38(char *arg0, f32 fparg0, f32 fparg1, f32 fparg2, f32 fparg3)
+extern void RaceDisplay__setProjectionMatrix(char *arg0, f32 fparg0, f32 fparg1, f32 fparg2, f32 fparg3)
 {
   struct func_0039BB38_mtx *t = (struct func_0039BB38_mtx *) (arg0 + 0x70);
   t->m28 = -0x1.0p+0f;

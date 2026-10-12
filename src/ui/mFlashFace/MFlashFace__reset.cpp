@@ -32,7 +32,7 @@ static inline void vcall60v(char *o, f32 v) {
 extern "C" void func_002918D8(void *arg0, void *arg1);
 extern "C" void func_00291880(void *arg0, int arg1);
 
-extern "C" void func_00292170(void *arg0, void *arg1, s32 arg2, void **arg3) {
+extern "C" void MFlashFace__reset(void *arg0, void *arg1, s32 arg2, void **arg3) {
     s32 buf0[4];
     f32 v = 0.0f;
     if (arg2 > 0) {

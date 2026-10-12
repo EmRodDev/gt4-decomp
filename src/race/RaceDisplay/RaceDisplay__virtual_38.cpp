@@ -1,4 +1,4 @@
-/* RaceDisplay__virtual_38 (func_0039CC98). */
+/* RaceDisplay__virtual_38 (RaceDisplay__virtual_38). */
 typedef int s32;
 typedef unsigned char u8;
 
@@ -16,19 +16,19 @@ struct Ev {
     s32 fC;
 };
 
-extern "C" s32 func_003A1628(Obj *arg0);
-extern "C" void *func_003A37D0(Ev *arg0);
-extern "C" void func_003A3148(Ev *o, s32 t);
+extern "C" s32 RaceDisplay__is_play_mode(Obj *arg0);
+extern "C" void *RaceDisplayInformationEvent__structor_0(Ev *arg0);
+extern "C" void RaceDisplayEventBase__put(Ev *o, s32 t);
 
-extern "C" void func_0039CC98(Obj *arg0) {
-    if (func_003A1628(arg0) != 0) {
+extern "C" void RaceDisplay__virtual_38(Obj *arg0) {
+    if (RaceDisplay__is_play_mode(arg0) != 0) {
         if (arg0->f37 != 0) {
             Ev ev;
-            func_003A37D0(&ev);
+            RaceDisplayInformationEvent__structor_0(&ev);
             ev.f8 = 4;
             s32 t = arg0->f4;
             ev.f0 = 0;
-            func_003A3148(&ev, t);
+            RaceDisplayEventBase__put(&ev, t);
         }
     }
 }

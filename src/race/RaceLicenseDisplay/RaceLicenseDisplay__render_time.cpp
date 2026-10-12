@@ -8,19 +8,19 @@ struct VE {
     void (*fn)(void *);
 };
 
-extern "C" void func_0039FDA8(void *arg0);
+extern "C" void RaceDisplay__render_time(void *arg0);
 
 static inline void vcall(char *o) {
     VE *e = (VE *)(*(char **)(o + 0x14) + 0x28);
     e->fn(o + e->delta);
 }
 
-extern "C" void func_003BD030(void *arg0) {
+extern "C" void RaceLicenseDisplay__render_time(void *arg0) {
     char *self;
     char *s1;
     char *s0;
 
-    func_0039FDA8(arg0);
+    RaceDisplay__render_time(arg0);
     self = (char *)arg0;
     if ((*(s32 *)(self + 0x58) & 0x410) == 0x10) {
         s1 = self + 0x4080;

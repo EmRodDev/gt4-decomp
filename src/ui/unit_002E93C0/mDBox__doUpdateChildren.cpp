@@ -17,7 +17,7 @@ extern "C" s32 func_002E9540(struct mDBox *arg0, s32 arg1);
 extern "C" void func_002E9600(struct mDBox *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4);
 extern "C" void func_002E9730(struct mDBox *arg0, f32 fparg0, f32 fparg1);
 
-extern "C" void func_002E9880(struct mDBox *arg0, s32 arg1) {
+extern "C" void mDBox__doUpdateChildren(struct mDBox *arg0, s32 arg1) {
     f32 fr[4];
     s32 s1;
     f32 f20;

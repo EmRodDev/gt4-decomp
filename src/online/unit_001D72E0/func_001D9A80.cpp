@@ -6,11 +6,11 @@ struct S {
 };
 
 extern "C" s32 func_001D9AC8(struct S *s);
-extern "C" void func_00215298(s32 arg);
+extern "C" void mUpdateContext__Sync(s32 arg);
 
 extern "C" s32 func_001D9A80(struct S *self) {
     while (!func_001D9AC8(self)) {
-        func_00215298(1);
+        mUpdateContext__Sync(1);
     }
     return self->flag ^ 1;
 }

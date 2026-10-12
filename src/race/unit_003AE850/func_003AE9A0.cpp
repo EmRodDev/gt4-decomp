@@ -7,7 +7,7 @@ struct Pair {
 
 extern struct Pair D_00621540[];
 extern char D_00621880[];
-extern s32 D_00621870;
+extern s32 DisplayRText__rtext_ptrs_;
 extern s32 D_00621888;
 
 extern "C" s32 func_00485FF0(s32, s32, s32);
@@ -20,6 +20,6 @@ extern "C" void func_003AE9A0(void) {
         n--;
         s32 idx = p->a;
         p++;
-        ((s32 *)D_00621870)[idx] = func_00485FF0((s32)D_00621880, D_00621888, a2);
+        ((s32 *)DisplayRText__rtext_ptrs_)[idx] = func_00485FF0((s32)D_00621880, D_00621888, a2);
     } while (n >= 0);
 }

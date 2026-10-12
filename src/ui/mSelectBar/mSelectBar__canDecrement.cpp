@@ -6,7 +6,7 @@ struct SelectBar {
     float unkEC;
 };
 
-extern "C" int func_002D7CD8(void *arg0) {
+extern "C" int mSelectBar__canDecrement(void *arg0) {
     SelectBar *self = (SelectBar *)arg0;
     int var_v1;
 

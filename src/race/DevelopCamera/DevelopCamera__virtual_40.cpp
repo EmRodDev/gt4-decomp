@@ -38,7 +38,7 @@ struct DevCam : CamBase {
     void *m9BC;
 };
 
-extern "C" unsigned char func_00373C88(DevCam *arg0) {
+extern "C" unsigned char DevelopCamera__virtual_40(DevCam *arg0) {
     Ret *r = arg0->v026(arg0->m9BC);
     if (r != 0) {
         return r->b;

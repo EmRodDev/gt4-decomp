@@ -1,6 +1,6 @@
 typedef int s32;
 
-extern "C" void func_003BDB48(char *a) {
+extern "C" void RaceLoggerBuffer__clearSector(char *a) {
     s32 i;
     s32 j;
     char *ap = a + 0x84;

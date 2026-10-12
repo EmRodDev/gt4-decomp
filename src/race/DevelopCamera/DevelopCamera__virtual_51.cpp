@@ -25,7 +25,7 @@ struct Obj {
     s32 m9BC;
 };
 
-extern "C" void func_00373E30(Obj *self) {
+extern "C" void DevelopCamera__virtual_51(Obj *self) {
     VEntryA *e = self->vtbl + 27;
     VObj *o = e->fn((char *)self + e->delta, self->m9BC);
     if (o != 0) {

@@ -14,13 +14,13 @@ struct mWidget {
     struct Quad *unk90;
 };
 
-extern "C" void func_0025B498(void *arg0, s32 arg1, s32 arg2);
+extern "C" void mWidget__getWindowSize(void *arg0, s32 arg1, s32 arg2);
 
 extern "C" void func_00268050(struct mWidget *arg0, struct Quad *arg1) {
     f32 sp[2];
 
     if (arg0->unk90 != 0) {
-        func_0025B498(arg0, (s32)sp, (s32)(sp + 1));
+        mWidget__getWindowSize(arg0, (s32)sp, (s32)(sp + 1));
         if (0.0f < sp[0]) {
             arg0->unk90->unk0 = arg1->unk0 / sp[0];
             arg0->unk90->unk8 = arg1->unk8 / sp[0];

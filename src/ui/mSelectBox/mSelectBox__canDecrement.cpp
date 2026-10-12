@@ -9,7 +9,7 @@ struct Obj {
 
 extern "C" bool func_0057CE80(Obj *o);
 
-extern "C" s32 func_002DBC58(Obj *arg0) {
+extern "C" s32 mSelectBox__canDecrement(Obj *arg0) {
     s32 v;
 
     if (func_0057CE80((Obj *)((char *)arg0 + 0xBC)) != 0) {

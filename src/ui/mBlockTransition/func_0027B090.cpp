@@ -5,7 +5,7 @@ struct S;
 struct E;
 struct Obj;
 
-extern "C" struct E *func_0027AE00(struct S *s, int i, int j);
+extern "C" struct E *BlockUnit__initialize(struct S *s, int i, int j);
 extern "C" s32 func_0027A1B8(struct Obj *arg0, f32 fparg0);
 
 struct Obj {
@@ -26,7 +26,7 @@ extern "C" s32 func_0027B090(struct Obj *arg0) {
                     s32 cur = j;
                     j += 1;
                     s32 r = func_0027A1B8(
-                        (struct Obj *)func_0027AE00((struct S *)arg0, cur, i),
+                        (struct Obj *)BlockUnit__initialize((struct S *)arg0, cur, i),
                         arg0->f2C);
                     flag = (r != 0) ? 0 : flag;
                 } while (j < arg0->n30);

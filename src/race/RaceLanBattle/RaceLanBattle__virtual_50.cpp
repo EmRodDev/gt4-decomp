@@ -19,13 +19,13 @@ struct Obj_337008 {
 
 extern char *D_00622F4C;
 
-extern "C" s32 func_003743E8(char *arg0, s32 arg1);
-extern "C" s32 func_00388D80(s32 a);
+extern "C" s32 CameraSys__CameraManager__getOptionInfo_mount(char *arg0, s32 arg1);
+extern "C" s32 RaceBase__getCameraMountModeToOption(s32 a);
 
-extern "C" void func_00337008(Obj_337008 *self) {
+extern "C" void RaceLanBattle__virtual_50(Obj_337008 *self) {
     if (self->fCC8 < 2 && self->fE454 != 0) {
         VEntry_337008 *e = (VEntry_337008 *)(self->vt + 0xD0);
         char *r = e->fn((char *)self + e->delta, 0);
-        *(s32 *)(D_00622F4C + 0x39DA4) = func_00388D80(func_003743E8(r, 0));
+        *(s32 *)(D_00622F4C + 0x39DA4) = RaceBase__getCameraMountModeToOption(CameraSys__CameraManager__getOptionInfo_mount(r, 0));
     }
 }

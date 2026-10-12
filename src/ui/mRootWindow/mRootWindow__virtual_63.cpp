@@ -30,24 +30,24 @@ struct Obj {
 
 extern Rep D_00659FA8;
 
-extern "C" void func_00263420(void);
+extern "C" void mSceneViewFace__virtual_63(void);
 extern "C" s32 func_0025C110(void *arg0);
 extern "C" void func_00229D18(void *out, s32 v);
-extern "C" const char *func_00305570(void *arg0);
+extern "C" const char *hModule__getName(void *arg0);
 extern "C" char *func_005C2560(Rep *r);
 extern "C" s32 func_0057F260(const char *s);
 extern "C" Slot *func_005C2630(Slot *str, s32 pos, s32 n1, const char *s, s32 n2);
 extern "C" Heap *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 
-extern "C" void func_00234940(Obj *arg0, Obj *arg1) {
+extern "C" void mRootWindow__virtual_63(Obj *arg0, Obj *arg1) {
     Slot a;
     Slot b;
-    func_00263420();
+    mSceneViewFace__virtual_63();
     if (*(s32 *)((char *)arg0 + 0xE8) & 0x10) {
         func_00229D18(&a, func_0025C110(arg0));
         Slot *ps = &b;
-        const char *src = func_00305570(arg0);
+        const char *src = hModule__getName(arg0);
         {
             Rep *r = &D_00659FA8;
             char *d;

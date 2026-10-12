@@ -43,7 +43,7 @@ extern "C" void func_003069F8(Obj *obj, void *h, s32 *val);
 extern "C" void func_00309348(void *h, s32 *val);
 extern "C" void func_00309378(void *h, int flags);
 extern "C" void func_0030BB18(void *h);
-extern "C" s32 func_003166B8(Str *s);
+extern "C" s32 HSymID__GetID(Str *s);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" void func_003285A8(s32 p);
 extern "C" void func_003285F8(s32 p);
@@ -99,7 +99,7 @@ extern "C" void func_002D6D18(Obj *self, s32 arg1) {
         }
         ps->p = d;
         func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        *pv = func_003166B8(ps);
+        *pv = HSymID__GetID(ps);
         func_003069F8(self, &h, pv);
         {
             Rep *q = (Rep *)(ps->p - 0x10);

@@ -28,10 +28,10 @@ static inline s32 vcall58(char *o) {
     return e->fn(o + e->delta);
 }
 
-/* func_005DB448: IfScriptEvent__filter. Builds one Value from arg1, a result slot,
+/* IfScriptEvent__filter: IfScriptEvent__filter. Builds one Value from arg1, a result slot,
    calls the handler (vtable slot 0xA8), tests the returned object's slot 0x58,
    releases the result and the argument list, and returns whether that test was nonzero. */
-extern "C" s32 func_005DB448(ObjH *self, Value *arg1) {
+extern "C" s32 IfScriptEvent__filter(ObjH *self, Value *arg1) {
     s32 newVal;
     s32 oldVal;
     s32 r;

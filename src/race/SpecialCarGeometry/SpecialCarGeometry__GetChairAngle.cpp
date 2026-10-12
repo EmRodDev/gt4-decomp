@@ -1,12 +1,12 @@
 typedef float f32;
 
-extern "C" void *func_0044F4C0(void);
-extern "C" f32 func_0044F9B0(void *arg0);
+extern "C" void *DRIVERSUPPORT_NAME__GetMotoristDynamicParameter(void);
+extern "C" f32 DRIVERSUPPORT_NAME__MotoristDynamicParameter__getSeatAngleOffset(void *arg0);
 
-extern "C" f32 func_0038CB48(void) {
-    void *p = func_0044F4C0();
+extern "C" f32 SpecialCarGeometry__GetChairAngle(void) {
+    void *p = DRIVERSUPPORT_NAME__GetMotoristDynamicParameter();
     if (p) {
-        return func_0044F9B0(p) + 0x1.14E0D0p+0f;
+        return DRIVERSUPPORT_NAME__MotoristDynamicParameter__getSeatAngleOffset(p) + 0x1.14E0D0p+0f;
     }
     return 0x1.14E0D0p+0f;
 }

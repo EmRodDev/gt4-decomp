@@ -17,7 +17,7 @@ struct Top {
     Tab *tab;
 };
 
-extern "C" void func_003ECC70(char *arg0, Top *arg1) {
+extern "C" void RaceTrainingInformation__finishEntryCar(char *arg0, Top *arg1) {
     Top *t1 = arg1;
     s32 i;
     s32 n = t1->tab->count;

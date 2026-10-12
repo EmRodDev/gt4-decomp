@@ -17,7 +17,7 @@ struct func_0031C2A0_arg1 {
     s32 unk28;
 };
 
-extern "C" void func_0031C2A0(struct func_0031C2A0_arg0 *arg0, struct func_0031C2A0_arg1 *arg1) {
+extern "C" void mJump__execute(struct func_0031C2A0_arg0 *arg0, struct func_0031C2A0_arg1 *arg1) {
     s32 var_v0;
     s32 idx;
     s32 scaled;

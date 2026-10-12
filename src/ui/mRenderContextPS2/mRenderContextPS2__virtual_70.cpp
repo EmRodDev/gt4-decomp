@@ -14,7 +14,7 @@ struct Obj {
 
 extern "C" void func_00105728(s32 *arg0);
 
-extern "C" void func_00217FC0(Obj *self) {
+extern "C" void mRenderContextPS2__virtual_70(Obj *self) {
     VEntry *e = (VEntry *)(self->vtbl + 0x1D0);
     e->fn((char *)self + e->delta);
     func_00105728((s32 *)((char *)self + 0x1D5C));

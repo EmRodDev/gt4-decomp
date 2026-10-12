@@ -7,7 +7,7 @@ struct Obj { char pad[8]; struct Inner *base; };
 
 extern "C" s32 func_005BFB00(const char **a, const char **b);
 
-extern "C" s32 func_005C0048(struct Obj *self, s32 a1, s32 a2, s32 a3, s32 a4)
+extern "C" s32 __si_type_info__virtual_03(struct Obj *self, s32 a1, s32 a2, s32 a3, s32 a4)
 {
     if (a4 == a3 && func_005BFB00((const char **)a2, (const char **)self))
         return 6;

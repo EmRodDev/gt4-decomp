@@ -7,22 +7,22 @@ typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
 
-extern "C" void func_002D4C88(void *arg0, void *arg1);
-extern "C" int func_005C0FC8(s32, s32, s32, void *, s32, void *);
+extern "C" void mScrollable__deepCopy(void *arg0, void *arg1);
+extern "C" int GT4MC__FileGT4GameData__loadInstance(s32, s32, s32, void *, s32, void *);
 
-extern char D_005E8348[];
-extern char D_005EFF90[];
+extern char mListBox__tf[];
+extern char hObject__tf[];
 
-extern "C" void func_002B4528(void *arg0, void *arg1) {
+extern "C" void mListBox__deepCopy(void *arg0, void *arg1) {
     char *var_a0;
     char *temp_v0;
 
-    func_002D4C88(arg0, arg1);
+    mScrollable__deepCopy(arg0, arg1);
     var_a0 = 0;
     if (arg1 != 0) {
         temp_v0 = *(char **)((char *)arg1 + 4);
-        var_a0 = (char *)func_005C0FC8(*(s32 *)(temp_v0 + 4), (s32)D_005E8348, 0,
-                                       (char *)arg1 + *(s16 *)temp_v0, (s32)D_005EFF90, arg1);
+        var_a0 = (char *)GT4MC__FileGT4GameData__loadInstance(*(s32 *)(temp_v0 + 4), (s32)mListBox__tf, 0,
+                                       (char *)arg1 + *(s16 *)temp_v0, (s32)hObject__tf, arg1);
     }
     if (var_a0 != 0) {
         *(s32 *)((char *)arg0 + 0xEC) = *(s32 *)(var_a0 + 0xEC);

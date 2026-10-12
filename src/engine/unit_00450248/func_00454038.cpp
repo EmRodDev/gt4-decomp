@@ -32,7 +32,7 @@ struct Outer {
 
 extern "C" int func_00454EF8(func_00454EF8_arg0 *arg0, int arg1, int arg2);
 extern "C" void func_00107BE8(Buf *b, Tex *t);
-extern "C" void func_004568F0(int arg0, int arg1);
+extern "C" void ModelSet2__registerExternalTexSet(int arg0, int arg1);
 
 extern "C" void func_00454038(Outer *arg0)
 {
@@ -51,5 +51,5 @@ extern "C" void func_00454038(Outer *arg0)
     int n = (int)a->unk1C - 1;
     int v = func_00454EF8(a, n, 0);
     func_00107BE8(arg0->buf, (Tex *)v);
-    func_004568F0(2, arg0->buf->unk8);
+    ModelSet2__registerExternalTexSet(2, arg0->buf->unk8);
 }

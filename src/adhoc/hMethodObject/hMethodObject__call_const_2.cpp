@@ -17,7 +17,7 @@ struct Self {
     VObj *m14;
 };
 
-extern "C" void func_00302E98(Self *self, s32 a1, s32 a2, s32 a3) {
+extern "C" void hMethodObject__call_const_2(Self *self, s32 a1, s32 a2, s32 a3) {
     VObj *o = self->m14;
     VEntry *e = (VEntry *)((char *)o->vtbl + 0x80);
     e->fn((char *)o + e->delta, a1, (char *)self + 0x10, a2, a3);

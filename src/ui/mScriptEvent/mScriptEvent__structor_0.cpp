@@ -33,7 +33,7 @@ static inline String *String_copy(String *self, const String &str)
     return self;
 }
 
-extern "C" void *func_0028E8E8(void *self, s32 a1, s32 a2);
+extern "C" void *mEvent__structor_0(void *self, s32 a1, s32 a2);
 extern "C" s32 func_002ED5A8(void *p, s32 a);
 extern "C" char mScriptEvent__vtable[];
 
@@ -44,9 +44,9 @@ struct mScriptEvent {
     String str;
 };
 
-extern "C" s32 func_0023A3C8(mScriptEvent *self, s32 arg1, s32 arg2, const String *s, s32 arg4)
+extern "C" s32 mScriptEvent__structor_0(mScriptEvent *self, s32 arg1, s32 arg2, const String *s, s32 arg4)
 {
-    func_0028E8E8(self, arg1, arg2);
+    mEvent__structor_0(self, arg1, arg2);
     self->vtbl = mScriptEvent__vtable;
     String_copy(&self->str, *s);
     return func_002ED5A8((char *)self + 0x24, arg4);
