@@ -322,3 +322,125 @@ original has `$v0` = `$v0` was in use or conflicting at that point; `$a2` for a 
 8. ee-gcc 2.9-991111 sources: rtl_dumps.py/alloc_table.py read its unnumbered dumps too
    (SRC.lreg, SRC.greg ...); when several drafts share build/rtl/ADDR/, the newest source's dumps
    are used.
+
+## Type-shape residuals: what the "same length, 1-6 instructions off" pool really is (2026-10-11)
+
+The whole pool of cpu_solve near misses recorded as `same_length` with 1-6 differing instructions
+was judged again (tools/nearfix_types.py, 3 jobs) and every genuine diff read. Three findings.
+
+**1. Most of the pool is not a near miss.** Of the 1,162 records at 1-3 off, 1,100 belong to
+functions already matched; of the 181 unmatched drafts at 1-6 off, 108 (60%) are *truncated*:
+m2c lost part of the body (an `if (...) {}` with nothing inside, a stub) and the draft returns
+early, so the judge trims the original to the draft's length and prints `(original N, mine N)`
+with N the trimmed length. `same_length` in results.jsonl is therefore only meaningful when N is
+the inventory's span (`match.function_span(addr) // 4`, padding aside); the tool skips those
+drafts. At <= 12 off the same holds (436 of 966 unmatched drafts). The other previous robots'
+low yield (regsearch: 2 of 1,162) was mostly this: there was nothing to permute.
+
+**2. The genuine residuals fall into type-level classes, not register recipes.** The 82 genuine
+drafts at <= 6 off (a draft can be in several classes):
+
+| class | drafts | what the diff shows | lever |
+|---|---|---|---|
+| same instructions, other order (stores, a store vs the epilogue loads or an argument copy) | 17 | class 5/6 above | store statement order, `nsa` profile, open |
+| `$v0`/`$v1` choice on a block-local temporary | 16 | class 1 above | `void` callee when the result is dropped (near_fix.void_returns); the rest open |
+| literal that is a global's address (`lui/ori` vs `lui/addiu`, a store through `lui $at`) | 12 | %lo relocation on one side only | near_fix.addresses / derefs re-applied (the drafts were remade after near_fix ran) |
+| other register choice | 11 | operand order, tied quantities | regsearch recipes, open |
+| access width (`sw` where the draft has `sb`, `lw` vs `lhu`, `ld` vs `lwu`) | 10 | same offset and base, other opcode | width + alias set 0, below |
+| float (constant place, `$f` order, `cvt.w.s` where the original reads an int) | 8 | class 3 above, or a field typed f32 by another function | open |
+| branch kind (`beqz` vs `beql`, `bnel` target, a return value set in a block) | 7 | class 7 above | open |
+| virtual call through the old-ABI vtable entry | 6 (+3 with the delta typed s32) | `addiu $v1, $v1, 0x68; lh 0($v1); lw 4($v1)` vs `lh 0x68($v1); lw 0x6C($v1)` | `VEntry *e_` statement expression, below |
+| parameter declared narrower than the original's | 1 | `andi $s3, $a1, 0xFFFF` where the original copies `$a1` | the parameter as s32 |
+
+**3. The two new mechanisms, proven with the judge.**
+
+- *Access width and alias set 0.* m2c types a `sw` of 0 as `s8` (func_00391930, 0033CE70,
+  003E09A8, 003BFA28...). Widening the type to `s32` makes the diff worse (1 -> 4-9): the
+  following loads (`lw $a0, 0x20($a1)`, pointers and ints alike) move above the store, and cse
+  stops reloading the pointer after it, while the original keeps them below. Only an access of
+  alias set 0 keeps every load below the store, and in the game's C++ that is what a member of
+  class type gets: gcc 2.96 c-common.c `lang_get_alias_set` returns 0 for every AGGREGATE_TYPE
+  under `clk_cplusplus` ("It's not yet safe to use alias sets for classes in C++ because the
+  TYPE_FIELDs list for a class doesn't mention base classes"), while an int or pointer member
+  gets its own set. So a 4-byte handle/wrapper member stored by value is a word access that
+  aliases everything. In a C source the same thing is an access through a union member (the
+  `UNION_TYPE` rule of the same function): `M2C_FIELD(p, union AliasAny *, 0x10).w = v` with
+  `union AliasAny { s8 b; u8 ub; s16 h; u16 uh; s32 w; u32 uw; s64 d; f32 f; }`. MATCH on
+  func_00391930, 0033CE70, 003E09A8, 00336338, 0044E3B0 (two fields); the nsa profile matched
+  only 2 of the first 3, so the union is the mechanism, not a flag. Lesson for drafts: when the
+  judge shows a wider store at the right offset and the loads after it stay put in the original,
+  it is a class-typed member, not a char.
+- *Virtual call entries.* m2c writes `M2C_FIELD((vptr + OFF), T (**)(...), 4)(obj +
+  M2C_FIELD(vptr, s16 *, OFF), args)`: the entry address is folded into two offsets, the original
+  computes it (`addiu`) and loads `delta` and `fn` from it, as the matched sources' `VEntry *e_ =
+  (VEntry *)((char *)vptr + OFF); ((T (*)(...))e_->fn)((char *)obj + e_->delta, args)` does
+  (tools/dtors.py, src/ VCALL macro). MATCH on func_00343270, 003DDA58, 001BF058 (with the
+  dropped result's type `void`, which frees `$v0` for the entry: `jalr $v1` with the vptr in
+  `$v0`, the reverse when the result is used), 002797F8, 00336D90 (with `nosib`). Open residual
+  of the same shape (func_002F1098, 00195270, alloc_table): the object pseudo has `sugg $a2` but
+  sched1 hoists the copy `$a2 = r89` above the `$a0 = r89 + delta` add, so r89 lives past the
+  copy and gets `$a3` plus a `daddu`; in retail the object is loaded straight into its argument
+  register and the vptr fetch and the adjustment read it. Neither a local for the adjusted
+  `this`, nor the object temporary inlined (so cse would substitute the argument register), nor
+  `void` changes it; the ordering of the copy against the add is the open question (the RTL
+  before sched1 is the same in both; class 6 tie-breaks).
+
+Instrument note: the judge's count is positional, so one inserted instruction makes every row
+after it "differ" (26 of 32 for one `daddu`). nearfix_types ranks candidates by an alignment
+distance (instructions outside the longest common alignment of the two columns) and only the
+judge's MATCH counts.
+
+Yield over the pool (<= 12 off, 530 genuine drafts): 37 matched, 21 by the type rules alone
+(width 5, vcall 4, literal 8, void callee 4, this passed through 3, parameter 4; several
+combined) and 16 only together with the compiler profile the diff points at (near_fix.profiles_for:
+`nosib` 10, `no-strict-aliasing` 5, 2.9 SDK 1); 155 drafts got closer and wait in
+build/auto/nearfix_types/work/ADDR_best.c for the register and order levers of the classes above.
+
+## Short drafts: why 3.3 K kept m2c drafts were shorter than their function (2026-10-11)
+
+The "truncated" pool (the kept draft's judged width below the inventory's span: GT4 3,316 of
+6,402 unmatched differing drafts, 400 at <= 12 off; TT 3,154 of 7,736, 453 at <= 12 off; GT3 0,
+see below) was traced on a sample of 33 by re-running m2c and reading its output. Causes, with
+the share of the sample and what was changed (tools/cpu_solve.py, tools/match.py,
+tools/patches/m2c-passthrough-args.patch; the same files copied to ../TT and ../GT3):
+
+1. **The pipeline kept the shorter draft (12 of 33).** The judge trims the original to the
+   draft's length when the draft returns where the original goes on (a glued function may
+   follow), so `--void` variants, context drafts whose callee prototype dropped an argument or
+   the result, and any draft that lost code scored `2 of 2` against a complete `14 of 14` and
+   were kept (results.jsonl `how`: 2,770 `kept`, 449 `m2c+types`, 65 `m2c --void+types`).
+   Fix: `differs_by(res, addr)` adds twice the instructions the judge left out; rows carry
+   `full`. Nothing was lost by m2c in these: a fresh plain draft was complete.
+2. **Complete draft, shorter code (8 of 33).** The C has everything; gcc's shape is shorter
+   (a tail call `j` for `jal; ld; jr`, a folded vtable entry, one literal shape). These are
+   ordinary near misses of a different length, not truncation; nearfix_types sees them now.
+3. **`cvt.w.s` exported as `.word` (3 of 33, 736 sites in GT4).** rabbitizer prints the valid
+   instruction as `.word X # cvt.w.s $f1, $f0`; m2c skips a `.word` silently, so the draft kept
+   the register's old value (`func(..., 0x3F000000)` for `(s32)(x + 0.5f)`). Fix: `mnemonic_text`
+   in match.gnu_asm (the `vclipw` forms too).
+4. **An untouched argument register before a set one (2 of 33).** m2c skipped `$a0` as "not an
+   argument" and shifted the later ones down: `f(0x800, 0x2000, 0x20)` for a call that sets
+   `$a3, $a4, $a5` and passes `$a0-$a2` through. Fix: the EE ABI patch (integer registers only;
+   o32 untouched).
+5. **Stack locals as separate scalars (1,137 of the 3,316 drafts).** When the frame's address
+   escapes (`sp` passed to a callee: an object constructed on the stack, an array), m2c's
+   `s32 sp10; ... sp10 = v; f(sp)` stores are dead and gcc drops them: the draft lost the code
+   (func_0019B3A0: 67 of 110 instructions). Fix: `stack_frame` declares one
+   `struct StackFrame_ADDR { s8 pad0[4]; s32 sp4; ... } sp_` over the local area (below the
+   callee-saved registers, `frame_extent`), `sp` -> `(s8 *)&sp_`, `spNN` -> `sp_.spNN`
+   (func_0019B3A0: 106 of 110). m2c's own `--stack-structs` round trip fails on its overlapping
+   `M2C_UNK` fields, so the struct is built from the draft's declarations.
+6. **Variadic prologue (11 of 3,316).** `sd $a2..$a7; swc1 $f12..$f19` to the frame are
+   `va_start`; m2c writes dead stores. Open (write `...` and a `va_list`).
+
+Result of the redraft (`cpu_solve.py --only ... --context types`, 3 jobs, ~1.6 s per
+function): GT4 862 of 3,316 drafts now complete (142 at <= 12 off), 893 kept their old draft
+(it was the best under the new score too), 15 judge MATCHes from the redraft and 12 more from
+nearfix_types over the 142 (27, build/auto/m2cfix/matched.txt); TT 926 complete (153 at
+<= 12 off), 20 + 14 matches (34). The drafts still short are of kind 2 (complete C, shorter
+code) or 5 with the frame's shape still wrong, or variadic.
+
+GT3 has no truncated drafts because almost no GT3 draft compiles: the latest verdict of 4,981
+functions is `does not compile` (ctx types), 704 of them from `saved_reg_gp` undeclared (GT3
+addresses its globals through `$gp`: `M2C_FIELD(saved_reg_gp, s32 *, -0x6EC8)`), the rest other
+context errors. A GT3 draft pipeline needs a `$gp` base rule first (open).

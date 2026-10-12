@@ -16707,3 +16707,67 @@
 {"addr": "002beb68", "time": "2026-10-11 18:59", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
 {"addr": "002daa10", "time": "2026-10-11 18:59", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 89, "of": 80}
 {"addr": "002eaa50", "time": "2026-10-11 18:59", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0030cfd0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 188, "of": 80}
+{"addr": "0031b978", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 62, "of": 80}
+{"addr": "0031d9e8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 65, "of": 80}
+{"addr": "00341068", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00342768", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00350328", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 76, "of": 80}
+{"addr": "00360780", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00384200", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00386f78", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0039a5b8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0039ecd0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "003a84f0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "003b7c98", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 72, "of": 80}
+{"addr": "003c19f0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 103, "of": 80}
+{"addr": "003c8668", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "003ddff0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 84, "of": 80}
+{"addr": "003edfc8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00422ee8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 48, "of": 80}
+{"addr": "00423028", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00427930", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0042c348", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00434e38", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00438170", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 68, "of": 80}
+{"addr": "004419e0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 76, "of": 80}
+{"addr": "0045e898", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0045fff8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00464f38", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 93, "of": 80}
+{"addr": "00467aa8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00472ae0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 52, "of": 80}
+{"addr": "004759b0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00480fe8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 51, "of": 80}
+{"addr": "004bae38", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "004be840", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 67, "of": 80}
+{"addr": "004ca4d0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "004cb350", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 95, "of": 80}
+{"addr": "004f2fd8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 98, "of": 80}
+{"addr": "004fd9b0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 47, "of": 80}
+{"addr": "004fdf90", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00517798", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005182d8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00518d28", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00525d20", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00531f40", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00534a50", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0053c590", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0054b9f0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 57, "of": 80}
+{"addr": "0054fbb8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "00585de0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0058a668", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0058be20", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 69, "of": 80}
+{"addr": "0058e408", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "0058f0b0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 68, "of": 80}
+{"addr": "00590e98", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005938b0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005b2bc0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005bcfd0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005ec4a0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "005fd1c8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 75, "of": 80}
+{"addr": "00600cc0", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 80}
+{"addr": "006078f8", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 55, "of": 80}
+{"addr": "00245b48", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "diff": 90, "of": 81}
+{"addr": "0037bf00", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 81}
+{"addr": "003f0498", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 81}
+{"addr": "00113320", "time": "2026-10-11 19:27", "who": "drafter", "hypothesis": "fine-tuned drafter model (QLoRA Qwen2.5-Coder-7B), 1 samples", "result": "differs", "of": 82}
