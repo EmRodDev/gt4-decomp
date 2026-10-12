@@ -27,10 +27,10 @@ extern "C" void func_00314B20(void *arg0, void *arg1);
 extern "C" void func_003285A8(s32 arg0);
 extern "C" void func_003285F8(s32 arg0);
 extern "C" void func_001240D8(void *arg0, int arg1);
-extern "C" void func_00124130(void *arg0);
+extern "C" void func_00124130(void *arg0, s32 arg1);
 extern "C" const char *func_00127B60(s32 arg0);
 
-extern "C" void MQuickWork__get_courseLabel(s32 *arg0) {
+extern "C" void MQuickWork__get_courseLabel(s32 *arg0, s32 arg1) {
     s32 tmp[4];
     s32 buf0[4];
     Str s;
@@ -39,7 +39,7 @@ extern "C" void MQuickWork__get_courseLabel(s32 *arg0) {
     s32 oldVal;
     const char *src;
     s32 *pb;
-    func_00124130(tmp);
+    func_00124130(tmp, arg1);
     ps = &s;
     src = func_00127B60(tmp[0]);
     {
