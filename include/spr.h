@@ -8,7 +8,8 @@
  * 32-bit constants of the same unit are split and scheduled apart. A plain `(T *)0x70002000`
  * cast gives the folded form instead (`lui 0x7000; lw 0x2110(reg)`), which retail also has, in
  * 25 places: use the cast there and this helper where retail keeps the base in one register.
- * No compiler option reproduces the opaque form (knowledge/gt4.md, "The scratchpad base"). */
+ * No compiler option reproduces the opaque form (knowledge/gt4.md, "The scratchpad base").
+ * Known debt: see knowledge/debt.md; replace this helper once the original form is found. */
 static inline void *spr_base(void)
 {
     void *p;
