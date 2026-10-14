@@ -26,7 +26,7 @@ to the other (`tools/crossgame.py`).
 - A first pilot matched 13 of 20 randomly picked functions by hand; see [PILOT.md](PILOT.md).
 - 14% of the functions are exact copies of another; one match settles a whole group.
 <!-- progress:start -->
-- **Progress (October 2026, commit `dbf884da10bb`): 27,682 of 30,962 functions match (89.4%), 68.3% of the code bytes; 84.5% of the sources are clean.**
+- **Progress (October 2026, commit `c81eb878b6aa`): 27,682 of 30,962 functions match (89.4%), 68.3% of the code bytes; 84.5% of the sources are clean.**
   Clean source: 84.5% of the 27,682 function sources are free of m2c
   macros, raw offset casts, temp_/var_ names and pasted headers (`tools/clean_report.py`).
   The live numbers are on the `progress` branch (objdiff report format); this paragraph is written by
