@@ -24,7 +24,8 @@ the bytes.
 - **Unresolved base constructor:** sources that call `__19hObject__structor_0` match but do not
   link until that constructor has an address (seven at the time of #5, including
   `mDnasInst__structor_0`).
-- **Do not compile in the full build:** about 20 sources (`tools/build.py` lists them as
-  "does not compile"); the same set fails on contributors' machines, so it is not one setup.
+- **Does not compile in the full build:** 00543338 declares `memcpy` twice with conflicting
+  prototypes and passes an `s32` to it. (19 others failed because `include/shim/stdlib.h`
+  declared `free` with C++ linkage; its `extern "C"` guard fixed them, found by Ganitzsh in #10.)
 - **Jump-table boundaries:** 001d2aa8, 0039f160 and 00587c08 have wrong function boundaries in the
   inventory, so they cannot link from source yet.
