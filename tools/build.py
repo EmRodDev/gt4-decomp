@@ -129,6 +129,8 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr):
         mine = lambda off: struct.unpack_from("<I", blob, off)[0]
         bases = set()
         offs = sorted(srelocs)
+        if any(str(srelocs[o][1]).endswith("tab") for o in offs):
+            continue  # code reaching into a section the link discards (libmatch's stub table)
         if any(srelocs[o][0] == match.R_MIPS_HI16 and mine(o) >> 26 != 0x0F for o in offs):
             # ee-as 2.96 can leave a load opcode on the %hi of an indexed-load macro
             # (knowledge/ee-gcc-2.96.md): the judge ignores relocated words, the image does not.
