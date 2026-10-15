@@ -254,10 +254,21 @@ def main():
         print(f"  duplicate sources for {key}: {', '.join(ps)}")
     print(f"compiling {len(sources)} functions...", flush=True)
     by_compiler = {}
+    # The headers are part of every object: an object is reused only while include/ holds the same
+    # bytes, or a header change (the stdlib shim on 2026-10-14) leaves objects that a fresh checkout,
+    # and the CI, can no longer compile.
+    headers = hashlib.sha1()
+    inc = os.path.join(ROOT, "include")
+    for dirpath, dirs, files in os.walk(inc):
+        dirs.sort()
+        for f in sorted(files):
+            fp = os.path.join(dirpath, f)
+            headers.update(os.path.relpath(fp, inc).replace(os.sep, "/").encode() + b"\0" + open(fp, "rb").read())
+    headers = headers.digest()
     for addr, path in sources.items():
         rel = os.path.relpath(path, project.SRC).replace(os.sep, "/")
         stem = os.path.splitext(os.path.basename(path))[0]
-        digest = hashlib.sha1(open(path, "rb").read()).hexdigest()
+        digest = hashlib.sha1(open(path, "rb").read() + headers).hexdigest()
         by_compiler.setdefault(project.source_compiler(path), []).append(f"{rel} func_{addr:08X} {stem} {digest}")
     # Only objects of sources that exist now take part: an object left by a source since deleted,
     # renamed or re-addressed would otherwise be linked as if it were still proven.
