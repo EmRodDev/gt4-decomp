@@ -63,6 +63,7 @@ class Table:
         self.by_addr = {}     # address -> [names]
         self.canonical = {}   # address -> name
         self.kinds = {}       # address -> "func" | "data"
+        self.keep = set()     # names organize must leave as written (config/resolved_symbols.txt)
 
 
 def _load():
@@ -86,6 +87,8 @@ def _load():
             if m:
                 addr, kind = int(m.group(2), 16), m.group(3)
                 t.names[m.group(1)] = (addr, kind)
+                if path == RESOLVED:
+                    t.keep.add(m.group(1))
                 t.kinds[addr] = kind
                 # mangled template/library names resolve but never name an address (or a file); plain C
                 # library names (memcpy, strlen...) do, so sources keep calling them by name
@@ -296,7 +299,7 @@ def generic_text(text):
 
     def sub(m):
         name = m.group(0)
-        if name in t.names and name not in BUILTINS:
+        if name in t.names and name not in BUILTINS and name not in t.keep:
             addr, kind = t.names[name]
             return f"func_{addr:08X}" if kind == "func" else f"D_{addr:08X}"
         return name
