@@ -1,4 +1,4 @@
-/* dynamic_cast<T *>(self->obj) written out as gcc 2.96's __dynamic_cast call (GT4MC__FileGT4GameData__loadInstance),
+/* dynamic_cast<T *>(self->obj) written out as gcc 2.96's func_005C0F40 call (GT4MC__FileGT4GameData__loadInstance),
    as in func_002F67E8: the type-info functions are func_0060B0C8 (target) and func_0060B088 (source). */
 struct VEntry {
     short delta;

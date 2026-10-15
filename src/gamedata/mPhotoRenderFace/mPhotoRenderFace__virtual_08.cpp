@@ -3,7 +3,7 @@ struct hObject { int pad; VEntry *vptr; };
 
 extern "C" char mPhotoRenderFace__tf[];
 extern "C" char hObject__tf[];
-/* __dynamic_cast (old ABI): from, to, require_public, address, sub, subptr */
+/* func_005C0F40 (old ABI): from, to, require_public, address, sub, subptr */
 extern "C" void *GT4MC__FileGT4GameData__loadInstance(void *from, void *to, int require_public, void *address, void *sub, void *subptr);
 extern "C" void mWidget__deepCopy(void *self, hObject *obj);
 

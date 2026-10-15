@@ -133,9 +133,15 @@ that gcc 2.96 puts in libgcc.a (cp/tinfo.cc, tinfo2.cc, exception.cc, new*.cc: t
 classes, `__user_type_info::do_upcast`, `__is_pointer`, `__cplus_type_matcher`, terminate...), plus
 the out-of-line copies of the runtime classes' members and their type_info functions at
 0x616370-0x616f24 (type_info, the `__*_type_info` classes, exception, bad_alloc, bad_cast,
-bad_typeid, bad_exception). The 123 sources of it in `src/` (written from the assembly) carry
-`licence: gcc-runtime` after a first comment naming the function where it is known; all judged
-MATCH. libgcc2.c, fp-bit.c and frame.c say:
+bad_typeid, bad_exception). Its sources in `src/` carry `licence: gcc-runtime` after a first
+comment naming the function where it is known.
+
+The two RTTI source units (`tinfo.cc` and `tinfo2.cc`) match 45/45 functions, 6,344 code bytes.
+Eight previously missing functions (4,136 bytes) were extracted from the public snapshot with
+`config/libs/gcc-rtti.toml`, preserving their original copyright and runtime exception.
+See [knowledge/gcc-rtti.md](knowledge/gcc-rtti.md) for staging and reproduction.
+
+libgcc2.c, fp-bit.c and frame.c say:
 
 In addition to the permissions in the GNU General Public License, the Free Software Foundation
 gives you unlimited permission to link the compiled version of this file into combinations with
