@@ -1,4 +1,4 @@
-/* dynamic_cast<D &>(*o).method(): __dynamic_cast (GT4MC__FileGT4GameData__loadInstance) with the type_info functions
+/* dynamic_cast<D &>(*o).method(): func_005C0F40 (GT4MC__FileGT4GameData__loadInstance) with the type_info functions
    func_005C1F98 / func_005C24C8, bad_cast (exception__structor_2) when it fails, then the virtual call
    at slot 0x68 of the result. Written out by hand like func_002F67E8. */
 struct VEntry {

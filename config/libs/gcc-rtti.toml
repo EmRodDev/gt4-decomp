@@ -1,0 +1,18 @@
+# GCC's old C++ RTTI implementation, matched against the PS2 executable.
+# Stage the public snapshot with tools/stage_gcc_rtti.py before scanning.
+# Default project flags (strict aliasing enabled) reproduce both complete units.
+version = "gcc snapshot 2000-10-03 (old C++ ABI)"
+license = "GPLv2 or later with the GCC runtime exception (THIRD_PARTY.md)"
+url = "https://gcc.gnu.org/ (gcc snapshot 2000-10-03, gcc/cp/)"
+source = "../gt4-thirdparty/gcc-runtime-20001003/rtti"
+range = ["0x005BFAC8", "0x005C1498"]
+files = ["tinfo.cc", "tinfo2.cc"]
+include_once = true
+keep_inline = true
+marker = "licence: gcc-runtime (GPL with the GCC runtime exception, see THIRD_PARTY.md)"
+# Shared builtin descriptors belong to the original tinfo2.cc object.
+extern_objects = ["__tiv", "__tix", "__til", "__tii", "__tis", "__tib", "__tic", "__tiw", "__tir", "__tid", "__tif", "__tiUi", "__tiUl", "__tiUx", "__tiUs", "__tiUc", "__tiSc"]
+# operator== is defined before the class traversal methods in tinfo.cc. GCC
+# infers its non-throwing behavior there; isolated extraction needs it explicit.
+[nothrow_declarations]
+"tinfo.cc" = ["bool operator== (const type_info& __arg) const;"]

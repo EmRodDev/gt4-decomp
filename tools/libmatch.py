@@ -369,11 +369,12 @@ def strip_comments(text, keep_first=True, keep=()):
         elif text.startswith("//", i):
             j = text.find("\n", i)
             j = n if j < 0 else j
-            if first:
+            if first or any(k in text[i:j] for k in keep):
                 out.append(text[i:j])
-            first = False
             i = j
         else:
+            if not c.isspace():
+                first = False
             out.append(c)
             i += 1
     return "".join(out)
@@ -396,8 +397,9 @@ def flatten(cfg, name, depth=0, seen=None, conditional=False):
             break
     else:
         return None
-    text = strip_comments(open(path, encoding="utf-8", errors="replace").read(), keep_first=base == cfg["source"],
-                          keep=tuple(cfg.get("keep_notices", ())))
+    with open(path, encoding="utf-8", errors="replace") as source_file:
+        text = strip_comments(source_file.read(), keep_first=base == cfg["source"],
+                              keep=tuple(cfg.get("keep_notices", ())))
     out = []
     in_header = False  # inside the kept first comment (newlib's documentation shows `#include`s)
     text_lines = text.split("\n")
@@ -492,7 +494,7 @@ def code_chars(line):
 
 STUB_SECTION = ".libmatch.stubtab"  # build.py ignores sections named *tab; the link discards them
 MACRO_HEAD = re.compile(r"^\s*#\s*define\s+(\w+)\(([\w\s,]*)\)(.*)$")
-INVOCATION = re.compile(r"^\s*(\w+)\((.*)\)\s*$")
+INVOCATION = re.compile(r"^\s*(\w+)\s*\((.*)\)\s*;?\s*$")
 
 
 def expand_function_macros(lines):
@@ -520,15 +522,28 @@ def expand_function_macros(lines):
             out += lines[i:j + 1]
             i = j + 1
             continue
-        inv = INVOCATION.match(line)
-        if inv and inv.group(1) in macros and depth == 0:
-            params, text = macros[inv.group(1)]
-            args = [a.strip() for a in inv.group(2).split(",")]
-            for p, a in zip(params, args):
-                text = re.sub(r"\b" + p + r"\s*##\s*", a, text)
-                text = re.sub(r"\s*##\s*" + p + r"\b", a, text)
-                text = re.sub(r"\b" + p + r"\b", a, text)
-            out += [(l, origin) for l in text.split("\n")]
+        # GCC's BUILTIN(v); BUILTIN(x); ... puts several definitions on one
+        # line. Split only file-scope semicolons outside arguments and literals.
+        pieces, start, parens = [], 0, 0
+        for col, ch in code_chars(line):
+            parens += (ch == "(") - (ch == ")")
+            if ch == ";" and parens == 0:
+                pieces.append(line[start:col + 1])
+                start = col + 1
+        if line[start:].strip():
+            pieces.append(line[start:])
+        invocations = [INVOCATION.match(piece) for piece in pieces]
+        if (depth == 0 and invocations
+                and all(inv and inv.group(1) in macros for inv in invocations)):
+            for inv in invocations:
+                params, text = macros[inv.group(1)]
+                args = [a.strip() for a in inv.group(2).split(",")]
+                for p, a in zip(params, args):
+                    text = re.sub(r"(?<!#)#\s*" + p + r"\b", lambda _: json.dumps(a), text)
+                    text = re.sub(r"\b" + p + r"\s*##\s*", a, text)
+                    text = re.sub(r"\s*##\s*" + p + r"\b", a, text)
+                    text = re.sub(r"\b" + p + r"\b", a, text)
+                out += [(l, origin) for l in text.split("\n")]
         else:
             out.append(lines[i])
         i += 1
@@ -542,6 +557,7 @@ def find_definitions(lines):
     depth = 0
     stmt_start = 0       # first line of the current top-level statement
     pending = None       # (kind, name, brace_line, brace_col[, closing line]) once "{" was seen at depth 0
+    namespace_pending = False
     continued = False    # inside a backslash-continued directive
     skipping = 0         # #if nesting inside an `#ifndef MACRO` whose macro is defined (its fallback)
     for i, (line, _) in enumerate(lines):
@@ -564,13 +580,27 @@ def find_definitions(lines):
                 stmt_start = i + 1
             continue
         code = "".join(c for _, c in code_chars(line))
+        if depth == 0 and pending is None:
+            # Namespace wrappers do not hide out-of-line method definitions. Keep the
+            # wrappers in the emitted text, as for extern "C" linkage blocks.
+            if re.fullmatch(r"namespace(?:\s+\w+)?\s*\{", stripped):
+                stmt_start = i + 1
+                continue
+            if re.fullmatch(r"namespace(?:\s+\w+)?", stripped):
+                namespace_pending = True
+                stmt_start = i + 1
+                continue
+            if namespace_pending and stripped == "{":
+                namespace_pending = False
+                stmt_start = i + 1
+                continue
         if EXTERN_C.match(line) or (depth == 0 and pending is None and stripped == "}"):
             continue  # `extern "C" {` ... `}` in headers: not a scope that matters here
         for col, ch in code_chars(line):
             if ch == "{":
                 if depth == 0 and pending is None:
                     head = "\n".join(l for l, _ in lines[stmt_start:i]) + "\n" + line[:col]
-                    if (re.search(r"\)\s*$", head.strip()) and "=" not in head.split(")")[-1]) or KNR_HEAD.search(head.strip()):
+                    if (re.search(r"\)\s*(?:(?:const|volatile)\s*)*$", head.strip()) and "=" not in head.split(")")[-1]) or KNR_HEAD.search(head.strip()):
                         kind, name = "func", expand_name(macros, head)
                     elif "=" in head:
                         # `T name[] =`, or the name wrapped in a macro: `T NS(encodings)[] =`
@@ -735,6 +765,20 @@ def symbol_name(addr, is_func):
 RODATA_PAD = "const char libmatch_rodata_pad[16] = {0};"
 
 
+def declare_external_objects(text, names):
+    """Keep shared library objects as declarations, including aligned arrays."""
+    for name in names:
+        decl = re.compile(
+            r"(?m)^(?:static\s+)?(?!(?:extern|typedef)\b)"
+            r"([A-Za-z_][\w:<>]*(?:[ \t]+[A-Za-z_][\w:<>]*)*[ \t*&]+)"
+            + re.escape(name)
+            + r"((?:\s*\[[^\]]*\])*(?:\s*__attribute__\s*\(\([^;\n]*\)\))?)"
+              r"\s*(?:=[^;]*)?;[ \t]*$"
+        )
+        text = decl.sub(lambda m: f"extern {m.group(1).strip()} {name}{m.group(2)};", text)
+    return text
+
+
 def emit_source(cfg, report, names, stubs=False, pad=False):
     """The self-contained source for one function (or several consecutive ones: a function only
     reached through a pointer is glued to the one before it in the inventory), or None when it is
@@ -837,19 +881,22 @@ def emit_source(cfg, report, names, stubs=False, pad=False):
         i = d.body_end + 1
     # Objects the config names (`extern_objects`: a global whose constructor or destructor would
     # bring a static initializer along, a static int) become declarations, as tables do above.
-    for name in cfg.get("extern_objects", ()):
-        decl = re.compile(r"^(?:static\s+)?([A-Za-z_][\w:<>]*(?:\s+[A-Za-z_][\w:<>]*)*[\s*&]+)"
-                          + re.escape(name) + r"\s*(?:=[^;]*)?;\s*$")  # at file scope: column 0
-        out = [decl.sub(lambda m: f"extern {m.group(1).strip()} {name};", l) for l in out]
     # The defines come first: the library's configuration, then the symbols with known addresses
     # (some decided while walking: data tables).
     head += ["#define " + d.replace("=", " ", 1) for d in cfg.get("defines", [])]
     head += [f"#define {s} {n}" for s, n in sorted(defines.items())]
     if pad:
         head.append(RODATA_PAD)
-    text = "\n".join(head + out)
+    text = declare_external_objects("\n".join(head + out), cfg.get("extern_objects", ()))
+    text = "\n".join(line.rstrip() for line in text.split("\n"))
     text = re.sub(r"\n{3,}", "\n\n", text)
-    return text + "\n"
+    # Compiling a whole unit lets GCC infer that an earlier definition cannot
+    # throw. Preserve that fact when extracting a later method on its own.
+    for declaration in cfg.get("nothrow_declarations", {}).get(entries[0]["file"], ()):
+        if not declaration.endswith(";") or declaration not in text:
+            raise ValueError(f"nothrow declaration not found: {declaration}")
+        text = text.replace(declaration, declaration[:-1] + " throw();")
+    return text.rstrip() + "\n"
 
 
 def count_elements(init):

@@ -9,7 +9,7 @@ struct Target {
 
 extern "C" char func_005C1F98[]; /* type_info function of the target class */
 extern "C" char func_005C24C8[]; /* type_info function of the static class */
-/* __dynamic_cast (old ABI): from, to, require_public, address, sub, subptr */
+/* func_005C0F40 (old ABI): from, to, require_public, address, sub, subptr */
 extern "C" void *GT4MC__FileGT4GameData__loadInstance(void *from, void *to, int require_public, void *address, void *sub, void *subptr);
 extern "C" void exception__structor_2(void) __attribute__((noreturn)); /* __throw_bad_cast */
 
