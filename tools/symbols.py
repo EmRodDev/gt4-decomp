@@ -263,7 +263,7 @@ def generic(sym):
 # code, so renaming tools never rewrite these names or the addresses they stand for.
 BUILTINS = {"memcpy", "memset", "memcmp", "memmove", "strcpy", "strncpy", "strcmp", "strncmp",
             "strlen", "strcat", "strchr", "strrchr", "abs", "fabs", "fabsf", "sqrt", "sqrtf",
-            "bzero", "bcopy", "bcmp", "alloca", "abort", "exit", "malloc"}
+            "bzero", "bcopy", "bcmp", "alloca", "abort", "exit", "malloc", "free"}
 
 
 def rename_text(text, lookup=None):
