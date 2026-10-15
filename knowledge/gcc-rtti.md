@@ -40,6 +40,17 @@ The full build remains the final check of relocated calls, constants and data.
 The 45 existing/emitted function sources, plus the additional RaceDisplay
 long-format initializer at `0x0039C318`, pass `match.py check-many`: **46/46**.
 The extraction regression suite has six passing checks and runs in GitHub Actions.
+A fresh local CI compilation passes for all 28,443 sources.
+
+The full build links all 45 RTTI functions and the additional RaceDisplay function
+from source. Both loaded segments are identical to the original:
+
+- `.text` SHA-1: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data` SHA-1: `c28c833f9716467545bf362f321e9acc876c3603`
+
+The verified source commit is `252e08af44ada3bd9320ccfa8309afce76315a3d`.
+The complete build links 28,229 functions from C/C++; existing fallback functions
+outside the RTTI block remain separate work.
 
 ## Compiler context
 
