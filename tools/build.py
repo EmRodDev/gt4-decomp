@@ -398,7 +398,7 @@ cd "$d/src"
     # Read the same ELF section/symbol metadata directly. This avoids tens of
     # thousands of readelf/nm subprocesses on every proof; the listing also
     # excludes cached objects that are outside this build's selected sources.
-    info = wsl(f'"{to_wsl(sys.executable)}" "{to_wsl(os.path.join(ROOT, "tools", "object_info.py"))}" '
+    info = wsl(f'python3 "{to_wsl(os.path.join(ROOT, "tools", "object_info.py"))}" '
                f'--directory "{WSL_DIR}/obj" --listing "{to_wsl(expected)}"\n')
     parsed = {int(address): value for address, value in json.loads(info).items()}
 

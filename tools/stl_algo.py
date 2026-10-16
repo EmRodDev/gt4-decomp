@@ -45,8 +45,11 @@ class Spec:
     comparator: str = "member"
     distance: str = "int"
     descending: bool = False
+    alignment: int = 4
 
     def validate(self):
+        if self.alignment not in (4, 8, 16) or self.size % self.alignment:
+            raise ValueError("value size must be a multiple of its supported alignment")
         if self.size < 4 or self.size % 4:
             raise ValueError("value size must be a positive multiple of four")
         if self.key_type not in ("int", "unsigned int", "float"):
@@ -63,6 +66,7 @@ class Spec:
 def source(spec, member, tag):
     spec.validate()
     value, compare = f"SortValue_{tag}", f"SortCompare_{tag}"
+    alignment = "" if spec.alignment == 4 else f" __attribute__((aligned({spec.alignment})))"
     if spec.comparator == "member":
         fields = (f"char prefix[{spec.key_offset}]; " if spec.key_offset else "")
         fields += f"{spec.key_type} key; "
@@ -71,9 +75,9 @@ def source(spec, member, tag):
             fields += f"char suffix[{tail}]; "
         op = ">" if spec.descending else "<"
         fields += f"bool operator<(const {value} &o) const {{ return key {op} o.key; }}"
-        declarations = f"struct {value} {{ {fields} }};\n"
+        declarations = f"struct {value} {{ {fields} }}{alignment};\n"
     else:
-        declarations = f"struct {value} {{ int words[{spec.size // 4}]; }};\n"
+        declarations = f"struct {value} {{ int words[{spec.size // 4}]; }}{alignment};\n"
         if spec.comparator == "external":
             declarations += (f'extern "C" bool sort_compare_{tag}(const {value} *, const {value} *);\n'
                 f"struct {compare} {{ char state; bool operator()(const {value} &a, const {value} &b) const "
@@ -91,7 +95,7 @@ def source(spec, member, tag):
     result = re.sub(r"\bV\b", value, result)
     return ("/* compiler: ee-gcc2.96-stl */\n"
             "/* SGI STL public sorting templates instantiated by tools/stl_algo.py.\n"
-            f"   Value: {spec.size} bytes; comparator: {spec.comparator}; "
+            f"   Value: {spec.size} bytes, alignment {spec.alignment}; comparator: {spec.comparator}; "
             f"key: {spec.key_type} at {spec.key_offset}; member: {member}. */\n"
             "#include <stl_algobase.h>\n#include <stl_iterator.h>\n"
             "#include <stl_construct.h>\n#include <stl_uninitialized.h>\n"
@@ -158,11 +162,14 @@ def recover(spec, members, tag, only=None, exclude=()):
                 (OUT / f"{addr:08x}_{member}.diff").write_text(stl.judge(addr, str(candidate))[1])
             hypothesis = (f"Public SGI STL {member}: {spec.size}-byte aggregate; "
                           f"{spec.comparator} comparator; {spec.key_type} key at {spec.key_offset}; "
-                          f"{spec.distance} distance; descending={spec.descending}; exact template body")
-            subprocess.run([sys.executable, "tools/attempts.py", "log", f"{addr:08X}",
+                          f"{spec.distance} distance; descending={spec.descending}; alignment={spec.alignment}; exact template body")
+            log_command = [sys.executable, "tools/attempts.py", "log", f"{addr:08X}",
                 "--hypothesis", hypothesis, "--result", "match" if matched else "differs",
-                "--diff", str(diff), "--of", str(len(target_words)), "--file", str(candidate),
-                "--compiler", "ee-gcc2.96-stl", "--who", "stl-algorithm-family"], check=True)
+                "--of", str(len(target_words)), "--file", str(candidate),
+                "--compiler", "ee-gcc2.96-stl", "--who", "stl-algorithm-family"]
+            if matched or diff:
+                log_command += ["--diff", str(diff)]
+            subprocess.run(log_command, check=True)
             print(f"  {addr:08X}: {status}", flush=True)
             results.append({"member": member, "address": f"{addr:08x}", "status": status})
     return results
@@ -176,14 +183,15 @@ def main():
     parser.add_argument("--comparator", choices=["member", "external", "pointer"], default="member")
     parser.add_argument("--distance", choices=["int", "long"], default="int")
     parser.add_argument("--descending", action="store_true")
+    parser.add_argument("--alignment", type=int, choices=[4, 8, 16], default=4)
     parser.add_argument("--member", choices=list(MEMBERS), action="append")
     parser.add_argument("--address", type=lambda x: int(x, 16))
     parser.add_argument("--exclude", type=lambda x: int(x, 16), action="append", default=[])
     args = parser.parse_args()
-    spec = Spec(args.size, args.key_offset, args.key_type, args.comparator, args.distance, args.descending)
+    spec = Spec(args.size, args.key_offset, args.key_type, args.comparator, args.distance, args.descending, args.alignment)
     spec.validate()
     tag = (f"n{spec.size}_k{spec.key_offset}_{spec.key_type.replace(' ', '_')}_"
-           f"{spec.comparator}_{spec.distance}_{int(spec.descending)}")
+           f"{spec.comparator}_{spec.distance}_{int(spec.descending)}_a{spec.alignment}")
     results = recover(spec, args.member or list(MEMBERS), tag, args.address, args.exclude)
     (OUT / f"{tag}.json").write_text(json.dumps(results, indent=2) + "\n")
 

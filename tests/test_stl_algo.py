@@ -53,6 +53,16 @@ class AlgorithmSourceTests(unittest.TestCase):
             self.assertEqual(src.count("template "), 1)
             self.assertNotIn("asm", src)
 
+    def test_explicit_value_alignment_does_not_align_the_comparator(self):
+        src = stl_algo.source(stl_algo.Spec(16, comparator="external", alignment=16), "adjust_heap", "A")
+        self.assertEqual(src.count("__attribute__((aligned(16)))"), 1)
+        self.assertIn("int words[4]; } __attribute__((aligned(16)));", src)
+        self.assertIn("struct SortCompare_A { char state;", src)
+
+    def test_alignment_cannot_change_the_requested_value_size(self):
+        with self.assertRaises(ValueError):
+            stl_algo.Spec(12, alignment=16).validate()
+
 
 if __name__ == "__main__":
     unittest.main()

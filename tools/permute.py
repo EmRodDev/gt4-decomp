@@ -9,6 +9,8 @@ SOURCE must be C (valid as both C and C++: struct keyword, no classes). It is co
 On a perfect score the result is checked with match.py and saved to src/func_ADDR.cpp.
 """
 import argparse
+import json
+import shlex
 import os
 import re
 import shutil
@@ -116,6 +118,13 @@ def source_notices(source):
     return "".join(c + "\n" for c in notices)
 
 
+def linux_python_command(*args):
+    """The compiler/scorer helpers run in Linux even from a Windows front end."""
+    launcher = (f'p="$HOME/.local/share/{project.BASENAME}/venv/bin/python"; '
+                '[ -x "$p" ] || p=python3; exec "$p" "$@"')
+    return shlex.join(["bash", "-c", launcher, "bash", *args])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("addr")
@@ -152,18 +161,20 @@ def main():
     open(os.path.join(work, "target.s"), "w", newline="\n").write(PRELUDE + asm)
     prepare = 'cp "$1" "$work/candidate.c"'
     if a.preserve_context:
-        prepare = (f'"{to_wsl(sys.executable)}" "{to_wsl(os.path.join(ROOT, "tools", "permute_context.py"))}" '
-                   f'"{to_wsl(os.path.join(work, "context.c"))}" "$1" "{name}" "$work/candidate.c"')
+        prepare = (linux_python_command(to_wsl(os.path.join(ROOT, "tools", "permute_context.py")),
+                                        to_wsl(os.path.join(work, "context.c")))
+                   + f' "$1" "{name}" "$work/candidate.c"')
     open(os.path.join(work, "compile.sh"), "w", newline="\n").write(
         COMPILE_SH.replace("{command}", project.compiler_command(marker)).replace("{lang}", lang)
                   .replace("{prepare}", prepare))
     objdump_command = f'mips-linux-gnu-objdump -drz -m {project.CONFIG["cpu"]["objdump_arch"]}'
     if a.preserve_context:
-        objdump_command = (f'{to_wsl(sys.executable)} {to_wsl(os.path.join(ROOT, "tools", "permute_objdump.py"))} '
-                           f'--function {name} --arch {project.CONFIG["cpu"]["objdump_arch"]}')
+        objdump_command = linux_python_command(
+            to_wsl(os.path.join(ROOT, "tools", "permute_objdump.py")),
+            "--function", name, "--arch", project.CONFIG["cpu"]["objdump_arch"])
     open(os.path.join(work, "settings.toml"), "w", newline="\n").write(
         f'func_name = "{name}"\ncompiler_type = "gcc"\n'
-        f'objdump_command = "{objdump_command}"\n')
+        f'objdump_command = {json.dumps(objdump_command)}\n')
     # The permuter reads one self-contained file: the project's headers (include/) go in inline.
     src = project.inline_includes(open(a.source, encoding="utf-8").read())
     # The permuter parses C: drop C++ linkage markers (compile.sh wraps the file in extern "C").

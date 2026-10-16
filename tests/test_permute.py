@@ -105,5 +105,36 @@ class ContextScoringTests(unittest.TestCase):
                 permute_objdump.command("unit.o", "missing", "r5900")
 
 
+class LinuxLauncherTests(unittest.TestCase):
+    def test_linux_interpreter_does_not_depend_on_host_executable(self):
+        import shlex
+        command = permute.linux_python_command("/path with spaces/helper.py", "--name", "target")
+        parts = shlex.split(command)
+        self.assertEqual(parts[:2], ["bash", "-c"])
+        self.assertIn('exec "$p" "$@"', parts[2])
+        self.assertEqual(parts[4:], ["/path with spaces/helper.py", "--name", "target"])
+
+    @unittest.skipIf(sys.platform == "win32", "helper executes inside Linux/WSL")
+    def test_launcher_executes_spaced_paths_and_arguments(self):
+        import json
+        import shlex
+        import subprocess
+        import tempfile
+        with tempfile.TemporaryDirectory(prefix="permuter helper ") as directory:
+            script = Path(directory) / "helper script.py"
+            script.write_text("import json,sys; print(json.dumps(sys.argv[1:]))\n")
+            args = ["two words", "$literal", "semi;colon"]
+            result = subprocess.run(shlex.split(permute.linux_python_command(str(script), *args)),
+                                    capture_output=True, text=True, check=True)
+        self.assertEqual(json.loads(result.stdout), args)
+
+    def test_scoring_command_survives_toml_quoting(self):
+        import json
+        import tomllib
+        command = permute.linux_python_command("/path with spaces/helper.py", "--function", "target")
+        settings = "objdump_command = " + json.dumps(command) + "\n"
+        self.assertEqual(tomllib.loads(settings)["objdump_command"], command)
+
+
 if __name__ == "__main__":
     unittest.main()

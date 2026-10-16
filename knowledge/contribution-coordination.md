@@ -46,3 +46,5 @@ checking which functions are already supplied by #18 or #19.
 
 For the 53 MPEG candidates, use the separate extraction and per-file notice
 review described in THIRD_PARTY.md. No decoder match is claimed here.
+
+The resolved 125-address reservation is retained in [contribution-claims.json](contribution-claims.json). Check and refresh that pinned manifest before assigning further library targets; a file-name comparison is insufficient. The local sorting scan excludes those addresses for subsequent batches.
