@@ -39,3 +39,74 @@ layout. They do not assert the game's original C++ type names.
 
 The 44-byte value's actual semantic class remains unidentified. A recovered
 algorithm and field layout do not establish what gameplay data it sorts.
+
+## Handle/key sorting family (2026-10-16)
+
+`knowledge/recipes/scored_sort.py` reconstructs 24 additional template
+instantiations in the `005C1CE0` unit. The algorithm bodies come directly from
+`include/stl/stl_algo.h` and `stl_heap.h`; their existing licence notices and
+`THIRD_PARTY.md` entry apply. The recipe writes drafts only, leaving `src/`
+and existing matches untouched:
+
+```sh
+python knowledge/recipes/scored_sort.py
+python tools/match.py check 005C5908 build/swarm/scored-sort/reproduced/func_005C5908.cpp
+```
+
+All three element layouts start with a four-byte reference-counted handle.
+Copy construction calls `0013BD50`; destruction calls `0013BD68(this, 2)`.
+Assignment checks self-assignment, retains the incoming object through
+`003285A8`, releases the previous object through `003285F8`, and stores the
+incoming pointer. The implicit aggregate operations then copy the key.
+
+- Float: eight-byte record, floating-point score at offset four.
+- String: eight-byte record, string pointer at offset four, ordered by the
+  signed result of `0057F238` (strcmp).
+- Sequence: twenty-byte record, a wrapped sixteen-byte
+  `vector<unsigned short, tagged allocator>` at offset four. The allocator
+  uses type getter `005C1368` with `00326750`/`00326798`; vector assignment
+  calls the existing `005C5790`. Comparison forwards the two iterator ranges
+  to the existing lexicographical comparison `005C97E0`.
+
+The comparator contains one byte. An empty comparator changes the copies
+passed between helpers and does not match. The compiler's by-value object ABI
+makes each callee destroy its incoming value: a partition destroys its pivot,
+and heap/insertion helpers destroy their copied argument. The public templates
+and ordinary C++ lifetime rules reproduce those calls without explicit stack
+stores or forced registers.
+
+| Public template | Float | String | Sequence |
+|---|---|---|---|
+| `__introsort_loop` | 005C65E0 | 005C6DA8 | 005C5908 |
+| `__unguarded_partition` | 005C7988 | 005C7E68 | 005C7098 |
+| `__partial_sort` | 005C7AD8 | 005C7F98 | 005C7300 |
+| `__insertion_sort` | 005C7C48 | 005C80F0 | 005C75A0 |
+| `sort_heap` | 005C8AA8 | 005C8F18 | 005C8300 |
+| `__make_heap` | existing 005C8BE0 | existing 005C9050 | 005C8588 |
+| `__adjust_heap` | 005C8C88 | 005C90F8 | 005C86C0 |
+| `__push_heap` | 005C9550 | 005C9698 | 005C9378 |
+| `__unguarded_linear_insert` | existing 005C8E20 | existing 005C9288 | 005C8950 |
+| `__unguarded_insertion_sort_aux` | existing 005C7DF0 | existing 005C8288 | 005C7888 |
+
+Macros map the public template names to address-bearing symbols before the
+headers are included. In particular, map `__make_heap`, whose last two
+arguments are type-deduction pointers, rather than the inline `make_heap`
+wrapper. Address-specific types keep independently placed instantiations
+separate. Seven callers require a return-bearing copy-helper declaration;
+`005C75A0` also requires the vector assignment helper to be declared
+`throw()`. Both affect scheduling, and the recipe retains the individually
+verified declarations instead of changing compiler flags.
+
+The descriptive type names do not establish the original gameplay classes.
+`FloatSortEntry`, `StringSortEntry`, and `SequenceSortEntry` describe the
+observed layouts; `RefCountedHandle` makes their ownership rules explicit.
+Their address suffixes keep separate original instantiations from merging.
+The recipe contains the shared reconstruction model, while each emitted C++
+translation unit remains self-contained and readable. Changes to that model
+must be regenerated, rejudged, and checked in the full link. The repository's
+clean-source metric is useful for finding raw decompiler output, but does not
+replace a review of behavior, names, ownership, or maintainability.
+
+The higher-level sort wrappers at `005C5D18`, `005C60A0`, and `005C6868`
+remain targets for a later batch. Start from the proven element models and
+read their attempts diaries before trying those wrappers again.
