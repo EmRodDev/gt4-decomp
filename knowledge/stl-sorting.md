@@ -39,3 +39,201 @@ layout. They do not assert the game's original C++ type names.
 
 The 44-byte value's actual semantic class remains unidentified. A recovered
 algorithm and field layout do not establish what gameplay data it sorts.
+
+## Handle/key sorting family (2026-10-16)
+
+`knowledge/recipes/scored_sort.py` reconstructs 24 additional template
+instantiations in the `005C1CE0` unit. The algorithm bodies come directly from
+`include/stl/stl_algo.h` and `stl_heap.h`; their existing licence notices and
+`THIRD_PARTY.md` entry apply. The recipe writes drafts only, leaving `src/`
+and existing matches untouched:
+
+```sh
+python knowledge/recipes/scored_sort.py
+python tools/match.py check 005C5908 build/swarm/scored-sort/reproduced/func_005C5908.cpp
+```
+
+All three element layouts start with a four-byte reference-counted handle.
+Copy construction calls `0013BD50`; destruction calls `0013BD68(this, 2)`.
+Assignment checks self-assignment, retains the incoming object through
+`003285A8`, releases the previous object through `003285F8`, and stores the
+incoming pointer. The implicit aggregate operations then copy the key.
+
+- Float: eight-byte record, floating-point score at offset four.
+- String: eight-byte record, string pointer at offset four, ordered by the
+  signed result of `0057F238` (strcmp).
+- Sequence: twenty-byte record, a wrapped sixteen-byte
+  `vector<unsigned short, tagged allocator>` at offset four. The allocator
+  uses type getter `005C1368` with `00326750`/`00326798`; vector assignment
+  calls the existing `005C5790`. Comparison forwards the two iterator ranges
+  to the existing lexicographical comparison `005C97E0`.
+
+The comparator contains one byte. An empty comparator changes the copies
+passed between helpers and does not match. The compiler's by-value object ABI
+makes each callee destroy its incoming value: a partition destroys its pivot,
+and heap/insertion helpers destroy their copied argument. The public templates
+and ordinary C++ lifetime rules reproduce those calls without explicit stack
+stores or forced registers.
+
+| Public template | Float | String | Sequence |
+|---|---|---|---|
+| `__introsort_loop` | 005C65E0 | 005C6DA8 | 005C5908 |
+| `__unguarded_partition` | 005C7988 | 005C7E68 | 005C7098 |
+| `__partial_sort` | 005C7AD8 | 005C7F98 | 005C7300 |
+| `__insertion_sort` | 005C7C48 | 005C80F0 | 005C75A0 |
+| `sort_heap` | 005C8AA8 | 005C8F18 | 005C8300 |
+| `__make_heap` | existing 005C8BE0 | existing 005C9050 | 005C8588 |
+| `__adjust_heap` | 005C8C88 | 005C90F8 | 005C86C0 |
+| `__push_heap` | 005C9550 | 005C9698 | 005C9378 |
+| `__unguarded_linear_insert` | existing 005C8E20 | existing 005C9288 | 005C8950 |
+| `__unguarded_insertion_sort_aux` | existing 005C7DF0 | existing 005C8288 | 005C7888 |
+
+Macros map the public template names to address-bearing symbols before the
+headers are included. In particular, map `__make_heap`, whose last two
+arguments are type-deduction pointers, rather than the inline `make_heap`
+wrapper. Address-specific types keep independently placed instantiations
+separate. Seven callers require a return-bearing copy-helper declaration;
+`005C75A0` also requires the vector assignment helper to be declared
+`throw()`. Both affect scheduling, and the recipe retains the individually
+verified declarations instead of changing compiler flags.
+
+The descriptive type names do not establish the original gameplay classes.
+`FloatSortEntry`, `StringSortEntry`, and `SequenceSortEntry` describe the
+observed layouts; `RefCountedHandle` makes their ownership rules explicit.
+Their address suffixes keep separate original instantiations from merging.
+The recipe contains the shared reconstruction model, while each emitted C++
+translation unit remains self-contained and readable. Changes to that model
+must be regenerated, rejudged, and checked in the full link. The repository's
+clean-source metric is useful for finding raw decompiler output, but does not
+replace a review of behavior, names, ownership, or maintainability.
+
+The higher-level callers and writeback functions are recovered in the
+continuation below. The callback input's field meanings remain unidentified.
+
+### Complete-link evidence
+
+Source commit `3da8aeeba98ede1bfa7d6d1db3e03802977f9ca7`, based on
+upstream `f5f0cdc5b945ac640656bc0142b9f21badfe9f85`, passed the complete,
+non-partial build on 2026-10-16. All 24 additions are individually `linked`,
+with zero orphan or duplicate sources. Linked code increases from 4,151,644
+to 4,162,064 bytes: **10,420 additional bytes**, excluding inventory padding.
+
+| Key family | New functions | Linked bytes |
+|---|---:|---:|
+| Float | 7 | 2,580 |
+| String | 7 | 2,496 |
+| Unsigned-short sequence | 10 | 5,344 |
+| Total | 24 | 10,420 |
+
+The build reproduced both original loaded segments:
+
+- `.text` SHA-1: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data` SHA-1: `c28c833f9716467545bf362f321e9acc876c3603`
+
+All 85 existing regression tests passed. Each reviewed source passed the
+unchanged judge after the naming/ownership cleanup and reproduces byte-for-byte
+from the recipe; source organization and assembly policy checks passed.
+The clean-source scanner finds no raw-decompiler marks in these 24 sources;
+the semantic review additionally checked handle lifetimes, retain-before-release
+assignment, key comparisons, nested vector allocation/destruction, and real
+callee targets in the complete link.
+
+The generated report records 29,064 / 30,962 matched functions (93.87%),
+4,208,792 matched code bytes (79.68%), and 78.80% linked code. The subsequent
+README/documentation commit describes this source commit and changes no code.
+
+### Upstream refresh after PR #22
+
+The conflict-resolution merge `9f97908ca01a871fa588da3b235aef9d13aab82a`
+includes upstream `ab5ca09f43e1380ead55cccb825d2a759aff3e08` and preserves
+all 24 sorting sources byte-for-byte. Both attempt histories are retained.
+All 24 sources reproduce from the recipe and pass the unchanged judge; all
+85 regression tests, source organization, and assembly policy checks pass.
+The complete non-partial build reproduces the same original segment hashes
+above, with no orphan or duplicate sources. Linked code is 4,162,536 bytes,
+a gain of 10,420 bytes over the refreshed upstream's 4,152,116 bytes.
+The combined report records 29,068 matched functions and 4,209,264 matched
+code bytes (79.69%); all 24 additions are linked. The README was regenerated
+from this clean source proof.
+
+## Garage sort callers and writeback
+
+`knowledge/recipes/sort_callers.py` extends the already matched
+`001475A8` source model to six missing functions. It writes drafts only;
+the checked-in sources have descriptive, address-specific model types and
+use the original public SGI vector/sort bodies. Constructor and destructor
+`__asm__` labels bind existing game functions; they contain no instructions.
+
+| Address | Behavior |
+|---|---|
+| 005C5D18, 005C60A0, 005C6868 | Build score records from a script array, calculate integer callback scores as floats, sort, and write handles back |
+| 005C6428 | Write back records with floating-point scores |
+| 005C6BF0 | Write back records with string keys |
+| 005C54F0 | Write back records with unsigned-short sequence keys |
+
+The writeback parameter is `ascending`: nonzero selects the sorted vector's
+forward order, while zero reverses it. Both the script-array handle and vector
+are passed by value. Their ordinary C++ lifetimes generate the final releases
+and nested buffer cleanup; explicit fake stack stores are unnecessary.
+
+The callback callers keep a temporary garage handle alive until the database
+record has been read, then calculate a score and construct a typed handle/score
+entry. The public vector's normal default-fill and copy behavior is retained,
+including its reference-count operations. The input is a 24-byte record whose
+three 64-bit fields remain opaque. The record-read status is ignored, matching
+the original caller.
+
+### Type and width evidence
+
+The existing type-info getter sources identify the pairs more precisely than
+the initial layout-only reconstruction:
+
+| Getter | Retained RTTI spelling | Element |
+|---|---|---|
+| 005C9B90 | `t4pair2Z10MCarGarageZf` | `pair<MCarGarage, float>` |
+| 005C9BD0 | `t4pair2Z10MCarGarageZPCc` | `pair<MCarGarage, const char *>` |
+| 005C9B50 | `t4pair2Z10MCarGarageZt10std_vector2ZUsZt13std_allocator1ZUs` | `pair<MCarGarage, std_vector<unsigned short, std_allocator<unsigned short> > >` |
+
+These names identify the garage/key roles, but do not identify the callback
+record fields or establish a complete canonical definition of `MCarGarage`.
+The source models continue to expose their proven ownership and layout rather
+than invent additional gameplay fields.
+
+The scoring lookup carries a **64-bit database row id** throughout:
+`00441248` selects a cell, `004454C0` loads its 64-bit id, and `00448820`
+reads the record through `00448A58`. The latter inspects the upper 32-bit tag
+and forwards the full id to `SPEC_DATABASE::DatabaseStorage::getRow`.
+The callers and existing `00448820` wrapper now declare that value as
+`long long`, replacing the wrapper's previous pointer-shaped prototype.
+This preserves the database tag in a future port with 32-bit pointers as well
+as in the original EE code. The wrapper's byte-identical copy body is retained.
+
+Reproduce the six reviewed sources with:
+
+```sh
+python knowledge/recipes/sort_callers.py
+python tools/match.py check 005C60A0 build/swarm/sort-callers/reproduced/func_005C60A0.cpp
+```
+
+### Complete proof of the caller continuation
+
+Clean source commit `d966d6d223a258b0c2fdb12e8c4045a42983190c` preserves the maintainer's
+`0da8fbb558b3b028212838f63b27e4479fd2c7f1` integration history and adds the
+six callers/writeback functions plus the 64-bit row-id type correction.
+The complete non-partial build again reproduces both original segment hashes
+listed above. All 30 additions and the corrected `00448820` helper are linked;
+there are no orphan or duplicate sources.
+
+The six additions contribute **3,784 bytes**: 900 bytes for each callback
+caller, 336 bytes for each float/string writeback, and 412 bytes for sequence
+writeback. Combined with the 24 algorithm instantiations, this is **14,204
+additional linked bytes** over upstream `ab5ca09f43e1380ead55cccb825d2a759aff3e08`.
+Linked source code rises from 4,152,116 to 4,166,320 bytes.
+The helper's existing 72 bytes are unchanged and do not count as a new gain.
+
+All seven reviewed functions pass the unchanged judge after the type and
+readability cleanup. Both recipes reproduce all 30 new sources exactly.
+All 85 regression tests, source organization, and assembly policy checks pass.
+The generated report records 29,074 / 30,962 matched functions,
+4,213,048 matched code bytes (79.77%), and
+78.88% linked code. The later proof/README commit changes documentation only.

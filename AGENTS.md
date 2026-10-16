@@ -6,6 +6,32 @@ is ee-gcc 2.9 C). A function is done only when `python3 tools/swarm.py try` prin
 If your prompt starts with `Matcher worker`, the rest of this file is your whole job. Otherwise
 read CLAUDE.md first.
 
+## Source quality
+
+Matching and readability are both acceptance criteria. Recovered code should be
+understandable and maintainable by someone who has not read the original assembly.
+
+- Prefer descriptive types, fields, parameters and locals. Use recovered original
+  names only when supported by evidence; document provisional layouts and unknowns.
+- Explain ownership, lifetimes, algorithm intent and non-obvious ABI constraints.
+  Comments should explain decisions, rather than narrate individual instructions.
+- Reuse the original public library algorithms where available, with provenance.
+  Keep address mappings distinct from the code expressing the algorithm's behavior.
+- Do not sacrifice a natural source model for a numerical match: no artificial
+  dead stores, pinned registers or opaque instruction-shaped rewrites.
+- Review the source and its callers/callees before counting a match. A successful
+  compiler run or judge result alone does not establish source quality. Rejudge
+  any cleanup and verify the complete link before claiming recovered bytes.
+- Improve the family being worked on; defer unrelated legacy cleanup to its own
+  reviewed change. Keep uncertain findings explicit for later contributors.
+
+## Upstream contributions
+
+Keep each PR focused on a meaningful family or subsystem milestone, with readable
+sources, reproduction notes and complete-build evidence. Refresh upstream before
+selecting targets and before submitting a PR. If upstream has recovered the same
+function, preserve its implementation and revalidate the remaining local work.
+
 ## Matcher worker
 
 Your prompt gives a worker name `W`, a tries budget and a batch: a JSON object with function
