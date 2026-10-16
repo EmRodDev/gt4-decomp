@@ -107,9 +107,8 @@ must be regenerated, rejudged, and checked in the full link. The repository's
 clean-source metric is useful for finding raw decompiler output, but does not
 replace a review of behavior, names, ownership, or maintainability.
 
-The higher-level sort wrappers at `005C5D18`, `005C60A0`, and `005C6868`
-remain targets for a later batch. Start from the proven element models and
-read their attempts diaries before trying those wrappers again.
+The higher-level callers and writeback functions are recovered in the
+continuation below. The callback input's field meanings remain unidentified.
 
 ### Complete-link evidence
 
@@ -156,3 +155,62 @@ a gain of 10,420 bytes over the refreshed upstream's 4,152,116 bytes.
 The combined report records 29,068 matched functions and 4,209,264 matched
 code bytes (79.69%); all 24 additions are linked. The README was regenerated
 from this clean source proof.
+
+## Garage sort callers and writeback
+
+`knowledge/recipes/sort_callers.py` extends the already matched
+`001475A8` source model to six missing functions. It writes drafts only;
+the checked-in sources have descriptive, address-specific model types and
+use the original public SGI vector/sort bodies. Constructor and destructor
+`__asm__` labels bind existing game functions; they contain no instructions.
+
+| Address | Behavior |
+|---|---|
+| 005C5D18, 005C60A0, 005C6868 | Build score records from a script array, calculate integer callback scores as floats, sort, and write handles back |
+| 005C6428 | Write back records with floating-point scores |
+| 005C6BF0 | Write back records with string keys |
+| 005C54F0 | Write back records with unsigned-short sequence keys |
+
+The writeback parameter is `ascending`: nonzero selects the sorted vector's
+forward order, while zero reverses it. Both the script-array handle and vector
+are passed by value. Their ordinary C++ lifetimes generate the final releases
+and nested buffer cleanup; explicit fake stack stores are unnecessary.
+
+The callback callers keep a temporary garage handle alive until the database
+record has been read, then calculate a score and construct a typed handle/score
+entry. The public vector's normal default-fill and copy behavior is retained,
+including its reference-count operations. The input is a 24-byte record whose
+three 64-bit fields remain opaque. The record-read status is ignored, matching
+the original caller.
+
+### Type and width evidence
+
+The existing type-info getter sources identify the pairs more precisely than
+the initial layout-only reconstruction:
+
+| Getter | Retained RTTI spelling | Element |
+|---|---|---|
+| 005C9B90 | `t4pair2Z10MCarGarageZf` | `pair<MCarGarage, float>` |
+| 005C9BD0 | `t4pair2Z10MCarGarageZPCc` | `pair<MCarGarage, const char *>` |
+| 005C9B50 | `t4pair2Z10MCarGarageZt10std_vector2ZUsZt13std_allocator1ZUs` | `pair<MCarGarage, std_vector<unsigned short, std_allocator<unsigned short> > >` |
+
+These names identify the garage/key roles, but do not identify the callback
+record fields or establish a complete canonical definition of `MCarGarage`.
+The source models continue to expose their proven ownership and layout rather
+than invent additional gameplay fields.
+
+The scoring lookup carries a **64-bit database row id** throughout:
+`00441248` selects a cell, `004454C0` loads its 64-bit id, and `00448820`
+reads the record through `00448A58`. The latter inspects the upper 32-bit tag
+and forwards the full id to `SPEC_DATABASE::DatabaseStorage::getRow`.
+The callers and existing `00448820` wrapper now declare that value as
+`long long`, replacing the wrapper's previous pointer-shaped prototype.
+This preserves the database tag in a future port with 32-bit pointers as well
+as in the original EE code. The wrapper's byte-identical copy body is retained.
+
+Reproduce the six reviewed sources with:
+
+```sh
+python knowledge/recipes/sort_callers.py
+python tools/match.py check 005C60A0 build/swarm/sort-callers/reproduced/func_005C60A0.cpp
+```
