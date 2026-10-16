@@ -110,3 +110,35 @@ replace a review of behavior, names, ownership, or maintainability.
 The higher-level sort wrappers at `005C5D18`, `005C60A0`, and `005C6868`
 remain targets for a later batch. Start from the proven element models and
 read their attempts diaries before trying those wrappers again.
+
+### Complete-link evidence
+
+Source commit `3da8aeeba98ede1bfa7d6d1db3e03802977f9ca7`, based on
+upstream `f5f0cdc5b945ac640656bc0142b9f21badfe9f85`, passed the complete,
+non-partial build on 2026-10-16. All 24 additions are individually `linked`,
+with zero orphan or duplicate sources. Linked code increases from 4,151,644
+to 4,162,064 bytes: **10,420 additional bytes**, excluding inventory padding.
+
+| Key family | New functions | Linked bytes |
+|---|---:|---:|
+| Float | 7 | 2,580 |
+| String | 7 | 2,496 |
+| Unsigned-short sequence | 10 | 5,344 |
+| Total | 24 | 10,420 |
+
+The build reproduced both original loaded segments:
+
+- `.text` SHA-1: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data` SHA-1: `c28c833f9716467545bf362f321e9acc876c3603`
+
+All 85 existing regression tests passed. Each reviewed source passed the
+unchanged judge after the naming/ownership cleanup and reproduces byte-for-byte
+from the recipe; source organization and assembly policy checks passed.
+The clean-source scanner finds no raw-decompiler marks in these 24 sources;
+the semantic review additionally checked handle lifetimes, retain-before-release
+assignment, key comparisons, nested vector allocation/destruction, and real
+callee targets in the complete link.
+
+The generated report records 29,064 / 30,962 matched functions (93.87%),
+4,208,792 matched code bytes (79.68%), and 78.80% linked code. The subsequent
+README/documentation commit describes this source commit and changes no code.
