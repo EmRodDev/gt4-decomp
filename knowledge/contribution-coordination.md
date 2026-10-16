@@ -38,11 +38,11 @@ there is no request for its author to repeat them.
 
 ## Additional unpublished library matches
 
-For the contributor's 16 GCC-runtime and 17 newlib/possible-DJ functions,
-request an address/name/source-unit manifest and retained drafts. The main
-extraction pipeline will regenerate uncovered functions and preserve the
-applicable public notices. Do not ask the contributor to repeat all 33 before
-checking which functions are already supplied by #18 or #19.
+The contributor also offered 16 GCC-runtime and 17 newlib/possible-DJ
+functions. If further material is volunteered, use it to identify uncovered
+functions and preserve the applicable public notices. The main extraction
+pipeline can handle integration; do not assign follow-up work to the contributor.
+Any public reply must first be reviewed and approved by the repository owner.
 
 For the 53 MPEG candidates, use the separate extraction and per-file notice
 review described in THIRD_PARTY.md. No decoder match is claimed here.
@@ -52,3 +52,5 @@ The resolved 125-address reservation is retained in [contribution-claims.json](c
 ## Integrated checkpoint
 
 PRs #17 and #19 are included by merge commits in the integration branch, preserving contributor history. The ten standalone overlap entries listed above are removed here because the verified #18 groups already provide those addresses. The five previously deferred sorting sources are supplied by #19.
+
+Four additional PR #17 XML overlaps (`004DDA88`, `004DE118`, `004E1A10`, `004E20A0`) retain the already validated #18 C extraction sources; the corresponding standalone C++ files are omitted from the combined tree.
