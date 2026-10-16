@@ -142,3 +142,17 @@ callee targets in the complete link.
 The generated report records 29,064 / 30,962 matched functions (93.87%),
 4,208,792 matched code bytes (79.68%), and 78.80% linked code. The subsequent
 README/documentation commit describes this source commit and changes no code.
+
+### Upstream refresh after PR #22
+
+The conflict-resolution merge `9f97908ca01a871fa588da3b235aef9d13aab82a`
+includes upstream `ab5ca09f43e1380ead55cccb825d2a759aff3e08` and preserves
+all 24 sorting sources byte-for-byte. Both attempt histories are retained.
+All 24 sources reproduce from the recipe and pass the unchanged judge; all
+85 regression tests, source organization, and assembly policy checks pass.
+The complete non-partial build reproduces the same original segment hashes
+above, with no orphan or duplicate sources. Linked code is 4,162,536 bytes,
+a gain of 10,420 bytes over the refreshed upstream's 4,152,116 bytes.
+The combined report records 29,068 matched functions and 4,209,264 matched
+code bytes (79.69%); all 24 additions are linked. The README was regenerated
+from this clean source proof.
