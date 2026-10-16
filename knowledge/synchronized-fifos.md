@@ -60,10 +60,9 @@ the original scheduling without artificial stack writes or register constraints.
 Consistent base and derived layout declarations keep the two synchronization
 variants distinct across translation units.
 
-The first Luna worker recovered these four functions, and the coordinating
-session reviewed their semantics and requested pointer-prototype and layout
-corrections. Each final candidate passed the unchanged `match.py check` judge
-with 28 instructions. Every judged hypothesis, including rejected drafts, is
+Pointer-prototype and layout corrections preserve the match. Each final FIFO
+candidate passed the unchanged `match.py check` judge with 28 instructions.
+Every judged hypothesis, including rejected drafts, is
 recorded in `knowledge/attempts.jsonl`. Individual matches must still survive
 the full link before being counted as new source coverage.
 
@@ -87,3 +86,26 @@ These methods all bracket their work with the global interrupt section at
 `00655340`. Explicit entry/exit calls are sufficient for their single-exit
 control flow. The new sources preserve unknown layout regions rather than
 giving them speculative application-level names.
+
+## Full-build proof
+
+The non-partial build of clean source commit
+`8c7d081e998632edaf210264fda8dca07b516fbd` passed with `tools/build.py --jobs 2`.
+All eight new functions have the exact status `linked`, with no orphan or
+duplicate sources. They contribute **988 additional linked code bytes** over
+upstream `ab5ca09f43e1380ead55cccb825d2a759aff3e08`.
+
+| Segment | Rebuilt SHA-1, identical to the original |
+| --- | --- |
+| `.text` | `28422e7e20a6298224294255355487b9a22cef31` |
+| `.data` | `c28c833f9716467545bf362f321e9acc876c3603` |
+
+The build compiled 29,035 function sources and linked 4,153,104 code bytes;
+55,106 data bytes came from verified source sections. The repository's 85 tests
+passed. `tools/report.py` and `tools/update_readme.py` generated the progress
+figures from that build; no percentages were edited by hand.
+
+The nearby pool scans `005596F8` and `00559808` remain unmatched. Their bounded
+attempts stopped at 9/37 and 11/39 differing instructions respectively. Their
+remaining differences concern loop induction and scheduling; no candidate from
+those attempts was admitted into `src/`.
