@@ -1,0 +1,10 @@
+version = "gcc snapshot 2000-10-03"
+license = "GPLv2 or later with the GCC runtime exception (THIRD_PARTY.md)"
+url = "https://gcc.gnu.org/ (gcc snapshot 2000-10-03, gcc/config/fp-bit.c)"
+source = "../gt4-thirdparty/gcc-runtime-20001003/softfloat"
+range = ["0x005BA060", "0x005BFAC8"]
+files = ["double.c", "float.c"]
+include_once = true
+keep_inline = true
+keep_notices = ["Free Software Foundation"]
+marker = "licence: gcc-runtime (GPL with the GCC runtime exception, see THIRD_PARTY.md)"

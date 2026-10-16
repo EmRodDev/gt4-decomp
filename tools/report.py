@@ -102,9 +102,10 @@ def main():
         key = f"{addr:08x}"
         words = match.trim_padding(match.words_at(text_addr, text, addr, int(r["max_size"])))
         size = int(sizes.get(key, 4 * len(words)))
-        funcs.append({"addr": addr, "size": size, "matched": key in done,
+        matched = key in done or status.get(key, "").startswith("linked as part of func_")
+        funcs.append({"addr": addr, "size": size, "matched": matched,
                       "complete": status.get(key) == "linked" or status.get(key, "").startswith("linked as part"),
-                      "fuzzy": 100.0 if key in done else partial.get(key, 0.0),
+                      "fuzzy": 100.0 if matched else partial.get(key, 0.0),
                       "data": int(data_sizes.get(key, 0)) if build.get("data_matches") else 0})
     # A source that defines the functions after its own is one object whose size (build sizes)
     # covers them all; the covered functions have their own entries, so the covering function

@@ -54,6 +54,19 @@ dir = "~/.local/share/gt4/compilers/ee-gcc2.96-stl"
 command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -fno-implicit-templates -Iinclude/stl -Iinclude/shim -Iinclude"
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
 
+# Original C++ runtime units contain exception landing pads and unwind records.
+[compilers."ee-gcc2.96-exceptions"]
+dir = "~/.local/share/gt4/ee-gcc2.96"
+command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fexceptions -Iinclude"
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
+
+# The runtime uses EH landing pads and the later assembler's unaligned loads.
+[compilers."ee-gcc2.96-exceptions-as2004"]
+dir = "~/.local/share/gt4/ee-gcc2.96"
+command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fexceptions -Iinclude\""
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
+needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
+
 [model]
 # Facts given to the model with every function: the compiler's habits (shared by every game built
 # with it) and this game's own idioms.
@@ -89,6 +102,13 @@ needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/d
 [compilers."ee-gcc2.96-as2004"]
 dir = "~/.local/share/gt4/ee-gcc2.96"
 command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -Iinclude\""
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
+needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
+
+# The C libraries also use the later assembler with strict aliasing disabled.
+[compilers."ee-gcc2.96-nsa-as2004"]
+dir = "~/.local/share/gt4/ee-gcc2.96"
+command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -Iinclude\""
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
 needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
 

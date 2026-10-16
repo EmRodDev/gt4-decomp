@@ -27,7 +27,7 @@
    the executable file might be covered by the GNU General Public License. */
 
 #ifdef __GNUC__
-#pragma implementation
+
 #endif
 #define _STREAM_COMPAT
 /*  This is part of libio/iostream, providing -*- C++ -*- input/output.

@@ -73,14 +73,15 @@ class Spec:
 
     @property
     def mapped(self):
-        if self.mapped_kind == "key":
+        if self.mapped_kind in ("key", "set"):
             return self.key
         if self.mapped_kind == "ctor":
             return f"Val_{self.ctor:08X}"
         return f"Pod{self.mapped_size}_{self.tf or self.at:08X}"  # one name per tree
 
     def describe(self):
-        return (f"map<{self.key}, {self.mapped}> node {self.node_size:#x}"
+        container = f"set<{self.key}>" if self.mapped_kind == "set" else f"map<{self.key}, {self.mapped}>"
+        return (f"{container} node {self.node_size:#x}"
                 + (f" type_info func_{self.tf:08X}" if self.tf else f" allocator func_{self.alloc:08X}")
                 + (f" dtor func_{self.dtor:08X}" if self.dtor else ""))
 
@@ -89,7 +90,16 @@ class Spec:
 # one member: {address of that member: Spec}; `stl.py try ADDR` starts from it like from an _M_insert.
 # map<HSymID, HValue> (type string t13_Rb_tree_node1Zt4pair2ZC6HSymIDZ6HValue): node 0x18, the value's
 # copy constructor func_00323B48 and destructor func_00323B60, from its _M_copy and _M_erase.
-KNOWN_TREES = {0x5EEB70: Spec("HSymID", 0x18, 0x5EFEA0, 0x326750, "ctor", 4, ctor=0x323B48, dtor=0x323B60, at=0x5EEB70)}
+KNOWN_TREES = {
+    0x5EEB70: Spec("HSymID", 0x18, 0x5EFEA0, 0x326750, "ctor", 4,
+                    ctor=0x323B48, dtor=0x323B60, at=0x5EEB70),
+    # RTTI names the node's only value as HSymID; its comparisons are unsigned.
+    0x5DE030: Spec("HSymID", 0x14, 0x5DEAC8, 0x326750, "set", 0, at=0x5DE030),
+    # Plain-allocator maps: unsigned 32-bit keys and one opaque mapped word.
+    # Distinct mapped types keep their separately placed template symbols distinct.
+    0x60CB20: Spec("unsigned int", 0x18, None, 0x575E60, "pod", 4, at=0x60CB20),
+    0x60D000: Spec("unsigned int", 0x18, None, 0x575E60, "pod", 4, at=0x60D000),
+}
 KNOWN_ANCHORS = {0x5EEB70: "_M_copy"}
 
 
@@ -152,8 +162,11 @@ def deduce(addr):
 # ---------------------------------------------------------------- the source
 
 def key_source(name):
+    if name in ("unsigned int", "int"):
+        return ""
     if name in POD_KEYS:
-        return (f"struct {name} {{\n    int w[{POD_KEYS[name] // 4}];\n"
+        word = "unsigned int" if name == "HSymID" else "int"
+        return (f"struct {name} {{\n    {word} w[{POD_KEYS[name] // 4}];\n"
                 f"    bool operator<(const {name} &o) const {{ return w[0] < o.w[0]; }}\n}};\n")
     compare, (_, clone, free, heap) = next((c, k) for c, k in KEYS.items() if k[0] == name)
     if free == PLAIN_FREE:  # the second allocator's string: free(rep), declared with the allocator
@@ -207,7 +220,7 @@ struct {name} {{
 
 
 def mapped_source(spec):
-    if spec.mapped_kind == "key":
+    if spec.mapped_kind in ("key", "set"):
         return ""
     if spec.mapped_kind == "pod":
         return f"struct {spec.mapped} {{\n    int w[{spec.mapped_size // 4}];\n}};\n"
@@ -240,9 +253,11 @@ def source(spec, member):
         allocate = f"(T *)func_{spec.alloc:08X}(0x10, n * sizeof(T))"
         deallocate = f"func_{free:08X}(p)"
         tag = ""
+    value_type = spec.key if spec.mapped_kind == "set" else f"pair<const {spec.key}, {spec.mapped}>"
+    extractor = "_Identity" if spec.mapped_kind == "set" else "_Select1st"
     text = f"""/* compiler: {COMPILER} */
 /* SGI STL (include/stl/stl_tree.h) instantiated by tools/stl.py:
-   _Rb_tree<{spec.key}, pair<const {spec.key}, {spec.mapped}>, _Select1st, less<{spec.key}>, GameAlloc>::{name} */
+   _Rb_tree<{spec.key}, {value_type}, {extractor}, less<{spec.key}>, GameAlloc>::{name} */
 #include <stl_tree.h>
 
 {alloc_decl}
@@ -287,11 +302,11 @@ public:
 }};
 
 typedef {spec.key} Key;
-typedef pair<const {spec.key}, {spec.mapped}> Value;
+typedef {value_type} Value;
 typedef _Rb_tree_node<Value> Node;
 {tag}
 
-typedef _Rb_tree<Key, Value, _Select1st<Value>, less<Key>, GameAlloc<Value> > Tree;
+typedef _Rb_tree<Key, Value, {extractor}<Value>, less<Key>, GameAlloc<Value> > Tree;
 
 {decl}
 """

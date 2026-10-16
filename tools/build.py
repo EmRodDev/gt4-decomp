@@ -43,7 +43,7 @@ IMAGE = f"{project.BASENAME}.elf"
 SYMBOL = symbols.GENERIC  # the generic names; symbols.address_of resolves the real names too
 # Sections a compiled function may bring along without changing the image.
 HARMLESS = {".text", ".reginfo", ".mdebug", ".mdebug.eabi64", ".comment", ".pdr", ".gnu.attributes",
-            ".note.GNU-stack", ".eh_frame", ".gcc_except_table"}
+            ".note.GNU-stack", ".eh_frame"}
 
 
 # gcc 2.96 puts a local symbol for .eh_frame after the globals, which modern ld rejects; the image
@@ -87,9 +87,74 @@ def elf_section(path, name):
     return b""
 
 
-def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr):
-    """{function address: original address of its object's .rodata} for the objects whose
-    references to their own .rodata all agree on one place, holding the same bytes."""
+def record_source_coverage(status, objects, function_sizes):
+    """Record whole functions supplied by verified source groups, including ones
+    without a separate source file. A failed parent never confers coverage."""
+    status = dict(status)
+    for address, state in list(status.items()):
+        if state.startswith("linked as part of func_"):
+            status[address] = "covering source did not link"
+    ranges = sorted((address, address + size) for address, size in objects.items()
+                    if status.get(address) == "linked")
+    index = 0
+    for address, size in sorted(function_sizes.items()):
+        while index < len(ranges) and ranges[index][1] <= address:
+            index += 1
+        if index >= len(ranges):
+            break
+        start, end = ranges[index]
+        if start < address and address + size <= end:
+            status[address] = f"linked as part of func_{start:08X}"
+    return status
+
+
+def select_source_objects(parsed, sources, text_end, section_places, resolve=symbols.address_of):
+    """Choose nonoverlapping source objects after their data has been verified.
+
+    Data placement is independent of code coverage: an invalid group leaves its
+    following standalone sources eligible. Cached objects absent from sources do
+    not participate, including sources excluded by licence.
+    """
+    status, objects, undefined = {}, {}, set()
+    starts = sorted(sources) + [text_end]
+    covered_until, covering = 0, None
+    for addr in starts[:-1]:
+        if addr < covered_until:
+            status[addr] = f"linked as part of func_{covering:08X}"
+            continue
+        p = parsed.get(addr)
+        if p is None or ".text" not in p["sections"]:
+            status[addr] = "does not compile"
+            continue
+        size = p["sections"][".text"]
+        extra = {k for k, v in p["sections"].items()
+                 if v and k not in HARMLESS and not k.startswith(".rel") and not k.endswith("tab")}
+        unsupported = extra - section_places.keys()
+        unplaced = {k for k in extra - unsupported if addr not in section_places[k]}
+        bad_syms = [s for s in p["undefined"] if resolve(s) is None]
+        if unsupported:
+            status[addr] = "brings its own data: " + ", ".join(sorted(unsupported))
+        elif unplaced:
+            status[addr] = ("brings its own data: " + ", ".join(sorted(unplaced))
+                            + " (its place in the original could not be confirmed)")
+        elif bad_syms:
+            status[addr] = "references unnamed-address symbols: " + ", ".join(bad_syms[:3])
+        elif addr + size > text_end:
+            status[addr] = f"too long ({size} bytes, room for {text_end - addr})"
+        else:
+            # A group may replace subsequent source starts, but may not overlap
+            # an object already selected. Its relocated bytes are checked below.
+            objects[addr] = size
+            undefined.update(p["undefined"])
+            status[addr] = "linked"
+            covered_until, covering = addr + size, addr
+    return status, objects, undefined
+
+
+def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr, section=".rodata"):
+    """Place a data section only when all original code references agree on its base
+    and every relocated byte equals the original loaded data. Supports constants,
+    switch tables and GCC exception tables; unknown relocations reject placement."""
     if not addrs:
         return {}
     local = os.path.join(OUT, "robj")
@@ -102,7 +167,7 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr):
     # table) can be resolved here; any other kind leaves the object out.
     rodata_relocs = {}
     dump = wsl(f'cd "{to_wsl(local)}" && for f in {names}; do echo "@ $f"; '
-               f'mips-linux-gnu-objdump -r -j .rodata "$f" 2>/dev/null | grep -E "^[0-9a-f]{{8}} " || true; done\n')
+               f'mips-linux-gnu-objdump -r -j {section} "$f" 2>/dev/null | grep -E "^[0-9a-f]{{8}} " || true; done\n')
     cur = None
     for line in dump.splitlines():
         if line.startswith("@ "):
@@ -119,7 +184,7 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr):
     for addr in addrs:
         path = os.path.join(local, f"func_{addr:08X}.o")
         blob, srelocs, _ = match.read_object(path, want_symbols=True)
-        rodata = elf_section(path, ".rodata")
+        rodata = elf_section(path, section)
         if rodata_relocs.get(addr):
             # A jump table: each word is the function's own address plus the addend stored in place.
             words = bytearray(rodata)
@@ -137,9 +202,9 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr):
             continue
         for n, off in enumerate(offs):
             rtype, sym = srelocs[off][0], srelocs[off][1]
-            if sym != ".rodata" or rtype != match.R_MIPS_HI16:
+            if sym != section or rtype != match.R_MIPS_HI16:
                 continue
-            lo = next((o for o in offs[n + 1:] if srelocs[o][1] == ".rodata" and srelocs[o][0] == match.R_MIPS_LO16), None)
+            lo = next((o for o in offs[n + 1:] if srelocs[o][1] == section and srelocs[o][0] == match.R_MIPS_LO16), None)
             if lo is None:
                 bases.add(None)
                 continue
@@ -330,85 +395,39 @@ cd "$d/src"
 """ + "".join(loops)).strip(), flush=True)
     if a.compile_only:
         return
-    info = wsl(f"""
-cd "{WSL_DIR}/obj"
-for o in func_*.o; do
-  echo "@ $o"; mips-linux-gnu-readelf -SW "$o" | awk '$1 ~ /^\\[/ && $2 ~ /^\\./ {{print "S", $2, $6}} $1 ~ /^\\[/ && $3 ~ /^\\./ {{print "S", $3, $7}}'
-  mips-linux-gnu-nm -u "$o" | awk '{{print "U", $2}}'
-done
-""")
+    # Read the same ELF section/symbol metadata directly. This avoids tens of
+    # thousands of readelf/nm subprocesses on every proof; the listing also
+    # excludes cached objects that are outside this build's selected sources.
+    info = wsl(f'"{to_wsl(sys.executable)}" "{to_wsl(os.path.join(ROOT, "tools", "object_info.py"))}" '
+               f'--directory "{WSL_DIR}/obj" --listing "{to_wsl(expected)}"\n')
+    parsed = {int(address): value for address, value in json.loads(info).items()}
 
-    # 2. Decide, per function, whether its object can go into the image.
-    status, objects = {}, {}
-    cur = None
-    parsed = {}
-    for line in info.splitlines():
-        if line.startswith("@ "):
-            cur = int(line[7:15], 16)
-            parsed[cur] = {"sections": {}, "undefined": []}
-        elif line.startswith("S ") and cur is not None:
-            _, name, size = line.split()
-            if name.startswith(".gnu.linkonce.t."):  # a template instantiation (tools/stl.py) is code
-                name = ".text"
-            parsed[cur]["sections"][name] = parsed[cur]["sections"].get(name, 0) + int(size, 16)
-        elif line.startswith("U ") and cur is not None:
-            parsed[cur]["undefined"].append(line.split()[1])
-    undefined = set()
-    rodata_candidates = []
-    # An object may cover the functions after its own (a source defining two); it only has to stop
-    # before the next function that has a source of its own. The byte comparison settles the rest.
-    src_starts = sorted(sources) + [text_addr + text_size]
-    covered_until, covering = 0, None
-    for i, addr in enumerate(src_starts[:-1]):
-        p = parsed.get(addr)
-        if addr < covered_until:
-            status[addr] = f"linked as part of func_{covering:08X}"
-            continue
-        nxt = src_starts[i + 1]
-        # A source that also defines the functions after it (e.g. a copy glued to its neighbour)
-        # takes their place if it ends exactly where a later source starts.
-        if p and ".text" in p["sections"] and p["sections"][".text"] > nxt - addr:
-            end = addr + p["sections"][".text"]
-            later = [s for s in src_starts if addr < s]
-            nxt = next(s for s in later if s >= end)
-        if p is None or ".text" not in p["sections"]:
-            status[addr] = "does not compile"
-            continue
-        extra = {k: v for k, v in p["sections"].items()
-                 if v and k not in HARMLESS and not k.startswith(".rel") and not k.endswith("tab")}
-        bad_syms = [s for s in p["undefined"] if symbols.address_of(s) is None]
-        if set(extra) == {".rodata"}:  # constants or a jump table (.rel.rodata): place_rodata checks both
-            rodata_candidates.append(addr)
-        if extra and addr not in rodata_candidates:
-            status[addr] = "brings its own data: " + ", ".join(sorted(extra))
-        elif bad_syms:
-            status[addr] = "references unnamed-address symbols: " + ", ".join(bad_syms[:3])
-        elif p["sections"][".text"] > nxt - addr:
-            status[addr] = f"too long ({p['sections']['.text']} bytes, room for {nxt - addr})"
-        else:
-            objects[addr] = p["sections"][".text"]
-            undefined.update(p["undefined"])
-            status[addr] = "linked"
-            covered_until, covering = addr + p["sections"][".text"], addr
-
-    # 2b. Objects with their own constants (.rodata): the original's instructions say where those
-    # constants live, so the object's .rodata goes exactly there, if its bytes are the original's.
-    rodata_at = place_rodata([a for a in rodata_candidates if a in objects], data_addr,
-                             elf[data_off:data_off + data_size], elf[text_off:text_off + text_size], text_addr)
-    for addr in rodata_candidates:
-        if addr in objects and addr not in rodata_at:
-            del objects[addr]
-            status[addr] = "brings its own data: .rodata (its place in the original could not be confirmed)"
+    # Validate each current source's data before selecting covering groups. A
+    # rejected parent must not suppress usable standalone sources that follow it.
+    data_candidates = {".rodata": [], ".gcc_except_table": []}
+    for addr in sources:
+        for section in data_candidates:
+            if parsed.get(addr, {}).get("sections", {}).get(section):
+                data_candidates[section].append(addr)
+    section_places = {
+        section: place_rodata(candidates, data_addr,
+                              elf[data_off:data_off + data_size],
+                              elf[text_off:text_off + text_size], text_addr, section=section)
+        for section, candidates in data_candidates.items()
+    }
+    status, objects, undefined = select_source_objects(
+        parsed, sources, text_addr + text_size, section_places)
+    placements = [(addr, section, base)
+                  for section, placed in section_places.items()
+                  for addr, base in placed.items() if addr in objects]
     data_plan, shared, end = [], [], data_addr
-    for addr, base in sorted(rodata_at.items(), key=lambda kv: kv[1]):
+    for addr, section, base in sorted(placements, key=lambda item: item[2]):
         if base < end:
-            # Overlaps one already placed: functions of one unit share a constant pool in the
-            # original. place_rodata checked these bytes are the original's at that address, so the
-            # section is only located there (NOLOAD) for its references; the image keeps the bytes.
-            shared.append((addr, base))
+            # Sharing is safe only after the independent original-byte check.
+            shared.append((addr, section, base))
             continue
-        data_plan.append((addr, base))
-        end = base + parsed[addr]["sections"][".rodata"]
+        data_plan.append((addr, section, base))
+        end = base + parsed[addr]["sections"][section]
     placed_rodata = len(data_plan)
 
     # 3. Linker script: objects at their addresses, the original's bytes in between.
@@ -444,13 +463,13 @@ done
             asm += incbin(cur, end - cur)
     # Data: the original's bytes, with each placed .rodata in between at its address.
     data_body, pos = [], data_addr
-    for addr, base in data_plan:
+    for addr, section, base in data_plan:
         if base > pos:
             asm += [f'.section .data.g{pos:08x}, "aw"',
                     f'.incbin "data.bin", 0x{pos - data_addr:x}, 0x{base - pos:x}']
             data_body.append(f"    gaps.o(.data.g{pos:08x})")
-        data_body.append(f"    obj/func_{addr:08X}.o(.rodata)")
-        pos = base + parsed[addr]["sections"][".rodata"]
+        data_body.append(f"    obj/func_{addr:08X}.o({section})")
+        pos = base + parsed[addr]["sections"][section]
     asm += [f'.section .data.g{pos:08x}, "aw"',
             f'.incbin "data.bin", 0x{pos - data_addr:x}, 0x{data_addr + data_size - pos:x}']
     data_body.append(f"    gaps.o(.data.g{pos:08x})")
@@ -482,8 +501,8 @@ done
     ld = ("\n".join(syms) + "\nSECTIONS\n{\n"
           f"  .text 0x{text_addr:x} : SUBALIGN(4)\n  {{\n" + "\n".join(body) + "\n  }\n"
           f"  .data 0x{data_addr:x} : SUBALIGN(1)\n  {{\n" + "\n".join(data_body) + "\n  }\n"
-          + "".join(f"  .shared_rodata_{a_:08x} 0x{b_:x} (NOLOAD) : {{ obj/func_{a_:08X}.o(.rodata) }}\n"
-                    for a_, b_ in shared) +
+          + "".join(f"  .shared_{section.lstrip('.')}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ obj/func_{a_:08X}.o({section}) }}\n"
+                    for a_, section, b_ in shared) +
           "  /DISCARD/ : { *(.reginfo) *(.mdebug*) *(.comment) *(.pdr) *(.eh_frame) *(.gcc_except_table) *(*) }\n}\n")
     open(os.path.join(OUT, "link.ld"), "w", newline="\n").write(ld)
 
@@ -542,8 +561,20 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
     data_ok = built_data == orig_data
     sha = lambda b: hashlib.sha1(b).hexdigest()
 
+    function_sizes = {}
+    with open(match.FUNCTIONS) as inventory_file:
+        for row in csv.DictReader(inventory_file):
+            address, span = int(row["address"], 16), int(row["max_size"])
+            if text_addr <= address and address + span <= text_addr + len(orig_text):
+                function_sizes[address] = 4 * len(match.trim_padding(
+                    match.words_at(text_addr, orig_text, address, span)))
+    status = record_source_coverage(status, objects, function_sizes)
     linked_bytes = sum(objects[a] for a in objects if status[a] == "linked")
-    data_sizes = {f"{a:08x}": parsed[a]["sections"][".rodata"] for a, _ in data_plan if status[a] == "linked"}
+    data_sizes = {}
+    for addr, section, _ in data_plan:
+        if status[addr] == "linked":
+            key = f"{addr:08x}"
+            data_sizes[key] = data_sizes.get(key, 0) + parsed[addr]["sections"][section]
     commit, dirty = git_state()
     # Provenance first: when this build was made and the exact tree it proves, so a report built
     # from it (tools/report.py, publish_progress.py) can say what it describes and refuse a stale
@@ -558,7 +589,11 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
               "linked_code_bytes": linked_bytes, "code_bytes": text_size,
               "sizes": {f"{a:08x}": s for a, s in sorted(objects.items())},
               "data_bytes": data_size, "data_from_source": sum(data_sizes.values()),
-              "data_sizes": {k: v for k, v in sorted(data_sizes.items())}}
+              "data_sizes": {k: v for k, v in sorted(data_sizes.items())},
+              "data_sections": [{"function": f"{addr:08x}", "section": section,
+                                 "address": f"{base:08x}",
+                                 "size": parsed[addr]["sections"][section]}
+                                for addr, section, base in placements if status[addr] == "linked"]}
     json.dump(report, open(os.path.join(OUT, "report.json"), "w"), indent=1)
 
     counts = {}
@@ -566,7 +601,7 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
         key = s.split(":")[0].split(" (")[0]
         counts[key] = counts.get(key, 0) + 1
     print(f".text {'OK' if text_ok else 'DIFFERS'}  sha1 {sha(built_text)} (original {sha(orig_text)})")
-    print(f".data {'OK' if data_ok else 'DIFFERS'} ({placed_rodata} functions' constants placed from source, "
+    print(f".data {'OK' if data_ok else 'DIFFERS'} ({placed_rodata} data sections placed from source, "
           f"{sum(data_sizes.values())} bytes)")
     for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
         print(f"  {v:5d}  {k}")

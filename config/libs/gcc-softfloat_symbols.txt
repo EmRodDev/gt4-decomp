@@ -1,0 +1,15 @@
+/* Public GCC softfloat symbols learned from original instructions. */
+__fpcmp_parts_d = 0x005be3e8; // type:func
+__fpcmp_parts_f = 0x005bdf58; // type:func
+__make_dp = 0x005be508; // type:func
+__make_fp = 0x005be1a0; // type:func
+__pack_d = 0x005be250; // type:func
+__pack_f = 0x005bd900; // type:func
+__unpack_f = 0x005bd9b8; // type:func
+_fpadd_parts = 0x005bda18; // type:func
+fpadd = 0x005bdc18; // type:func
+fpcmp = 0x005be020; // type:func
+fpmul = 0x005bdcd8; // type:func
+fpsub = 0x005bdc70; // type:func
+fptosi = 0x005be120; // type:func
+fptoui = 0x005be1d0; // type:func

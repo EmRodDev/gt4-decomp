@@ -1,4 +1,5 @@
-/* libio 2.8.0 (gcc 2000-10-03 snapshot): _IO_switch_to_main_get_area from genops.c, placed at 0x00594598 by
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/* libio 2.8.0 (gcc 2000-10-03 snapshot): _IO_switch_to_main_get_area, _IO_switch_to_backup_area, _IO_switch_to_get_mode, _IO_free_backup_area, func_00594700, save_for_backup, func_005948D8, func_005949A8 from genops.c, placed at 0x00594598 by
  * tools/libmatch.py. Third-party code, see THIRD_PARTY.md for its license and origin.
  * licence: libio (GPLv2 with the libio special exception, see THIRD_PARTY.md) */
 #define Balloc func_00597910
@@ -9,6 +10,7 @@
 #define _IO_adjust_column _IO_adjust_column
 #define _IO_cleanup _IO_cleanup
 #define _IO_cleanup_registration_needed _IO_cleanup_registration_needed
+#define _IO_close func_0055A730
 #define _IO_default_doallocate _IO_default_doallocate
 #define _IO_default_finish _IO_default_finish
 #define _IO_default_pbackfail _IO_default_pbackfail
@@ -47,13 +49,14 @@
 #define _IO_flush_all _IO_flush_all
 #define _IO_flush_all_linebuffered _IO_flush_all_linebuffered
 #define _IO_free_backup_area _IO_free_backup_area
-#define _IO_getc _IO_getc
+#define _IO_fstat func_00560548
 #define _IO_getline_info _IO_getline_info
 #define _IO_init _IO_init
 #define _IO_init_marker _IO_init_marker
 #define _IO_least_marker _IO_least_marker
 #define _IO_link_in _IO_link_in
 #define _IO_list_all _IO_list_all
+#define _IO_lseek func_00559900
 #define _IO_marker_delta _IO_marker_delta
 #define _IO_marker_difference _IO_marker_difference
 #define _IO_outfloat _IO_outfloat
@@ -81,11 +84,14 @@
 #define _IO_unbuffer_all _IO_unbuffer_all
 #define _IO_ungetc _IO_ungetc
 #define _IO_unsave_markers _IO_unsave_markers
+#define _IO_vfprintf func_0057B850
 #define _IO_vfscanf _IO_vfscanf
+#define _IO_write func_00553C08
 #define func_005942D0 func_005942D0
 #define streambuf__structor_0 streambuf__structor_0
 #define func_00597558 func_00597558
 #define func_005C1628 D_005C1628
+#define __builtin_vec_new D_005A2E68
 #define func_005A3130 D_005A3130
 #define func_00592D58 func_00592D58
 #define func_00592860 func_00592860
@@ -113,7 +119,7 @@
 #define func_00591D28 func_00591D28
 #define func_00591F68 func_00591F68
 #define func_00596420 func_00596420
-#define __static_initialization_and_destruction_0 func_00594400
+#define __static_initialization_and_destruction_0 func_0054F670
 #define func_005949A8 func_005949A8
 #define func_005948D8 func_005948D8
 #define _ctype_ _ctype_
@@ -121,6 +127,7 @@
 #define func_00593DE0 func_00593DE0
 #define func_00593150 func_00593150
 #define func_00593DC0 func_00593DC0
+#define abort D_0038DC18
 #define func_00597358 func_00597358
 #define b2d func_00598480
 #define blanks D_006CFD00
@@ -133,7 +140,11 @@
 #define func_00597400 func_00597400
 #define cmp func_005981C0
 #define cout cout
+#define current_line__13func_parsebuf func_005F6660
+#define current_line__8parsebuf func_00559B28
 #define d2b func_005985C8
+#define default_alloc__FUi func_005BC5D8
+#define default_free__FPv func_005BC698
 #define func_00594358 func_00594358
 #define func_00594340 func_00594340
 #define func_00593370 func_00593370
@@ -148,7 +159,8 @@
 #define func_00593080 func_00593080
 #define func_00594250 func_00594250
 #define func_00594268 func_00594268
-#define free free
+#define form__9streambufPCce func_0057DA20
+#define free D_00575DA0
 #define func_00593E18 func_00593E18
 #define fseek fseek
 #define fstat fstat
@@ -169,16 +181,18 @@
 #define func_00593298 func_00593298
 #define lseek lseek
 #define lshift func_00598058
-#define malloc malloc
-#define memcpy memcpy
-#define memmove memmove
+#define malloc D_00575DC8
+#define memcpy D_005A4724
+#define memmove D_005A47D4
 #define multadd func_00597A70
 #define open open
 #define func_00597340 func_00597340
+#define overflow__12strstreambufi func_00615850
 #define filebuf__virtual_01 filebuf__virtual_01
 #define stdiobuf__virtual_01 stdiobuf__virtual_01
 #define streambuf__virtual_01 streambuf__virtual_01
 #define filebuf__virtual_04 filebuf__virtual_04
+#define pcount__12strstreambuf func_006157A0
 #define func_00591458 func_00591458
 #define pow5mult func_00597FE0
 #define read read
@@ -189,6 +203,7 @@
 #define save_for_backup func_00594728
 #define func_00593B08 func_00593B08
 #define func_00593CE0 func_00593CE0
+#define seek_in_line__8parsebufi func_005F6E30
 #define func_00591760 func_00591760
 #define func_005917B0 func_005917B0
 #define func_00594370 func_00594370
@@ -200,6 +215,7 @@
 #define func_00594240 func_00594240
 #define func_005940C8 func_005940C8
 #define filebuf__virtual_09 filebuf__virtual_09
+#define setbuf__8parsebufPci func_005540A8
 #define streambuf__virtual_09 streambuf__virtual_09
 #define func_005935E0 func_005935E0
 #define func_00591330 func_00591330
@@ -226,6 +242,7 @@
 #define filebuf__virtual_13 filebuf__virtual_13
 #define stdiobuf__virtual_13 stdiobuf__virtual_13
 #define streambuf__virtual_13 streambuf__virtual_13
+#define tell_in_line__8parsebuf func_00559AD8
 #define func_00591800 func_00591800
 #define func_00592FC8 func_00592FC8
 #define filebuf__virtual_03 filebuf__virtual_03
@@ -236,6 +253,7 @@
 #define func_005932A0 func_005932A0
 #define func_00594388 func_00594388
 #define use_stdiobuf use_stdiobuf
+#define vform__9streambufPCcPv func_0057C920
 #define func_00593BF0 func_00593BF0
 #define func_00593CA0 func_00593CA0
 #define func_005943C0 func_005943C0
@@ -327,8 +345,6 @@ extern "C" {
 
 #ifndef __SYS_CONFIG_H__
 #define __SYS_CONFIG_H__
-
-/* exceptions first */
 
 #if defined(__H8300__) || defined(__H8500__) || defined (__H8300H__) ||  defined(__W65__) || defined (__H8300S__)
 #define _FLOAT_ARG float
@@ -461,7 +477,7 @@ typedef unsigned int __uint32_t;
 #define __IMPORT
 #endif
 
-#endif 
+#endif
 
 #ifdef __STDC__
 #define _HAVE_STDC
@@ -492,7 +508,7 @@ typedef unsigned int __uint32_t;
 #ifndef _PARAMS
 #define _PARAMS(paramlist)		paramlist
 #endif
-#else	
+#else
 #define	_PTR		char *
 #define	_AND		;
 #define	_NOARGS
@@ -517,11 +533,11 @@ typedef unsigned int __uint32_t;
 #define _ATTRIBUTE(attrs)
 #endif
 
-#endif 
+#endif
 
 /*
  * time.h
- * 
+ *
  * Struct and function declarations for dealing with time.
  */
 
@@ -541,13 +557,13 @@ extern "C" {
 
 #if defined(__rtems__)
 #define _CLOCKS_PER_SEC_  sysconf(_SC_CLK_TCK)
-#else  /* !__rtems__ */
+#else
 #if defined(__arm__) || defined(__thumb__)
 #define _CLOCKS_PER_SEC_ 100
 #endif
-#endif 
+#endif
 
-#endif	
+#endif
 
 #ifndef _CLOCKS_PER_SEC_
 #define _CLOCKS_PER_SEC_ 1000
@@ -571,7 +587,7 @@ typedef unsigned int wint_t;
 #define offsetof(t, m) ((size_t)&((t *)0)->m)
 #endif
 
-/* unified sys/types.h: 
+/* unified sys/types.h:
    start with sef's sysvi386 version.
    merge go32 version -- a few ifdefs.
    h8300hms, h8300xray, and sysvnecv70 disagree on the following types:
@@ -583,8 +599,8 @@ typedef unsigned int wint_t;
    typedef int mode_t;
    typedef int caddr_t;
 
-   however, these aren't "reasonable" values, the sysvi386 ones make far 
-   more sense, and should work sufficiently well (in particular, h8300 
+   however, these aren't "reasonable" values, the sysvi386 ones make far
+   more sense, and should work sufficiently well (in particular, h8300
    doesn't have a stat, and the necv70 doesn't matter.) -- eichin
  */
 
@@ -604,12 +620,12 @@ typedef unsigned int wint_t;
 #ifndef	_MACHTYPES_H_
 #define	_MACHTYPES_H_
 
-#define	_CLOCK_T_	unsigned long		/* clock() */
-#define	_TIME_T_	long			
+#define	_CLOCK_T_	unsigned long
+#define	_TIME_T_	long
 #define _CLOCKID_T_ 	unsigned long
 #define _TIMER_T_   	unsigned long
 
-#endif	
+#endif
 
 #ifdef __GNUC__
 #define _ST_INT32 __attribute__ ((__mode__ (__SI__)))
@@ -629,9 +645,9 @@ typedef	unsigned int	u_int;
 typedef	unsigned long	u_long;
 #endif
 
-typedef	unsigned short	ushort;		
-typedef	unsigned int	uint;		
-# endif	
+typedef	unsigned short	ushort;
+typedef	unsigned int	uint;
+# endif
 
 #ifndef __clock_t_defined
 typedef _CLOCK_T_ clock_t;
@@ -643,13 +659,13 @@ typedef _TIME_T_ time_t;
 #define __time_t_defined
 
 struct timespec {
-  time_t  tv_sec;   
-  long    tv_nsec;  
+  time_t  tv_sec;
+  long    tv_nsec;
 };
 
 struct itimerspec {
-  struct timespec  it_interval;  
-  struct timespec  it_value;     
+  struct timespec  it_interval;
+  struct timespec  it_value;
 };
 #endif
 
@@ -681,7 +697,7 @@ typedef unsigned int u_int32_t;
 typedef long long int64_t;
 typedef unsigned long long u_int64_t;
 typedef int32_t register_t;
-#endif 
+#endif
 
 #if defined(__rtems__)
 
@@ -711,20 +727,20 @@ typedef unsigned short mode_t;
 #else
 typedef unsigned int mode_t _ST_INT32;
 #endif
-#endif 
+#endif
 
 typedef unsigned short nlink_t;
 
 # if ! defined (_POSIX_SOURCE) && ! defined (_WINSOCK_H)
 
-#  define	NBBY	8		
+#  define	NBBY	8
 
 #  ifndef	FD_SETSIZE
 #	define	FD_SETSIZE	64
 #  endif
 
 typedef	long	fd_mask;
-#  define	NFDBITS	(sizeof (fd_mask) * NBBY)	
+#  define	NFDBITS	(sizeof (fd_mask) * NBBY)
 #  ifndef	howmany
 #	define	howmany(x,y)	(((x)+((y)-1))/(y))
 #  endif
@@ -745,7 +761,7 @@ typedef	struct _types_fd_set {
        *__tmp++ = 0; \
 }))
 
-# endif	
+# endif
 
 #undef __MS_types__
 #undef _ST_INT32
@@ -845,7 +861,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #if defined(_POSIX_THREADS)
 
@@ -942,7 +958,7 @@ off_t   _EXFUN(lseek, (int __fildes, off_t __offset, int __whence ));
 long    _EXFUN(pathconf, (const char *__path, int __name ));
 int     _EXFUN(pause, (void ));
 int     _EXFUN(pipe, (int __fildes[2] ));
-/* POSIX 1003.1b-1993 says read() returns ssize_t */
+
 #if defined(__rtems__)
 ssize_t	_EXFUN(read, (int __fildes, void *__buf, size_t __nbyte ));
 #else
@@ -978,7 +994,7 @@ int     _EXFUN(write, (int __fildes, const void *__buf, size_t __nbyte ));
 
 #ifndef        _POSIX_SOURCE
 pid_t   _EXFUN(vfork, (void ));
-#endif 
+#endif
 
 int     _EXFUN(_close, (int __fildes ));
 pid_t   _EXFUN(_fork, (void ));
@@ -1015,9 +1031,9 @@ int     _EXFUN(symlink, (const char *__name1, const char *__name2));
 
 #include <sys/features.h>
 
-#define STDIN_FILENO    0       
-#define STDOUT_FILENO   1       
-#define STDERR_FILENO   2       
+#define STDIN_FILENO    0
+#define STDOUT_FILENO   1
+#define STDERR_FILENO   2
 
 long _EXFUN(sysconf, (int __name));
 
@@ -1026,7 +1042,7 @@ long _EXFUN(sysconf, (int __name));
 #define _SC_CLK_TCK                 2
 #define _SC_NGROUPS_MAX             3
 #define _SC_OPEN_MAX                4
-  
+
 #define _SC_JOB_CONTROL             5
 #define _SC_SAVED_IDS               6
 #define _SC_VERSION                 7
@@ -1083,7 +1099,7 @@ long _EXFUN(sysconf, (int __name));
 #define _SC_GETPW_R_SIZE_MAX             51
 #define _SC_LOGIN_NAME_MAX               52
 #define _SC_THREAD_DESTRUCTOR_ITERATIONS 53
-  
+
 # define	_PC_LINK_MAX	        0
 # define	_PC_MAX_CANON	        1
 # define	_PC_MAX_INPUT	        2
@@ -1106,7 +1122,275 @@ long _EXFUN(sysconf, (int __name));
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
+
+/* unified sys/types.h:
+   start with sef's sysvi386 version.
+   merge go32 version -- a few ifdefs.
+   h8300hms, h8300xray, and sysvnecv70 disagree on the following types:
+
+   typedef int gid_t;
+   typedef int uid_t;
+   typedef int dev_t;
+   typedef int ino_t;
+   typedef int mode_t;
+   typedef int caddr_t;
+
+   however, these aren't "reasonable" values, the sysvi386 ones make far
+   more sense, and should work sufficiently well (in particular, h8300
+   doesn't have a stat, and the necv70 doesn't matter.) -- eichin
+ */
+
+#ifndef _SYS_TYPES_H
+#define _SYS_TYPES_H
+
+#if defined (_WIN32) || defined (__CYGWIN__)
+#define __MS_types__
+#endif
+
+#ifdef __i386__
+#if defined (GO32) || defined (__MSDOS__)
+#define __MS_types__
+#endif
+#endif
+
+# include <stddef.h>
+# include <machine/types.h>
+
+#ifdef __GNUC__
+#define _ST_INT32 __attribute__ ((__mode__ (__SI__)))
+#else
+#define _ST_INT32
+#endif
+
+# ifndef	_POSIX_SOURCE
+
+#  define	physadr		physadr_t
+#  define	quad		quad_t
+
+#ifndef _WINSOCK_H
+typedef	unsigned char	u_char;
+typedef	unsigned short	u_short;
+typedef	unsigned int	u_int;
+typedef	unsigned long	u_long;
+#endif
+
+typedef	unsigned short	ushort;
+typedef	unsigned int	uint;
+# endif
+
+#ifndef __clock_t_defined
+typedef _CLOCK_T_ clock_t;
+#define __clock_t_defined
+#endif
+
+#ifndef __time_t_defined
+typedef _TIME_T_ time_t;
+#define __time_t_defined
+
+struct timespec {
+  time_t  tv_sec;
+  long    tv_nsec;
+};
+
+struct itimerspec {
+  struct timespec  it_interval;
+  struct timespec  it_value;
+};
+#endif
+
+typedef	long	daddr_t;
+typedef	char *	caddr_t;
+
+#ifdef __MS_types__
+typedef	unsigned long	ino_t;
+#else
+#ifdef __sparc__
+typedef	unsigned long	ino_t;
+#else
+typedef	unsigned short	ino_t;
+#endif
+#endif
+
+#ifdef __MS_types__
+typedef unsigned long vm_offset_t;
+typedef unsigned long vm_size_t;
+
+#define __BIT_TYPES_DEFINED__
+
+typedef char int8_t;
+typedef unsigned char u_int8_t;
+typedef short int16_t;
+typedef unsigned short u_int16_t;
+typedef int int32_t;
+typedef unsigned int u_int32_t;
+typedef long long int64_t;
+typedef unsigned long long u_int64_t;
+typedef int32_t register_t;
+#endif
+
+#if defined(__rtems__)
+
+typedef unsigned long long dev_t;
+#else
+typedef	short	dev_t;
+#endif
+
+typedef	long	off_t;
+
+typedef	unsigned short	uid_t;
+typedef	unsigned short	gid_t;
+typedef int pid_t;
+typedef	long key_t;
+typedef long ssize_t;
+
+#ifdef __MS_types__
+typedef	char *	addr_t;
+typedef int mode_t;
+#else
+#if defined (__sparc__) && !defined (__sparc_v9__)
+#ifdef __svr4__
+typedef unsigned long mode_t;
+#else
+typedef unsigned short mode_t;
+#endif
+#else
+typedef unsigned int mode_t _ST_INT32;
+#endif
+#endif
+
+typedef unsigned short nlink_t;
+
+# if ! defined (_POSIX_SOURCE) && ! defined (_WINSOCK_H)
+
+#  define	NBBY	8
+
+#  ifndef	FD_SETSIZE
+#	define	FD_SETSIZE	64
+#  endif
+
+typedef	long	fd_mask;
+#  define	NFDBITS	(sizeof (fd_mask) * NBBY)
+#  ifndef	howmany
+#	define	howmany(x,y)	(((x)+((y)-1))/(y))
+#  endif
+
+typedef	struct _types_fd_set {
+	fd_mask	fds_bits[howmany(FD_SETSIZE, NFDBITS)];
+} _types_fd_set;
+
+#define fd_set _types_fd_set
+
+#  define	FD_SET(n, p)	((p)->fds_bits[(n)/NFDBITS] |= (1L << ((n) % NFDBITS)))
+#  define	FD_CLR(n, p)	((p)->fds_bits[(n)/NFDBITS] &= ~(1L << ((n) % NFDBITS)))
+#  define	FD_ISSET(n, p)	((p)->fds_bits[(n)/NFDBITS] & (1L << ((n) % NFDBITS)))
+#  define	FD_ZERO(p)	(__extension__ (void)({ \
+     size_t __i; \
+     char *__tmp = (char *)p; \
+     for (__i = 0; __i < sizeof (*(p)); ++__i) \
+       *__tmp++ = 0; \
+}))
+
+# endif
+
+#undef __MS_types__
+#undef _ST_INT32
+
+#if defined(__rtems__)
+
+#ifndef __clockid_t_defined
+typedef _CLOCKID_T_ clockid_t;
+#define __clockid_t_defined
+#endif
+
+#ifndef __timer_t_defined
+typedef _TIMER_T_ timer_t;
+#define __timer_t_defined
+#endif
+
+#include <sys/features.h>
+
+#if defined(_POSIX_THREADS)
+
+#include <sys/sched.h>
+
+typedef __uint32_t pthread_t;
+
+#define PTHREAD_SCOPE_PROCESS 0
+#define PTHREAD_SCOPE_SYSTEM  1
+
+#define PTHREAD_INHERIT_SCHED  1
+
+#define PTHREAD_EXPLICIT_SCHED 2
+
+#define PTHREAD_CREATE_DETACHED 0
+#define PTHREAD_CREATE_JOINABLE  1
+
+typedef struct {
+  int is_initialized;
+  void *stackaddr;
+  int stacksize;
+  int contentionscope;
+  int inheritsched;
+  int schedpolicy;
+  struct sched_param schedparam;
+
+#if defined(_POSIX_THREAD_CPUTIME)
+  int  cputime_clock_allowed;
+#endif
+  int  detachstate;
+
+} pthread_attr_t;
+
+#if defined(_POSIX_THREAD_PROCESS_SHARED)
+
+#define PTHREAD_PROCESS_PRIVATE 0
+#define PTHREAD_PROCESS_SHARED  1
+
+#endif
+
+#if defined(_POSIX_THREAD_PRIO_PROTECT)
+
+#define PTHREAD_PRIO_NONE    0
+#define PTHREAD_PRIO_INHERIT 1
+#define PTHREAD_PRIO_PROTECT 2
+#endif
+
+typedef __uint32_t pthread_mutex_t;
+
+typedef struct {
+  int   is_initialized;
+#if defined(_POSIX_THREAD_PROCESS_SHARED)
+  int   process_shared;
+#endif
+#if defined(_POSIX_THREAD_PRIO_PROTECT)
+  int   prio_ceiling;
+  int   protocol;
+#endif
+  int   recursive;
+} pthread_mutexattr_t;
+
+typedef __uint32_t pthread_cond_t;
+
+typedef struct {
+  int   is_initialized;
+#if defined(_POSIX_THREAD_PROCESS_SHARED)
+  int   process_shared;
+#endif
+} pthread_condattr_t;
+
+typedef __uint32_t pthread_key_t;
+
+typedef struct {
+  int   is_initialized;
+  int   init_executed;
+} pthread_once_t;
+
+#endif
+
+#endif
+
+#endif
 
 /* time.h -- An implementation of the standard Unix <sys/time.h> file.
    Written by Geoffrey Noer <noer@cygnus.com>
@@ -1135,9 +1419,9 @@ struct timezone {
 
 #ifdef __CYGWIN__
 #include <sys/select.h>
-#endif 
+#endif
 
-#endif 
+#endif
 
 #define ITIMER_REAL     0
 #define ITIMER_VIRTUAL  1
@@ -1187,43 +1471,42 @@ int _EXFUN(setitimer, (int __which, const struct itimerval *__value,
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #define SCHED_OTHER    0
 #define SCHED_FIFO     1
 #define SCHED_RR       2
 
 #if defined(_POSIX_SPORADIC_SERVER)
-#define SCHED_SPORADIC 3 
+#define SCHED_SPORADIC 3
 #endif
 
 struct sched_param {
-  int sched_priority;           
+  int sched_priority;
 
 #if defined(_POSIX_SPORADIC_SERVER)
-  int ss_low_priority;          
-                                
-  struct timespec ss_replenish_period; 
-                                
-  struct timespec ss_initial_budget;   
+  int ss_low_priority;
+
+  struct timespec ss_replenish_period;
+
+  struct timespec ss_initial_budget;
 #endif
 };
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif
 
-typedef __uint32_t pthread_t;            
+typedef __uint32_t pthread_t;
 
 #define PTHREAD_SCOPE_PROCESS 0
 #define PTHREAD_SCOPE_SYSTEM  1
 
-#define PTHREAD_INHERIT_SCHED  1      
-                                      
-                                      
-#define PTHREAD_EXPLICIT_SCHED 2      
+#define PTHREAD_INHERIT_SCHED  1
+
+#define PTHREAD_EXPLICIT_SCHED 2
 
 #define PTHREAD_CREATE_DETACHED 0
 #define PTHREAD_CREATE_JOINABLE  1
@@ -1237,9 +1520,8 @@ typedef struct {
   int schedpolicy;
   struct sched_param schedparam;
 
-  
 #if defined(_POSIX_THREAD_CPUTIME)
-  int  cputime_clock_allowed;  
+  int  cputime_clock_allowed;
 #endif
   int  detachstate;
 
@@ -1247,10 +1529,9 @@ typedef struct {
 
 #if defined(_POSIX_THREAD_PROCESS_SHARED)
 
-#define PTHREAD_PROCESS_PRIVATE 0 
-#define PTHREAD_PROCESS_SHARED  1 
-                                  
-                                  
+#define PTHREAD_PROCESS_PRIVATE 0
+#define PTHREAD_PROCESS_SHARED  1
+
 #endif
 
 #if defined(_POSIX_THREAD_PRIO_PROTECT)
@@ -1260,12 +1541,12 @@ typedef struct {
 #define PTHREAD_PRIO_PROTECT 2
 #endif
 
-typedef __uint32_t pthread_mutex_t;      
+typedef __uint32_t pthread_mutex_t;
 
 typedef struct {
   int   is_initialized;
 #if defined(_POSIX_THREAD_PROCESS_SHARED)
-  int   process_shared;  
+  int   process_shared;
 #endif
 #if defined(_POSIX_THREAD_PRIO_PROTECT)
   int   prio_ceiling;
@@ -1274,27 +1555,27 @@ typedef struct {
   int   recursive;
 } pthread_mutexattr_t;
 
-typedef __uint32_t pthread_cond_t;       
+typedef __uint32_t pthread_cond_t;
 
 typedef struct {
   int   is_initialized;
 #if defined(_POSIX_THREAD_PROCESS_SHARED)
-  int   process_shared;       
+  int   process_shared;
 #endif
-} pthread_condattr_t;         
+} pthread_condattr_t;
 
-typedef __uint32_t pthread_key_t;        
+typedef __uint32_t pthread_key_t;
 
 typedef struct {
-  int   is_initialized;  
-  int   init_executed;   
-} pthread_once_t;       
+  int   is_initialized;
+  int   init_executed;
+} pthread_once_t;
 
-#endif 
+#endif
 
-#endif  
+#endif
 
-#endif	
+#endif
 
 struct tm
 {
@@ -1335,7 +1616,92 @@ extern __IMPORT char *_tzname[2];
 char *_EXFUN(timezone, (void));
 void _EXFUN(tzset, (void));
 #endif
-#endif 
+#endif
+
+/*
+ *  Written by Joel Sherrill <joel@OARcorp.com>.
+ *
+ *  COPYRIGHT (c) 1989-2000.
+ *
+ *  On-Line Applications Research Corporation (OAR).
+ *
+ *  Permission to use, copy, modify, and distribute this software for any
+ *  purpose without fee is hereby granted, provided that this entire notice
+ *  is included in all copies of any software which is or includes a copy
+ *  or modification of this software.
+ *
+ *  THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ *  WARRANTY.  IN PARTICULAR,  THE AUTHOR MAKES NO REPRESENTATION
+ *  OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY OF THIS
+ *  SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ *
+ *  $Id: features.h,v 1.1 2000/12/12 01:24:08 jjohnstn Exp $
+ */
+
+#ifndef _SYS_FEATURES_H
+#define _SYS_FEATURES_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __rtems__
+#define _POSIX_JOB_CONTROL     		1
+#define _POSIX_SAVED_IDS       		1
+#define _POSIX_VERSION			199309L
+#define _POSIX_ASYNCHRONOUS_IO		1
+#define _POSIX_FSYNC			1
+#define _POSIX_MAPPED_FILES		1
+#define _POSIX_MEMLOCK			1
+#define _POSIX_MEMLOCK_RANGE		1
+#define _POSIX_MEMORY_PROTECTION	1
+#define _POSIX_MESSAGE_PASSING		1
+#define _POSIX_PRIORITIZED_IO		1
+#define _POSIX_PRIORITY_SCHEDULING	1
+#define _POSIX_REALTIME_SIGNALS		1
+#define _POSIX_SEMAPHORES		1
+#define _POSIX_SHARED_MEMORY_OBJECTS	1
+#define _POSIX_SYNCHRONIZED_IO		1
+#define _POSIX_TIMERS			1
+
+#define _POSIX_THREADS				1
+#define _POSIX_THREAD_ATTR_STACKADDR		1
+#define _POSIX_THREAD_ATTR_STACKSIZE		1
+#define _POSIX_THREAD_PRIORITY_SCHEDULING	1
+#define _POSIX_THREAD_PRIO_INHERIT		1
+#define _POSIX_THREAD_PRIO_PROTECT		1
+#define _POSIX_THREAD_PROCESS_SHARED		1
+#define _POSIX_THREAD_SAFE_FUNCTIONS		1
+
+#define _POSIX_SPAWN				1
+#define _POSIX_TIMEOUTS				1
+#define _POSIX_CPUTIME				1
+#define _POSIX_THREAD_CPUTIME			1
+#define _POSIX_SPORADIC_SERVER			1
+#define _POSIX_THREAD_SPORADIC_SERVER		1
+#define _POSIX_DEVICE_CONTROL			1
+#define _POSIX_DEVCTL_DIRECTION			1
+#define _POSIX_INTERRUPT_CONTROL		1
+#define _POSIX_ADVISORY_INFO			1
+
+#endif
+
+#ifdef __svr4__
+# define _POSIX_JOB_CONTROL     1
+# define _POSIX_SAVED_IDS       1
+# define _POSIX_VERSION 199009L
+#endif
+
+#ifdef __CYGWIN32__
+# define _POSIX_JOB_CONTROL	1
+# define _POSIX_SAVED_IDS	0
+# define _POSIX_VERSION		199009L
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #if defined(_POSIX_TIMERS)
 
@@ -1364,55 +1730,51 @@ typedef unsigned long sigset_t;
 
 #if defined(_POSIX_REALTIME_SIGNALS)
 
-#define SIGEV_NONE   1  
-                        
-#define SIGEV_SIGNAL 2  
-                        
-                        
-#define SIGEV_THREAD 3  
-                        
+#define SIGEV_NONE   1
+
+#define SIGEV_SIGNAL 2
+
+#define SIGEV_THREAD 3
 
 union sigval {
-  int    sival_int;    
-  void  *sival_ptr;    
+  int    sival_int;
+  void  *sival_ptr;
 };
 
 struct sigevent {
-  int              sigev_notify;               
-  int              sigev_signo;                
-  union sigval     sigev_value;                
+  int              sigev_notify;
+  int              sigev_signo;
+  union sigval     sigev_value;
 
 #if defined(_POSIX_THREADS)
   void           (*sigev_notify_function)( union sigval );
-                                               
-  pthread_attr_t  *sigev_notify_attributes;    
+
+  pthread_attr_t  *sigev_notify_attributes;
 #endif
 };
 
-#define SI_USER    1    
-#define SI_QUEUE   2    
-#define SI_TIMER   3    
-#define SI_ASYNCIO 4    
-#define SI_MESGQ   5    
+#define SI_USER    1
+#define SI_QUEUE   2
+#define SI_TIMER   3
+#define SI_ASYNCIO 4
+#define SI_MESGQ   5
 
 typedef struct {
-  int          si_signo;    
-  int          si_code;     
-  union sigval si_value;    
+  int          si_signo;
+  int          si_code;
+  union sigval si_value;
 } siginfo_t;
 #endif
 
-#define SA_NOCLDSTOP 1   
-#define SA_SIGINFO   2   
-                         
+#define SA_NOCLDSTOP 1
+#define SA_SIGINFO   2
 
 struct sigaction {
-  int         sa_flags;       
-  sigset_t    sa_mask;        
-                              
-                              
+  int         sa_flags;
+  sigset_t    sa_mask;
+
   union {
-    void      (*_handler)();  
+    void      (*_handler)();
 #if defined(_POSIX_REALTIME_SIGNALS)
     void      (*_sigaction)( int, siginfo_t *, void * );
 #endif
@@ -1426,20 +1788,20 @@ struct sigaction {
 
 #else
 
-struct sigaction 
+struct sigaction
 {
 	void (*sa_handler)(int);
 	sigset_t sa_mask;
 	int sa_flags;
 };
 
-#define SA_NOCLDSTOP 1  
+#define SA_NOCLDSTOP 1
 
-#endif 
+#endif
 
-#define SIG_SETMASK 0	
-#define SIG_BLOCK 1	
-#define SIG_UNBLOCK 2	
+#define SIG_SETMASK 0
+#define SIG_BLOCK 1
+#define SIG_UNBLOCK 2
 
 #define sigaddset(what,sig) (*(what) |= (1<<(sig)))
 #define sigemptyset(what)   (*(what) = 0)
@@ -1479,9 +1841,9 @@ int _EXFUN(sigwait, (const sigset_t *set, int *sig));
 
 int _EXFUN(sigqueue, (pid_t pid, int signo, const union sigval value));
 
-#endif 
+#endif
 
-#endif 
+#endif
 
 #if defined(___AM29K__)
 
@@ -1516,62 +1878,62 @@ int _EXFUN(sigqueue, (pid_t pid, int signo, const union sigval value));
 #define SIGUSR1	18
 #define SIGUSR2	19
 #define NSIG    20
-#elif defined(__CYGWIN__)	
-#define	SIGHUP	1	
-#define	SIGINT	2	
-#define	SIGQUIT	3	
-#define	SIGILL	4	
-#define	SIGTRAP	5	
-#define	SIGABRT 6	
-#define	SIGEMT	7	
-#define	SIGFPE	8	
-#define	SIGKILL	9	
-#define	SIGBUS	10	
-#define	SIGSEGV	11	
-#define	SIGSYS	12	
-#define	SIGPIPE	13	
-#define	SIGALRM	14	
-#define	SIGTERM	15	
-#define	SIGURG	16	
-#define	SIGSTOP	17	
-#define	SIGTSTP	18	
-#define	SIGCONT	19	
-#define	SIGCHLD	20	
-#define	SIGCLD	20	
-#define	SIGTTIN	21	
-#define	SIGTTOU	22	
-#define	SIGIO	23	
-#define	SIGPOLL	SIGIO	
-#define	SIGXCPU	24	
-#define	SIGXFSZ	25	
-#define	SIGVTALRM 26	
-#define	SIGPROF	27	
-#define	SIGWINCH 28	
-#define	SIGLOST 29	
-#define	SIGUSR1 30	
-#define	SIGUSR2 31	
-#define NSIG	32      
+#elif defined(__CYGWIN__)
+#define	SIGHUP	1
+#define	SIGINT	2
+#define	SIGQUIT	3
+#define	SIGILL	4
+#define	SIGTRAP	5
+#define	SIGABRT 6
+#define	SIGEMT	7
+#define	SIGFPE	8
+#define	SIGKILL	9
+#define	SIGBUS	10
+#define	SIGSEGV	11
+#define	SIGSYS	12
+#define	SIGPIPE	13
+#define	SIGALRM	14
+#define	SIGTERM	15
+#define	SIGURG	16
+#define	SIGSTOP	17
+#define	SIGTSTP	18
+#define	SIGCONT	19
+#define	SIGCHLD	20
+#define	SIGCLD	20
+#define	SIGTTIN	21
+#define	SIGTTOU	22
+#define	SIGIO	23
+#define	SIGPOLL	SIGIO
+#define	SIGXCPU	24
+#define	SIGXFSZ	25
+#define	SIGVTALRM 26
+#define	SIGPROF	27
+#define	SIGWINCH 28
+#define	SIGLOST 29
+#define	SIGUSR1 30
+#define	SIGUSR2 31
+#define NSIG	32
 #else
-#define	SIGHUP	1	
-#define	SIGINT	2	
-#define	SIGQUIT	3	
-#define	SIGILL	4	
-#define	SIGTRAP	5	
-#define	SIGIOT	6	
-#define	SIGABRT 6	
-#define	SIGEMT	7	
-#define	SIGFPE	8	
-#define	SIGKILL	9	
-#define	SIGBUS	10	
-#define	SIGSEGV	11	
-#define	SIGSYS	12	
-#define	SIGPIPE	13	
-#define	SIGALRM	14	
-#define	SIGTERM	15	
+#define	SIGHUP	1
+#define	SIGINT	2
+#define	SIGQUIT	3
+#define	SIGILL	4
+#define	SIGTRAP	5
+#define	SIGIOT	6
+#define	SIGABRT 6
+#define	SIGEMT	7
+#define	SIGFPE	8
+#define	SIGKILL	9
+#define	SIGBUS	10
+#define	SIGSEGV	11
+#define	SIGSYS	12
+#define	SIGPIPE	13
+#define	SIGALRM	14
+#define	SIGTERM	15
 
 #if defined(__rtems__)
-#define SIGUSR1 16  
-#define SIGUSR2 17  
+#define SIGUSR1 16
+#define SIGUSR2 17
 
 #define __SIGFIRSTNOTRT SIGHUP
 #define __SIGLASTNOTRT  SIGUSR2
@@ -1586,51 +1948,51 @@ int _EXFUN(sigqueue, (pid_t pid, int signo, const union sigval value));
 #define SIGCLD	18
 #define	SIGPWR	19
 #define SIGWINCH 20
-#define	SIGPOLL	22	
-#define	SIGSTOP	23	
-#define	SIGTSTP	24	
-#define	SIGCONT	25	
-#define	SIGTTIN	26	
-#define	SIGTTOU	27	
-#define NSIG	28	
+#define	SIGPOLL	22
+#define	SIGSTOP	23
+#define	SIGTSTP	24
+#define	SIGCONT	25
+#define	SIGTTIN	26
+#define	SIGTTOU	27
+#define NSIG	28
 #else
-#define	SIGURG	16	
-#define	SIGSTOP	17	
-#define	SIGTSTP	18	
-#define	SIGCONT	19	
-#define	SIGCHLD	20	
-#define	SIGCLD	20	
-#define	SIGTTIN	21	
-#define	SIGTTOU	22	
-#define	SIGIO	23	
-#define	SIGPOLL	SIGIO	
-#define	SIGXCPU	24	
-#define	SIGXFSZ	25	
-#define	SIGVTALRM 26	
-#define	SIGPROF	27	
-#define	SIGWINCH 28	
-#define	SIGLOST 29	
-#define	SIGUSR1 30	
-#define	SIGUSR2 31	
-#define NSIG	32      
+#define	SIGURG	16
+#define	SIGSTOP	17
+#define	SIGTSTP	18
+#define	SIGCONT	19
+#define	SIGCHLD	20
+#define	SIGCLD	20
+#define	SIGTTIN	21
+#define	SIGTTOU	22
+#define	SIGIO	23
+#define	SIGPOLL	SIGIO
+#define	SIGXCPU	24
+#define	SIGXFSZ	25
+#define	SIGVTALRM 26
+#define	SIGPROF	27
+#define	SIGWINCH 28
+#define	SIGLOST 29
+#define	SIGUSR1 30
+#define	SIGUSR2 31
+#define NSIG	32
 #endif
 #endif
 
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
-typedef int	sig_atomic_t;		/* Atomic entity type (ANSI) */
+typedef int	sig_atomic_t;
 
 #if defined(__STDC__) || defined(__cplusplus)
-#define SIG_DFL ((void (*)(int))0)	
-#define SIG_IGN ((void (*)(int))1)	
-#define SIG_ERR ((void (*)(int))-1)	
+#define SIG_DFL ((void (*)(int))0)
+#define SIG_IGN ((void (*)(int))1)
+#define SIG_ERR ((void (*)(int))-1)
 #else
-#define SIG_DFL ((void (*)())0)		
-#define SIG_IGN ((void (*)())1)		
-#define SIG_ERR ((void (*)())-1)	
+#define SIG_DFL ((void (*)())0)
+#define SIG_IGN ((void (*)())1)
+#define SIG_ERR ((void (*)())-1)
 #endif
 
 typedef void (*_sig_func_ptr) (int);
@@ -1648,7 +2010,7 @@ int	_EXFUN(raise, (int));
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 int _EXFUN(clock_settime, (clockid_t clock_id, const struct timespec *tp));
 int _EXFUN(clock_gettime, (clockid_t clock_id, struct timespec *tp));
@@ -1667,17 +2029,14 @@ int _EXFUN(timer_getoverrun, (timer_t timerid));
 
 int _EXFUN(nanosleep, (const struct timespec  *rqtp, struct timespec *rmtp));
 
-#endif 
+#endif
 
-#define CLOCK_ENABLED  1  
-#define CLOCK_DISABLED 0  
+#define CLOCK_ENABLED  1
+#define CLOCK_DISABLED 0
 
-#define CLOCK_ALLOWED    1 
-                           
-                           
-#define CLOCK_DISALLOWED 0 
-                           
-                           
+#define CLOCK_ALLOWED    1
+
+#define CLOCK_DISALLOWED 0
 
 #define CLOCK_REALTIME (clockid_t)1
 
@@ -1699,19 +2058,19 @@ int _EXFUN(nanosleep, (const struct timespec  *rqtp, struct timespec *rmtp));
 
 int _EXFUN(clock_getcpuclockid, (pid_t pid, clockid_t *clock_id));
 
-#endif 
+#endif
 
 #if defined(_POSIX_CPUTIME) || defined(_POSIX_THREAD_CPUTIME)
 
 int _EXFUN(clock_setenable_attr, (clockid_t clock_id, int attr));
 int _EXFUN(clock_getenable_attr, (clockid_t clock_id, int *attr));
 
-#endif 
+#endif
 
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #ifndef __Long
 #if __LONG_MAX__ == 2147483647L
@@ -1728,26 +2087,26 @@ typedef unsigned __Long __ULong;
 typedef __uint32_t __ULong;
 #endif
 
-struct _glue 
+struct _glue
 {
   struct _glue *_next;
   int _niobs;
   struct __sFILE *_iobs;
 };
 
-struct _Bigint 
+struct _Bigint
 {
   struct _Bigint *_next;
   int _k, _maxwds, _sign, _wds;
   __ULong _x[1];
 };
 
-#define	_ATEXIT_SIZE 32	
+#define	_ATEXIT_SIZE 32
 
 struct _atexit {
-	struct	_atexit *_next;			
-	int	_ind;				
-	void	(*_fns[_ATEXIT_SIZE])(void);	
+	struct	_atexit *_next;
+	int	_ind;
+	void	(*_fns[_ATEXIT_SIZE])(void);
 };
 
 struct __sbuf {
@@ -1755,72 +2114,62 @@ struct __sbuf {
 	int	_size;
 };
 
-typedef long _fpos_t;		
-				
+typedef long _fpos_t;
 
 struct __sFILE {
-  unsigned char *_p;	
-  int	_r;		
-  int	_w;		
-  short	_flags;		
-  short	_file;		
-  struct __sbuf _bf;	
-  int	_lbfsize;	
+  unsigned char *_p;
+  int	_r;
+  int	_w;
+  short	_flags;
+  short	_file;
+  struct __sbuf _bf;
+  int	_lbfsize;
 
-  
-  _PTR	_cookie;	
+  _PTR	_cookie;
 
   int	_EXFUN((*_read),(_PTR _cookie, char *_buf, int _n));
   int	_EXFUN((*_write),(_PTR _cookie, const char *_buf, int _n));
   _fpos_t _EXFUN((*_seek),(_PTR _cookie, _fpos_t _offset, int _whence));
   int	_EXFUN((*_close),(_PTR _cookie));
 
-  
-  struct __sbuf _ub;	
-  unsigned char *_up;	
-  int	_ur;		
+  struct __sbuf _ub;
+  unsigned char *_up;
+  int	_ur;
 
-  
-  unsigned char _ubuf[3];	
-  unsigned char _nbuf[1];	
+  unsigned char _ubuf[3];
+  unsigned char _nbuf[1];
 
-  
-  struct __sbuf _lb;	
+  struct __sbuf _lb;
 
-  
-  int	_blksize;	
-  int	_offset;	
+  int	_blksize;
+  int	_offset;
 
   struct _reent *_data;
 };
 
 struct _reent
 {
-  
-  int _errno;
 
-  
+  int _errno;
 
   struct __sFILE *_stdin, *_stdout, *_stderr;
 
-  int  _inc;			
+  int  _inc;
   char _emergency[25];
- 
-  int _current_category;	
+
+  int _current_category;
   _CONST char *_current_locale;
 
-  int __sdidinit;		
+  int __sdidinit;
 
   void _EXFUN((*__cleanup),(struct _reent *));
 
-  
   struct _Bigint *_result;
   int _result_k;
   struct _Bigint *_p5s;
   struct _Bigint **_freelist;
 
-  
-  int _cvtlen;			
+  int _cvtlen;
   char *_cvtbuf;
 
   union
@@ -1835,9 +2184,7 @@ struct _reent
           __extension__ unsigned long long _rand_next;
 
         } _reent;
-  
 
- 
       struct
         {
 #define _N_LISTS 30
@@ -1846,17 +2193,13 @@ struct _reent
         } _unused;
     } _new;
 
-  
-  struct _atexit *_atexit;	
-  struct _atexit _atexit0;	
+  struct _atexit *_atexit;
+  struct _atexit _atexit0;
 
-  
   void (**(_sig_func))(int);
 
-  
-
-  struct _glue __sglue;			
-  struct __sFILE __sf[3];		
+  struct _glue __sglue;
+  struct __sFILE __sf[3];
 };
 
 #define _REENT_INIT(var) \
@@ -1879,7 +2222,7 @@ void _reclaim_reent _PARAMS ((struct _reent *));
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #ifndef _REENT_ONLY
 #define errno (*func_005A3130())
@@ -1891,133 +2234,133 @@ extern __IMPORT int _sys_nerr;
 
 #define __errno_r(ptr) ((ptr)->_errno)
 
-#define	EPERM 1		
-#define	ENOENT 2	
-#define	ESRCH 3		
-#define	EINTR 4		
-#define	EIO 5		
-#define	ENXIO 6		
-#define	E2BIG 7		
-#define	ENOEXEC 8	
-#define	EBADF 9		
-#define	ECHILD 10	
-#define	EAGAIN 11	
-#define	ENOMEM 12	
-#define	EACCES 13	
-#define	EFAULT 14	
-#define	ENOTBLK 15	
-#define	EBUSY 16	
-#define	EEXIST 17	
-#define	EXDEV 18	
-#define	ENODEV 19	
-#define	ENOTDIR 20	
-#define	EISDIR 21	
-#define	EINVAL 22	
-#define	ENFILE 23	
-#define	EMFILE 24	
-#define	ENOTTY 25	
-#define	ETXTBSY 26	
-#define	EFBIG 27	
-#define	ENOSPC 28	
-#define	ESPIPE 29	
-#define	EROFS 30	
-#define	EMLINK 31	
-#define	EPIPE 32	
-#define	EDOM 33		
-#define	ERANGE 34	
-#define	ENOMSG 35	
-#define	EIDRM 36	
-#define	ECHRNG 37	
-#define	EL2NSYNC 38	
-#define	EL3HLT 39	
-#define	EL3RST 40	
-#define	ELNRNG 41	
-#define	EUNATCH 42	
-#define	ENOCSI 43	
-#define	EL2HLT 44	
-#define	EDEADLK 45	
-#define	ENOLCK 46	
-#define EBADE 50	
-#define EBADR 51	
-#define EXFULL 52	
-#define ENOANO 53	
-#define EBADRQC 54	
-#define EBADSLT 55	
-#define EDEADLOCK 56	
-#define EBFONT 57	
-#define ENOSTR 60	
-#define ENODATA 61	
-#define ETIME 62	
-#define ENOSR 63	
-#define ENONET 64	
-#define ENOPKG 65	
-#define EREMOTE 66	
-#define ENOLINK 67	
-#define EADV 68		
-#define ESRMNT 69	
-#define	ECOMM 70	
-#define EPROTO 71	
-#define	EMULTIHOP 74	
-#define	ELBIN 75	
-#define	EDOTDOT 76	
-#define EBADMSG 77	
-#define ENOTUNIQ 80	
-#define EBADFD 81	
-#define EREMCHG 82	
-#define ELIBACC 83	
-#define ELIBBAD 84	
-#define ELIBSCN 85	
-#define ELIBMAX 86	
-#define ELIBEXEC 87	
-#define ENOSYS 88	
-#define ENMFILE 89      
-#define ENOTEMPTY 90	
-#define ENAMETOOLONG 91	
-#define ELOOP 92	
-#define EOPNOTSUPP 95	
-#define EPFNOSUPPORT 96 
-#define ECONNRESET 104  
-#define ENOBUFS 105	
-#define EAFNOSUPPORT 106 
-#define EPROTOTYPE 107	
-#define ENOTSOCK 108	
-#define ENOPROTOOPT 109	
-#define ESHUTDOWN 110	
-#define ECONNREFUSED 111	
-#define EADDRINUSE 112		
-#define ECONNABORTED 113	
-#define ENETUNREACH 114		
-#define ENETDOWN 115		
-#define ETIMEDOUT 116		
-#define EHOSTDOWN 117		
-#define EHOSTUNREACH 118	
-#define EINPROGRESS 119		
-#define EALREADY 120		
-#define EDESTADDRREQ 121	
-#define EMSGSIZE 122		
-#define EPROTONOSUPPORT 123	
-#define ESOCKTNOSUPPORT 124	
-#define EADDRNOTAVAIL 125	
+#define	EPERM 1
+#define	ENOENT 2
+#define	ESRCH 3
+#define	EINTR 4
+#define	EIO 5
+#define	ENXIO 6
+#define	E2BIG 7
+#define	ENOEXEC 8
+#define	EBADF 9
+#define	ECHILD 10
+#define	EAGAIN 11
+#define	ENOMEM 12
+#define	EACCES 13
+#define	EFAULT 14
+#define	ENOTBLK 15
+#define	EBUSY 16
+#define	EEXIST 17
+#define	EXDEV 18
+#define	ENODEV 19
+#define	ENOTDIR 20
+#define	EISDIR 21
+#define	EINVAL 22
+#define	ENFILE 23
+#define	EMFILE 24
+#define	ENOTTY 25
+#define	ETXTBSY 26
+#define	EFBIG 27
+#define	ENOSPC 28
+#define	ESPIPE 29
+#define	EROFS 30
+#define	EMLINK 31
+#define	EPIPE 32
+#define	EDOM 33
+#define	ERANGE 34
+#define	ENOMSG 35
+#define	EIDRM 36
+#define	ECHRNG 37
+#define	EL2NSYNC 38
+#define	EL3HLT 39
+#define	EL3RST 40
+#define	ELNRNG 41
+#define	EUNATCH 42
+#define	ENOCSI 43
+#define	EL2HLT 44
+#define	EDEADLK 45
+#define	ENOLCK 46
+#define EBADE 50
+#define EBADR 51
+#define EXFULL 52
+#define ENOANO 53
+#define EBADRQC 54
+#define EBADSLT 55
+#define EDEADLOCK 56
+#define EBFONT 57
+#define ENOSTR 60
+#define ENODATA 61
+#define ETIME 62
+#define ENOSR 63
+#define ENONET 64
+#define ENOPKG 65
+#define EREMOTE 66
+#define ENOLINK 67
+#define EADV 68
+#define ESRMNT 69
+#define	ECOMM 70
+#define EPROTO 71
+#define	EMULTIHOP 74
+#define	ELBIN 75
+#define	EDOTDOT 76
+#define EBADMSG 77
+#define ENOTUNIQ 80
+#define EBADFD 81
+#define EREMCHG 82
+#define ELIBACC 83
+#define ELIBBAD 84
+#define ELIBSCN 85
+#define ELIBMAX 86
+#define ELIBEXEC 87
+#define ENOSYS 88
+#define ENMFILE 89
+#define ENOTEMPTY 90
+#define ENAMETOOLONG 91
+#define ELOOP 92
+#define EOPNOTSUPP 95
+#define EPFNOSUPPORT 96
+#define ECONNRESET 104
+#define ENOBUFS 105
+#define EAFNOSUPPORT 106
+#define EPROTOTYPE 107
+#define ENOTSOCK 108
+#define ENOPROTOOPT 109
+#define ESHUTDOWN 110
+#define ECONNREFUSED 111
+#define EADDRINUSE 112
+#define ECONNABORTED 113
+#define ENETUNREACH 114
+#define ENETDOWN 115
+#define ETIMEDOUT 116
+#define EHOSTDOWN 117
+#define EHOSTUNREACH 118
+#define EINPROGRESS 119
+#define EALREADY 120
+#define EDESTADDRREQ 121
+#define EMSGSIZE 122
+#define EPROTONOSUPPORT 123
+#define ESOCKTNOSUPPORT 124
+#define EADDRNOTAVAIL 125
 #define ENETRESET 126
-#define EISCONN 127		
-#define ENOTCONN 128		
+#define EISCONN 127
+#define ENOTCONN 128
 #define ETOOMANYREFS 129
 #define EPROCLIM 130
 #define EUSERS 131
 #define EDQUOT 132
 #define ESTALE 133
-#define ENOTSUP 134		
-#define ENOMEDIUM 135   
-#define ENOSHARE 136    
+#define ENOTSUP 134
+#define ENOMEDIUM 135
+#define ENOSHARE 136
 
-#define EWOULDBLOCK EAGAIN	
+#define EWOULDBLOCK EAGAIN
 
-#define __ELASTERROR 2000	
+#define __ELASTERROR 2000
 
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #ifndef __set_errno
 # define __set_errno(Val) errno = (Val)
@@ -2132,7 +2475,7 @@ typedef unsigned int _G_uint64_t __attribute__((__mode__(__DI__)));
 #define _G_CLOG_CONFLICT 0
 #endif
 
-#define _IO_pos_t _G_fpos_t 
+#define _IO_pos_t _G_fpos_t
 #define _IO_fpos_t _G_fpos_t
 #define _IO_size_t _G_size_t
 #define _IO_ssize_t _G_ssize_t
@@ -2167,7 +2510,7 @@ typedef __gnuc_va_list va_list;
 # ifdef __GNUC_VA_LIST
 #  undef _IO_va_list
 #  define _IO_va_list __gnuc_va_list
-# endif 
+# endif
 #endif
 
 #ifndef __P
@@ -2180,7 +2523,7 @@ typedef __gnuc_va_list va_list;
 #   define __P(p) ()
 #  endif
 # endif
-#endif 
+#endif
 
 #ifndef __PMT
 # ifdef __STDC__
@@ -2188,11 +2531,11 @@ typedef __gnuc_va_list va_list;
 # else
 #  define __PMT(p) ()
 # endif
-#endif 
+#endif
 
 #ifndef _PARAMS
 # define _PARAMS(protos) __P(protos)
-#endif 
+#endif
 
 #ifndef __STDC__
 # define const
@@ -2227,20 +2570,20 @@ typedef __gnuc_va_list va_list;
 #define _IOS_NOREPLACE	64
 #define _IOS_BIN	128
 
-#define _IO_MAGIC 0xFBAD0000 
-#define _OLD_STDIO_MAGIC 0xFABC0000 
+#define _IO_MAGIC 0xFBAD0000
+#define _OLD_STDIO_MAGIC 0xFABC0000
 #define _IO_MAGIC_MASK 0xFFFF0000
-#define _IO_USER_BUF 1 
+#define _IO_USER_BUF 1
 #define _IO_UNBUFFERED 2
-#define _IO_NO_READS 4 
-#define _IO_NO_WRITES 8 
+#define _IO_NO_READS 4
+#define _IO_NO_WRITES 8
 #define _IO_EOF_SEEN 0x10
 #define _IO_ERR_SEEN 0x20
-#define _IO_DELETE_DONT_CLOSE 0x40 
-#define _IO_LINKED 0x80 
+#define _IO_DELETE_DONT_CLOSE 0x40
+#define _IO_LINKED 0x80
 #define _IO_IN_BACKUP 0x100
 #define _IO_LINE_BUF 0x200
-#define _IO_TIED_PUT_GET 0x400 
+#define _IO_TIED_PUT_GET 0x400
 #define _IO_CURRENTLY_PUTTING 0x800
 #define _IO_IS_APPENDING 0x1000
 #define _IO_IS_FILEBUF 0x2000
@@ -2295,40 +2638,26 @@ struct _IO_jump_t;  struct _IO_FILE;
 struct _IO_marker {
   struct _IO_marker *_next;
   struct _IO_FILE *_sbuf;
-  
 
-  
   int _pos;
-#if 0
-    void set_streampos(streampos sp) { _spos = sp; }
-    void set_offset(int offset) { _pos = offset; _spos = (streampos)(-2); }
-  public:
-    streammarker(streambuf *sb);
-    ~streammarker();
-    int saving() { return  _spos == -2; }
-    int delta(streammarker&);
-    int delta();
-#endif
 };
 
 struct _IO_FILE {
-  int _flags;		
+  int _flags;
 #define _IO_file_flags _flags
 
-  
-  
-  char* _IO_read_ptr;	
-  char* _IO_read_end;	
-  char* _IO_read_base;	
-  char* _IO_write_base;	
-  char* _IO_write_ptr;	
-  char* _IO_write_end;	
-  char* _IO_buf_base;	
-  char* _IO_buf_end;	
-  
-  char *_IO_save_base; 
-  char *_IO_backup_base;  
-  char *_IO_save_end; 
+  char* _IO_read_ptr;
+  char* _IO_read_end;
+  char* _IO_read_base;
+  char* _IO_write_base;
+  char* _IO_write_ptr;
+  char* _IO_write_end;
+  char* _IO_buf_base;
+  char* _IO_buf_end;
+
+  char *_IO_save_base;
+  char *_IO_backup_base;
+  char *_IO_save_end;
 
   struct _IO_marker *_markers;
 
@@ -2342,20 +2671,18 @@ struct _IO_FILE {
   _IO_off_t _offset;
 #endif
 
-#define __HAVE_COLUMN 
-  
+#define __HAVE_COLUMN
+
   unsigned short _cur_column;
   char _unused;
   char _shortbuf[1];
-
-  
 
 #ifdef _IO_LOCK_T
   _IO_LOCK_T _lock;
 #endif
 #if defined(_G_IO_IO_FILE_VERSION) && _G_IO_IO_FILE_VERSION == 0x20001
   _IO_off64_t _offset;
-  int _unused2[16];	
+  int _unused2[16];
 #endif
 };
 
@@ -2433,12 +2760,12 @@ extern int _IO_ftrylockfile __P ((_IO_FILE *));
 # define _IO_peekc(_fp) _IO_peekc_locked (_fp)
 #else
 # define _IO_peekc(_fp) _IO_peekc_unlocked (_fp)
-# define _IO_flockfile(_fp) 
-# define _IO_funlockfile(_fp) 
-# define _IO_ftrylockfile(_fp) 
-# define _IO_cleanup_region_start(_fct, _fp) 
-# define _IO_cleanup_region_end(_Doit) 
-#endif 
+# define _IO_flockfile(_fp)
+# define _IO_funlockfile(_fp)
+# define _IO_ftrylockfile(_fp)
+# define _IO_cleanup_region_start(_fct, _fp)
+# define _IO_cleanup_region_end(_Doit)
+#endif
 
 extern int _IO_vfscanf __P ((_IO_FILE *, const char *, _IO_va_list, int *));
 extern int _IO_vfprintf __P ((_IO_FILE *, const char *, _IO_va_list));
@@ -2459,10 +2786,7 @@ extern void _IO_free_backup_area __P ((_IO_FILE *));
 }
 #endif
 
-#endif 
-
-/* These emulate stdio functionality, but with a different name
-   (_IO_ungetc instead of ungetc), and using _IO_FILE instead of FILE. */
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -2555,7 +2879,7 @@ extern "C" {
 # define JUMP_INIT_DUMMY JUMP_INIT(dummy, 0)
 #endif
 
-typedef void (*_IO_finish_t) __PMT ((_IO_FILE *, int)); 
+typedef void (*_IO_finish_t) __PMT ((_IO_FILE *, int));
 #define _IO_FINISH(FP) JUMP1 (__finish, FP, 0)
 
 typedef int (*_IO_overflow_t) __PMT ((_IO_FILE *, int));
@@ -2615,7 +2939,7 @@ typedef _IO_off_t (*_IO_seek_t) __PMT ((_IO_FILE *, _IO_off_t, int));
 #endif
 #define _IO_SYSSEEK(FP, OFFSET, MODE) JUMP2 (__seek, FP, OFFSET, MODE)
 
-typedef int (*_IO_close_t) __PMT ((_IO_FILE *)); 
+typedef int (*_IO_close_t) __PMT ((_IO_FILE *));
 #define _IO_SYSCLOSE(FP) JUMP0 (__close, FP)
 
 typedef int (*_IO_stat_t) __PMT ((_IO_FILE *, void *));
@@ -2630,7 +2954,7 @@ typedef void (*_IO_imbue_t) __PMT ((_IO_FILE *, void *));
 #define _IO_IMBUE(FP, LOCALE) JUMP1 (__imbue, FP, LOCALE)
 #endif
 
-#define _IO_CHAR_TYPE char 
+#define _IO_CHAR_TYPE char
 #define _IO_INT_TYPE int
 
 struct _IO_jump_t
@@ -2644,7 +2968,7 @@ struct _IO_jump_t
     JUMP_FIELD(_IO_underflow_t, func_005948D8);
     JUMP_FIELD(_IO_underflow_t, func_005949A8);
     JUMP_FIELD(_IO_pbackfail_t, __pbackfail);
-    
+
     JUMP_FIELD(_IO_xsputn_t, __xsputn);
     JUMP_FIELD(_IO_xsgetn_t, __xsgetn);
     JUMP_FIELD(_IO_seekoff_t, __seekoff);
@@ -2660,10 +2984,6 @@ struct _IO_jump_t
 #if _G_IO_IO_FILE_VERSION == 0x20001
     JUMP_FIELD(_IO_showmanyc_t, __showmanyc);
     JUMP_FIELD(_IO_imbue_t, __imbue);
-#endif
-#if 0
-    get_column;
-    set_column;
 #endif
 };
 
@@ -2846,7 +3166,235 @@ extern void (*_IO_cleanup_registration_needed) __PMT ((void));
 #ifndef _UNISTD_H_
 #define _UNISTD_H_
 
-#endif /* _UNISTD_H_ */
+#ifndef _SYS_UNISTD_H
+#define _SYS_UNISTD_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define __need_size_t
+#define __need_ptrdiff_t
+
+extern char **environ;
+
+void	_EXFUN(_exit, (int __status ) _ATTRIBUTE ((noreturn)));
+
+int	_EXFUN(access,(const char *__path, int __amode ));
+unsigned  _EXFUN(alarm, (unsigned __secs ));
+int     _EXFUN(chdir, (const char *__path ));
+int     _EXFUN(chmod, (const char *__path, mode_t __mode ));
+int     _EXFUN(chown, (const char *__path, uid_t __owner, gid_t __group ));
+#ifdef __CYGWIN__
+int     _EXFUN(chroot, (const char *__path ));
+#endif
+int     _EXFUN(close, (int __fildes ));
+char    _EXFUN(*ctermid, (char *__s ));
+char    _EXFUN(*cuserid, (char *__s ));
+int     _EXFUN(dup, (int __fildes ));
+int     _EXFUN(dup2, (int __fildes, int __fildes2 ));
+int     _EXFUN(execl, (const char *__path, const char *, ... ));
+int     _EXFUN(execle, (const char *__path, const char *, ... ));
+int     _EXFUN(execlp, (const char *__file, const char *, ... ));
+int     _EXFUN(execv, (const char *__path, char * const __argv[] ));
+int     _EXFUN(execve, (const char *__path, char * const __argv[], char * const __envp[] ));
+int     _EXFUN(execvp, (const char *__file, char * const __argv[] ));
+int     _EXFUN(fchmod, (int __fildes, mode_t __mode ));
+int     _EXFUN(fchown, (int __fildes, uid_t __owner, gid_t __group ));
+pid_t   _EXFUN(fork, (void ));
+long    _EXFUN(fpathconf, (int __fd, int __name ));
+int     _EXFUN(fsync, (int __fd));
+char    _EXFUN(*getcwd, (char *__buf, size_t __size ));
+gid_t   _EXFUN(getegid, (void ));
+uid_t   _EXFUN(geteuid, (void ));
+gid_t   _EXFUN(getgid, (void ));
+int     _EXFUN(getgroups, (int __gidsetsize, gid_t __grouplist[] ));
+char    _EXFUN(*getlogin, (void ));
+#if defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+int _EXFUN(getlogin_r, (char *name, size_t namesize) );
+#endif
+char 	_EXFUN(*getpass, (__const char *__prompt));
+size_t  _EXFUN(getpagesize, (void));
+pid_t   _EXFUN(getpgrp, (void ));
+pid_t   _EXFUN(getpid, (void ));
+pid_t   _EXFUN(getppid, (void ));
+uid_t   _EXFUN(getuid, (void ));
+#ifdef __CYGWIN__
+char    _EXFUN(*getwd, (char *__buf ));
+#endif
+int     _EXFUN(isatty, (int __fildes ));
+int     _EXFUN(lchown, (const char *__path, uid_t __owner, gid_t __group ));
+int     _EXFUN(link, (const char *__path1, const char *__path2 ));
+int	_EXFUN(nice, (int __nice_value ));
+off_t   _EXFUN(lseek, (int __fildes, off_t __offset, int __whence ));
+long    _EXFUN(pathconf, (const char *__path, int __name ));
+int     _EXFUN(pause, (void ));
+int     _EXFUN(pipe, (int __fildes[2] ));
+
+#if defined(__rtems__)
+ssize_t	_EXFUN(read, (int __fildes, void *__buf, size_t __nbyte ));
+#else
+int	_EXFUN(read, (int __fildes, void *__buf, size_t __nbyte ));
+#endif
+int     _EXFUN(rmdir, (const char *__path ));
+#if defined(__rtems__)
+void *  _EXFUN(sbrk,  (ptrdiff_t __incr));
+#else
+void *  _EXFUN(sbrk,  (size_t __incr));
+#endif
+#if defined(__CYGWIN__)
+int     _EXFUN(setegid, (gid_t __gid ));
+int     _EXFUN(seteuid, (uid_t __uid ));
+#endif
+int     _EXFUN(setgid, (gid_t __gid ));
+int     _EXFUN(setpgid, (pid_t __pid, pid_t __pgid ));
+pid_t   _EXFUN(setsid, (void ));
+int     _EXFUN(setuid, (uid_t __uid ));
+unsigned _EXFUN(sleep, (unsigned int __seconds ));
+void    _EXFUN(swab, (const void *, void *, ssize_t));
+long    _EXFUN(sysconf, (int __name ));
+pid_t   _EXFUN(tcgetpgrp, (int __fildes ));
+int     _EXFUN(tcsetpgrp, (int __fildes, pid_t __pgrp_id ));
+char    _EXFUN(*ttyname, (int __fildes ));
+int     _EXFUN(unlink, (const char *__path ));
+
+#if defined(__rtems__)
+ssize_t     _EXFUN(write, (int __fildes, const void *__buf, size_t __nbyte ));
+#else
+int     _EXFUN(write, (int __fildes, const void *__buf, size_t __nbyte ));
+#endif
+
+#ifndef        _POSIX_SOURCE
+pid_t   _EXFUN(vfork, (void ));
+#endif
+
+int     _EXFUN(_close, (int __fildes ));
+pid_t   _EXFUN(_fork, (void ));
+pid_t   _EXFUN(_getpid, (void ));
+int     _EXFUN(_link, (const char *__path1, const char *__path2 ));
+off_t   _EXFUN(_lseek, (int __fildes, off_t __offset, int __whence ));
+int     _EXFUN(_read, (int __fildes, void *__buf, size_t __nbyte ));
+void *  _EXFUN(_sbrk,  (size_t __incr));
+int     _EXFUN(_unlink, (const char *__path ));
+int     _EXFUN(_write, (int __fildes, const void *__buf, size_t __nbyte ));
+int     _EXFUN(_execve, (const char *__path, char * const __argv[], char * const __envp[] ));
+
+#if defined(__CYGWIN__) || defined(__rtems__)
+int	_EXFUN(getdtablesize, (void));
+void	_EXFUN(setdtablesize, (int));
+unsigned _EXFUN(usleep, (unsigned int __useconds));
+int     _EXFUN(ftruncate, (int __fd, off_t __length));
+int     _EXFUN(truncate, (const char *, off_t __length));
+int	_EXFUN(gethostname, (char *__name, size_t __len));
+char *	_EXFUN(mktemp, (char *));
+int     _EXFUN(sync, (void));
+int     _EXFUN(readlink, (const char *__path, char *__buf, int __buflen));
+int     _EXFUN(symlink, (const char *__name1, const char *__name2));
+#endif
+
+# define	F_OK	0
+# define	R_OK	4
+# define	W_OK	2
+# define	X_OK	1
+
+# define	SEEK_SET	0
+# define	SEEK_CUR	1
+# define	SEEK_END	2
+
+#define STDIN_FILENO    0
+#define STDOUT_FILENO   1
+#define STDERR_FILENO   2
+
+long _EXFUN(sysconf, (int __name));
+
+#define _SC_ARG_MAX                 0
+#define _SC_CHILD_MAX               1
+#define _SC_CLK_TCK                 2
+#define _SC_NGROUPS_MAX             3
+#define _SC_OPEN_MAX                4
+
+#define _SC_JOB_CONTROL             5
+#define _SC_SAVED_IDS               6
+#define _SC_VERSION                 7
+#define _SC_PAGESIZE                8
+
+#define _SC_NPROCESSORS_CONF        9
+#define _SC_NPROCESSORS_ONLN       10
+#define _SC_PHYS_PAGES             11
+#define _SC_AVPHYS_PAGES           12
+
+#define _SC_MQ_OPEN_MAX            13
+#define _SC_MQ_PRIO_MAX            14
+#define _SC_RTSIG_MAX              15
+#define _SC_SEM_NSEMS_MAX          16
+#define _SC_SEM_VALUE_MAX          17
+#define _SC_SIGQUEUE_MAX           18
+#define _SC_TIMER_MAX              19
+#define _SC_TZNAME_MAX             20
+
+#define _SC_ASYNCHRONOUS_IO        21
+#define _SC_FSYNC                  22
+#define _SC_MAPPED_FILES           23
+#define _SC_MEMLOCK                24
+#define _SC_MEMLOCK_RANGE          25
+#define _SC_MEMORY_PROTECTION      26
+#define _SC_MESSAGE_PASSING        27
+#define _SC_PRIORITIZED_IO         28
+#define _SC_REALTIME_SIGNALS       29
+#define _SC_SEMAPHORES             30
+#define _SC_SHARED_MEMORY_OBJECTS  31
+#define _SC_SYNCHRONIZED_IO        32
+#define _SC_TIMERS                 33
+#define _SC_AIO_LISTIO_MAX         34
+#define _SC_AIO_MAX                35
+#define _SC_AIO_PRIO_DELTA_MAX     36
+#define _SC_DELAYTIMER_MAX         37
+
+#define _SC_THREAD_KEYS_MAX              38
+#define _SC_THREAD_STACK_MIN             39
+#define _SC_THREAD_THREADS_MAX           40
+#define _SC_TTY_NAME_MAX                 41
+
+#define _SC_THREADS                      42
+#define _SC_THREAD_ATTR_STACKADDR        43
+#define _SC_THREAD_ATTR_STACKSIZE        44
+#define _SC_THREAD_PRIORITY_SCHEDULING   45
+#define _SC_THREAD_PRIO_INHERIT          46
+
+#define _SC_THREAD_PRIO_PROTECT          47
+#define _SC_THREAD_PRIO_CEILING          _SC_THREAD_PRIO_PROTECT
+#define _SC_THREAD_PROCESS_SHARED        48
+#define _SC_THREAD_SAFE_FUNCTIONS        49
+#define _SC_GETGR_R_SIZE_MAX             50
+#define _SC_GETPW_R_SIZE_MAX             51
+#define _SC_LOGIN_NAME_MAX               52
+#define _SC_THREAD_DESTRUCTOR_ITERATIONS 53
+
+# define	_PC_LINK_MAX	        0
+# define	_PC_MAX_CANON	        1
+# define	_PC_MAX_INPUT	        2
+# define	_PC_NAME_MAX	        3
+# define	_PC_PATH_MAX	        4
+# define	_PC_PIPE_BUF	        5
+# define	_PC_CHOWN_RESTRICTED   	6
+# define	_PC_NO_TRUNC	        7
+# define	_PC_VDISABLE	        8
+# define	_PC_ASYNC_IO            9
+# define	_PC_PRIO_IO            10
+# define	_PC_SYNC_IO            11
+
+#ifdef __CYGWIN__
+#define MAXPATHLEN (260 - 1 )
+#else
+# define	MAXPATHLEN	1024
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#endif
 
 #ifndef	_FCNTL_
 #ifdef __cplusplus
@@ -2854,29 +3402,29 @@ extern "C" {
 #endif
 #define	_FCNTL_
 
-#define	_FOPEN		(-1)	/* from sys/file.h, kernel use only */
-#define	_FREAD		0x0001	
-#define	_FWRITE		0x0002	
-#define	_FAPPEND	0x0008	
-#define	_FMARK		0x0010	
-#define	_FDEFER		0x0020	
-#define	_FASYNC		0x0040	
-#define	_FSHLOCK	0x0080	
-#define	_FEXLOCK	0x0100	
-#define	_FCREAT		0x0200	
-#define	_FTRUNC		0x0400	
-#define	_FEXCL		0x0800	
-#define	_FNBIO		0x1000	
-#define	_FSYNC		0x2000	
-#define	_FNONBLOCK	0x4000	
-#define	_FNDELAY	_FNONBLOCK	
-#define	_FNOCTTY	0x8000	
+#define	_FOPEN		(-1)
+#define	_FREAD		0x0001
+#define	_FWRITE		0x0002
+#define	_FAPPEND	0x0008
+#define	_FMARK		0x0010
+#define	_FDEFER		0x0020
+#define	_FASYNC		0x0040
+#define	_FSHLOCK	0x0080
+#define	_FEXLOCK	0x0100
+#define	_FCREAT		0x0200
+#define	_FTRUNC		0x0400
+#define	_FEXCL		0x0800
+#define	_FNBIO		0x1000
+#define	_FSYNC		0x2000
+#define	_FNONBLOCK	0x4000
+#define	_FNDELAY	_FNONBLOCK
+#define	_FNOCTTY	0x8000
 
 #define	O_ACCMODE	(O_RDONLY|O_WRONLY|O_RDWR)
 
-#define	O_RDONLY	0		
-#define	O_WRONLY	1		
-#define	O_RDWR		2		
+#define	O_RDONLY	0
+#define	O_WRONLY	1
+#define	O_RDWR		2
 #define	O_APPEND	_FAPPEND
 #define	O_CREAT		_FCREAT
 #define	O_TRUNC		_FTRUNC
@@ -2915,7 +3463,7 @@ extern "C" {
 #define	FSYNC		_FSYNC
 #define	FASYNC		_FASYNC
 #define	FNBIO		_FNBIO
-#define	FNONBIO		_FNONBLOCK	
+#define	FNONBIO		_FNONBLOCK
 #define	FNDELAY		_FNDELAY
 
 #define	FREAD		_FREAD
@@ -2931,58 +3479,58 @@ extern "C" {
 #define	FEXCL		_FEXCL
 #define	FNOCTTY		_FNOCTTY
 
-#endif	
+#endif
 
-#define	FD_CLOEXEC	1	
+#define	FD_CLOEXEC	1
 
-#define	F_DUPFD		0	
-#define	F_GETFD		1	
-#define	F_SETFD		2	
-#define	F_GETFL		3	
-#define	F_SETFL		4	
+#define	F_DUPFD		0
+#define	F_GETFD		1
+#define	F_SETFD		2
+#define	F_GETFL		3
+#define	F_SETFL		4
 #ifndef	_POSIX_SOURCE
-#define	F_GETOWN 	5	
-#define	F_SETOWN 	6	
-#endif	
-#define	F_GETLK  	7	
-#define	F_SETLK  	8	
-#define	F_SETLKW 	9	
+#define	F_GETOWN 	5
+#define	F_SETOWN 	6
+#endif
+#define	F_GETLK  	7
+#define	F_SETLK  	8
+#define	F_SETLKW 	9
 #ifndef	_POSIX_SOURCE
-#define	F_RGETLK 	10	
-#define	F_RSETLK 	11	
-#define	F_CNVT 		12	
-#define	F_RSETLKW 	13	
-#endif	
+#define	F_RGETLK 	10
+#define	F_RSETLK 	11
+#define	F_CNVT 		12
+#define	F_RSETLKW 	13
+#endif
 
-#define	F_RDLCK		1	
-#define	F_WRLCK		2	
-#define	F_UNLCK		3	
+#define	F_RDLCK		1
+#define	F_WRLCK		2
+#define	F_UNLCK		3
 #ifndef	_POSIX_SOURCE
-#define	F_UNLKSYS	4	
-#endif	
+#define	F_UNLKSYS	4
+#endif
 
 struct flock {
-	short	l_type;		
-	short	l_whence;	
-	long	l_start;	
-	long	l_len;		
-	short	l_pid;		
-	short	l_xxx;		
+	short	l_type;
+	short	l_whence;
+	long	l_start;
+	long	l_len;
+	short	l_pid;
+	short	l_xxx;
 };
 
 #ifndef	_POSIX_SOURCE
 
 struct eflock {
-	short	l_type;		
-	short	l_whence;	
-	long	l_start;	
-	long	l_len;		
-	short	l_pid;		
-	short	l_xxx;		
-	long	l_rpid;		
-	long	l_rsys;		
+	short	l_type;
+	short	l_whence;
+	long	l_start;
+	long	l_len;
+	short	l_pid;
+	short	l_xxx;
+	long	l_rpid;
+	long	l_rsys;
 };
-#endif	
+#endif
 
 #ifndef	_SYS_STAT_H
 #define	_SYS_STAT_H
@@ -2997,10 +3545,9 @@ extern "C" {
 #endif
 #endif
 
-/* dj's stat defines _STAT_H_ */
 #ifndef _STAT_H_
 
-struct	stat 
+struct	stat
 {
   dev_t		st_dev;
   ino_t		st_ino;
@@ -3010,7 +3557,7 @@ struct	stat
   gid_t		st_gid;
   dev_t		st_rdev;
   off_t		st_size;
-  
+
 #if defined(__svr4__) && !defined(__PPC__) && !defined(__sun__)
   time_t	st_atime;
   time_t	st_mtime;
@@ -3028,26 +3575,26 @@ struct	stat
 #endif
 };
 
-#define	_IFMT		0170000	
-#define		_IFDIR	0040000	
-#define		_IFCHR	0020000	
-#define		_IFBLK	0060000	
-#define		_IFREG	0100000	
-#define		_IFLNK	0120000	
-#define		_IFSOCK	0140000	
-#define		_IFIFO	0010000	
+#define	_IFMT		0170000
+#define		_IFDIR	0040000
+#define		_IFCHR	0020000
+#define		_IFBLK	0060000
+#define		_IFREG	0100000
+#define		_IFLNK	0120000
+#define		_IFSOCK	0140000
+#define		_IFIFO	0010000
 
-#define 	S_BLKSIZE  1024 
+#define 	S_BLKSIZE  1024
 
-#define	S_ISUID		0004000	
-#define	S_ISGID		0002000	
+#define	S_ISUID		0004000
+#define	S_ISGID		0002000
 #ifndef	_POSIX_SOURCE
-#define	S_ISVTX		0001000	
-#define	S_IREAD		0000400	
-#define	S_IWRITE 	0000200	
-#define	S_IEXEC		0000100	
+#define	S_ISVTX		0001000
+#define	S_IREAD		0000400
+#define	S_IWRITE 	0000200
+#define	S_IEXEC		0000100
 
-#define	S_ENFMT 	0002000	
+#define	S_ENFMT 	0002000
 
 #define	S_IFMT		_IFMT
 #define	S_IFDIR		_IFDIR
@@ -3057,7 +3604,7 @@ struct	stat
 #define	S_IFLNK		_IFLNK
 #define	S_IFSOCK	_IFSOCK
 #define	S_IFIFO		_IFIFO
-#endif	
+#endif
 
 #ifdef _WIN32
 
@@ -3071,18 +3618,18 @@ struct	stat
 #define _S_IEXEC	0000100
 #endif
 
-#define	S_IRWXU 	0000700	
-#define		S_IRUSR	0000400	
-#define		S_IWUSR	0000200	
-#define		S_IXUSR	0000100	
-#define	S_IRWXG		0000070	
-#define		S_IRGRP	0000040	
-#define		S_IWGRP	0000020	
-#define		S_IXGRP	0000010	
-#define	S_IRWXO		0000007	
-#define		S_IROTH	0000004	
-#define		S_IWOTH	0000002	
-#define		S_IXOTH	0000001	
+#define	S_IRWXU 	0000700
+#define		S_IRUSR	0000400
+#define		S_IWUSR	0000200
+#define		S_IXUSR	0000100
+#define	S_IRWXG		0000070
+#define		S_IRGRP	0000040
+#define		S_IWGRP	0000020
+#define		S_IXGRP	0000010
+#define	S_IRWXO		0000007
+#define		S_IROTH	0000004
+#define		S_IWOTH	0000002
+#define		S_IXOTH	0000001
 
 #define	S_ISBLK(m)	(((m)&_IFMT) == _IFBLK)
 #define	S_ISCHR(m)	(((m)&_IFMT) == _IFCHR)
@@ -3117,11 +3664,11 @@ int	_EXFUN(mknod,( const char *_path, mode_t _mode, dev_t dev ));
 int	_EXFUN(lstat,( const char *_path, struct stat *_sbuf ));
 #endif
 
-#endif 
+#endif
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 extern int open _PARAMS ((const char *, int, ...));
 extern int creat _PARAMS ((const char *, mode_t));
@@ -3133,7 +3680,7 @@ extern int _fcntl _PARAMS ((int, int, ...));
 #ifdef __cplusplus
 }
 #endif
-#endif	
+#endif
 
 # include <sys/mman.h>
 /* This is a dummy <sys/param.h> file, not customized for any
@@ -3164,7 +3711,7 @@ extern int _fcntl _PARAMS ((int, int, ...));
 #  define _G_HAVE_MMAP 0
 # endif
 
-#endif 
+#endif
 
 #if _G_HAVE_MMAP
 
@@ -3188,7 +3735,7 @@ extern int _fcntl _PARAMS ((int, int, ...));
 	    return (_R);						      \
        } while (0)
 
-#else 
+#else
 
 # define FREE_BUF(_B, _S) \
        free(_B)
@@ -3199,7 +3746,7 @@ extern int _fcntl _PARAMS ((int, int, ...));
 	    return (_R);						      \
        } while (0)
 
-#endif 
+#endif
 
 #ifndef OS_FSTAT
 # define OS_FSTAT fstat
@@ -3269,8 +3816,8 @@ extern int _IO_vscanf __P ((const char *, _IO_va_list));
 # else
 #  define VTABLE_LABEL(NAME, CLASS, CNLENGTH) \
   extern char NAME[] asm ("_ZTV" #CNLENGTH #CLASS);
-# endif 
-#endif 
+# endif
+#endif
 
 #if !defined(builtinbuf_vtable) && defined(__cplusplus)
 # ifdef __GNUC__
@@ -3282,7 +3829,7 @@ VTABLE_LABEL(builtinbuf_vtable, builtinbuf, 10)
 #   define builtinbuf_vtable _G_VTABLE_LABEL_PREFIX_ID##builtinbuf
 #  endif
 # endif
-#endif 
+#endif
 
 #if defined(__STDC__) || defined(__cplusplus)
 # define _IO_va_start(args, last) va_start(args, last)
@@ -3293,7 +3840,7 @@ VTABLE_LABEL(builtinbuf_vtable, builtinbuf, 10)
 extern struct _IO_fake_stdiobuf _IO_stdin_buf, _IO_stdout_buf, _IO_stderr_buf;
 
 #if 1
-# define COERCE_FILE(FILE) 
+# define COERCE_FILE(FILE)
 #else
 
 # define COERCE_FILE(FILE) \
@@ -3304,7 +3851,7 @@ extern struct _IO_fake_stdiobuf _IO_stdin_buf, _IO_stdout_buf, _IO_stderr_buf;
 #ifdef EINVAL
 # define MAYBE_SET_EINVAL __set_errno (EINVAL)
 #else
-# define MAYBE_SET_EINVAL 
+# define MAYBE_SET_EINVAL
 #endif
 
 #ifdef IO_DEBUG
@@ -3333,16 +3880,16 @@ extern "C" {
 #define __need_size_t
 #define __need_wchar_t
 
-typedef struct 
+typedef struct
 {
-  int quot; 
-  int rem; 
+  int quot;
+  int rem;
 } div_t;
 
-typedef struct 
+typedef struct
 {
-  long quot; 
-  long rem; 
+  long quot;
+  long rem;
 } ldiv_t;
 
 #ifndef NULL
@@ -3442,7 +3989,7 @@ int     _EXFUN(grantpt, (int));
 int     _EXFUN(unlockpt,(int));
 #endif
 
-#endif 
+#endif
 
 char *	_EXFUN(_dtoa_r,(struct _reent *, double, int, int, int *, int*, char**));
 _PTR	_EXFUN(_malloc_r,(struct _reent *, size_t));
@@ -3457,7 +4004,7 @@ _VOID	_EXFUN(__eprintf,(const char *, const char *, unsigned int, const char *))
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 #endif
 /*
@@ -3483,7 +4030,7 @@ _PTR 	 _EXFUN(memchr,(const _PTR, int, size_t));
 int 	 _EXFUN(memcmp,(const _PTR, const _PTR, size_t));
 _PTR 	 _EXFUN(memcpy,(_PTR, const _PTR, size_t));
 _PTR	 _EXFUN(memmove,(_PTR, const _PTR, size_t));
-_PTR	 _EXFUN(func_005A48D8,(_PTR, int, size_t));
+_PTR	 _EXFUN(memset,(_PTR, int, size_t));
 char 	*_EXFUN(strcat,(char *, const char *));
 char 	*_EXFUN(strchr,(const char *, int));
 int	 _EXFUN(strcmp,(const char *, const char *));
@@ -3524,7 +4071,7 @@ char 	*_EXFUN(strsep,(char **, const char *));
 char	*_EXFUN(strlwr,(char *));
 char	*_EXFUN(strupr,(char *));
 #ifdef __CYGWIN__
-#ifndef DEFS_H	
+#ifndef DEFS_H
 const char  *_EXFUN(strsignal, (int __signo));
 #endif
 int     _EXFUN(strtosigno, (const char *__name));
@@ -3543,12 +4090,12 @@ int     _EXFUN(strtosigno, (const char *__name));
 #define strnicmp strncasecmp
 #endif
 
-#endif 
+#endif
 
 #ifdef __cplusplus
 }
 #endif
-#endif 
+#endif
 
 void
 _IO_un_link ();
@@ -3568,11 +4115,11 @@ _IO_switch_to_main_get_area (fp)
 {
   char *tmp;
   fp->_flags &= ~_IO_IN_BACKUP;
-  
+
   tmp = fp->_IO_read_end;
   fp->_IO_read_end = fp->_IO_save_end;
   fp->_IO_save_end= tmp;
-  
+
   tmp = fp->_IO_read_base;
   fp->_IO_read_base = fp->_IO_save_base;
   fp->_IO_save_base = tmp;
@@ -3581,32 +4128,187 @@ _IO_switch_to_main_get_area (fp)
 }
 
 void
-_IO_switch_to_backup_area ();
+_IO_switch_to_backup_area (fp)
+     _IO_FILE *fp;
+
+{
+  char *tmp;
+  fp->_flags |= _IO_IN_BACKUP;
+
+  tmp = fp->_IO_read_end;
+  fp->_IO_read_end = fp->_IO_save_end;
+  fp->_IO_save_end = tmp;
+
+  tmp = fp->_IO_read_base;
+  fp->_IO_read_base = fp->_IO_save_base;
+  fp->_IO_save_base = tmp;
+
+  fp->_IO_read_ptr = fp->_IO_read_end;
+}
 
 int
-_IO_switch_to_get_mode ();
+_IO_switch_to_get_mode (fp)
+     _IO_FILE *fp;
+
+{
+  if (fp->_IO_write_ptr > fp->_IO_write_base)
+    if (_IO_OVERFLOW (fp, EOF) == EOF)
+      return EOF;
+  if (_IO_in_backup (fp))
+    fp->_IO_read_base = fp->_IO_backup_base;
+  else
+    {
+      fp->_IO_read_base = fp->_IO_buf_base;
+      if (fp->_IO_write_ptr > fp->_IO_read_end)
+	fp->_IO_read_end = fp->_IO_write_ptr;
+    }
+  fp->_IO_read_ptr = fp->_IO_write_ptr;
+
+  fp->_IO_write_base = fp->_IO_write_ptr = fp->_IO_write_end = fp->_IO_read_ptr;
+
+  fp->_flags &= ~_IO_CURRENTLY_PUTTING;
+  return 0;
+}
 
 void
-_IO_free_backup_area ();
+_IO_free_backup_area (fp)
+     _IO_FILE *fp;
 
-#if 0
-int
-_IO_switch_to_put_mode ();
-#endif
+{
+  if (_IO_in_backup (fp))
+    _IO_switch_to_main_get_area (fp);
+  free (fp->_IO_save_base);
+  fp->_IO_save_base = NULL;
+  fp->_IO_save_end = NULL;
+  fp->_IO_backup_base = NULL;
+}
 
 int
-func_00594700 ();
+func_00594700 (f, ch)
+     _IO_FILE *f;
+     int ch;
+
+{
+  return _IO_OVERFLOW (f, ch);
+}
 
 static int save_for_backup __P ((_IO_FILE *fp));
 
-static int
-save_for_backup ();
+     static int
+save_for_backup (fp)
+     _IO_FILE *fp;
+
+{
+
+  int least_mark = _IO_least_marker (fp);
+
+  int needed_size = (fp->_IO_read_end - fp->_IO_read_base) - least_mark;
+  int current_Bsize = fp->_IO_save_end - fp->_IO_save_base;
+  int avail;
+  int delta;
+  struct _IO_marker *mark;
+  if (needed_size > current_Bsize)
+    {
+      char *new_buffer;
+      avail = 100;
+      new_buffer = (char *) malloc (avail + needed_size);
+      if (new_buffer == NULL)
+	return EOF;
+      if (least_mark < 0)
+	{
+	  memcpy (new_buffer + avail,
+		  fp->_IO_save_end + least_mark,
+		  -least_mark);
+	  memcpy (new_buffer + avail - least_mark,
+		  fp->_IO_read_base,
+		  fp->_IO_read_end - fp->_IO_read_base);
+	}
+      else
+	memcpy (new_buffer + avail,
+		fp->_IO_read_base + least_mark,
+		needed_size);
+      if (fp->_IO_save_base)
+	free (fp->_IO_save_base);
+      fp->_IO_save_base = new_buffer;
+      fp->_IO_save_end = new_buffer + avail + needed_size;
+    }
+  else
+    {
+      avail = current_Bsize - needed_size;
+      if (least_mark < 0)
+	{
+	  memmove (fp->_IO_save_base + avail,
+		   fp->_IO_save_end + least_mark,
+		   -least_mark);
+	  memcpy (fp->_IO_save_base + avail - least_mark,
+		  fp->_IO_read_base,
+		  fp->_IO_read_end - fp->_IO_read_base);
+	}
+      else if (needed_size > 0)
+	memcpy (fp->_IO_save_base + avail,
+		fp->_IO_read_base + least_mark,
+		needed_size);
+    }
+
+  fp->_IO_backup_base = fp->_IO_save_base + avail;
+
+  delta = fp->_IO_read_end - fp->_IO_read_base;
+  for (mark = fp->_markers; mark != NULL; mark = mark->_next)
+    mark->_pos -= delta;
+  return 0;
+}
 
 int
-func_005948D8 ();
+func_005948D8 (fp)
+     _IO_FILE *fp;
+
+{
+  if (_IO_in_put_mode (fp))
+    if (_IO_switch_to_get_mode (fp) == EOF)
+      return EOF;
+  if (fp->_IO_read_ptr < fp->_IO_read_end)
+    return *(unsigned char *) fp->_IO_read_ptr;
+  if (_IO_in_backup (fp))
+    {
+      _IO_switch_to_main_get_area (fp);
+      if (fp->_IO_read_ptr < fp->_IO_read_end)
+	return *(unsigned char *) fp->_IO_read_ptr;
+    }
+  if (_IO_have_markers (fp))
+    {
+      if (save_for_backup (fp))
+	return EOF;
+    }
+  else if (_IO_have_backup (fp))
+    _IO_free_backup_area (fp);
+  return _IO_UNDERFLOW (fp);
+}
 
 int
-func_005949A8 ();
+func_005949A8 (fp)
+     _IO_FILE *fp;
+
+{
+  if (_IO_in_put_mode (fp))
+    if (_IO_switch_to_get_mode (fp) == EOF)
+      return EOF;
+  if (fp->_IO_read_ptr < fp->_IO_read_end)
+    return *(unsigned char *) fp->_IO_read_ptr++;
+  if (_IO_in_backup (fp))
+    {
+      _IO_switch_to_main_get_area (fp);
+      if (fp->_IO_read_ptr < fp->_IO_read_end)
+	return *(unsigned char *) fp->_IO_read_ptr++;
+    }
+  if (_IO_have_markers (fp))
+    {
+      if (save_for_backup (fp))
+	return EOF;
+    }
+  else if (_IO_have_backup (fp))
+    _IO_free_backup_area (fp);
+  return _IO_UFLOW (fp);
+}
 
 void
 _IO_setb ();
@@ -3628,12 +4330,6 @@ _IO_sgetn ();
 
 _IO_size_t
 _IO_default_xsgetn ();
-
-#if 0
-
-int
-_IO_sync ();
-#endif
 
 _IO_FILE *
 _IO_default_setbuf ();
@@ -3662,25 +4358,8 @@ _IO_sputbackc ();
 int
 _IO_sungetc ();
 
-#if 0 
-
-#if 0
-void
-_IO_set_column ();
-#else
-int
-_IO_set_column ();
-#endif
-#endif
-
 unsigned
 _IO_adjust_column ();
-
-#if 0
-
-int
-_IO_get_column ();
-#endif
 
 int
 _IO_flush_all ();
@@ -3716,12 +4395,6 @@ _IO_seekmark ();
 void
 _IO_unsave_markers ();
 
-#if 0
-
-int
-_IO_nobackup_pbackfail ();
-#endif
-
 int
 _IO_default_pbackfail ();
 
@@ -3749,10 +4422,10 @@ struct __io_defs {
     __io_defs() { }
     ~__io_defs() { _IO_cleanup (); }
 };
-__io_defs io_defs__;
+extern __io_defs io_defs__;
 #endif
 
-#endif 
+#endif
 
 #ifdef weak_alias
 weak_alias (_IO_cleanup, _cleanup)
@@ -3763,4 +4436,3 @@ void _cleanup () __attribute__ ((weak, alias ("_IO_cleanup")));
 #ifdef text_set_element
 text_set_element(__libc_atexit, _cleanup);
 #endif
-

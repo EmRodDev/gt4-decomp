@@ -35,5 +35,12 @@ include_once = true
 keep_inline = true
 keep_notices = ["The author of this software is David M. Gay"]
 false_macros = ["0", "_G_CLOG_CONFLICT", "_G_HAVE_PRINTF_FP", "_G_HAVE_LONG_DOUBLE_IO", "KR_headers"]  # 0 or undefined here: `#if` blocks left out (iostream.h's __asm__ label, floatconv.c's K&R heads, iostream.cc's long double and printf_fp variants)
-extern_objects = ["io_defs__", "use_stdiobuf"]  # streambuf.cc's cleanup object, stdstreams.cc's flag
+extern_objects = ["io_defs__", "use_stdiobuf", "cin", "cout", "cerr", "clog"]
+source_groups = [
+    ["_IO_switch_to_main_get_area", "_IO_switch_to_backup_area", "_IO_switch_to_get_mode", "_IO_free_backup_area", "__overflow", "save_for_backup", "__underflow", "__uflow"],
+    ["Binit", "Balloc", "Bfree", "Bcopy", "Brealloc", "multadd"],
+]
 marker = "licence: libio (GPLv2 with the libio special exception, see THIRD_PARTY.md)"
+
+# Extracted functions share the canonical library vtables.
+omit_implementation_pragmas = true

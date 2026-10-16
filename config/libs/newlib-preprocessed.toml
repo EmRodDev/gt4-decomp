@@ -1,0 +1,24 @@
+# newlib (Cygnus/Red Hat's embedded C library): the C library and libm of the PS2 toolchain, in the
+# library region. Source: https://sourceware.org/pub/newlib/newlib-VERSION.tar.gz, unpacked to
+# ../gt4-thirdparty/newlib-VERSION, outside the repository; only the per-function sources libmatch.py
+# writes are committed (THIRD_PARTY.md). libmatch.py wants one flat directory: gt4/ holds
+# newlib/libc/include at its root plus the .c/.h of the subdirectories named below (stdio's local.h
+# wins over stdlib's), vfiprintf.c ( + , as newlib's
+# Makefile builds it), and stand-ins for the gcc headers the compiler lacks (stddef.h, stdarg.h,
+# limits.h with 64-bit long, float.h).
+version = "1.9.0"
+license = "BSD-style per file (COPYING.NEWLIB)"
+url = "https://sourceware.org/pub/newlib/newlib-1.9.0.tar.gz"
+source = "../gt4-thirdparty/newlib-1.9.0-preprocessed/gt4"
+compiler = "ee-gcc2.96-no-strict-aliasing"
+# Left out: files touched by DJ Delorie (mktemp, getenv, putenv, setenv: separate copying.dj terms),
+# mallocr.c (needs the malloc configuration), and libc/machine (the game's strlen etc. are Sony's MMI
+# assembly). Version: fseek.c and refill.c match 1.9.0 and differ in 1.10.0 and 1.8.2.
+defines = []
+range = ["0x5547e8", "0x617a14"]
+files = ["mprec.c", "qsort.c", "s_finite.c", "s_isinf.c", "s_isnan.c", "sf_fabs.c", "snprintf.c", "sscanf.c", "vfprintf.c"]
+keep_notices = ["Copyright", "The author of this software is David M. Gay"]
+include_once = true
+keep_inline = true
+marker = "licence: newlib (BSD-style per file, see THIRD_PARTY.md)"
+preprocess_from = "newlib"

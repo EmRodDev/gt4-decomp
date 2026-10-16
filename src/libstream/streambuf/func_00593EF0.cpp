@@ -27,7 +27,7 @@ the executable file might be covered by the GNU General Public License. */
 
 #define _STREAM_COMPAT
 #ifdef __GNUG__
-#pragma implementation
+
 #endif
 /* 
 Copyright (C) 1993 Free Software Foundation

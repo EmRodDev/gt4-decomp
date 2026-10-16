@@ -1,5 +1,5 @@
-extern int D_0065837C;
+extern int object_mutex;
 
 int func_005B7370(void) {
-    return D_0065837C;
+    return object_mutex;
 }
