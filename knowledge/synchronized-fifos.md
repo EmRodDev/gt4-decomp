@@ -153,3 +153,34 @@ The nearby pool scans `005596F8` and `00559808` remain unmatched. Their bounded
 attempts stopped at 9/37 and 11/39 differing instructions respectively. Their
 remaining differences concern loop induction and scheduling; no candidate from
 those attempts was admitted into `src/`.
+
+## Combined twelve-function proof after upstream PR 23
+
+Upstream merged PR 23 as `6e18ca3768811c5338401f42b6e13e619e502428`.
+That code was merged into this branch before validating the expanded batch.
+The upstream README was preserved during conflict resolution and subsequently
+regenerated from the combined build; upstream diary revisions were preserved
+and local records appended without replacing the author's entries.
+
+The non-partial build of clean source commit
+`95c50021f592507adc98ba0d4ba7a5d7cd6017ee` passed with
+`tools/build.py --jobs 2`. All twelve new functions have status `linked`.
+They supply **1,736 linked code bytes** beyond upstream PR 23: the original
+eight contribute 988 bytes and the four channel/playback controls add 748.
+The voice-layout naming changes preserve the earlier functions' instructions.
+
+The rebuilt segment hashes remain exactly:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`
+
+The build covers 29,069 source files, 4,168,056 linked code bytes, and 55,106
+verified source data bytes, with no orphan or duplicate sources. The 85 tests
+and source-organization check passed. README figures were regenerated with
+`tools/report.py` and `tools/update_readme.py` from this clean full build.
+
+The core selector `0055C9A0` remains unmatched despite a readable reconstruction
+reaching 2/106 differing instructions: a required-flags load and loop-counter
+initialization are scheduled in the opposite order. Additional natural helper
+and mask-type hypotheses did not close it. That candidate is excluded from
+`src/`; its diary records distinguish algorithm recovery from a proven match.
