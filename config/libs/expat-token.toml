@@ -1,0 +1,27 @@
+# Tokenizer extraction from the public Expat 1.95.7 source unit.
+# Expat 1.95.7 (James Clark's XML parser), MIT license: the XML parser at 0x4ce828-0x4e6bd8.
+# Source: https://github.com/libexpat/libexpat/tree/R_1_95_7/expat/lib (released 2003-10-20;
+# the executable carries the string "expat_1.95.7"). Downloaded to ../gt4-thirdparty, outside the
+# repository: only the per-function sources libmatch.py writes are committed (THIRD_PARTY.md).
+version = "1.95.7"
+license = "MIT"
+url = "https://github.com/libexpat/libexpat/tree/R_1_95_7/expat"
+source = "../gt4-thirdparty/expat-1.95.7/lib"
+files = ["xmltok.c"]
+# Pure character classifier: only value arguments and immutable lookup tables.
+# The whole unit lets GCC infer this; extracted callers need the same declaration.
+const_contexts = { little2_scanPi = ["unicode_byte_type"], big2_scanPi = ["unicode_byte_type"] }
+# This real local constant lies between jump tables; keep its bytes in grouped pools.
+# The complete builder verifies and places the entire relocated constant section.
+preserve_statics = ["CDATA_LSQB"]
+# XMLCALL= silences expat.h's __attribute__((cdecl)); the rest is the usual Unix configuration
+# (configure's expat_config.h), which the matches confirm. size_t is 32-bit (include/shim).
+defines = ["XMLCALL=", "BYTEORDER=1234", "HAVE_MEMMOVE", "XML_NS", "XML_DTD", "XML_CONTEXT_BYTES=1024"]
+# The game's expat was built without strict aliasing: 272 functions match with the project's
+# flags, 321 with -fno-strict-aliasing: emit names this [compilers] entry of project.toml on the
+# first line of the sources that need it (`/* compiler: ... */`, read by match.py and build.py).
+compiler = "ee-gcc2.96-no-strict-aliasing"
+range = ["0x4ce828", "0x4e6bd8"]
+
+# Consecutive real bodies preserve original compilation context.
+source_groups = [["little2_sameName", "little2_nameMatchesAscii"], ["big2_sameName", "big2_nameMatchesAscii"], ["normal_scanComment", "normal_scanDecl", "normal_checkPiTarget", "normal_scanPi", "normal_scanCdataSection", "normal_cdataSectionTok", "normal_scanEndTag", "normal_scanHexCharRef", "normal_scanCharRef", "normal_scanRef", "normal_scanAtts", "normal_scanLt"], ["unicode_byte_type", "little2_toUtf8", "little2_toUtf16", "big2_toUtf8", "big2_toUtf16", "little2_scanComment", "little2_scanDecl", "little2_checkPiTarget", "little2_scanPi"], ["toAscii", "isSpace", "parsePseudoAttribute"]]

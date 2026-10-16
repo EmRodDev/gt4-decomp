@@ -1,0 +1,74 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+struct V4 { float x,y,z,w; };
+struct Image { char pad[0x10]; int w,h,c,d,e; };
+struct Self { char pad[0xEC]; Image *image; int mode; float x,y,z; };
+struct View { int p; char *vt; };
+struct Context { char pad[0x1E634]; int busy; };
+struct Entry { short delta,index; int (*fn)(void *, V4 *, V4 *); };
+extern "C" Context *func_00197798(View *) throw();
+extern "C" float func_002313E0(View *);
+extern "C" float func_00231400(View *);
+extern "C" float func_00231420(View *);
+extern "C" float func_00231440(View *);
+extern "C" void mWidget__virtual_70(Self *,View *,int);
+extern "C" void func_00331E80(Image *,int,int,float,float,float,float,float);
+extern "C" void func_004A1638(int);
+extern "C" void pglFrontFace(int);
+extern "C" void func_004A2808(int,float);
+extern "C" void func_004A2980(int);
+extern "C" void func_004A3078(int);
+extern "C" void func_004A3088(float);
+extern "C" void RaceEntryCar__update(int);
+extern "C" void func_004A53F8();
+extern "C" void func_004A5400();
+extern "C" void pglPushAttrib(int);
+extern "C" void func_004A5688();
+extern "C" void func_004A5A90(float,float,float,float,float,float);
+extern "C" void func_004A7454();
+extern "C" void func_004AB040(int);
+static inline void set(V4 *p,float x,float y,float z,float w) { p->x=x; p->y=y; p->z=z; p->w=w; }
+extern "C" void mPhotoRenderFace__virtual_70(Self *self,View *view,int draw) {
+    V4 r;
+    V4 origin;
+    mWidget__virtual_70(self,view,0);
+    if (draw) {
+        Context *c = func_00197798(view);
+        if (c && c->busy) return;
+        Image *img = self->image;
+        if (!img) return;
+        if (img->w*img->e*img->h == 0) return;
+        float zero = 0.0f;
+        float x = func_002313E0(view);
+        float y = func_00231400(view);
+        float z = func_00231420(view);
+        float w = func_00231440(view);
+        V4 *o = &origin;
+        set(&r,x,y,z,w);
+        set(o,zero,zero,zero,zero);
+        float one = 1.0f;
+        Entry *e = (Entry *)(view->vt+0x1F8);
+        e->fn((char *)view+e->delta,o,&r);
+        RaceEntryCar__update(1);
+        func_004A53F8();
+        func_004A7454();
+        func_004A5A90(zero,r.z,r.w,zero,-1.0f,one);
+        RaceEntryCar__update(0);
+        func_004A53F8();
+        func_004A7454();
+        pglPushAttrib(0x41);
+        func_004A2980(-1);
+        func_004A3078(0);
+        func_004A3088(one);
+        pglFrontFace(0);
+        func_00331E80(self->image,self->mode,4,r.z,r.w,self->x,self->y,self->z);
+        func_004A5688();
+        func_004A5400();
+        RaceEntryCar__update(1);
+        func_004A5400();
+        RaceEntryCar__update(0);
+        func_004AB040(15);
+        func_004A1638(17);
+        func_004A1638(6);
+        func_004A2808(0x44,one);
+    }
+}

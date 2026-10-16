@@ -1,0 +1,13 @@
+# Public newlib units whose matching code enables strict aliasing.
+# Stage with: python tools/stage_libmatch.py newlib-strict
+version = "1.9.0"
+license = "BSD-style per file (COPYING.NEWLIB)"
+url = "https://sourceware.org/pub/newlib/newlib-1.9.0.tar.gz"
+source = "../gt4-thirdparty/newlib-1.9.0-strict-preprocessed/gt4"
+preprocess_from = "newlib"
+range = ["0x5547e8", "0x617a14"]
+files = ["makebuf.c", "putchar.c", "vfiprintf.c", "dtoa.c"]
+keep_notices = ["Copyright", "The author of this software is David M. Gay"]
+include_once = true
+keep_inline = true
+marker = "licence: newlib (BSD-style per file, see THIRD_PARTY.md)"

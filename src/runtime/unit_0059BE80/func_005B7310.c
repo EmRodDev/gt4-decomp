@@ -10,7 +10,7 @@ struct SemaParam {
 extern char D_006D28F0[];
 extern char D_006D2900[];
 extern int D_00658378;
-extern int D_0065837C;
+extern int object_mutex;
 int func_005ADCA0(struct SemaParam *p);
 
 void func_005B7310(void)
@@ -24,5 +24,5 @@ void func_005B7310(void)
     p2.init_count = 1;
     p2.option = (unsigned int)D_006D2900;
     D_00658378 = func_005ADCA0(&p1);
-    D_0065837C = func_005ADCA0(&p2);
+    object_mutex = func_005ADCA0(&p2);
 }

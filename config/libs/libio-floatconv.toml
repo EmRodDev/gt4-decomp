@@ -1,0 +1,13 @@
+# GNU libio big-number conversions retain strict aliasing in this executable.
+version = "2.8.0 (gcc 2000-10-03 snapshot)"
+license = "GPLv2 with the libio special exception (see each file's notice)"
+url = "https://gcc.gnu.org/"
+source = "../gt4-thirdparty/libio-20001003/gt4"
+range = ["0x54dbb8", "0x617a14"]
+files = ["floatconv.c"]
+keep_notices = ["The author of this software is David M. Gay"]
+include_once = true
+keep_inline = true
+false_macros = ["0", "_G_CLOG_CONFLICT", "_G_HAVE_PRINTF_FP", "_G_HAVE_LONG_DOUBLE_IO", "KR_headers"]
+marker = "licence: libio (GPLv2 with the libio special exception, see THIRD_PARTY.md)"
+source_groups = [["Binit", "Balloc", "Bfree", "Bcopy", "Brealloc", "multadd", "s2b", "hi0bits", "lo0bits", "i2b", "mult", "pow5mult", "lshift", "cmp", "diff", "ulp", "b2d", "d2b"]]

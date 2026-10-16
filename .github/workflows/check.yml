@@ -17,10 +17,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Library extraction regression checks
+      - name: Runtime and extraction regression checks
         run: |
           python -m pip install rabbitizer
-          python -m unittest discover -s tests -p test_libmatch.py -v
+          python -m unittest discover -s tests -v
   sources:
     runs-on: ubuntu-latest
     steps:

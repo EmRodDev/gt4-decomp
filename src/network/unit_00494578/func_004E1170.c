@@ -1,35 +1,13 @@
-/* expat 1.95.7: little2_sameName from xmltok.c, placed at 0x004e1170 by
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/* expat-token 1.95.7: little2_sameName, little2_nameMatchesAscii from xmltok.c, placed at 0x004e1170 by
  * tools/libmatch.py. Third-party code, see THIRD_PARTY.md for its license and origin. */
-#define XMLCALL 
+#define XMLCALL
 #define BYTEORDER 1234
 #define HAVE_MEMMOVE
 #define XML_NS
 #define XML_DTD
 #define XML_CONTEXT_BYTES 1024
-#define KW_ANY D_006BAC50
-#define KW_ATTLIST D_006BAC58
-#define KW_CDATA D_006BAC60
-#define KW_DOCTYPE D_006BAC68
-#define KW_ELEMENT D_006BAC70
-#define KW_EMPTY D_006BAC78
-#define KW_ENTITIES D_006BAC80
-#define KW_ENTITY D_006BAC90
-#define KW_FIXED D_006BAC98
-#define KW_ID D_006BACA0
-#define KW_IDREF D_006BACA8
-#define KW_IDREFS D_006BACB0
-#define KW_IGNORE D_006BACB8
-#define KW_IMPLIED D_006BACC0
-#define KW_INCLUDE D_006BACC8
 #define KW_ISO_8859_1 D_006BFEC0
-#define KW_NDATA D_006BACD0
-#define KW_NMTOKEN D_006BACD8
-#define KW_NMTOKENS D_006BACE0
-#define KW_NOTATION D_006BACF0
-#define KW_PCDATA D_006BAD00
-#define KW_PUBLIC D_006BAD08
-#define KW_REQUIRED D_006BAD10
-#define KW_SYSTEM D_006BAD20
 #define KW_US_ASCII D_006BFED0
 #define KW_UTF_16 D_006BFEE8
 #define KW_UTF_16BE D_006BFEF0
@@ -40,68 +18,6 @@
 #define KW_standalone D_006BFEA0
 #define KW_version D_006BFE88
 #define KW_yes D_006BFEB0
-#define XML_DefaultCurrent func_004CFAB0
-#define XML_ErrorString func_004CFB08
-#define XML_ExpatVersion func_004CFB38
-#define XML_ExpatVersionInfo func_004CFB48
-#define XML_ExternalEntityParserCreate func_004CEE28
-#define XML_FreeContentModel func_004CFA28
-#define XML_GetBase func_004CF3D8
-#define XML_GetBuffer func_004CF740
-#define XML_GetCurrentByteCount func_004CF908
-#define XML_GetCurrentByteIndex func_004CF8E0
-#define XML_GetCurrentColumnNumber func_004CF9D0
-#define XML_GetCurrentLineNumber func_004CF970
-#define XML_GetErrorCode func_004CF8D8
-#define XML_GetFeatureList func_004CFB88
-#define XML_GetIdAttributeIndex func_004CF3E8
-#define XML_GetInputContext func_004CF930
-#define XML_GetSpecifiedAttributeCount func_004CF3E0
-#define XML_MemFree func_004CFA90
-#define XML_MemMalloc func_004CFA48
-#define XML_MemRealloc func_004CFA68
-#define XML_Parse func_004CF580
-#define XML_ParseBuffer func_004CF678
-#define XML_ParserCreate func_004CE828
-#define XML_ParserCreateNS func_004CE848
-#define XML_ParserCreate_MM func_004CE870
-#define XML_ParserFree func_004CF150
-#define XML_ParserReset func_004CECA0
-#define XML_SetAttlistDeclHandler func_004CF4F8
-#define XML_SetBase func_004CF388
-#define XML_SetCdataSectionHandler func_004CF428
-#define XML_SetCharacterDataHandler func_004CF410
-#define XML_SetCommentHandler func_004CF420
-#define XML_SetDefaultHandler func_004CF448
-#define XML_SetDefaultHandlerExpand func_004CF458
-#define XML_SetDoctypeDeclHandler func_004CF468
-#define XML_SetElementDeclHandler func_004CF4F0
-#define XML_SetElementHandler func_004CF3F0
-#define XML_SetEncoding func_004CED80
-#define XML_SetEndCdataSectionHandler func_004CF440
-#define XML_SetEndDoctypeDeclHandler func_004CF480
-#define XML_SetEndElementHandler func_004CF408
-#define XML_SetEndNamespaceDeclHandler func_004CF4B0
-#define XML_SetEntityDeclHandler func_004CF500
-#define XML_SetExternalEntityRefHandler func_004CF4C0
-#define XML_SetExternalEntityRefHandlerArg func_004CF4C8
-#define XML_SetNamespaceDeclHandler func_004CF498
-#define XML_SetNotStandaloneHandler func_004CF4B8
-#define XML_SetNotationDeclHandler func_004CF490
-#define XML_SetParamEntityParsing func_004CF510
-#define XML_SetProcessingInstructionHandler func_004CF418
-#define XML_SetReturnNSTriplet func_004CF318
-#define XML_SetSkippedEntityHandler func_004CF4D8
-#define XML_SetStartCdataSectionHandler func_004CF438
-#define XML_SetStartDoctypeDeclHandler func_004CF478
-#define XML_SetStartElementHandler func_004CF400
-#define XML_SetStartNamespaceDeclHandler func_004CF4A8
-#define XML_SetUnknownEncodingHandler func_004CF4E0
-#define XML_SetUnparsedEntityDeclHandler func_004CF488
-#define XML_SetUserData func_004CF370
-#define XML_SetXmlDeclHandler func_004CF508
-#define XML_UseForeignDTD func_004CF2A0
-#define XML_UseParserAsHandlerArg func_004CF298
 #define XmlGetUtf16InternalEncoding func_004E6778
 #define XmlGetUtf16InternalEncodingNS func_004E6998
 #define XmlGetUtf8InternalEncoding func_004E6768
@@ -112,26 +28,12 @@
 #define XmlInitUnknownEncodingNS func_004E6BA8
 #define XmlParseXmlDecl func_004E6920
 #define XmlParseXmlDeclNS func_004E6B40
-#define XmlPrologStateInit func_004D91D8
-#define XmlPrologStateInitExternalEntity func_004D91F8
 #define XmlSizeOfUnknownEncoding func_004E5DE0
 #define XmlUtf16Encode func_004E5D78
 #define XmlUtf8Encode func_004E5C88
-#define addBinding func_004D1788
-#define appendAttributeValue func_004D40C8
 #define ascii_encoding D_006BD1F8
 #define ascii_encoding_ns D_006BD088
 #define ascii_toUtf8 func_004DD0B8
-#define attlist0 func_004D8250
-#define attlist1 func_004D82C8
-#define attlist2 func_004D8368
-#define attlist3 func_004D84C8
-#define attlist4 func_004D8548
-#define attlist5 func_004D85D8
-#define attlist6 func_004D8630
-#define attlist7 func_004D8688
-#define attlist8 func_004D8718
-#define attlist9 func_004D8880
 #define big2_attributeValueTok func_004E4398
 #define big2_cdataSectionTok func_004E1E08
 #define big2_charRefNumber func_004E4D40
@@ -164,99 +66,25 @@
 #define big2_toUtf16 func_004DD5B8
 #define big2_toUtf8 func_004DD3E0
 #define big2_updatePosition func_004E5410
-#define build_model func_004D6F18
-#define build_node func_004D6D78
-#define cdataSectionProcessor func_004D1978
 #define checkCharRefNumber func_004E5C00
-#define common func_004D91A8
-#define condSect0 func_004D8F90
-#define condSect1 func_004D9080
-#define condSect2 func_004D90E0
-#define contentProcessor func_004CFCB8
-#define copyEntityTable func_004D5EB0
-#define declClose func_004D9138
-#define defineAttribute func_004D4C28
-#define destroyBindings func_004CF0E8
-#define doCdataSection func_004D1A20
-#define doContent func_004D0000
-#define doIgnoreSection func_004D1D08
 #define doParseXmlDecl func_004E58D0
-#define doProlog func_004D2780
-#define doctype0 func_004D72E8
-#define doctype1 func_004D7360
-#define doctype2 func_004D74C0
-#define doctype3 func_004D7518
-#define doctype4 func_004D7570
-#define doctype5 func_004D7600
-#define dtdCopy func_004D5B00
-#define dtdCreate func_004D5848
-#define dtdDestroy func_004D5A18
-#define dtdReset func_004D5918
-#define element0 func_004D88D8
-#define element1 func_004D8950
-#define element2 func_004D8AA8
-#define element3 func_004D8BC8
-#define element4 func_004D8C88
-#define element5 func_004D8D00
-#define element6 func_004D8D98
-#define element7 func_004D8E50
 #define encodings D_006453D8
 #define encodingsNS D_006453F8
-#define entity0 func_004D7918
-#define entity1 func_004D79A8
-#define entity10 func_004D7F40
-#define entity2 func_004D7A00
-#define entity3 func_004D7B48
-#define entity4 func_004D7BA0
-#define entity5 func_004D7BF8
-#define entity6 func_004D7CE8
-#define entity7 func_004D7D48
-#define entity8 func_004D7E90
-#define entity9 func_004D7EE8
-#define entityValueInitProcessor func_004D23C0
-#define entityValueProcessor func_004D2620
-#define epilogProcessor func_004D3DD8
-#define error func_004D91A0
-#define errorProcessor func_004D4020
-#define externalEntityContentProcessor func_004CFFB0
-#define externalEntityInitProcessor func_004CFD08
-#define externalEntityInitProcessor2 func_004CFD90
-#define externalEntityInitProcessor3 func_004CFE98
-#define externalParEntInitProcessor func_004D22F0
-#define externalParEntProcessor func_004D2520
-#define externalSubset0 func_004D7830
-#define externalSubset1 func_004D7870
 #define findEncoding func_004E6870
 #define findEncodingNS func_004E6A90
-#define free free
-#define getAttributeId func_004D4EE8
-#define getContext func_004D5180
-#define getElementType func_004D6FB0
 #define getEncodingIndex func_004E6458
-#define handleUnknownEncoding func_004D2148
-#define hash func_004D6080
-#define hashTableClear func_004D64E0
-#define hashTableDestroy func_004D6560
-#define hashTableInit func_004D65D8
-#define hashTableIterInit func_004D65F0
-#define hashTableIterNext func_004D6610
-#define ignoreSectionProcessor func_004D1C90
-#define implicitContext D_006BA330
 #define initScan func_004E64D0
 #define initScanContent func_004E67C0
 #define initScanContentNS func_004E69E0
 #define initScanProlog func_004E6788
 #define initScanPrologNS func_004E69A8
 #define initUpdatePosition func_004E55B8
-#define initializeEncoding func_004D1E50
-#define internalSubset func_004D7658
 #define internal_little2_encoding D_006BE948
 #define internal_little2_encoding_ns D_006BE7D8
 #define internal_utf8_encoding D_006BCC38
 #define internal_utf8_encoding_ns D_006BCAC8
 #define isNever func_004D9210
 #define isSpace func_004E5620
-#define keyeq func_004D6048
 #define latin1_encoding D_006BCF18
 #define latin1_encoding_ns D_006BCDA8
 #define latin1_toUtf16 func_004DD060
@@ -294,16 +122,8 @@
 #define little2_toUtf16 func_004DD350
 #define little2_toUtf8 func_004DD178
 #define little2_updatePosition func_004E1488
-#define lookup func_004D60D8
-#define malloc malloc
-#define memcmp D_0057F188
-#define memcpy memcpy
-#define memmove memmove
-#define func_005A48D8 D_005A48D8
-#define moveToFreeBindingList func_004CEC70
 #define namePages D_006BB600
 #define namingBitmap D_006BB000
-#define nextScaffoldPart func_004D6C18
 #define nmstrtPages D_006BB500
 #define normal_attributeValueTok func_004DC058
 #define normal_cdataSectionTok func_004D9CF0
@@ -334,42 +154,7 @@
 #define normal_scanRef func_004DA388
 #define normal_skipS func_004DCC68
 #define normal_updatePosition func_004DCCB0
-#define normalizeLines func_004D48B0
-#define normalizePublicId func_004D57A8
-#define notation0 func_004D7FB0
-#define notation1 func_004D8008
-#define notation2 func_004D80F8
-#define notation3 func_004D8150
-#define notation4 func_004D81B0
 #define parsePseudoAttribute func_004E5670
-#define parserCreate func_004CE8D8
-#define parserInit func_004CEB08
-#define poolAppend func_004D6758
-#define poolAppendString func_004D6930
-#define poolClear func_004D6678
-#define poolCopyString func_004D67F8
-#define poolCopyStringN func_004D6880
-#define poolDestroy func_004D66D8
-#define poolGrow func_004D6A20
-#define poolInit func_004D6658
-#define poolStoreString func_004D69C0
-#define processInternalParamEntity func_004D3F70
-#define processXmlDecl func_004D1EC8
-#define prolog0 func_004D7050
-#define prolog1 func_004D7170
-#define prolog2 func_004D7258
-#define prologInitProcessor func_004D2268
-#define prologProcessor func_004D2708
-#define realloc D_00575E30
-#define reportComment func_004D4A80
-#define reportDefault func_004D4B38
-#define reportProcessingInstruction func_004D4958
-#define setContext func_004D54F8
-#define setElementTypePrefix func_004D4DA8
-#define storeAttributeValue func_004D4028
-#define storeAtts func_004D0BA0
-#define storeEntityValue func_004D4528
-#define storeRawNames func_004CFBA8
 #define streqci func_004E5558
 #define toAscii func_004E55D8
 #define unicode_byte_type func_004DD110
@@ -433,7 +218,7 @@ typedef SHIM_PTRDIFF_T ptrdiff_t;
 
 void *memcpy(void *, const void *, size_t);
 void *memmove(void *, const void *, size_t);
-void *func_005A48D8(void *, int, size_t);
+void *memset(void *, int, size_t);
 int memcmp(const void *, const void *, size_t);
 size_t strlen(const char *);
 char *strcpy(char *, const char *);
@@ -453,7 +238,7 @@ char *strcat(char *, const char *);
 
 #define HAVE_MEMMOVE
 
-#endif 
+#endif
 
 #elif defined(MACOS_CLASSIC)
 /*================================================================
@@ -527,13 +312,13 @@ char *strcat(char *, const char *);
 
 #undef size_t
 
-#endif 
+#endif
 
 #else
 #ifdef HAVE_EXPAT_CONFIG_H
 #include <expat_config.h>
 #endif
-#endif 
+#endif
 
 /* internal.h
 
@@ -579,9 +364,9 @@ char *strcat(char *, const char *);
 #if !defined(__cplusplus) && !defined(inline)
 #ifdef __GNUC__
 #define inline __inline
-#endif 
 #endif
-#endif 
+#endif
+#endif
 
 #ifdef __cplusplus
 #define inline inline
@@ -602,38 +387,38 @@ char *strcat(char *, const char *);
 extern "C" {
 #endif
 
-#define XML_TOK_TRAILING_RSQB -5 
+#define XML_TOK_TRAILING_RSQB -5
 
-#define XML_TOK_NONE -4          
-#define XML_TOK_TRAILING_CR -3   
+#define XML_TOK_NONE -4
+#define XML_TOK_TRAILING_CR -3
 
-#define XML_TOK_PARTIAL_CHAR -2  
-#define XML_TOK_PARTIAL -1       
+#define XML_TOK_PARTIAL_CHAR -2
+#define XML_TOK_PARTIAL -1
 #define XML_TOK_INVALID 0
 
 #define XML_TOK_START_TAG_WITH_ATTS 1
 #define XML_TOK_START_TAG_NO_ATTS 2
-#define XML_TOK_EMPTY_ELEMENT_WITH_ATTS 3 
+#define XML_TOK_EMPTY_ELEMENT_WITH_ATTS 3
 #define XML_TOK_EMPTY_ELEMENT_NO_ATTS 4
 #define XML_TOK_END_TAG 5
 #define XML_TOK_DATA_CHARS 6
 #define XML_TOK_DATA_NEWLINE 7
 #define XML_TOK_CDATA_SECT_OPEN 8
 #define XML_TOK_ENTITY_REF 9
-#define XML_TOK_CHAR_REF 10               
+#define XML_TOK_CHAR_REF 10
 
-#define XML_TOK_PI 11                     
-#define XML_TOK_XML_DECL 12               
+#define XML_TOK_PI 11
+#define XML_TOK_XML_DECL 12
 #define XML_TOK_COMMENT 13
-#define XML_TOK_BOM 14                    
+#define XML_TOK_BOM 14
 
 #define XML_TOK_PROLOG_S 15
-#define XML_TOK_DECL_OPEN 16              
-#define XML_TOK_DECL_CLOSE 17             
+#define XML_TOK_DECL_OPEN 16
+#define XML_TOK_DECL_CLOSE 17
 #define XML_TOK_NAME 18
 #define XML_TOK_NMTOKEN 19
-#define XML_TOK_POUND_NAME 20             
-#define XML_TOK_OR 21                     
+#define XML_TOK_POUND_NAME 20
+#define XML_TOK_OR 21
 #define XML_TOK_PERCENT 22
 #define XML_TOK_OPEN_PAREN 23
 #define XML_TOK_CLOSE_PAREN 24
@@ -643,14 +428,14 @@ extern "C" {
 #define XML_TOK_PARAM_ENTITY_REF 28
 #define XML_TOK_INSTANCE_START 29
 
-#define XML_TOK_NAME_QUESTION 30          
-#define XML_TOK_NAME_ASTERISK 31          
-#define XML_TOK_NAME_PLUS 32              
-#define XML_TOK_COND_SECT_OPEN 33         
-#define XML_TOK_COND_SECT_CLOSE 34        
-#define XML_TOK_CLOSE_PAREN_QUESTION 35   
-#define XML_TOK_CLOSE_PAREN_ASTERISK 36   
-#define XML_TOK_CLOSE_PAREN_PLUS 37       
+#define XML_TOK_NAME_QUESTION 30
+#define XML_TOK_NAME_ASTERISK 31
+#define XML_TOK_NAME_PLUS 32
+#define XML_TOK_COND_SECT_OPEN 33
+#define XML_TOK_COND_SECT_CLOSE 34
+#define XML_TOK_CLOSE_PAREN_QUESTION 35
+#define XML_TOK_CLOSE_PAREN_ASTERISK 36
+#define XML_TOK_CLOSE_PAREN_PLUS 37
 #define XML_TOK_COMMA 38
 
 #define XML_TOK_ATTRIBUTE_VALUE_S 39
@@ -661,20 +446,20 @@ extern "C" {
 
 #ifdef XML_DTD
 #define XML_TOK_IGNORE_SECT 42
-#endif 
+#endif
 
 #ifdef XML_DTD
 #define XML_N_STATES 4
-#else 
+#else
 #define XML_N_STATES 3
-#endif 
+#endif
 
 #define XML_PROLOG_STATE 0
 #define XML_CONTENT_STATE 1
 #define XML_CDATA_SECTION_STATE 2
 #ifdef XML_DTD
 #define XML_IGNORE_SECTION_STATE 3
-#endif 
+#endif
 
 #define XML_N_LITERAL_TYPES 2
 #define XML_ATTRIBUTE_VALUE_LITERAL 0
@@ -685,7 +470,7 @@ extern "C" {
 #define XML_UTF16_ENCODE_MAX 2
 
 typedef struct position {
-  
+
   unsigned long lineNumber;
   unsigned long columnNumber;
 } POSITION;
@@ -765,7 +550,7 @@ struct encoding {
 #define XmlIgnoreSectionTok(enc, ptr, end, nextTokPtr) \
    XmlTok(enc, XML_IGNORE_SECTION_STATE, ptr, end, nextTokPtr)
 
-#endif 
+#endif
 
 #define XmlLiteralTok(enc, literalType, ptr, end, nextTokPtr) \
   (((enc)->literalScanners[literalType])(enc, ptr, end, nextTokPtr))
@@ -862,7 +647,7 @@ XmlInitUnknownEncodingNS(void *mem,
 }
 #endif
 
-#endif 
+#endif
 
 extern const unsigned namingBitmap[320];
 extern const unsigned char nmstrtPages[256];
@@ -871,7 +656,7 @@ extern const unsigned char namePages[256];
 #ifdef XML_DTD
 #define IGNORE_SECTION_TOK_VTABLE , PREFIX(ignoreSectionTok)
 #else
-#define IGNORE_SECTION_TOK_VTABLE 
+#define IGNORE_SECTION_TOK_VTABLE
 #endif
 
 #define VTABLE1 \
@@ -984,7 +769,7 @@ struct normal_encoding {
   int (PTRFASTCALL *isNmstrtMin)(const ENCODING *, const char *);
   int (PTRFASTCALL *byteToAscii)(const ENCODING *, const char *);
   int (PTRCALL *charMatches)(const ENCODING *, const char *, int);
-#endif 
+#endif
   int (PTRFASTCALL *isName2)(const ENCODING *, const char *);
   int (PTRFASTCALL *isName3)(const ENCODING *, const char *);
   int (PTRFASTCALL *isName4)(const ENCODING *, const char *);
@@ -1009,7 +794,7 @@ struct normal_encoding {
 
 #else
 
-#define STANDARD_VTABLE(E) 
+#define STANDARD_VTABLE(E)
 
 #endif
 
@@ -1060,8 +845,8 @@ enum {
   BT_DIGIT,
   BT_NAME,
   BT_MINUS,
-  BT_OTHER, 
-  BT_NONASCII, 
+  BT_OTHER,
+  BT_NONASCII,
   BT_PERCNT,
   BT_LPAR,
   BT_RPAR,
@@ -1403,7 +1188,7 @@ static int PTRCALL
 PREFIX(ignoreSectionTok)(const ENCODING *enc, const char *ptr,
                          const char *end, const char **nextTokPtr);
 
-#endif 
+#endif
 
 static int PTRCALL
 PREFIX(isPublicId)(const ENCODING *enc, const char *ptr, const char *end,
@@ -1457,7 +1242,7 @@ PREFIX(updatePosition)(const ENCODING *enc,
 #undef IS_NMSTRT_CHAR_MINBPC
 #undef IS_INVALID_CHAR
 
-enum {  
+enum {
   UTF8_cval1 = 0x00,
   UTF8_cval2 = 0xc0,
   UTF8_cval3 = 0xe0,
@@ -1604,15 +1389,14 @@ E ## toUtf16(const ENCODING *enc, \
 #define GET_LO(ptr) ((unsigned char)(ptr)[0])
 #define GET_HI(ptr) ((unsigned char)(ptr)[1])
 
- 
-static void  PTRCALL 
-little2_toUtf8(const ENCODING *enc, 
-            const char **fromP, const char *fromLim, 
+static void  PTRCALL
+little2_toUtf8(const ENCODING *enc,
+            const char **fromP, const char *fromLim,
             char **toP, const char *toLim);
- 
-static void  PTRCALL 
-little2_toUtf16(const ENCODING *enc, 
-             const char **fromP, const char *fromLim, 
+
+static void  PTRCALL
+little2_toUtf16(const ENCODING *enc,
+             const char **fromP, const char *fromLim,
              unsigned short **toP, const unsigned short *toLim);
 
 #undef SET2
@@ -1624,15 +1408,14 @@ little2_toUtf16(const ENCODING *enc,
 #define GET_LO(ptr) ((unsigned char)(ptr)[1])
 #define GET_HI(ptr) ((unsigned char)(ptr)[0])
 
- 
-static void  PTRCALL 
-big2_toUtf8(const ENCODING *enc, 
-            const char **fromP, const char *fromLim, 
+static void  PTRCALL
+big2_toUtf8(const ENCODING *enc,
+            const char **fromP, const char *fromLim,
             char **toP, const char *toLim);
- 
-static void  PTRCALL 
-big2_toUtf16(const ENCODING *enc, 
-             const char **fromP, const char *fromLim, 
+
+static void  PTRCALL
+big2_toUtf16(const ENCODING *enc,
+             const char **fromP, const char *fromLim,
              unsigned short **toP, const unsigned short *toLim);
 
 #undef SET2
@@ -1670,7 +1453,7 @@ little2_isNmstrtMin(const ENCODING *enc, const char *p);
 #undef VTABLE
 #define VTABLE VTABLE1, little2_toUtf8, little2_toUtf16
 
-#else 
+#else
 
 #undef PREFIX
 #define PREFIX(ident) little2_ ## ident
@@ -1853,7 +1636,7 @@ static int PTRCALL
 PREFIX(ignoreSectionTok)(const ENCODING *enc, const char *ptr,
                          const char *end, const char **nextTokPtr);
 
-#endif 
+#endif
 
 static int PTRCALL
 PREFIX(isPublicId)(const ENCODING *enc, const char *ptr, const char *end,
@@ -1882,7 +1665,7 @@ PREFIX(sameName)(const ENCODING *enc, const char *ptr1, const char *ptr2)
         return 0;
     LEAD_CASE(4) LEAD_CASE(3) LEAD_CASE(2)
 #undef LEAD_CASE
-      
+
       if (*ptr1++ != *ptr2++)
         return 0;
       break;
@@ -1932,12 +1715,22 @@ PREFIX(sameName)(const ENCODING *enc, const char *ptr1, const char *ptr2)
       }
     }
   }
-  
+
 }
 
 static int PTRCALL
 PREFIX(nameMatchesAscii)(const ENCODING *enc, const char *ptr1,
-                         const char *end1, const char *ptr2);
+                         const char *end1, const char *ptr2)
+
+{
+  for (; *ptr2; ptr1 += MINBPC(enc), ptr2++) {
+    if (ptr1 == end1)
+      return 0;
+    if (!CHAR_MATCHES(enc, ptr1, *ptr2))
+      return 0;
+  }
+  return ptr1 == end1;
+}
 
 static int PTRFASTCALL
 PREFIX(nameLength)(const ENCODING *enc, const char *ptr);
@@ -1969,7 +1762,7 @@ PREFIX(updatePosition)(const ENCODING *enc,
 #undef IS_NMSTRT_CHAR_MINBPC
 #undef IS_INVALID_CHAR
 
-#endif 
+#endif
 
 #ifdef XML_NS
 
@@ -2022,7 +1815,7 @@ big2_isNmstrtMin(const ENCODING *enc, const char *p);
 #undef VTABLE
 #define VTABLE VTABLE1, big2_toUtf8, big2_toUtf16
 
-#else 
+#else
 
 #undef PREFIX
 #define PREFIX(ident) big2_ ## ident
@@ -2205,7 +1998,7 @@ static int PTRCALL
 PREFIX(ignoreSectionTok)(const ENCODING *enc, const char *ptr,
                          const char *end, const char **nextTokPtr);
 
-#endif 
+#endif
 
 static int PTRCALL
 PREFIX(isPublicId)(const ENCODING *enc, const char *ptr, const char *end,
@@ -2259,7 +2052,7 @@ PREFIX(updatePosition)(const ENCODING *enc,
 #undef IS_NMSTRT_CHAR_MINBPC
 #undef IS_INVALID_CHAR
 
-#endif 
+#endif
 
 #ifdef XML_NS
 
@@ -2374,7 +2167,7 @@ unknown_toUtf16(const ENCODING *enc,
 ENCODING *
 XmlInitUnknownEncoding(void *mem,
                        int *table,
-                       CONVERTER convert, 
+                       CONVERTER convert,
                        void *userData);
 
 enum {
@@ -2385,7 +2178,7 @@ enum {
   UTF_16_ENC,
   UTF_16BE_ENC,
   UTF_16LE_ENC,
-  
+
   NO_ENC
 };
 
@@ -2496,8 +2289,7 @@ NS(XmlParseXmlDecl)(int isGeneralTextEntity,
 ENCODING *
 XmlInitUnknownEncodingNS(void *mem,
                          int *table,
-                         CONVERTER convert, 
+                         CONVERTER convert,
                          void *userData);
 
-#endif 
-
+#endif

@@ -7,8 +7,8 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-extern "C" int D_0065837C;
-extern "C" Node *D_0088D948;
+extern "C" int object_mutex;
+extern "C" Node *objects;
 extern "C" int func_005ADCE0(int sema);
 extern "C" int func_005ADCC0(int sema);
 
@@ -19,8 +19,8 @@ extern "C" void func_005BEC48(int value, Node *n)
     n->m0 = 0;
     n->mC = 0;
     n->m10 = 0;
-    func_005ADCE0(D_0065837C);
-    n->next = D_0088D948;
-    D_0088D948 = n;
-    func_005ADCC0(D_0065837C);
+    func_005ADCE0(object_mutex);
+    n->next = objects;
+    objects = n;
+    func_005ADCC0(object_mutex);
 }

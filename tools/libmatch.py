@@ -180,16 +180,23 @@ def learn_symbols(orig, mine, relocs, addr, symbols):
     the addend lands in."""
     by_section = {}
     for name, value, size, sec, stype in symbols:
-        if name and not name.startswith(".") and sec in SECTION_NAMES and stype in (1, 2):  # OBJECT, FUNC
+        if name and not name.startswith(".") and sec in SECTION_NAMES and (stype in (1, 2) or (stype == 0 and sec != ".text")):
+            # Old gas leaves local uninitialized objects as STT_NOTYPE.
             by_section.setdefault(sec, []).append((value, name))
     for v in by_section.values():
         v.sort()
 
     def owner(sec, addend):
         best = None
-        for value, name in by_section.get(sec, []):
+        objects = by_section.get(sec, [])
+        for value, name in objects:
             if value <= addend:
                 best = (value, name)
+        # Indexed accesses such as table[k - 1] can encode -sizeof(element)
+        # in the relocation even though the first table starts at section zero.
+        # Its zero-offset symbol still gives the section base unambiguously.
+        if best is None and addend < 0 and objects and objects[0][0] == 0:
+            best = objects[0]
         return best
 
     out = {}
@@ -275,7 +282,7 @@ def scan_file(cfg, path, candidates):
     # A data section is placed as a whole: when every learned symbol of a section agrees on one
     # base, the section kept the compiler's layout and every other symbol sits at base + offset.
     for sec in (".rodata", ".data", ".sdata", ".bss", ".sbss"):
-        syms = [(n, v) for n, v, _, s, t in symbols if s == sec and t == 1 and n]
+        syms = [(n, v) for n, v, _, s, t in symbols if s == sec and t in (0, 1) and n and not n.startswith(".")]
         bases = {learned[n] - v for n, v in syms if n in learned}
         if len(bases) == 1:
             base = bases.pop()
@@ -400,6 +407,9 @@ def flatten(cfg, name, depth=0, seen=None, conditional=False):
     with open(path, encoding="utf-8", errors="replace") as source_file:
         text = strip_comments(source_file.read(), keep_first=base == cfg["source"],
                               keep=tuple(cfg.get("keep_notices", ())))
+    # Preprocessor line markers carry no declarations. In particular they must
+    # not split a K&R function head from its parameter declarations.
+    text = re.sub(r"(?m)^\s*#\s*(?:line\s+)?\d+\b[^\n]*", "", text)
     out = []
     in_header = False  # inside the kept first comment (newlib's documentation shows `#include`s)
     text_lines = text.split("\n")
@@ -457,8 +467,8 @@ MACRO_DEF = re.compile(r"^\s*#\s*define\s+(\w+)\((\w+)\)\s*(.*)$")
 MACRO_UNDEF = re.compile(r"^\s*#\s*undef\s+(\w+)")
 EXTERN_C = re.compile(r'\s*extern\s+"C(?:\+\+)?"\s*\{')  # also libio's `extern "C++" {`
 # An old-style definition's head: `name (a, b)` followed by the parameter declarations (newlib).
-KNR_HEAD = re.compile(r"\b\w+\s*\(\s*(?:\w+\s*,\s*)*\w+\s*\)\s*(?:[^;{}=]+;\s*)+$")
-KNR_PARAMS = re.compile(r"\(\s*(?:\w+\s*,\s*)*\w+\s*\)\s*(?:[^;{}=]+;\s*)+$")
+KNR_HEAD = re.compile(r"\b\w+\s*\(\s*(?:\w+\s*,\s*)*\w+\s*\)\s*(?:[^;{}=]++;\s*+)+$")
+KNR_PARAMS = re.compile(r"\(\s*(?:\w+\s*,\s*)*\w+\s*\)\s*(?:[^;{}=]++;\s*+)+$")
 
 
 def expand_name(macros, text):
@@ -475,6 +485,13 @@ def expand_name(macros, text):
         return m.group(1) or m.group(2)
     m = re.search(r"(\w+)\s*\(", text)
     return m.group(1) if m else None
+
+
+def mask_comments(text):
+    """Whitespace-mask comments while preserving every line and column."""
+    tokens = re.compile(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|/\*[\s\S]*?\*/|//[^\n]*')
+    return tokens.sub(lambda m: re.sub(r"[^\r\n]", " ", m.group())
+                      if m.group().startswith(("/*", "//")) else m.group(), text)
 
 
 def code_chars(line):
@@ -505,11 +522,12 @@ def expand_function_macros(lines):
     out = []
     i = 0
     depth = 0  # only invocations outside every brace (file scope) define functions
+    code_lines = mask_comments("\n".join(line for line, _ in lines)).split("\n")
     while i < len(lines):
         line, origin = lines[i]
         m = MACRO_HEAD.match(line)
         if not line.lstrip().startswith("#"):
-            depth += sum((c == "{") - (c == "}") for _, c in code_chars(line))
+            depth += sum((c == "{") - (c == "}") for _, c in code_chars(code_lines[i]))
         if m:
             body = [m.group(3)]
             j = i
@@ -517,7 +535,12 @@ def expand_function_macros(lines):
                 j += 1
                 body.append(lines[j][0])
             text = "\n".join(b.rstrip().rstrip("\\") for b in body)
-            if "{" in text:
+            declaration_wrapper = ("{" not in text and ";" in text
+                                   and any(text.rstrip().endswith(p.strip())
+                                           for p in m.group(2).split(",")))
+            if declaration_wrapper:
+                text = text.replace(";", ";\n")
+            if "{" in text or declaration_wrapper:
                 macros[m.group(1)] = ([p.strip() for p in m.group(2).split(",") if p.strip()], text)
             out += lines[i:j + 1]
             i = j + 1
@@ -537,7 +560,14 @@ def expand_function_macros(lines):
                 and all(inv and inv.group(1) in macros for inv in invocations)):
             for inv in invocations:
                 params, text = macros[inv.group(1)]
-                args = [a.strip() for a in inv.group(2).split(",")]
+                args, start, nesting = [], 0, 0
+                argument_text = inv.group(2)
+                for col, ch in code_chars(argument_text):
+                    nesting += (ch in "([{") - (ch in ")]}")
+                    if ch == "," and nesting == 0:
+                        args.append(argument_text[start:col].strip())
+                        start = col + 1
+                args.append(argument_text[start:].strip())
                 for p, a in zip(params, args):
                     text = re.sub(r"(?<!#)#\s*" + p + r"\b", lambda _: json.dumps(a), text)
                     text = re.sub(r"\b" + p + r"\s*##\s*", a, text)
@@ -554,13 +584,15 @@ def find_definitions(lines):
     """Top-level definitions in the flattened text, plus the one-parameter macros active at each."""
     defs = []
     macros = {}
+    code_lines = mask_comments("\n".join(line for line, _ in lines)).split("\n")
     depth = 0
     stmt_start = 0       # first line of the current top-level statement
     pending = None       # (kind, name, brace_line, brace_col[, closing line]) once "{" was seen at depth 0
     namespace_pending = False
     continued = False    # inside a backslash-continued directive
     skipping = 0         # #if nesting inside an `#ifndef MACRO` whose macro is defined (its fallback)
-    for i, (line, _) in enumerate(lines):
+    for i, _ in enumerate(lines):
+        line = code_lines[i]
         stripped = line.strip()
         if continued or stripped.startswith("#"):
             continued = stripped.endswith("\\")
@@ -599,7 +631,7 @@ def find_definitions(lines):
         for col, ch in code_chars(line):
             if ch == "{":
                 if depth == 0 and pending is None:
-                    head = "\n".join(l for l, _ in lines[stmt_start:i]) + "\n" + line[:col]
+                    head = "\n".join(code_lines[stmt_start:i]) + "\n" + line[:col]
                     if (re.search(r"\)\s*(?:(?:const|volatile)\s*)*$", head.strip()) and "=" not in head.split(")")[-1]) or KNR_HEAD.search(head.strip()):
                         kind, name = "func", expand_name(macros, head)
                     elif "=" in head:
@@ -631,8 +663,14 @@ def find_definitions(lines):
                 defs.append(Definition("data", name, stmt_start, brace_line, brace_col, i))
             pending = None
             stmt_start = i + 1
-        elif depth == 0 and pending is None and (";" in code or not stripped):
-            if not (stripped and KNR_HEAD.search("\n".join(l for l, _ in lines[stmt_start:i + 1]).strip())):
+        elif depth == 0 and pending is None and ";" in code:
+            head = "\n".join(code_lines[stmt_start:i + 1]).strip()
+            if not KNR_HEAD.search(head):
+                stmt_start = i + 1
+        elif depth == 0 and pending is None and not stripped:
+            # Ignore leading comments/whitespace, but preserve blank lines inside
+            # ANSI argument lists or between a K&R head and its declarations.
+            if not "\n".join(code_lines[stmt_start:i + 1]).strip():
                 stmt_start = i + 1
     return defs
 
@@ -671,6 +709,10 @@ def mangled_key(sym):
     """(class or None, function name) of a gcc 2.96 mangled C++ symbol, e.g.
     `__rs__7istreamRc` -> ("istream", "operator>>"), `_$_7filebuf` -> ("filebuf", "~filebuf");
     a plain C name gives (None, name)."""
+    builtin = {"__builtin_new": "operatornew", "__builtin_vec_new": "operatornew[]",
+               "__builtin_delete": "operatordelete", "__builtin_vec_delete": "operatordelete[]"}
+    if sym in builtin:
+        return (None, builtin[sym])
     m = re.match(r"^_[$.]_(.+)$", sym)
     if m:
         cls = mangled_class(m.group(1))
@@ -694,7 +736,7 @@ def mangled_key(sym):
     return (mangled_class(rest), name)
 
 
-CXX_DECLARATOR = re.compile(r"((?:\w+\s*::\s*)*)(~\s*\w+|operator\s*(?:\(\s*\)|\[\s*\]|new\b|delete\b|[^\w\s(]+)|\w+)\s*\(")
+CXX_DECLARATOR = re.compile(r"((?:\w+\s*::\s*)*)(~\s*\w+|operator\s*(?:\(\s*\)|\[\s*\]|new\b(?:\s*\[\s*\])?|delete\b(?:\s*\[\s*\])?|[^\w\s(]+)|\w+)\s*\(")
 
 
 def cxx_key(sig):
@@ -703,6 +745,11 @@ def cxx_key(sig):
     if not m:
         return (None, None)
     cls = re.sub(r"\s", "", m.group(1)).rstrip(":") or None
+    # GCC's pre-standard ABI omits the std namespace from mangled names.
+    if cls == "std":
+        cls = None
+    elif cls and cls.startswith("std::"):
+        cls = cls[5:]
     return (cls, re.sub(r"\s", "", m.group(2)))
 
 
@@ -776,6 +823,12 @@ def declare_external_objects(text, names):
               r"\s*(?:=[^;]*)?;[ \t]*$"
         )
         text = decl.sub(lambda m: f"extern {m.group(1).strip()} {name}{m.group(2)};", text)
+        function_pointer = re.compile(
+            r"(?m)^(?:static\s+)?(?!(?:extern|typedef)\b)"
+            r"([A-Za-z_][\w:<>]*(?:[ \t]+[A-Za-z_][\w:<>]*)*[ \t*&]+)"
+            r"(\(\s*\*\s*" + re.escape(name) + r"\s*\)[^;=]*)\s*=\s*[^;]+;"
+        )
+        text = function_pointer.sub(lambda m: f"extern {m.group(1).strip()} {m.group(2).rstrip()};", text)
     return text
 
 
@@ -807,6 +860,8 @@ def emit_source(cfg, report, names, stubs=False, pad=False):
     if None in targets:
         return None
     first = targets[0]
+    const_declarations = {function for target in names
+                          for function in cfg.get("const_contexts", {}).get(target, ())}
     funcs = {d.name for d in defs if d.kind == "func"}
     funcs |= {n for n, e in report["functions"].items()}
     addr = int(entries[0]["address"], 16)
@@ -815,19 +870,35 @@ def emit_source(cfg, report, names, stubs=False, pad=False):
     known = {}
     for s, a in report["symbols"].items():
         known[s] = int(a, 16)
-    local_statics = {}  # base name -> address, for `static` tables inside the targets
+    # Unused inline helpers can still emit their local static storage with old
+    # GCC. Externalize uniquely identified helper statics as well as target ones.
+    static_addresses = {}
+    for symbol, value in known.items():
+        local = re.match(r"^(\w+)\.\d+$", symbol)
+        if local:
+            static_addresses.setdefault(local.group(1), set()).add(value)
+    local_statics = {name: next(iter(values)) for name, values in static_addresses.items()
+                     if len(values) == 1}
     for e in entries:
         for s, a in e.get("refs", {}).items():
             known[s] = int(a, 16)
             m = re.match(r"^(\w+)\.\d+$", s)
             if m:
                 local_statics[m.group(1)] = int(a, 16)
+    needed_names = set(names)
+    for entry in entries:
+        needed_names.update(entry.get("refs", {}))
+    aliases = {}
+    for symbol, value in known.items():
+        aliases.setdefault(value, []).append(symbol)
+    unused_aliases = {symbol for group in aliases.values() if len(group) > 1
+                      for symbol in group if symbol not in needed_names}
     defines = {}
     # C++: no renames (a #define cannot rename a mangled symbol, and a C name such as __overflow
     # may also be a C++ function's); the judge and the build resolve the mangled names through
     # config/libs/NAME_symbols.txt (tools/symbols.py).
     for s, a in ({} if cxx else known).items():
-        if "." in s or "$" in s:
+        if "." in s or "$" in s or s in unused_aliases or s in cfg.get("preserve_symbols", ()):
             continue
         defines[s] = symbol_name(a, s in funcs)
     for n, e in zip(names, entries):
@@ -854,21 +925,28 @@ def emit_source(cfg, report, names, stubs=False, pad=False):
             i += 1
             continue
         sig = d.signature(lines)
+        # Actual retained bodies supply their own analysis. Only an omitted
+        # classifier needs its observed property on the external declaration.
+        prototype_prefix = ("__attribute__((const)) "
+                            if d.kind == "func" and d.name in const_declarations else "")
         if d.kind == "func" and d in targets:
             out.append(sig)
-            out += localize_statics(d.body(lines), local_statics, known)
+            out += localize_statics(d.body(lines), local_statics, known,
+                                    preserve=cfg.get("preserve_statics", ()))
         elif d.kind == "func" and (cfg.get("keep_inline") or cxx) and is_inline(sig):
-            out += [l for l, _ in lines[d.sig_start:d.body_end + 1]]
+            out.append(sig)
+            out += localize_statics(d.body(lines), local_statics, known,
+                                    preserve=cfg.get("preserve_statics", ()))
         elif d.kind == "func" and cxx and (cxx_key(sig)[0] or "::" in sig):
             pass
         elif d.kind == "func" and stubs and d.sig_start < first.sig_start:
             out.append(f"__attribute__((section(\"{STUB_SECTION}\"))) {sig.strip()} {{ }}")
-        elif d.kind == "func" and KNR_HEAD.search(sig.strip()):
+        elif d.kind == "func" and KNR_HEAD.search(mask_comments(sig).strip()):
             # an old-style definition (libio's): declared without its parameters, so the header's
             # prototype stays the one in force
-            out.append(KNR_PARAMS.sub("()", sig.strip()) + ";")
+            out.append(prototype_prefix + KNR_PARAMS.sub("()", mask_comments(sig).strip()) + ";")
         elif d.kind == "func":
-            out.append(sig.rstrip() + ";")
+            out.append(prototype_prefix + sig.lstrip().rstrip() + ";")
         elif d.kind == "data":
             # Every table becomes a declaration: with its address when known, else by name (then the
             # judge only notes the reference); a definition would drag its initializer's functions in.
@@ -888,6 +966,12 @@ def emit_source(cfg, report, names, stubs=False, pad=False):
     if pad:
         head.append(RODATA_PAD)
     text = declare_external_objects("\n".join(head + out), cfg.get("extern_objects", ()))
+    for cls in cfg.get("explicit_inline_destructors", ()):
+        declaration = re.compile(r"(class\s+" + re.escape(cls)
+                                 + r"\s*:\s*public\s+\w+\s*\{\s*public\s*:)")
+        text = declaration.sub(lambda m: m.group(1) + f"\n    virtual ~{cls}() {{}}", text)
+    if cfg.get("omit_implementation_pragmas"):
+        text = re.sub(r'(?m)^\s*#pragma implementation[^\n]*', '', text)
     text = "\n".join(line.rstrip() for line in text.split("\n"))
     text = re.sub(r"\n{3,}", "\n\n", text)
     # Compiling a whole unit lets GCC infer that an earlier definition cannot
@@ -919,6 +1003,8 @@ def count_elements(init):
 def extern_declaration(decl, init):
     """`static T name[] = {...};` as `extern T name[N];` (the element count kept for sizeof)."""
     decl = re.sub(r"\bstatic\b", "extern", decl.strip(), count=1)
+    if not re.search(r"\bextern\b", decl):
+        decl = "extern " + decl
     decl = decl[:decl.rindex("=")].rstrip() if "=" in decl else decl
     if decl.endswith("[]"):
         decl = decl[:-2] + f"[{count_elements(init)}]"
@@ -928,7 +1014,7 @@ def extern_declaration(decl, init):
 STATIC_INIT = re.compile(r"\bstatic\b(?P<decl>[^=;{}]*?\b(?P<name>\w+)\s*(?:\[[^\]]*\]\s*)*)=\s*(?=\{)")
 
 
-def localize_statics(body, local_statics, known):
+def localize_statics(body, local_statics, known, preserve=()):
     """Inside the chosen function: a `static` table with a known address becomes an extern at that
     address (the object must not carry its own data)."""
     text = "\n".join(body)
@@ -946,7 +1032,7 @@ def localize_statics(body, local_statics, known):
             continue
         semi = text.find(";", end)
         name = m.group("name")
-        if semi < 0 or name not in local_statics:
+        if semi < 0 or name not in local_statics or name in preserve:
             continue
         known[name] = local_statics[name]
         out.append(text[pos:m.start()])
@@ -954,7 +1040,16 @@ def localize_statics(body, local_statics, known):
                    + extern_declaration("static" + m.group("decl") + "=", text[m.end():end]))
         pos = semi + 1
     out.append(text[pos:])
-    return "".join(out).split("\n")
+    text = "".join(out)
+    # Inline helpers can take the address of an uninitialized local static.
+    for name, addr in local_statics.items():
+        if name in preserve:
+            continue
+        plain = re.compile(r"\bstatic\s+([^;={}]*\b" + re.escape(name) + r"\s*(?:\[[^]]*\])?)\s*;")
+        if plain.search(text):
+            text = plain.sub(lambda m: f"\n#define {name} D_{addr:08X}\nextern {m.group(1)};", text)
+            known[name] = addr
+    return text.split("\n")
 
 
 def judge(addr, text, ext=".c"):
@@ -979,7 +1074,7 @@ def is_function_start(addr):
         return False
 
 
-def emit_groups(report, only=None):
+def emit_groups(report, only=None, source_groups=()):
     """[(names, address)] to emit: one function each, except a function the inventory does not
     know (only reached through a pointer), which joins the one found right before it."""
     found = sorted(((int(e["address"], 16), n, e) for n, e in report["functions"].items()
@@ -993,6 +1088,28 @@ def emit_groups(report, only=None):
             prev[3] = addr - prev[1] + e["size"]
             continue
         groups.append([[name], addr, e["file"], e["size"]])
+    claimed = set()
+    for requested in source_groups:
+        if claimed.intersection(requested):
+            raise ValueError("overlapping configured source groups")
+        claimed.update(requested)
+        missing = [name for name in requested
+                   if report["functions"].get(name, {}).get("status") != "found"]
+        if missing:
+            raise ValueError(f"source group has unmatched functions: {missing}")
+        selected = [group for group in groups if set(group[0]).intersection(requested)]
+        files = {group[2] for group in selected}
+        if len(files) != 1:
+            raise ValueError("source group spans different translation units")
+        selected.sort(key=lambda group: group[1])
+        first, last = selected[0], selected[-1]
+        start, end = first[1], last[1] + last[3]
+        if any(start <= group[1] < end and group not in selected for group in groups):
+            raise ValueError("source group omits an intervening function")
+        groups = [group for group in groups if group not in selected]
+        groups.append([[name for group in selected for name in group[0]],
+                       start, first[2], end - start])
+    groups.sort(key=lambda group: group[1])
     out = []
     for names, addr, _, _ in groups:
         if only and not set(names) & set(only):
@@ -1008,7 +1125,7 @@ def emit_groups(report, only=None):
 
 def cmd_emit(cfg, jobs, only=None):
     report = json.load(open(os.path.join(OUT, f"{cfg['name']}.json")))
-    todo = emit_groups(report, only)
+    todo = emit_groups(report, only, cfg.get("source_groups", ()))
     print(f"{len(todo)} sources to emit")
     compiler = cfg.get("compiler")  # a [compilers.NAME] entry of project.toml, named by a marker line
     pending = os.path.join(OUT, "pending")

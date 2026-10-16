@@ -1,0 +1,18 @@
+version = "gcc snapshot 2000-10-03"
+license = "GPLv2 or later with the GCC runtime exception (THIRD_PARTY.md)"
+url = "https://gcc.gnu.org/ (gcc snapshot 2000-10-03, gcc/)"
+source = "../gt4-thirdparty/gcc-runtime-20001003/unwind"
+range = ["0x005BC000", "0x005BFAC8"]
+files = ["libgcc-eh.c", "frame-runtime.c"]
+defines = ["L_eh"]
+compiler = "ee-gcc2.96-exceptions-as2004"
+include_once = true
+keep_inline = true
+marker = "licence: gcc-runtime (GPL with the GCC runtime exception, see THIRD_PARTY.md)"
+preserve_symbols = ["memcpy", "memset", "malloc", "free", "abort", "strcmp"]
+extern_objects = ["dwarf_reg_size_table_initialized", "dwarf_reg_size_table", "objects", "object_mutex", "__terminate_func", "get_eh_context"]
+keep_notices = ["Free Software Foundation"]
+source_groups = [
+  ["old_find_exception_handler", "find_exception_handler", "get_reg_addr", "copy_reg", "next_stack_level", "__unwinding_cleanup", "throw_helper"],
+  ["fde_merge", "end_fde_sort"],
+]

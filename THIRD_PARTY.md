@@ -11,7 +11,7 @@ where it is expected) and the files under `src/` are derived from it mechanicall
 |---|---|---|---|---|
 | Expat (James Clark's XML parser) | 1.95.7 (2003-10-20) | MIT (see below) | 0x4ce828-0x4e6bd8, 323 functions, 98.5 KB | https://github.com/libexpat/libexpat/tree/R_1_95_7/expat |
 | newlib (Cygnus/Red Hat embedded C library) | 1.9.0 (2001-03; the PS2 toolchain's libc) | BSD-style per file, COPYING.NEWLIB (see below) | libc and libm in the library region (string, stdio, stdlib, ctype, reent around 0x5a2000-0x5b7000) | https://sourceware.org/pub/newlib/newlib-1.9.0.tar.gz |
-| SGI STL headers (libstdc++ v2 of gcc 2.96, snapshot 2000-10-03) | stl_*.h, type_traits.h | HP/SGI permissive notice (see below) | template instantiations in the library region (0x5d5000-0x60f000: rb-tree members of `map<basic_string, T>`) | gcc-20001003/libstdc++/stl/ |
+| SGI STL headers (libstdc++ v2 of gcc 2.96, snapshot 2000-10-03) | stl_*.h, type_traits.h | HP/SGI permissive notice (see below) | template instantiations in the library region, including rb-tree, heap and sorting members | gcc-20001003/libstdc++/stl/ |
 | GNU libio (iostream/streambuf of libstdc++ v2) | 2.8.0, gcc snapshot 2000-10-03 | GPLv2 with the libio special exception (see below); marked `licence: libio` | 0x591248-0x59bee8 (its objects), 0x614068-0x616370 (out-of-line copies of its inline members and its classes' type_info functions) | gcc-20001003/libio/ |
 | GCC runtime (libgcc.a of gcc 2.96: libgcc2.c, fp-bit.c, frame.c, the C++ runtime cp/tinfo*.cc, exception.cc, new*.cc) | gcc snapshot 2000-10-03 | GPL with the GCC runtime/linking exceptions (see below); marked `licence: gcc-runtime` | 0x5ba060-0x5c1ce0, 0x616370-0x616f24 | gcc-20001003/gcc/ |
 | Mersenne Twister MT19937 (Matsumoto and Nishimura) | mt19937ar.c (2002/1/26) | BSD 3-clause (see below) | 0x579438-0x579708 (init_genrand, genrand_int32 and its refill, on a state object) | http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/MT2002/emt19937ar.html |
@@ -44,12 +44,15 @@ unmodified source (`python tools/libmatch.py scan expat`).
 
 ## newlib 1.9.0
 
-The game's C library is newlib, built with `-O2 -G0 -fno-strict-aliasing` (ee-gcc 2.96, 64-bit
-`long`): `config/libs/newlib.toml` describes the staged source tree and `python tools/libmatch.py
-scan newlib` finds its functions. 32 compile to the original bytes so far (string, stdio, stdlib:
-fclose/fflush/fread/fwrite/fseek/__sfvwrite, strcasecmp/strstr/strtok_r/strtoul, bsearch, atoi...);
-the small `_r` wrappers look alike and scan to the same addresses, so ambiguous names were dropped
-from build/libmatch/newlib.json by hand before `emit`. Each file of newlib carries its own notice; the emitted sources keep
+The game's C library is newlib, built with `-O2 -G0` (ee-gcc 2.96, 64-bit
+`long`); some units also require `-fno-strict-aliasing`. `config/libs/newlib.toml`
+describes the public source tree and `python tools/libmatch.py scan newlib` finds
+its functions. The preprocessed and strict-aliasing configurations also recover
+`qsort`, formatted-I/O wrappers, floating-point predicates and the big-number
+helpers used by decimal conversion. See [knowledge/c-runtime-units.md](knowledge/c-runtime-units.md)
+for reproducible staging and source groups. Small `_r` wrappers can have identical
+bodies; a scan result alone is insufficient to assign their names or call targets.
+Each file of newlib carries its own notice; the emitted sources keep
 the first comment of their file, and a file without a notice of its own is covered by section (9) of
 newlib's COPYING.NEWLIB:
 
@@ -70,8 +73,63 @@ California, Berkeley), David M. Gay's for dtoa/mprec/strtod ("Copyright (c) 1991
 to use, copy, modify and distribute provided the entire notice is included) and Sun's for libm
 ("Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved. Developed at SunPro, a Sun
 Microsystems, Inc. business. Permission to use, copy, modify, and distribute this software is freely
-granted, provided that this notice is preserved."). Files touched by DJ Delorie (`mktemp.c`,
-`getenv*.c`, `putenv*.c`, `setenv*.c`), whose terms are in a separate `copying.dj`, are left out.
+granted, provided that this notice is preserved.").
+
+### Historical DJ Delorie contributions
+
+The exact 1.9.0 tree includes `newlib/libc/sys/go32/copying.dj`; its verbatim
+text is retained in [LICENSES/newlib-1.9.0-copying.dj](LICENSES/newlib-1.9.0-copying.dj).
+The modern newlib licence summary must not be substituted for that older text.
+Our earlier blanket exclusion of every DJ-touched file was too broad:
+`copying.dj` explicitly says that DJ's changes to BSD- or FSF-copyrighted source
+fall under the original copyright terms. Consequently, BSD-derived files such
+as the environment-variable routines need their actual BSD and DJ notices
+reviewed and retained together; an author's name alone does not classify them
+as GPL-only. This is a per-file review, not approval of every function in the
+`0x0057A128` region as newlib.
+
+For source governed by DJ's GPL terms, retain the complete applicable notices
+and a `licence: newlib-dj` marker in the first eight lines, separately from
+`gcc-runtime`. The GCC runtime linking exception does not transfer to newlib
+code. [LICENSES/GPL-2.0.txt](LICENSES/GPL-2.0.txt) retains the unmodified GPLv2
+text; a source file's actual version/permission clauses still govern it.
+The existing generic exclusion supports `build.py --without newlib-dj`.
+No DJ-only implementation is imported by this documentation change.
+
+## MSSG MPEG-2 reference decoder: contribution route
+
+The MPEG decoder near `0x005547E8` has been identified by a contributor as the
+MPEG Software Simulation Group reference decoder (`slice`, `decode_macroblock`,
+`motion_vectors`, and related routines). The public MPEG-2 codec 1.2 release
+(July 19, 1996) is a source candidate; its exact correspondence with the game's
+build and the contributor's 53 functions still needs reproducible extraction.
+No count of those functions is added to progress by this entry.
+
+The original [README](https://github.com/mobinsheng/mpeg2codec/blob/master/README)
+and [getpic.c notice](https://github.com/mobinsheng/mpeg2codec/blob/master/src/mpeg2dec/getpic.c)
+are available in a public mirror of the MSSG distribution. The legacy notice
+is identified by SPDX as [MPEG-SSG](https://spdx.org/licenses/MPEG-SSG.html), and
+its original copyright/disclaimer is retained in
+[LICENSES/MPEG-SSG.txt](LICENSES/MPEG-SSG.txt). This is its own notice; it is not
+MIT/BSD and does not replace additional per-file author notices or establish
+patent clearance.
+
+The 53 functions can be prepared as a separate `libmatch.py` contribution:
+
+- Pin the actual public archive/revision and its hash in the library configuration;
+  keep that source tree outside this repository. Identify any changes from that
+  public snapshot, especially platform adapters.
+- Preserve each source file's complete copyright, disclaimer, permission and
+  additional author notices. Include a `licence: mpeg-ssg` marker in the first
+  eight lines so `build.py --without mpeg-ssg` can exclude the component.
+- Include only bodies derived from the identified public distribution; console
+  SDK implementations are outside this route. The per-file terms remain part
+  of review before merge; adding this entry grants no new upstream permissions.
+- Require the unchanged instruction judge, the complete original `.text`/`.data`
+  proof, and an exclusion build. Regeneration alone does not establish a match.
+
+These requirements allow the contributor to prepare the reproducible block
+without mixing its provenance with the existing newlib/GCC extractions.
 
 ## Code that a build can leave out: `licence:` markers
 
@@ -99,14 +157,18 @@ ioseekpos.c, outfloat.c, ioungetc.c, iogetc.c, ioputc.c, filebuf.cc, ioassign.cc
 floatconv.c, fileops.c, stdiostream.cc), and the out-of-line copies of its inline members with its
 classes' type_info functions at 0x614068-0x616370 (grouped class by class: ostream, istream,
 iostream, the `_withassign` streams, ios, streambuf, filebuf, `_ios_fields`, `_IO_FILE`, stdiobuf,
-istdiostream, ostdiostream). `python tools/libmatch.py scan libio` finds 209 of its functions
-byte for byte (23.3 KB); 83 sources in `src/` were written from the unmodified source by
-`libmatch.py emit libio` (each starts with a comment naming libio, the function and its file, the
-`licence: libio` line, then the file's own notice; floatconv.c's sources also keep David M. Gay's
-notice, which that file carries for its dtoa code), 6 more need the nothrow stubs and wait in
-`build/libmatch/pending/`. The other libio functions in `src/` (262 sources, written by agents from
-the assembly) carry the same marker after a first comment naming the libio function; all 345 are
-judged MATCH. `iovfscanf.c`'s and `outfloat.c`'s code descends from 4.4BSD (their own notice is the
+istdiostream, ostdiostream). `python tools/libmatch.py scan libio` finds its public
+source functions byte for byte. Emitted sources start with the library, function,
+source file and `licence: libio` marker, followed by the file's own notice.
+`floatconv.c` sources also retain David M. Gay's notice. The complete 17-function
+`fileops.c` unit and the 18 consecutive big-number helpers in `floatconv.c` match
+with strict aliasing enabled; `libio-fileops.toml` and `libio-floatconv.toml`
+describe them. Buffer helpers retain their real earlier definitions to preserve
+GCC's call analysis. The two isolated C++ extractions for boolean input and
+`quorem` express that earlier-callee context with `throw()` declarations.
+See [knowledge/c-runtime-units.md](knowledge/c-runtime-units.md).
+Sources reconstructed from the assembly carry the same license marker.
+`iovfscanf.c`'s and `outfloat.c`'s code descends from 4.4BSD (their own notice is the
 FSF one above), and `ioputc.c` carries the GNU C Library's LGPL notice.
 
 The libio notice (each file carries it, with its own years):
@@ -140,6 +202,10 @@ The two RTTI source units (`tinfo.cc` and `tinfo2.cc`) match 45/45 functions, 6,
 Eight previously missing functions (4,136 bytes) were extracted from the public snapshot with
 `config/libs/gcc-rtti.toml`, preserving their original copyright and runtime exception.
 See [knowledge/gcc-rtti.md](knowledge/gcc-rtti.md) for staging and reproduction.
+Allocation, exception dispatch, unwind frames and soft-float additions are staged
+with `tools/stage_gcc_runtime.py`; their target-layout adjustments, original
+compiler profiles and exact exception-table placement are documented in
+[knowledge/gcc-exception-runtime.md](knowledge/gcc-exception-runtime.md).
 
 libgcc2.c, fp-bit.c and frame.c say:
 
@@ -232,3 +298,7 @@ copies and that both that copyright notice and this permission notice appear in 
 documentation. Hewlett-Packard Company and Silicon Graphics make no representations about the
 suitability of this software for any purpose. It is provided "as is" without express or implied
 warranty.
+
+Sorting-family reproduction and the inferred value layouts are described in
+[`knowledge/stl-sorting.md`](knowledge/stl-sorting.md); the public SGI template
+bodies remain in the existing licensed headers.

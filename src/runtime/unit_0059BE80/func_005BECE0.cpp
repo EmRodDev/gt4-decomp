@@ -7,21 +7,21 @@ struct Node {
     Node *next;
 };
 
-extern int D_0065837C;
-extern Node *D_0088D948;
+extern int object_mutex;
+extern Node *objects;
 
 extern "C" int func_005ADCE0(int sema);
 extern "C" void func_005ADCC0(int sema);
 
 extern "C" void func_005BECE0(int v, Node *n) {
-    int *sema = &D_0065837C;
+    int *sema = &object_mutex;
     n->m8 = v;
     n->m4 = 0;
     n->m0 = 0;
     n->mC = v;
     n->m10 = 0;
     func_005ADCE0(*sema);
-    n->next = D_0088D948;
-    D_0088D948 = n;
+    n->next = objects;
+    objects = n;
     func_005ADCC0(*sema);
 }

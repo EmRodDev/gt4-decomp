@@ -2,20 +2,20 @@
  * licence: gcc-runtime (GPL with the GCC runtime exception, see THIRD_PARTY.md) */
 typedef void (*Func)(void);
 
-extern Func D_00659970;
-extern int D_00659974;
+extern Func get_eh_context;
+extern int dwarf_reg_size_table_initialized;
 
-void func_005BC710(void);
+void init_reg_size_table(void);
 void func_005BC930(void);
-void func_005BC998(void);
+void eh_context_static(void);
 
 void func_005BC930(void)
 {
-    Func *entry = &D_00659970;
+    Func *entry = &get_eh_context;
 
     if (*entry == func_005BC930)
-        *entry = func_005BC998;
-    if (D_00659974 == 0)
-        func_005BC710();
+        *entry = eh_context_static;
+    if (dwarf_reg_size_table_initialized == 0)
+        init_reg_size_table();
     (*entry)();
 }

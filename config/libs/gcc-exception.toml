@@ -1,0 +1,16 @@
+version = "gcc snapshot 2000-10-03 (old C++ ABI)"
+license = "GPLv2 or later with the GCC runtime exception (THIRD_PARTY.md)"
+url = "https://gcc.gnu.org/ (gcc snapshot 2000-10-03, gcc/cp/)"
+source = "../gt4-thirdparty/gcc-runtime-20001003/exception"
+range = ["0x005C1498", "0x005C1CE0"]
+files = ["new1.cc", "new2.cc", "exception.cc"]
+defines = ["L_op_new", "L_op_vnew"]
+compiler = "ee-gcc2.96-exceptions"
+include_once = true
+keep_inline = true
+marker = "licence: gcc-runtime (GPL with the GCC runtime exception, see THIRD_PARTY.md)"
+false_macros = ["L_op_newnt", "L_op_vnewnt", "L_op_delete", "L_op_vdel", "L_op_delnt", "L_op_vdelnt"]
+extern_objects = ["__unexpected_func"]
+omit_implementation_pragmas = true
+explicit_inline_destructors = ["bad_alloc"]
+source_groups = [["__check_eh_spec", "__check_null_eh_spec", "__throw_bad_cast", "__throw_bad_typeid", "uncaught_exception__Fv"]]
