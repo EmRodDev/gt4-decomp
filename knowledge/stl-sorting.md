@@ -214,3 +214,26 @@ Reproduce the six reviewed sources with:
 python knowledge/recipes/sort_callers.py
 python tools/match.py check 005C60A0 build/swarm/sort-callers/reproduced/func_005C60A0.cpp
 ```
+
+### Complete proof of the caller continuation
+
+Clean source commit `d966d6d223a258b0c2fdb12e8c4045a42983190c` preserves the maintainer's
+`0da8fbb558b3b028212838f63b27e4479fd2c7f1` integration history and adds the
+six callers/writeback functions plus the 64-bit row-id type correction.
+The complete non-partial build again reproduces both original segment hashes
+listed above. All 30 additions and the corrected `00448820` helper are linked;
+there are no orphan or duplicate sources.
+
+The six additions contribute **3,784 bytes**: 900 bytes for each callback
+caller, 336 bytes for each float/string writeback, and 412 bytes for sequence
+writeback. Combined with the 24 algorithm instantiations, this is **14,204
+additional linked bytes** over upstream `ab5ca09f43e1380ead55cccb825d2a759aff3e08`.
+Linked source code rises from 4,152,116 to 4,166,320 bytes.
+The helper's existing 72 bytes are unchanged and do not count as a new gain.
+
+All seven reviewed functions pass the unchanged judge after the type and
+readability cleanup. Both recipes reproduce all 30 new sources exactly.
+All 85 regression tests, source organization, and assembly policy checks pass.
+The generated report records 29,074 / 30,962 matched functions,
+4,213,048 matched code bytes (79.77%), and
+78.88% linked code. The later proof/README commit changes documentation only.
