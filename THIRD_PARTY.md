@@ -73,8 +73,63 @@ California, Berkeley), David M. Gay's for dtoa/mprec/strtod ("Copyright (c) 1991
 to use, copy, modify and distribute provided the entire notice is included) and Sun's for libm
 ("Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved. Developed at SunPro, a Sun
 Microsystems, Inc. business. Permission to use, copy, modify, and distribute this software is freely
-granted, provided that this notice is preserved."). Files touched by DJ Delorie (`mktemp.c`,
-`getenv*.c`, `putenv*.c`, `setenv*.c`), whose terms are in a separate `copying.dj`, are left out.
+granted, provided that this notice is preserved.").
+
+### Historical DJ Delorie contributions
+
+The exact 1.9.0 tree includes `newlib/libc/sys/go32/copying.dj`; its verbatim
+text is retained in [LICENSES/newlib-1.9.0-copying.dj](LICENSES/newlib-1.9.0-copying.dj).
+The modern newlib licence summary must not be substituted for that older text.
+Our earlier blanket exclusion of every DJ-touched file was too broad:
+`copying.dj` explicitly says that DJ's changes to BSD- or FSF-copyrighted source
+fall under the original copyright terms. Consequently, BSD-derived files such
+as the environment-variable routines need their actual BSD and DJ notices
+reviewed and retained together; an author's name alone does not classify them
+as GPL-only. This is a per-file review, not approval of every function in the
+`0x0057A128` region as newlib.
+
+For source governed by DJ's GPL terms, retain the complete applicable notices
+and a `licence: newlib-dj` marker in the first eight lines, separately from
+`gcc-runtime`. The GCC runtime linking exception does not transfer to newlib
+code. [LICENSES/GPL-2.0.txt](LICENSES/GPL-2.0.txt) retains the unmodified GPLv2
+text; a source file's actual version/permission clauses still govern it.
+The existing generic exclusion supports `build.py --without newlib-dj`.
+No DJ-only implementation is imported by this documentation change.
+
+## MSSG MPEG-2 reference decoder: contribution route
+
+The MPEG decoder near `0x005547E8` has been identified by a contributor as the
+MPEG Software Simulation Group reference decoder (`slice`, `decode_macroblock`,
+`motion_vectors`, and related routines). The public MPEG-2 codec 1.2 release
+(July 19, 1996) is a source candidate; its exact correspondence with the game's
+build and the contributor's 53 functions still needs reproducible extraction.
+No count of those functions is added to progress by this entry.
+
+The original [README](https://github.com/mobinsheng/mpeg2codec/blob/master/README)
+and [getpic.c notice](https://github.com/mobinsheng/mpeg2codec/blob/master/src/mpeg2dec/getpic.c)
+are available in a public mirror of the MSSG distribution. The legacy notice
+is identified by SPDX as [MPEG-SSG](https://spdx.org/licenses/MPEG-SSG.html), and
+its original copyright/disclaimer is retained in
+[LICENSES/MPEG-SSG.txt](LICENSES/MPEG-SSG.txt). This is its own notice; it is not
+MIT/BSD and does not replace additional per-file author notices or establish
+patent clearance.
+
+The 53 functions can be prepared as a separate `libmatch.py` contribution:
+
+- Pin the actual public archive/revision and its hash in the library configuration;
+  keep that source tree outside this repository. Identify any changes from that
+  public snapshot, especially platform adapters.
+- Preserve each source file's complete copyright, disclaimer, permission and
+  additional author notices. Include a `licence: mpeg-ssg` marker in the first
+  eight lines so `build.py --without mpeg-ssg` can exclude the component.
+- Include only bodies derived from the identified public distribution; console
+  SDK implementations are outside this route. The per-file terms remain part
+  of review before merge; adding this entry grants no new upstream permissions.
+- Require the unchanged instruction judge, the complete original `.text`/`.data`
+  proof, and an exclusion build. Regeneration alone does not establish a match.
+
+These requirements allow the contributor to prepare the reproducible block
+without mixing its provenance with the existing newlib/GCC extractions.
 
 ## Code that a build can leave out: `licence:` markers
 
