@@ -46,3 +46,15 @@ Public input SHA-256:
 The 00565DA0 cleanup removes inherited unused shape members and describes the
 actual cleared buffer size. Unlike the rejected first-round 005D80D8 draft,
 none of the accepted sources requires a dead store to force stack layout.
+
+## Complete proof
+
+Clean source commit d3a59ecf63a1015b8c035a67adc780515f88716f: .text and
+.data both exactly match the original, all eight new source addresses are linked,
+and no orphan or duplicate source is reported. Linked code is 4,151,644 bytes,
+a gain of 2,672 bytes over PR #20. All 85 existing regression tests, source
+organization and assembly policy checks pass.
+
+Generated progress: 29,040 / 30,962 matched functions (93.79%), 4,198,372
+matched code bytes (79.49%), and 78.60% linked code. The later README/report
+commit changes documentation only.
