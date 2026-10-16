@@ -48,3 +48,7 @@ For the 53 MPEG candidates, use the separate extraction and per-file notice
 review described in THIRD_PARTY.md. No decoder match is claimed here.
 
 The resolved 125-address reservation is retained in [contribution-claims.json](contribution-claims.json). Check and refresh that pinned manifest before assigning further library targets; a file-name comparison is insufficient. The local sorting scan excludes those addresses for subsequent batches.
+
+## Integrated checkpoint
+
+PRs #17 and #19 are included by merge commits in the integration branch, preserving contributor history. The ten standalone overlap entries listed above are removed here because the verified #18 groups already provide those addresses. The five previously deferred sorting sources are supplied by #19.
