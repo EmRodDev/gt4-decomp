@@ -20,7 +20,7 @@
 #define __cp_push_exception func_005C17B8
 #define func_005C1758 func_005C1758
 #define __default_terminate func_005BC5D8
-#define __default_unexpected__Fv func_005C1680
+#define func_005C1680 func_005C1680
 #define __deregister_frame func_005BEE38
 #define __deregister_frame_info func_005BED78
 #define func_005BA0D8 func_005BA0D8
@@ -32,8 +32,8 @@
 #define __empty func_005BC638
 #define func_005BFB00 func_005BFB00
 #define __ffsdi2 func_005BBB40
-#define __fpcmp_parts_d func_005BE3E8
-#define __fpcmp_parts_f func_005BDF58
+#define func_005BE3E8 func_005BE3E8
+#define func_005BDF58 func_005BDF58
 #define __frame_state_for func_005BF910
 #define __gcc_bcmp func_005BC3F0
 #define __get_dynamic_handler_chain func_005BCBF8
@@ -43,15 +43,15 @@
 #define __get_eh_table_version func_005BCEF0
 #define func_005C0E28 func_005C0E28
 #define __lshrdi3 func_005BB940
-#define __make_dp func_005BE508
-#define __make_fp func_005BE1A0
+#define func_005BE508 func_005BE508
+#define func_005BE1A0 func_005BE1A0
 #define func_005BA770 func_005BA770
 #define __muldi3 __muldi3
 #define __ne__C9type_infoRC9type_info func_006163D0
 #define __negdi2 func_005BB8E8
 #define __new_handler D_00659A20
-#define __pack_d func_005BE250
-#define __pack_f func_005BD900
+#define func_005BE250 func_005BE250
+#define func_005BD900 func_005BD900
 #define __pure_virtual hArrayCompare__virtual_01
 #define __register_frame func_005BECB0
 #define __register_frame_info func_005BEC48
@@ -126,7 +126,7 @@
 #define __udivmoddi4 func_005BBBE8
 #define __umoddi3 __umoddi3
 #define __uncatch_exception func_005C1970
-#define __unpack_f func_005BD9B8
+#define func_005BD9B8 func_005BD9B8
 #define __unwinding_cleanup func_005BD2B8
 #define abort func_005A2E68
 #define func_005C08C8 func_005C08C8
@@ -145,27 +145,27 @@
 #define __user_type_info__virtual_01 __user_type_info__virtual_01
 #define __class_type_info__virtual_01 __class_type_info__virtual_01
 #define func_005BFC20 func_005BFC20
-#define fpadd func_005BDC18
-#define fpcmp func_005BE020
-#define fpsub func_005BDC70
-#define fptosi func_005BE120
-#define fptoui func_005BE1D0
+#define fpadd fpadd
+#define fpcmp fpcmp
+#define fpsub fpsub
+#define fptosi fptosi
+#define fptoui fptoui
 #define free free
 #define malloc malloc
 #define memcpy func_005A4724
 #define memset func_005A48D8
 #define name__C9type_info func_006163C8
-#define set_terminate__FPFv_v func_005C1690
-#define set_unexpected__FPFv_v func_005C16A8
+#define func_005C1690 func_005C1690
+#define func_005C16A8 func_005C16A8
 #define sitofp func_005BE070
 #define strcmp func_0057F238
 #define strlen func_0057F260
 #define func_005C1668 func_005C1668
-#define uncaught_exception__Fv func_005C1C68
-#define unexpected__Fv func_005C16C0
+#define func_005C1C68 func_005C1C68
+#define func_005C16C0 func_005C16C0
 #define func_005BFBA8 func_005BFBA8
 #define what__C9bad_alloc bad_alloc__virtual_01
-#define what__C9exception bad_typeid__virtual_01
+#define bad_typeid__virtual_01 bad_typeid__virtual_01
 extern void abort (void) __attribute__ ((__noreturn__));
 /* libgcc2.c compiled for one function, as gcc's mklibgcc does: -DL_muldi3 */
 #define L_muldi3
