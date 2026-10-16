@@ -1,0 +1,1 @@
+struct S{unsigned long n;int bits;unsigned*p;char*end;};void f(S*s,char*p,int n){unsigned off=(unsigned)p&3;char*e=p+n;unsigned*q=(unsigned*)(p-off);unsigned v=*q++;off*=8;s->end=e;s->bits=-(int)off;s->p=q;s->n=v>>off;}
