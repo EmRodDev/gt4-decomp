@@ -1,4 +1,4 @@
-# Synchronized FIFO and request-pool operations
+# Synchronization, voice selection, and playback operations
 
 ## FIFO types and behavior
 
@@ -66,13 +66,13 @@ Every judged hypothesis, including rejected drafts, is
 recorded in `knowledge/attempts.jsonl`. Individual matches must still survive
 the full link before being counted as new source coverage.
 
-## Protected request containers
+## Protected voice containers
 
-`00559378` and `00559548` visit two `0x18`-byte request slots. Each non-null
-request is passed to `0055D688(request, 0)` and its slot is cleared. The former
+`00559378` and `00559548` visit two `0x18`-byte voice slots. Each non-null
+voice is passed to `0055D688(voice, 0)` and its slot is cleared. The former
 also clears the enclosing `0x58`-byte pool entry's state at `+0x54`; the latter
-returns the entry pointer without that state write. `0055D688` updates request
-flags. It does not directly free the request, so these methods do not invent a
+returns the entry pointer without that state write. `0055D688` updates voice
+flags. It does not directly free the voice, so these methods do not invent a
 delete/free operation or assign ownership to the unknown fields.
 
 `0055C6E0` counts nodes whose **64-bit** flags intersect the supplied mask.
@@ -87,7 +87,51 @@ These methods all bracket their work with the global interrupt section at
 control flow. The new sources preserve unknown layout regions rather than
 giving them speculative application-level names.
 
-## Full-build proof
+The canonical global at `006518C8` is `SDDRV::VoiceSystem::master_`, recovered
+with high confidence in `config/gthd_globals.txt`. `0055C808` links nodes through
+the same head at `+0x2AA8` and next pointer at `+0x0C`; `0055C520` generates IDs
+from the counter at system offset `+0xA0`. This supports the provisional names
+`VoiceListEntry` and `VoiceSystemListView`, replacing the initial request-list
+names. The accessed fields do not establish whether the list owns its voices
+or is specifically a free/pending list, so neither role is claimed.
+
+## Channel selection and playback control
+
+`0055CFE8` initializes a voice-selection filter, including the system pointer,
+64-bit selection mask, comparison criteria, and enabled-constraint bits. The
+callee `0055C9A0` synchronously scans 48 voice records of stride `0xE0` starting
+at system offset `+0xA8` and applies callbacks to matching records. It does not
+enqueue the filter for later use. A zero selection mask skips the traversal
+and optional completion callback. The complete selector remains unmatched;
+this behavior is established from its original instructions.
+
+| Function | Recovered behavior |
+| --- | --- |
+| `0055B898` | Read one stream byte, update the current channel's value, then apply `0055CFD8` to voices selected by mask and channel. |
+| `0055BBB0` | Set a channel's signed-byte toggle to zero or one; when it and the channel's active word are nonzero, apply `0055CF28` to matching voices. |
+| `0055BDF0` | Stop an active embedded playback record, initialize playback with the supplied context/input/index, and store the new record state. |
+| `0055CD18` | Apply a control-value pair to one bank, or to banks zero and one when the selector is two. |
+
+The channel methods share identical partial layouts: 16 channel records begin
+at owner offset `+0x68` with stride `0x1C`; their value, signed toggle, and active
+word lie at record offsets `+7`, `+9`, and `+0x14`. Typed array indexing replaces
+raw address arithmetic. Constraint bit `0x40` enables the channel criterion.
+`0055B898` prepares that filter before interrupt entry; `0055BBB0` prepares its
+criterion/constraint fields after entry. The sources preserve that timing.
+
+The playback record is **embedded** at owner offset `+0x234`, rather than
+referenced by a pointer stored there. Its context remains an opaque pointer
+through the parameter, record, and initializer declaration. The unsigned index
+comparison resets an index only when it is strictly greater than the input
+word at `+4`; equality is preserved. The saved float's application-level
+meaning remains unknown. These views do not claim a complete player layout.
+
+`0055DDD8`, called by `0055CD18`, addresses two control banks with stride
+`0x1D0`, sets a dirty bit, and writes a 16-bit pair. Argument words remain
+32-bit in the wrapper; narrowing them in its prototype would add behavior
+before the callee's own stores.
+
+## Initial eight-function proof
 
 The non-partial build of clean source commit
 `8c7d081e998632edaf210264fda8dca07b516fbd` passed with `tools/build.py --jobs 2`.
