@@ -261,5 +261,5 @@ All 85 repository tests, the packet boundary harness and source organization
 check passed. Progress figures were regenerated from this full build using
 `tools/report.py` and `tools/update_readme.py`. Upstream was refreshed before
 target selection and after implementation; it remained at the revision above.
-The batch stays on the existing contribution branch while further related
-work is accumulated, rather than opening another small PR.
+The sixteen functions form one contribution covering synchronized transfers
+and the related audio stream, voice-selection and packet routines.
