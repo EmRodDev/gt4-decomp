@@ -239,3 +239,27 @@ the diary. In particular, the driver registers an INTC callback and removes
 it using an integer registration identifier, rather than an old handler
 pointer. No register pinning, artificial spills or assembly replacement was
 admitted to close these differences.
+
+## Combined sixteen-function proof
+
+The non-partial build of clean source commit
+`9725590810bb74529c54755052d9a389a3aec4bf` passed with
+`tools/build.py --jobs 2`. All sixteen additions over upstream
+`6e18ca3768811c5338401f42b6e13e619e502428` have the exact status `linked`.
+The four MIDI/transfer functions contribute 1,004 bytes (100, 220, 340 and
+344 respectively); the accumulated batch contributes **2,740 linked code
+bytes** beyond that upstream revision.
+
+The full build covers 29,073 sources and 4,169,060 linked code bytes, with
+55,106 verified source data bytes, no orphan sources and no duplicate
+sources. Both segments remain identical to the original:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`
+
+All 85 repository tests, the packet boundary harness and source organization
+check passed. Progress figures were regenerated from this full build using
+`tools/report.py` and `tools/update_readme.py`. Upstream was refreshed before
+target selection and after implementation; it remained at the revision above.
+The batch stays on the existing contribution branch while further related
+work is accumulated, rather than opening another small PR.
