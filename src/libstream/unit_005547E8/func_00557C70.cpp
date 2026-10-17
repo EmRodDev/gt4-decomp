@@ -1,0 +1,50 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+struct Self {
+    char pad[0xD0];
+    char sub[0x630 - 0xD0];
+    char sub2[0x75C - 0x630];
+    int f75C, f760, f764;
+    int pad768[0];
+    int stream;
+    int f76C;
+    int f770, f774, f778, f77C, f780;
+    float f784;
+    int bufA;
+    int f78C;
+    float f790, f794;
+    int bufB;
+    const void *vtable;
+};
+extern char D_00689A60[];
+extern "C" void func_004AFE28(Self *);
+extern "C" void func_005677F0(void *);
+extern "C" void func_00611078(void *, void *);
+extern "C" int func_00551240(int, int);
+extern "C" int func_005782E8(int, int);
+extern "C" void func_00557F88(Self *);
+extern "C" void func_00557F28(Self *);
+extern "C" void func_00557C70(Self *self, float volume) {
+    int tmp[8];
+    self->vtable = D_00689A60;
+    func_004AFE28(self);
+    func_005677F0(self->sub);
+    func_00611078(self->sub2, tmp + 4);
+    self->f75C = 0;
+    self->f760 = 0;
+    self->f764 = 0;
+    self->stream = func_00551240(-1, 0x2800);
+    self->f76C = 1;
+    self->f784 = volume;
+    self->f770 = 0;
+    self->f774 = 0;
+    self->f778 = 0;
+    self->f77C = 0;
+    self->f780 = 0;
+    self->bufA = func_005782E8(0, 0xFF);
+    self->f78C = 1;
+    self->f790 = 1.0f;
+    self->f794 = 1.0f;
+    self->bufB = func_005782E8(0, 0xFF);
+    func_00557F88(self);
+    func_00557F28(self);
+}
