@@ -184,3 +184,58 @@ reaching 2/106 differing instructions: a required-flags load and loop-counter
 initialization are scheduled in the opposite order. Additional natural helper
 and mask-type hypotheses did not close it. That candidate is excluded from
 `src/`; its diary records distinguish algorithm recovery from a proven match.
+
+## MIDI initialization, meta events, and transfer packets
+
+The next audio batch adds four functions from the same library unit:
+
+| Address | Recovered behavior |
+| --- | --- |
+| `0055AD20` | Initialize stream context, both cursors, timing resolution and state; select 120 BPM and obtain a stream identifier from the voice system. |
+| `0055B948` | Handle MIDI meta events: end-of-track (`0x2F`), tempo (`0x51`), or skip the supplied payload length. |
+| `0055E6D0` | Wait through the context helper, copy `0x3B8` bytes into shared transfer state under interrupt protection, mark dirty and notify the transfer helper. |
+| `0055F250` | Assemble an audio packet from three optional blocks, retaining each block's retail alignment and length behavior. |
+
+The MIDI initializer's float at `+0x40` is named `timingResolution`, not
+sample rate. Caller `0055B1E0` supplies `240.0f`; `0055A858` combines this
+resolution with beats per minute and the update frequency. The meta-event
+handler decodes three big-endian bytes as microseconds per quarter note and
+converts them to BPM using `60000000.0f / microsecondsPerQuarter`. Each cursor
+`get()` advances the stored cursor before reading the next byte, preserving
+the original sequence of accesses. The recovered routine assumes valid input;
+it does not add event-length checks absent from the original.
+
+These are partial object views. Offset-named state words in the initializer
+describe the observed stores, without claiming their complete runtime types.
+The shared transfer state's first word remains an opaque argument to
+`00578500`; that helper derives its wait context internally, so naming the
+word as a semaphore identifier would be unsupported. Restoring interrupts
+requires one `ei` instruction; its memory clobber records the compiler barrier.
+Interrupts are enabled only if they were enabled before entry.
+
+The packet's first block holds 16-bit words, its second holds a bitset, and
+its third starts with a byte length. The source must remain valid for each
+copy, and the caller must supply enough destination space; no allocation or
+ownership transfer occurs here. Header lengths are 16 bits, but copy sizes
+and cursor movement are full-width integers. A maximum word count therefore
+copies 131,074 bytes rather than two bytes. A third-block length of 65,535
+rounds to 65,536 bytes, although the stored block length wraps to zero. Its
+copy length is deliberately read again after destination clearing, as in
+the original. Null blocks preserve the retail writes, including the untouched
+padding byte in the null bitset block.
+
+The four final candidates passed independent instruction matching after
+readability cleanup. A temporary host harness compiled the actual packet
+source with AddressSanitizer and UndefinedBehaviorSanitizer and passed null
+block, bitset padding, maximum word-count, and 65,536-byte alignment fixtures.
+This supplements the target-compiler/full-link proof; it does not establish
+application-level validity for oversized packets.
+
+Four related candidates remain excluded from `src/`: native MIDI event
+dispatch `0055B360` (best 52/71 differing), ramp update `0055BC70` (37/76),
+by-value snapshot caching `0055F7B0` (64/108), and the audio driver loop
+`0055EB50` (49/66). Their bounded attempts and semantic corrections are in
+the diary. In particular, the driver registers an INTC callback and removes
+it using an integer registration identifier, rather than an old handler
+pointer. No register pinning, artificial spills or assembly replacement was
+admitted to close these differences.
