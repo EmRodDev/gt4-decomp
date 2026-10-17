@@ -85,7 +85,8 @@ repository root. Other workers run in parallel on other functions; they never to
    Then change the source structurally: statement order, types and signedness, temporaries and
    where they are declared, loop shape, early returns against one exit, a `switch` against an if
    chain, an inline helper. Do not repeat a form that already failed.
-5. Budget: the tries given in your prompt, every `try` run counted (reruns and compile failures
+5. Never mark a function `not attempted` because earlier tiers failed on it or because it looks large: make at least 3 real tries on its closest kept draft first (`swarm.py prompt` names it). Earlier tiers' notes are leads, not verdicts.
+   Budget: the tries given in your prompt, every `try` run counted (reruns and compile failures
    too). Stop early and give up when a draft is stuck on register numbering or instruction order
    only after 4 tries (a mechanical tool and a stronger tier work those), or still more than a
    third of the function away after 3. When your prompt says `Whole budget`, you are the last

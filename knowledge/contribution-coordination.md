@@ -54,3 +54,32 @@ The resolved 125-address reservation is retained in [contribution-claims.json](c
 PRs #17 and #19 are included by merge commits in the integration branch, preserving contributor history. The ten standalone overlap entries listed above are removed here because the verified #18 groups already provide those addresses. The five previously deferred sorting sources are supplied by #19.
 
 Four additional PR #17 XML overlaps (`004DDA88`, `004DE118`, `004E1A10`, `004E20A0`) retain the already validated #18 C extraction sources; the corresponding standalone C++ files are omitted from the combined tree.
+
+
+# Work division, 2026-10-17
+
+Why: on 2026-10-17 the owner's matching workers and a contributor's branch
+(`moesuito:codex/control-voice-init-2026-10-17`) closed the same six functions in `unit_005547E8`
+(`00556390`, `0055F3E8`, `005637A8`, `005638B0`, `005639B8`, `00563A88`) on the same day. The
+contributor's versions were kept: they read better (named constants and comments) and arrive with a
+complete-build proof. The owner's flat copies were set aside, not committed.
+
+Who works where (from `tools/upstream_overlap.py --units`, branches pushed in the last 7 days):
+
+| Contributor | Area | Units |
+|---|---|---|
+| moesuito | stream / SDK / audio runtime / MPEG | `unit_005547E8`, `unit_005676B0`, `unit_005FF878` |
+| Ganitzsh | game code: race, engine, adhoc, gamedata, UI, network graphics | `unit_00378778`, `unit_003E20A8`, `unit_00321330`, `unit_00364818`, `unit_003CCAE0`, `unit_00408DB8`, `unit_00101400`, `unit_00494578` (VU0 / GIF helpers) |
+| owner's workers | newlib / libm, libgcc, SDK glue below `0x57A128`, leftover game code | `unit_0059BE80`, `unit_0057A128`, `unit_003F7150`, `unit_001C4BE0`, `unit_005C9AE0` |
+
+Rules:
+
+1. Before leasing an area to a worker, run `python tools/upstream_overlap.py --units` and keep the
+   worker off the units and addresses it lists for a contributor. `--check ADDR,ADDR` says which of
+   some addresses someone else already holds.
+2. When both sides close the same function, keep the contributor's source if it passes `match.py
+   check` in the merged tree and reads at least as well; remove the other copy before the build
+   (a duplicated source fails the build).
+3. Merge a contributor's pushed commits by full branch, not by the PR head seen at review time: the
+   second commit of PR #26 (16 functions) was pushed after the first merge and was missed until
+   the branches were compared on 2026-10-17.
