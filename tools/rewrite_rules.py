@@ -1977,6 +1977,128 @@ def review(text):
     return out
 
 
+@rule("rotate_long", ("order",), "judge",
+      "2026-10-17: 004a4de0 (seven stores of a GS DMA tag builder), W1 lesson `the last source statement is emitted "
+      "first: to get emitted C,0,10,14,8 write 0,10,14,8,C`; rotate_run only reaches runs of exactly three",
+      "00555aa0")
+def rotate_long(c):
+    """Four to seven adjacent independent stores rotated by every amount and reversed: the
+    scheduler emits a run of stores in an order of its own, which is a rotation of the source order
+    (the last statement first, then the others as written). rotate_run reaches runs of three; the
+    packet builders of the network unit write six or seven field stores in a row."""
+    t = c.tree
+    for b in t.nodes:
+        if b.kind != "block":
+            continue
+        n = len(b.kids)
+        i = 0
+        while i < n:
+            j = i
+            while j < n and b.kids[j].kind == "simple" and not t.decl(b.kids[j]) and _target(t, b.kids[j]) \
+                    and pure(_rhs(t, b.kids[j])):
+                j += 1
+            if j - i < 4:
+                i = max(j, i + 1)
+                continue
+            run = b.kids[i:min(j, i + 7)]
+            i = max(j, i + 1)
+            if not all(_independent(t, x, y) for x in run for y in run if x is not y) \
+                    or not any(c.on_node(x) for x in run):
+                continue
+            gaps = [c.text[run[k].end:run[k + 1].start] for k in range(len(run) - 1)]
+            srcs = [t.src(x) for x in run]
+            orders = [(f"rotated left by {k}", [(m + k) % len(run) for m in range(len(run))])
+                      for k in range(1, len(run))]
+            orders.append(("reversed", list(range(len(run) - 1, -1, -1))))
+            for name, order in orders:
+                body = srcs[order[0]]
+                for g, o in zip(gaps, order[1:]):
+                    body += g + srcs[o]
+                yield f"lines {t.line(run[0].start)}-{t.line(run[-1].start)} {name}", \
+                    c.replace(run[0].start, run[-1].end, body)
+
+
+@rule("tail_return", ("order", "registers"), "judge",
+      "2026-10-17: W1/W2/W3 lessons on SDK glue and destructors: `a void wrapper that ends in the call becomes a "
+      "frameless sibling j; if the original has jal and a normal epilogue the callee has an extra argument and the "
+      "wrapper returns its int result`; `if (f & 1) return f2(this);` is what gives the sibling j in a destructor",
+      "00582da0")
+def tail_return(c):
+    """The function's last call statement written `return call(...);` (the function's own type
+    made `int` when it was void), and the reverse (`return call(...);` -> `call(...);`). A
+    returned call is a sibling `j` when the callee's type allows, a plain `jal` with the epilogue
+    when the wrapper returns an int the callee also declares; the two spellings differ in the
+    frame, the delay slot of the last store and the register of the result."""
+    t = c.tree
+    kids = t.root.kids if t.root is not None else []
+    if not kids:
+        return
+    last = kids[-1]
+    s = t.src(last)
+    if last.kind != "simple" or t.decl(last):
+        return
+    if re.match(r"^\s*return\s+[A-Za-z_]\w*\s*\(.*\)\s*;\s*$", s, re.S):
+        yield f"line {t.line(last.start)}: do not return the call", \
+            c.replace(last.start, last.end, re.sub(r"^(\s*)return\s+", r"\1", s, count=1))
+    elif re.match(r"^\s*[A-Za-z_]\w*\s*\(.*\)\s*;\s*$", s, re.S):
+        new_stmt = "return " + s.lstrip()
+        own = _own_header(c)
+        if c.void_function() and own:
+            start, header, fname = own
+            text = c.replace(last.start, last.end, new_stmt)
+            head = re.sub(rf"\bvoid(\s+)(?={re.escape(fname)}\s*\()", r"int\1", header)
+            yield f"line {t.line(last.start)}: return the last call, own type int", \
+                text[:start] + head + text[start + len(header):]
+        else:
+            yield f"line {t.line(last.start)}: return the last call", c.replace(last.start, last.end, new_stmt)
+
+
+FLOAT_LIT = re.compile(r"(?<![\w.])(\d+\.\d{5,})([fF])\b")
+DOUBLE_LIT = re.compile(r"(?<![\w.])(\d+\.\d{2,})(?![\dfFeE])")
+
+
+@rule("float_lit", ("registers", "length", "other"), "judge",
+      "2026-10-17 (W3, 0057d488 expf): `a float literal like 1.442695f rounds one ulp low in this compiler: write the "
+      "constant as a double literal assigned to a float`; the reverse for 0011e198 (2.55f read as 2.5f: a double "
+      "literal there turns the multiply into double arithmetic)",
+      "0057d488")
+def float_lit(c):
+    """A float literal with five or more decimals written without its `f` (a double literal that
+    the assignment narrows), and a double literal given its `f`: one literal at a time. The
+    compiler rounds `1.442695f` and `(float)1.442695` to different bit patterns, and a double
+    operand changes the arithmetic from single to double."""
+    a, b = c.tree.span
+    body = c.text[a:b]
+    for m in FLOAT_LIT.finditer(body):
+        yield f"{m.group(1)}{m.group(2)} -> {m.group(1)}", c.text[:a + m.start(2)] + c.text[a + m.end(2):]
+    for m in DOUBLE_LIT.finditer(body):
+        yield f"{m.group(1)} -> {m.group(1)}f", c.text[:a + m.end(1)] + "f" + c.text[a + m.end(1):]
+
+
+HOLD_LIT = re.compile(r"(?:(?<=[=!<>]=\s)|(?<=[<>]\s)|(?<==\s))(-?(?:0x[0-9A-Fa-f]+|\d+))\b(?!\s*[.\w])")
+
+
+@rule("hold_const", ("registers",), "judge",
+      "2026-10-17 (W1, 00565c30 `int busy = 1;` kept in a saved register across a poll loop; 0060b548 `the align "
+      "constants must live in variables or gcc folds them`)",
+      "00565c30")
+def hold_const(c):
+    """An integer constant that the body compares or assigns more than once given a local at the
+    top of the body (`int kc = 1;`) and used through it. The original keeps such a constant in a
+    callee-saved register across a loop or a call, which a literal never does."""
+    a, b = c.tree.span
+    body = c.text[a:b]
+    counts = collections.Counter(m.group(1) for m in HOLD_LIT.finditer(body))
+    for val, n in counts.most_common(4):
+        if n < 2 or val == "0":
+            continue
+        name = c.fresh("kc")
+        new_body = HOLD_LIT.sub(lambda m: name if m.group(1) == val else m.group(0), body)
+        brace = new_body.index("{") + 1
+        yield f"constant {val} ({n} uses) held in a local", \
+            c.text[:a] + new_body[:brace] + f"\n    int {name} = {val};" + new_body[brace:] + c.text[b:]
+
+
 def rules_for(*classes):
     """The names of the rules that answer any of the given classes of difference (the words of
     attempt_store.classify, which the oracle's natural_class / residual_class use too). "other",

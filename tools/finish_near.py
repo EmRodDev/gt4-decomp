@@ -76,9 +76,12 @@ ROOT = project.ROOT
 OUT = os.path.join(ROOT, "build", "finish")
 RESULTS = os.path.join(OUT, "results.jsonl")
 DRAFT = re.compile(r"^([0-9a-fA-F]{8})(?:[_.].*)?\.(c|cpp)$")
-# Profiles that are not variants of the game's compiler stay out: the SDK's 2.9, the libraries' -g
-# build, and the nosched1 pair (they hide a store-order difference instead of explaining it).
-SKIP_PROFILES = ("ee-gcc2.9-", "nsa-g", "nosched1")
+# Only the nosched1 pair stays out (it hides a store-order difference instead of explaining it).
+# The libraries' -g profiles (nsa-g: soft-float libm and stdio, 30+ closings on 2026-10-17) and the
+# SDK's 2.9 (glue below LIBRARY_START too, tried as C and as C++) were skipped until then, and were
+# the profile behind most of that day's closings.
+SKIP_PROFILES = ("ee-gcc2.9-", "nosched1")
+SWEEP_VERSION = 2  # a sweep row of an older version is redone: the profile list grew
 STEPS = ("sweep", "context", "rewrite")  # the steps that judge a draft and can keep a closer one
 DIFFER = re.compile(r"(\d+) of (\d+) instructions differ")
 VERSION = attempt_store.digest(attempt_store.read(__file__))[:8]  # of this tool, for the attempt store's pass rows
@@ -129,22 +132,23 @@ def drafts():
 # every SDK function.
 SDK_PROFILE = "ee-gcc2.9-991111"
 LIBRARY_START = 0x5547E8
+SDK_START = 0x3AC140  # the first function the SDK compiler built (autoloop.other_compiler)
 
 
-def with_profile(path, profile, addr):
+def with_profile(path, profile, addr, as_cpp=False):
     """A copy of the draft asking for `profile` on its first line (None: the project's compiler)."""
     lines = open(os.path.join(ROOT, path), encoding="utf-8", errors="replace").read().split("\n")
     if lines and project.COMPILER_MARKER.match(lines[0]):
         lines = lines[1:]
     ext = os.path.splitext(path)[1]
-    if profile == SDK_PROFILE:
+    if profile == SDK_PROFILE and not as_cpp:
         # The SDK's compiler takes C: a C++ draft is tried as C with its linkage markers dropped
         # (one that needs C++ just fails to compile and is not counted).
         ext = ".c"
         lines = re.sub(r'extern\s+"C"\s+(?!\{)', "", "\n".join(lines)).split("\n")
     if profile:
         lines.insert(0, f"/* compiler: {profile} */")
-    out = os.path.join(OUT, f"{addr:08x}", f"{profile or 'default'}{ext}")
+    out = os.path.join(OUT, f"{addr:08x}", f"{profile or 'default'}{'-cpp' if as_cpp else ''}{ext}")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(lines))
@@ -261,15 +265,17 @@ def sweep_one(addr, paths, profiles, swept, max_distance):
     row = {"step": "sweep", "addr": f"{addr:08x}", "draft": path, "sha": sha, "distance": best["distance"],
            "positional": best["positional"], "original": best["original"], "profiles": {}, "matched": None}
     current = project.source_compiler(os.path.join(ROOT, path))
-    if addr >= LIBRARY_START:
-        profiles = profiles + [SDK_PROFILE]
+    row["v"] = SWEEP_VERSION
+    tries = [(p, False) for p in [None] + profiles]
+    if addr >= SDK_START:
+        tries += [(SDK_PROFILE, False), (SDK_PROFILE, True)]  # as C, and as C++ (ring-buffer init, 005AEF80)
         row["sdk"] = True
-    for profile in [None] + profiles:
-        if profile == current:
+    for profile, as_cpp in tries:
+        if profile == current and not as_cpp:
             continue
-        variant = with_profile(path, profile, addr)
+        variant = with_profile(path, profile, addr, as_cpp)
         v = judge(addr, variant)
-        name = profile or "default"
+        name = (profile or "default") + ("+cpp" if as_cpp else "")
         if v["status"] == "match":
             row["matched"], row["saved"] = name, save(addr, variant)
             break
@@ -283,8 +289,7 @@ def sweep_one(addr, paths, profiles, swept, max_distance):
 def cmd_sweep(a):
     profiles = [p for p in project.compilers() if not any(s in p for s in SKIP_PROFILES)]
     todo = drafts()
-    swept = {(r["addr"], r["sha"]) for r in rows() if r["step"] == "sweep"
-             and (int(r["addr"], 16) < LIBRARY_START or r.get("sdk"))}
+    swept = {(r["addr"], r["sha"]) for r in rows() if r["step"] == "sweep" and r.get("v") == SWEEP_VERSION}
     log(f"sweep: {len(todo)} unmatched functions with drafts ({sum(len(v) for v in todo.values())} files), "
         f"profiles: default + {', '.join(profiles)}")
     matched = closer = kept = 0
