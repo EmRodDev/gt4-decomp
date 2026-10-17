@@ -93,3 +93,48 @@ this as native `void (SequenceState::*)()` dispatch, followed by an unsigned
 64-bit-to-float conversion of the continuation-byte value. Early manual
 vtable/float-argument models were rejected as semantically incorrect. The
 best corrected candidate remains 52/71 different and is also excluded.
+
+## Upstream synchronization and complete-build proof
+
+Upstream integrated PRs 24 and 25 and 107 additional game functions while
+this batch was being validated. Revision
+`0b54ed5c563d15ff1ac0093b07d94c9b25cb98aa` was merged into this branch,
+preserving all upstream sources, headers and compiler profiles. There was
+no source overlap with these four additions. The attempts diary preserves
+the upstream file exactly, followed by the 32 local-only records.
+
+The full, non-partial build of clean source commit
+`61755f406f2df02765852710f2c827d919a7abcf` passed with
+`tools/build.py --jobs 2`. Each of the four new functions has exact status
+`linked`, adding **492 code bytes** over that upstream revision:
+
+| Address | Linked bytes |
+| --- | ---: |
+| `00556390` | 96 |
+| `0055F3E8` | 56 |
+| `005638B0` | 172 |
+| `005639B8` | 168 |
+
+The corrected `00612480` wrapper also remains linked with its original five
+instructions. All 22 functions from PRs 24/25 and the 107 new game functions
+remain individually linked; the latter contribute 71,392 bytes. This build
+covers 29,190 sources, 4,241,768 linked code bytes and 56,161 verified source
+data bytes, with no orphan or duplicate sources. Both segment hashes match
+the original:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`
+
+Adding the upstream headers invalidated the global header cache. A local
+input-equivalence audit verified unchanged source hashes, compiler commands
+and literal project-local include closures for 27,086 existing objects.
+Neither added header was reachable from those units; their object bytes
+were preserved. Computed/system includes, uncertain preprocessing and new
+profiles were excluded from reuse and rebuilt. The judge and final link
+comparisons ran unchanged. The four local sources had also passed a clean
+full build at `c1289fd8ceb5dd5ff5f50b9efac245a643b1957a` before synchronization.
+
+All 85 repository tests passed again after synchronization. Parser sanitizer
+fixtures, assembly policy and source organization checks passed. README
+progress was regenerated from the combined full build. The fork's master
+branch was fast-forwarded to the upstream revision above.
