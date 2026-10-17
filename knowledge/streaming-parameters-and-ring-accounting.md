@@ -1,9 +1,15 @@
-# Streaming parameters and ring accounting
+# Historical checkpoint: streaming parameters and ring accounting
 
-This continuation adds two library functions to the accumulated
+This historical local continuation recovered two library functions on the accumulated
 `codex/control-voice-init-2026-10-17` branch. The six preceding additions
 are documented in `library-lookups-and-headers.md`. No global header,
 compiler profile or judge was changed.
+
+Upstream subsequently integrated both addresses with its own implementations
+at `1ee90b37`. The synchronization at `1bc9dca9` keeps those owner versions,
+as requested by the fork maintainer. The proof below describes the earlier
+local source snapshot; these two functions are not new contributions in the
+closing PR. See `continuation-checkpoint-2026-10-17.md` for the final state.
 
 ## Packed parameter decoding: 005569B8
 
@@ -46,7 +52,10 @@ and queue drain. If flag bit 0 is clear, the function does nothing. It does
 not itself traverse the pending queue or free the block list. Unknown ring
 fields retain explicit offsets; pointer fields remain pointer-typed.
 
-## Reviewed but deferred: 00555F68
+## Historical deferral: 00555F68
+
+Upstream closed this function at `1ee90b37`; do not retry the local draft.
+The following describes the earlier unsuccessful local work.
 
 The slot predicate `00556210` receives the original slot index. The command
 allocator/selector `005560C8` instead receives command type 5 for slot zero
