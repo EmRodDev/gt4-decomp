@@ -103,7 +103,9 @@ Local scratch (ignored by Git, not guaranteed in a replacement workspace):
 ## Resume procedure
 
 1. Start the next session with `/goal` active as requested by the user.
-   Fetch upstream and branch from the latest integrated state. Prefer the
+   Fetch upstream and branch from the latest integrated state. If this PR is
+   still open, reserve its four addresses and do independent work rather
+   than accidentally recovering them again. Prefer the
    owner's version on source overlap; do not revive already integrated drafts.
 2. Read AGENTS.md and the project skill. Refresh `upstream_overlap.py --units`
    and the work queue before assigning targets; check addresses, not filenames.
@@ -122,3 +124,35 @@ Local scratch (ignored by Git, not guaranteed in a replacement workspace):
    append reviewed attempts, organize sources, run relevant tests, and prove
    a clean non-partial full link with each new function exactly `linked`.
    Refresh upstream once more and update the report/README from that proof.
+
+## Complete-build proof
+
+Clean source commit `332dd2ac1d78c1fe95d83df6de25760eb76b8c6b` passed the standard
+non-partial `tools/build.py --jobs 2` build at `2026-10-17T20:57:23Z`. Each
+new source has exact status `linked`:
+
+| Address | Verified linked bytes |
+| --- | ---: |
+| `0055ECC8` | 44 |
+| `00563298` | 32 |
+| `00603848` | 44 |
+| `006039C8` | 44 |
+
+The four additions supply **164 linked code bytes** relative to
+upstream `80b81d10c73f7543bc228bfbef6be634615414ce`. The complete build contains
+29,428 sources, 4,294,824 linked code bytes and 56,576 verified source
+data bytes. No upstream source was modified or removed; the source delta
+is exactly these four additions. There are zero orphan and duplicate
+sources. Existing upstream sources that cannot be placed still use the
+standard original-byte fallback; this proof does not relabel those as
+linked. Both original loaded-segment hashes are preserved:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`
+
+All 85 repository tests, individual cleanup checks, native sanitizer
+fixtures, assembly policy and source organization checks passed. README
+progress was regenerated from this full proof. The proof log and checked
+summary remain locally at `build/swarm/root-review/closure-full-build.log`
+and `build/swarm/root-review/closure-proof.json`. No assets or binaries
+are included in the contribution.
