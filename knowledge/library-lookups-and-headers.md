@@ -138,3 +138,39 @@ All 85 repository tests passed again after synchronization. Parser sanitizer
 fixtures, assembly policy and source organization checks passed. README
 progress was regenerated from the combined full build. The fork's master
 branch was fast-forwarded to the upstream revision above.
+
+## Continuation: MPEG start-code dispatch
+
+`005637A8` now recovers the outer header scanner. It searches for a start
+code, consumes its 32 bits, and dispatches sequence (`0x1B3`), group-of-pictures
+(`0x1B8`) and picture (`0x100`) headers. Sequence and GOP headers continue
+the scan; a parsed picture returns 1, while sequence end (`0x1B7`) returns
+0. Other codes are consumed before the next search. The start code is
+unsigned: the original switch uses an unsigned threshold comparison.
+
+`00563A88` recovers the common extension/user-data reader reached by the
+sequence and picture parsers. It peeks before deciding whether to consume.
+Only extension (`0x1B5`) and user-data (`0x1B2`) codes are consumed here.
+An extension's four-bit ID selects sequence extension (1), sequence display
+extension (2) or picture coding extension (8). Unknown extension IDs still
+lead to the next start-code search. User data has its own search-and-continue
+path. The first other start code remains unread, with its value returned
+as in the original instructions; no public API meaning is inferred from
+that forwarded boundary value.
+
+Both recovered sources use named syntax constants. An instrumented host
+harness compiled these actual sources with AddressSanitizer and
+UndefinedBehaviorSanitizer. It checked sequence/GOP/unknown/picture scans,
+sequence termination, the three supported extension IDs, an unknown ID,
+user-data searches, and an already-present non-extension boundary. Assertions
+also verify that the next boundary is returned without advancing the input.
+All scenarios passed.
+
+The related picture coding extension `00563CC8` remains deferred. Reviewing
+its instructions corrected an initial worker model that stored ignored
+flags and misread one `f_code` width. The corrected syntax consumes four
+four-bit `f_code` values, retains selected picture/quantization fields and
+conditionally consumes composite-display information. C89 and field-cursor
+models still differ in address setup and final-store scheduling (21/82 in
+the continuation's best candidate); the prior diary's 13-instruction residual
+remains better. None of these drafts was admitted to `src/`.
