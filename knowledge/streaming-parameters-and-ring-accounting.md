@@ -74,3 +74,31 @@ and interrupt/queue-drain call order. Native pointer size differs from the
 console's; ring host fixtures check control flow and use the native header
 size. The console's offsets and 16-byte header are verified by the exact
 compiler and complete executable comparison.
+
+The clean source commit `373a112c90fc3f4d41cf12cd464a9c7c29fda884` passed
+`tools/build.py --jobs 2` in a full, non-partial build. Both additions have
+exact status `linked`: `005569B8` supplies 508 bytes and `00554C10` supplies
+144 bytes, totaling **652 new linked bytes**. The accumulated branch now adds
+**eight functions / 1,604 linked bytes** over upstream `0b54ed5c`, in
+addition to the previously reviewed typed registration-link wrapper.
+
+The full build covers 29,194 sources and 4,242,880 linked code bytes,
+with 56,161 verified source data bytes. All 107 owner additions and
+all 22 functions integrated from PRs 24/25 remain individually linked.
+There are no orphan or duplicate sources. The original segment hashes
+are preserved:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`
+
+All 85 repository tests passed, as did the sanitizer fixtures, assembly
+policy and source organization checks. README progress was regenerated
+from this proof. Upstream was refreshed before selection and consolidation
+and remained at `0b54ed5c`.
+
+Caller review also confirms the family context: `005568C0` accumulates
+seven-bit bytes at `self + 0x128`, invokes `005569B8` on the accumulated
+record and resets the write pointer. `00554F60` passes a block list to
+`00554C10` after copying payload bytes; it records the copied length at
+header `+0x0C`. Those callers remain outside this contribution's recovered
+function count. No unsupported public library names are assigned.
