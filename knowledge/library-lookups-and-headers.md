@@ -174,3 +174,22 @@ conditionally consumes composite-display information. C89 and field-cursor
 models still differ in address setup and final-store scheduling (21/82 in
 the continuation's best candidate); the prior diary's 13-instruction residual
 remains better. None of these drafts was admitted to `src/`.
+
+The continuation's full non-partial proof passed at clean source commit
+`4eea31c763a7ad5ee29820b315d0732923e15b5b` on `2026-10-17T16:01:43Z` using
+`tools/build.py --jobs 2`. Both additions have exact status `linked`:
+`005637A8` contributes 192 bytes and `00563A88` contributes 268 bytes.
+The latter count excludes the trailing alignment word; only bytes emitted
+from verified source are credited. This adds **460 linked code bytes**,
+bringing the accumulated batch over upstream `0b54ed5c` to **six new
+functions / 952 linked bytes**, plus the existing typed-link wrapper repair.
+
+The complete build contains 29,192 sources and 4,242,228 linked code
+bytes; verified source data remains 56,161 bytes. All 107 owner additions
+and all 22 functions integrated from PRs 24/25 remain individually linked.
+There are no orphan or duplicate sources. The `.text` and `.data` hashes
+remain `28422e7e20a6298224294255355487b9a22cef31` and
+`c28c833f9716467545bf362f321e9acc876c3603` respectively. All 85 repository
+tests, sanitizer dispatch fixtures, assembly policy and organization checks
+passed. Upstream was refreshed before selection and consolidation and
+remained at `0b54ed5c`; this continuation stays on the accumulated branch.
