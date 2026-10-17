@@ -101,3 +101,20 @@ regenerated from this full build with `tools/report.py` and
 `6e18ca3768811c5338401f42b6e13e619e502428`; PR 24 remained open and both of
 its GitHub check jobs had passed. This initial proof included the pending PR 24 sources; an independent
 upstream-based proof is recorded below before submission.
+
+## Independent upstream-based proof
+
+To keep this PR separate from the still-open PR 24, the same six source
+files and their nineteen diary records were placed directly on upstream
+`6e18ca3768811c5338401f42b6e13e619e502428`. The full, non-partial build of
+clean source commit `c737bc0fcd92e684a60a96da24a24b38c313b165` passed with
+`tools/build.py --jobs 2`. All six functions have exact status `linked`
+and contribute 824 bytes; the related packet builder uses the existing
+assembly fallback in this build.
+
+This independent build covers 29,063 sources and 4,167,144 linked code
+bytes, with 55,106 verified source data bytes, no orphan sources and no
+duplicate sources. Its `.text` and `.data` hashes equal the originals and
+the combined-build hashes above. All 85 repository tests passed again;
+source organization, assembly policy and generated README checks passed.
+README figures were regenerated from this independent build.
