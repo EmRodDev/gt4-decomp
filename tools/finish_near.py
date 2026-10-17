@@ -336,7 +336,7 @@ def cmd_permute(a):
         res = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "permute.py"), addr, os.path.join(ROOT, path),
                               "--seconds", str(a.seconds), "--jobs", str(a.jobs)], capture_output=True, text=True, cwd=ROOT)
         out = (res.stdout + res.stderr).strip().splitlines()
-        verdict = "match" if any(l.startswith("MATCH") for l in out) else \
+        verdict = "match" if any(l.startswith("MATCH") or ": MATCH" in l for l in out) else \
             "not C" if any(l.startswith("NOT C") for l in out) else "no match"
         matched += verdict == "match"
         not_c += verdict == "not C"
