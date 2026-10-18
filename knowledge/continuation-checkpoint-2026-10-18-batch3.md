@@ -4,7 +4,7 @@
 
 This batch closes with **9 new functions and 11,628 linked code bytes** relative to the selected upstream baseline. Each counted address has an individually rejudged source and exact `linked` status in the final complete-build report. The user requested the complete build and internal draft PR; this is the stopping point. The 100-function goal was a maximum, not a reason to include unverified or duplicate code.
 
-The work was performed by Luna. The internal PR is **AWAITING SOL REVIEW**; Sol has not reviewed it.
+The recovery work was performed by Luna. Codex subsequently reviewed the nine sources for upstream submission; see the review follow-up below.
 
 ## Baseline and proof revision
 
@@ -97,4 +97,20 @@ The README numbers were regenerated with the official report tools. Upstream adv
 
 The internal draft PR was created at [moesuito/gt4-decomp#1](https://github.com/moesuito/gt4-decomp/pull/1), targeting `master` from `codex/luna-recovery-2026-10-18-batch3`. The fork's `master` was 23 commits behind upstream with no divergent commits and was fast-forwarded without rewriting history to the selected baseline `f7bb71e04d383c6c6483bde77dec30fd198041a0` before PR creation. The final PR diff contains the nine verified source files, attempts ledger, checkpoint, and generated README update. Do not push to `gustavocanepa/gt4-decomp` or merge the internal PR.
 
-The PR and this checkpoint state **AWAITING SOL REVIEW**; Sol has not reviewed it. No workers or compiler processes should remain running at closeout.
+The initial draft awaited review. The review follow-up below supersedes that status. No workers or compiler processes should remain running at closeout.
+
+## Review follow-up
+
+The user authorized review, upstream submission, and closure of the internal draft.
+Codex independently rechecked all nine sources with `match.py check-many`: **9 of 9 MATCH**.
+The 94 regression tests, source layout check, and assembly policy check passed.
+
+Two review findings were corrected before upstream submission:
+
+- The generated README used the `find_functions.py` call-target inventory (14,955
+  decompilation targets), omitting functions discovered by splat. Regenerate
+  `build/functions.csv` with `tools/inventory.py` before generating progress; the
+  complete inventory contains 31,164 starts and 30,962 decompilation targets.
+- The new `_IO_getline_info.c` referenced the libio license but omitted the original
+  file notice. Restore the copyright, GPL terms, and linking exception verbatim
+  from `gcc-mirror/gcc` commit `7e51098e`, `libio/iogetline.c`. This changes no code.
