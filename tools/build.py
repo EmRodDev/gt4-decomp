@@ -220,6 +220,231 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr, section=".ro
     return out
 
 
+R_MIPS_32 = 2
+LINKONCE_CODE, LINKONCE_DATA = ".gnu.linkonce.t.", ".gnu.linkonce.d."
+
+
+def read_elf(path):
+    """{"sections": [{name, flags, size, data}], "symbols": [(name, value, shndx, local)],
+    "relocs": {section index: [(offset, type, symbol index)]}} of an ELF32 little-endian object."""
+    d = open(path, "rb").read()
+    shoff, = struct.unpack_from("<I", d, 32)
+    shentsize, shnum, shstrndx = struct.unpack_from("<HHH", d, 46)
+    secs = [struct.unpack_from("<10I", d, shoff + i * shentsize) for i in range(shnum)]
+    text = lambda base, off: d[base + off:d.index(b"\0", base + off)].decode()
+    names = [text(secs[shstrndx][4], s[0]) for s in secs]
+    sections = [{"name": n, "flags": s[2], "size": s[5],
+                 "data": d[s[4]:s[4] + s[5]] if s[1] != 8 else bytes(s[5])} for n, s in zip(names, secs)]
+    symbols, relocs = [], {}
+    for s in secs:
+        if s[1] == 2:
+            for off in range(s[4], s[4] + s[5], 16):
+                st_name, value, _, info, _, shndx = struct.unpack_from("<IIIBBH", d, off)
+                name = text(secs[s[6]][4], st_name) or (names[shndx] if shndx < len(names) else "")
+                symbols.append((name, value, shndx, info >> 4 == 0))
+    for s in secs:
+        if s[1] == 9:
+            relocs[s[7]] = [(o, i & 0xFF, i >> 8) for o, i in
+                            (struct.unpack_from("<II", d, s[4] + 8 * r) for r in range(s[5] // 8))]
+    return {"sections": sections, "symbols": symbols, "relocs": relocs}
+
+
+def relocate(obj, index, place, resolve):
+    """The bytes of one section once linked: every section of the object at `place` {index: address},
+    every undefined symbol at `resolve(name)`. None when a symbol has no address or a relocation is
+    of a kind this does not model (the caller then refuses the object)."""
+    data = obj["sections"][index]["data"]
+    out = bytearray(data)
+    rels = obj["relocs"].get(index, [])
+    word = lambda off: struct.unpack_from("<I", data, off)[0]
+    sext = lambda v: (v & 0xFFFF) - 0x10000 if v & 0x8000 else v & 0xFFFF
+    for n, (off, rtype, sym) in enumerate(rels):
+        name, value, shndx, _ = obj["symbols"][sym]
+        if shndx == 0:
+            s = resolve(name)
+        else:
+            s = place[shndx] + value if shndx in place else None
+        if s is None or off + 4 > len(data):
+            return None
+        a = word(off)
+        if rtype == R_MIPS_32:
+            w = (a + s) & 0xFFFFFFFF
+        elif rtype == match.R_MIPS_26:
+            w = (a & 0xFC000000) | ((((a & 0x3FFFFFF) << 2) + s) >> 2 & 0x3FFFFFF)
+        elif rtype == match.R_MIPS_HI16:
+            lo = next((o for o, t, y in rels[n + 1:] if t == match.R_MIPS_LO16 and y == sym), None)
+            if lo is None:
+                return None
+            v = ((a & 0xFFFF) << 16) + sext(word(lo)) + s
+            w = (a & 0xFFFF0000) | (((v + 0x8000) >> 16) & 0xFFFF)
+        elif rtype == match.R_MIPS_LO16:
+            w = (a & 0xFFFF0000) | ((a + s) & 0xFFFF)
+        else:
+            return None
+        struct.pack_into("<I", out, off, w)
+    return bytes(out)
+
+
+def companion_places(obj, addr, text_addr, orig_text, data_addr, orig_data, resolve=symbols.address_of):
+    """Where the original holds every section a C++ object brings besides its function: vtables
+    (.gnu.linkonce.d._vt$Class), the compiler's type-info functions and implicit destructors
+    (.gnu.linkonce.t.*) and their type-name strings (.rodata).
+
+    A section's address is read from the original wherever already-placed code or data refers to
+    it (a vtable from the constructor's %hi/%lo, a destructor from its vtable slot, a type name from
+    the type-info function), else from its symbol's name (symbols.address_of). The object is
+    accepted only when every one of its sections, the function included, relocated against those
+    addresses equals the original bytes there; otherwise None (the source stays refused).
+
+    A .rodata that only companion code refers to may hold type names the original keeps apart (two
+    classes' names, each next to its own class): then each referenced piece must equal the original
+    at the address its reference has there, and the section is linked NOLOAD like the code.
+    Returns {"size": function bytes, "data": {section: address} (placed in the image),
+    "noload": {section: address} (proven identical, the image keeps the original's bytes)}."""
+    secs = obj["sections"]
+    names = [s["name"] for s in secs]
+    if ".text" not in names:
+        return None
+    primary = names.index(".text")
+    if not secs[primary]["size"]:
+        primary = next((i for i, n in enumerate(names) if n.startswith(LINKONCE_CODE)), primary)
+    kinds = {primary: "code"}
+    for i, s in enumerate(secs):
+        if i == primary or not s["size"] or not s["flags"] & 2 or s["name"] in HARMLESS:
+            continue
+        if s["name"].startswith(LINKONCE_CODE):
+            kinds[i] = "code"
+        elif s["name"].startswith(LINKONCE_DATA) or s["name"] == ".rodata":
+            kinds[i] = "data"
+        else:
+            return None
+
+    def original(a, n):
+        for base, image in ((text_addr, orig_text), (data_addr, orig_data)):
+            if base <= a and a + n <= base + len(image):
+                return image[a - base:a + n - base]
+        return None
+
+    sext = lambda v: (v & 0xFFFF) - 0x10000 if v & 0x8000 else v & 0xFFFF
+    word = lambda b, off: struct.unpack_from("<I", b, off)[0]
+    place = {primary: addr}
+
+    def references(target):
+        """[(section, offset, lo offset, offset into target, original address, target base)] of
+        every relocation against `target` in a placed section, read from the original."""
+        out = []
+        for si, rels in obj["relocs"].items():
+            orig = original(place[si], secs[si]["size"]) if si in place else None
+            if orig is None:
+                continue
+            for n, (off, rtype, sym) in enumerate(rels):
+                _, value, shndx, _ = obj["symbols"][sym]
+                if shndx != target or off + 4 > len(orig):
+                    continue
+                mine, theirs, lo = word(secs[si]["data"], off), word(orig, off), None
+                if rtype == R_MIPS_32:
+                    k, t = mine + value, theirs
+                    base = (t - k) & 0xFFFFFFFF
+                elif rtype == match.R_MIPS_26:
+                    k, t = ((mine & 0x3FFFFFF) << 2) + value, (theirs & 0x3FFFFFF) << 2
+                    base = ((t - k) & 0x0FFFFFFF) | ((place[si] + off) & 0xF0000000)
+                elif rtype == match.R_MIPS_HI16:
+                    lo = next((o for o, t_, y in rels[n + 1:] if t_ == match.R_MIPS_LO16 and y == sym), None)
+                    if lo is None or lo + 4 > len(orig):
+                        continue
+                    k = ((mine & 0xFFFF) << 16) + sext(word(secs[si]["data"], lo)) + value
+                    t = ((theirs & 0xFFFF) << 16) + sext(word(orig, lo))
+                    base = (t - k) & 0xFFFFFFFF
+                else:
+                    continue
+                out.append((si, off, lo, k, t, base))
+        return out
+
+    referrers = {}
+    for si, rels in obj["relocs"].items():
+        for _, _, sym in rels:
+            referrers.setdefault(obj["symbols"][sym][2], set()).add(si)
+    pieces = set()
+    while True:
+        found = {}
+        for i in kinds:
+            if i in place or i in pieces:
+                continue
+            bases = {r[5] for r in references(i)}
+            if len(bases) == 1:
+                found[i] = bases.pop()
+            elif len(bases) > 1:
+                if names[i] != ".rodata" or any(kinds.get(si) != "code" or si == primary for si in referrers[i]):
+                    return None  # the original's references disagree on where a section is
+                pieces.add(i)
+        if not found:
+            for i in kinds:
+                if i not in place and i not in pieces and names[i].startswith((LINKONCE_CODE, LINKONCE_DATA)):
+                    a = resolve(names[i][len(LINKONCE_CODE):])
+                    if a is not None:
+                        found[i] = a
+        if not found:
+            break
+        place.update(found)
+    if any(i not in place and i not in pieces for i in kinds):
+        return None
+    masked = {}  # {(section, offset): mask of the bits still compared}
+    for i in pieces:
+        refs, by_offset = references(i), {}
+        if any(si not in place for si in referrers[i]):
+            return None
+        for si, off, lo, k, t, _ in refs:
+            by_offset.setdefault(k, set()).add(t)
+            if lo is None:
+                masked[si, off] = 0
+            else:
+                masked[si, off] = masked[si, lo] = 0xFFFF0000
+        offsets = sorted(by_offset)
+        data = secs[i]["data"]
+        for j, k in enumerate(offsets):
+            end = offsets[j + 1] if j + 1 < len(offsets) else len(data)
+            piece = data[k:end].rstrip(b"\0") + b"\0" if b"\0" in data[k:end] else data[k:end]
+            if len(by_offset[k]) != 1 or not 0 <= k < end <= len(data) \
+                    or original(min(by_offset[k]), len(piece)) != piece:
+                return None
+        place[i] = min(min(by_offset[k]) - k for k in offsets)
+    for i, kind in kinds.items():
+        if i in pieces:
+            continue
+        built = relocate(obj, i, place, resolve)
+        image, base = (orig_text, text_addr) if kind == "code" else (orig_data, data_addr)
+        o = place[i] - base
+        if built is None or o < 0 or o + len(built) > len(image):
+            return None
+        theirs = image[o:o + len(built)]
+        for off in range(0, len(built) - len(built) % 4, 4):
+            mask = masked.get((i, off), 0xFFFFFFFF)
+            if word(built, off) & mask != word(theirs, off) & mask:
+                return None
+        if built[len(built) - len(built) % 4:] != theirs[len(built) - len(built) % 4:]:
+            return None
+    return {"size": secs[primary]["size"],
+            "data": {names[i]: place[i] for i, k in kinds.items() if k == "data" and i not in pieces},
+            "noload": {names[i]: place[i] for i, k in kinds.items()
+                       if i != primary and (k == "code" or i in pieces)}}
+
+
+def place_companions(addrs, text_addr, orig_text, data_addr, orig_data):
+    """companion_places for each object (copied from the Linux side): {address: places}."""
+    if not addrs:
+        return {}
+    local = os.path.join(OUT, "robj")
+    os.makedirs(local, exist_ok=True)
+    wsl(f'cd "{WSL_DIR}/obj" && cp {" ".join(f"func_{a:08X}.o" for a in addrs)} {to_wsl(local)}/\n')
+    out = {}
+    for addr in addrs:
+        placed = companion_places(read_elf(os.path.join(local, f"func_{addr:08X}.o")), addr,
+                                  text_addr, orig_text, data_addr, orig_data)
+        if placed:
+            out[addr] = placed
+    return out
+
+
 def to_wsl(path):
     """The path as the Linux side sees it (unchanged when already running on Linux)."""
     if os.name != "nt":
@@ -415,6 +640,27 @@ cd "$d/src"
                               elf[text_off:text_off + text_size], text_addr, section=section)
         for section, candidates in data_candidates.items()
     }
+    # C++ objects that bring a vtable bring its companions too (type-info function, implicit
+    # destructor, type name): all are placed where the original holds them, or the source is
+    # refused. The function's own size leaves the companion code out; that code is linked NOLOAD
+    # at its original address (the image keeps the original's bytes there, proven identical).
+    companions = place_companions(
+        sorted(a for a in sources if any(k.startswith(LINKONCE_DATA) for k in parsed.get(a, {}).get("sections", {}))),
+        text_addr, elf[text_off:text_off + text_size], data_addr, elf[data_off:data_off + data_size])
+    renamed = {}
+    for addr, c in companions.items():
+        parsed[addr]["sections"][".text"] = c["size"]
+        for section, base in c["data"].items():
+            section_places.setdefault(section, {})[addr] = base
+        for section in c["noload"]:
+            if section in parsed[addr]["sections"]:  # a type name linked NOLOAD is not placed data
+                parsed[addr]["sections"][section] = 0
+                section_places.get(section, {}).pop(addr, None)
+        for n, section in enumerate(sorted(c["noload"]) + sorted(c["data"])):
+            if section.startswith((LINKONCE_CODE, LINKONCE_DATA)):
+                renamed[addr, section] = f".cmp{n}"  # no longer linkonce: ld keeps every copy
+    obj_path = lambda addr: f"{'cobj' if addr in companions else 'obj'}/func_{addr:08X}.o"
+    ref = lambda addr, section: f"{obj_path(addr)}({renamed.get((addr, section), section)})"
     status, objects, undefined = select_source_objects(
         parsed, sources, text_addr + text_size, section_places)
     placements = [(addr, section, base)
@@ -429,6 +675,9 @@ cd "$d/src"
         data_plan.append((addr, section, base))
         end = base + parsed[addr]["sections"][section]
     placed_rodata = len(data_plan)
+    placed_vtables = [(addr, section) for addr, section, _ in data_plan if section.startswith(LINKONCE_DATA)]
+    companion_code = [(addr, section, base) for addr, c in sorted(companions.items()) if addr in objects
+                      for section, base in sorted(c["noload"].items())]
 
     # 3. Linker script: objects at their addresses, the original's bytes in between.
     gaps, order = [], []
@@ -468,7 +717,7 @@ cd "$d/src"
             asm += [f'.section .data.g{pos:08x}, "aw"',
                     f'.incbin "data.bin", 0x{pos - data_addr:x}, 0x{base - pos:x}']
             data_body.append(f"    gaps.o(.data.g{pos:08x})")
-        data_body.append(f"    obj/func_{addr:08X}.o({section})")
+        data_body.append(f"    {ref(addr, section)}")
         pos = base + parsed[addr]["sections"][section]
     asm += [f'.section .data.g{pos:08x}, "aw"',
             f'.incbin "data.bin", 0x{pos - data_addr:x}, 0x{data_addr + data_size - pos:x}']
@@ -497,12 +746,14 @@ cd "$d/src"
         if kind == "gap":
             body.append(f"    gaps.o(.text.g{addr:08x})")
         else:
-            body.append(f"    obj/func_{addr:08X}.o(.text .gnu.linkonce.t.*)")
+            body.append(f"    {obj_path(addr)}(.text .gnu.linkonce.t.*)")
     ld = ("\n".join(syms) + "\nSECTIONS\n{\n"
           f"  .text 0x{text_addr:x} : SUBALIGN(4)\n  {{\n" + "\n".join(body) + "\n  }\n"
           f"  .data 0x{data_addr:x} : SUBALIGN(1)\n  {{\n" + "\n".join(data_body) + "\n  }\n"
-          + "".join(f"  .shared_{section.lstrip('.')}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ obj/func_{a_:08X}.o({section}) }}\n"
-                    for a_, section, b_ in shared) +
+          + "".join(f"  .shared_{n_}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, section)} }}\n"
+                    for n_, (a_, section, b_) in enumerate(shared))
+          + "".join(f"  .companion_{n_}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, section)} }}\n"
+                    for n_, (a_, section, b_) in enumerate(companion_code)) +
           "  /DISCARD/ : { *(.reginfo) *(.mdebug*) *(.comment) *(.pdr) *(.eh_frame) *(.gcc_except_table) *(*) }\n}\n")
     open(os.path.join(OUT, "link.ld"), "w", newline="\n").write(ld)
 
@@ -541,6 +792,12 @@ for o in obj/*.o; do
   lo=$(mips-linux-gnu-objdump -h "$o" | awk '$2 ~ /^\\.gnu\\.linkonce\\.t\\./ && !n++ {{print $2}}')
   if [ -n "$lo" ]; then mips-linux-gnu-objcopy -R .text --rename-section "$lo=.text" "$o"; fi
 done
+# Objects with placed companions are linked from a copy whose companion sections are renamed out of
+# linkonce, so two objects bringing the same vtable each keep theirs (one placed, one shared).
+rm -rf cobj && mkdir cobj
+""" + "".join(f"cp obj/func_{addr:08X}.o cobj/ && mips-linux-gnu-objcopy "
+              + " ".join(f"--rename-section '{old}={new}'" for (a_, old), new in sorted(renamed.items()) if a_ == addr)
+              + f" cobj/func_{addr:08X}.o\n" for addr in sorted(companions) if addr in objects) + f"""
 mips-linux-gnu-ld -EL -e 0x{project.load_image()[0]:x} -T link.ld -o {IMAGE} --no-check-sections
 mips-linux-gnu-objcopy -O binary --only-section=.text {IMAGE} built_text.bin
 mips-linux-gnu-objcopy -O binary --only-section=.data {IMAGE} built_data.bin
@@ -593,7 +850,11 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
               "data_sections": [{"function": f"{addr:08x}", "section": section,
                                  "address": f"{base:08x}",
                                  "size": parsed[addr]["sections"][section]}
-                                for addr, section, base in placements if status[addr] == "linked"]}
+                                for addr, section, base in placements if status[addr] == "linked"],
+              # Companion code (type-info functions, implicit destructors) of linked C++ objects:
+              # proven identical at these addresses, linked NOLOAD, never counted as code from source.
+              "companion_code": [{"function": f"{addr:08x}", "section": section, "address": f"{base:08x}"}
+                                 for addr, section, base in companion_code if status[addr] == "linked"]}
     json.dump(report, open(os.path.join(OUT, "report.json"), "w"), indent=1)
 
     counts = {}
@@ -602,7 +863,7 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
         counts[key] = counts.get(key, 0) + 1
     print(f".text {'OK' if text_ok else 'DIFFERS'}  sha1 {sha(built_text)} (original {sha(orig_text)})")
     print(f".data {'OK' if data_ok else 'DIFFERS'} ({placed_rodata} data sections placed from source, "
-          f"{sum(data_sizes.values())} bytes)")
+          f"{sum(data_sizes.values())} bytes; {sum(status[x] == 'linked' for x, _ in placed_vtables)} of them vtables)")
     for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
         print(f"  {v:5d}  {k}")
     print(f"code from source: {linked_bytes} of {text_size} bytes ({linked_bytes / text_size:.2%}); "

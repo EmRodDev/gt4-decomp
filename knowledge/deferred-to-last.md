@@ -29,3 +29,10 @@ tries anyway). When their turn comes:
 | 0057fa98 | `fixdfsi` | trapping `daddi`/`dsub`, branchless `movz` chains |
 | 0057d1f0, 0057d2b8, 0057d380 | sin/cos kernels | EE accumulator ops (`adda.s`, `madda.s`, `madd.s`, `msub.s`) |
 | 0057f188 | unrolled byte compare | looks hand-written |
+| 0057f490, 0057f4f8 | long to double / long to float helpers | trapping `addi`/`daddi`, `$at`, t-registers, unscheduled: part of the soft-float library cluster |
+| 00545a54 | MMI register-saving loop | `sq` saves of t0-t2/v1 and a t-register loop; C gives no `sq` |
+| 005a4644 | hand-written MMI memchr | t-registers, unscheduled |
+| 004ac034 | unaligned 64-byte copy | retail has an `sdl $t1,0xA7($a0)` whose offset no C source gives (looks like a typo in the original) |
+| 004a7438 | fragment of the VU0 graphics code | keeps `ra` in `$t2` and returns with `jr $t2` |
+| 004a74a0, 004a747c, 004a7454, 004a7890, 004a7844, 004a7a54, 004a7a00, 004a7988, 004a79b0, 004a79d8, 004ac400, 004a5f00 | libvu0 (`sceVu0*`): unit matrix, transpose matrix, sincos, ... | Opus (V2, oracle) 2026-10-18: hand-scheduled; `lui`/`addiu`/`sb` and `ld ra` sit between VU instructions that are scheduling barriers for ee-gcc 2.96; local-alloc gives `$v0` to the constant (priority 10000) over the base (3333). Probably Sony's libvu0, multi-instruction inline asm in the SDK source. |
+| 004a7350 | hand-written assembly called by 004a7988 | `ori $t0,$t0,0x0`, fixed registers, same file as the 004a7438 fragment |
