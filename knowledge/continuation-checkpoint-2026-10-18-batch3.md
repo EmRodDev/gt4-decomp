@@ -95,6 +95,6 @@ The README numbers were regenerated with the official report tools. Upstream adv
 
 ## Publication handoff
 
-The intended destination is `moesuito/gt4-decomp`, base branch `master`, with this working branch as the head. The fork's `master` was 23 commits behind upstream and had no divergent commits at the last check, so it can be fast-forwarded to the selected baseline before opening the draft PR. Do not push to `gustavocanepa/gt4-decomp` and do not merge the internal PR.
+The internal draft PR was created at [moesuito/gt4-decomp#1](https://github.com/moesuito/gt4-decomp/pull/1), targeting `master` from `codex/luna-recovery-2026-10-18-batch3`. The fork's `master` was 23 commits behind upstream with no divergent commits and was fast-forwarded without rewriting history to the selected baseline `f7bb71e04d383c6c6483bde77dec30fd198041a0` before PR creation. The final PR diff contains the nine verified source files, attempts ledger, checkpoint, and generated README update. Do not push to `gustavocanepa/gt4-decomp` or merge the internal PR.
 
-The PR description and this checkpoint must state **AWAITING SOL REVIEW**. No workers or compiler processes should remain running at closeout.
+The PR and this checkpoint state **AWAITING SOL REVIEW**; Sol has not reviewed it. No workers or compiler processes should remain running at closeout.
