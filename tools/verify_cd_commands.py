@@ -21,6 +21,7 @@ sys.path.insert(0, str(REPO / "tools"))
 
 import match as gt4_match
 import project as gt4_project
+import symbols as gt4_symbols
 from io import BytesIO
 
 
@@ -33,7 +34,7 @@ def main():
     args = parser.parse_args()
     sys.path.insert(0, str(args.backend.resolve() / "src"))
     from decompnet.rom import match as backend
-    from decompnet.rom.symbols import SymbolTable
+    from decompnet.rom.symbols import Symbol, SymbolTable
     from elftools.elf.elffile import ELFFile
 
     os.chdir(REPO)
@@ -65,28 +66,53 @@ def main():
         obj_path = Path(gt4_match.compile_c(source))
         try:
             obj = obj_path.read_bytes()
+            elf = ELFFile(BytesIO(obj))
+            symtab = elf.get_section_by_name(".symtab")
+            symbols = SymbolTable()
+            named = []
+            # Compiler-generated libcalls use names such as __udivdi3 rather
+            # than address labels. Resolve only existing project mappings;
+            # unknown names still fail in the backend's normal linker.
+            for sym in symtab.iter_symbols():
+                if sym["st_shndx"] != "SHN_UNDEF" or not sym.name:
+                    continue
+                if symbols.resolve(sym.name) is not None:
+                    continue
+                resolved = gt4_symbols.address_of(sym.name)
+                if resolved is not None:
+                    entry = Symbol(sym.name, resolved,
+                                   kind=gt4_symbols.kind_of(sym.name) or "data")
+                    symbols.add(entry)
+                    named.append(entry)
             target = backend.RomTarget(name, address,
                 read(address, size), [], big_endian=False)
-            result = backend.link(obj, name, target, SymbolTable(), read)
+            result = backend.link(obj, name, target, symbols, read)
             if not result.exact:
                 raise SystemExit(f"{name}: backend rejected the candidate: {result.problems}; "
                                  f"expected {size} bytes, candidate "
                                  f"{len(result.candidate.code) if result.candidate else 0}")
 
             # Check that a real instruction change fails through the same API.
-            elf = ELFFile(BytesIO(obj))
-            symbol = elf.get_section_by_name(".symtab").get_symbol_by_name(name)[0]
+            symbol = symtab.get_symbol_by_name(name)[0]
             section = elf.get_section(symbol["st_shndx"])
             offset = section["sh_offset"] + symbol["st_value"]
             corrupted = bytearray(obj)
             corrupted[offset] ^= 0x10
-            negative = backend.link(bytes(corrupted), name, target, SymbolTable(), read)
+            negative = backend.link(bytes(corrupted), name, target, symbols, read)
             if negative.exact:
                 raise SystemExit(f"{name}: negative control unexpectedly matched")
             row = {"function": name, "bytes": len(target.code),
                    "source": os.path.relpath(source, REPO),
                    "source_sha256": hashlib.sha256(Path(source).read_bytes()).hexdigest(),
                    "exact": True, "changed_instruction_rejected": True}
+            if named:
+                row["named_symbols"] = {s.name: f"{s.address:08x}" for s in named}
+                # A bad address must fail even when the symbol name is known.
+                wrong = SymbolTable([Symbol(s.name, s.address + (4 if i == 0 else 0),
+                                            kind=s.kind) for i, s in enumerate(named)])
+                if backend.link(obj, name, target, wrong, read).exact:
+                    raise SystemExit(f"{name}: wrong-symbol negative control matched")
+                row["wrong_symbol_address_rejected"] = True
             results.append(row)
             print(f"{name}: decomp.wtf BYTE-EXACT ({row['bytes']} bytes); negative control rejected")
         finally:
