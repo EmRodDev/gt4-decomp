@@ -70,5 +70,6 @@ No original data, BIOS or generated binaries are part of this contribution.
 
 The settings update at `00113248` has matching logic but exchanged saved-register
 assignments for its configuration and destination views. Three natural source
-forms did not improve the 19/54 operand differences. Its drafts remain outside
-`src/`; the attempts diary records the findings for a later pass.
+forms did not improve the 19/54 operand differences. This residual was
+subsequently resolved by the exact sibling comparison documented in
+`easy-family-recovery.md`.
