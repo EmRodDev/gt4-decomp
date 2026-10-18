@@ -54,7 +54,7 @@ def solve_one(addr):
     try:
         row = cpu_solve.attempt(addr, out=cpu_solve.OUT)
         if row.get("result") == "differs":
-            _, ok, _ = near_fix.attempt(addr)
+            ok = near_fix.attempt(addr)[1]          # attempt() grew a fourth value; only the verdict is used here
             if ok:
                 row = dict(row, result="match", how="near_fix")
     except Exception as e:  # one bad function must not stop the run
