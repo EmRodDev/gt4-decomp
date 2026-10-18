@@ -114,3 +114,30 @@ Two review findings were corrected before upstream submission:
 - The new `_IO_getline_info.c` referenced the libio license but omitted the original
   file notice. Restore the copyright, GPL terms, and linking exception verbatim
   from `gcc-mirror/gcc` commit `7e51098e`, `libio/iogetline.c`. This changes no code.
+
+The independent, non-partial integration proof completed at `2026-10-18T23:57:37Z`
+for clean source revision `5b7611a660c3bc5d3c4b6ab41ad2ca0a6eb3c731`:
+
+- `.text`: `28422e7e20a6298224294255355487b9a22cef31`, identical to original.
+- `.data`: `c28c833f9716467545bf362f321e9acc876c3603`, identical to original.
+- All nine new addresses have direct `linked` status; their sizes sum to 11,628 bytes.
+- 29,524 sources; 29,223 directly linked entries; no orphan or duplicate sources.
+- With source-group coverage, the complete inventory reports 29,534 matches out of
+  30,962 targets and 29,355 linked functions. Code matched: 83.4%; code linked: 81.9%.
+- Data placed from source: 56,576 bytes across 1,409 functions.
+
+The legacy compiler requires QEMU on this cloud host. To avoid a lengthy emulated
+recompile, public sources were compiled on a native GitHub runner using the
+repository's existing compiler commands and archives. The alignment retry and
+symbol-stripping policy are the same as `tools/build.py`. The isolated
+[compile run](https://github.com/moesuito/gt4-decomp/actions/runs/39177880763) passed;
+its source, header, configuration, and tool trees are identical to the reviewed
+source revision. Before local import, the archive SHA-256 and every object's
+source/header/profile cache stamp were verified. `tools/build.py --jobs 2` then
+performed the complete local link and original-segment comparison. Game files
+remained local. The validation workflow is confined to a separate testing branch.
+
+The final nine files were independently rejudged after the notice restoration:
+9 of 9 MATCH. The README was generated with `tools/report.py` and
+`tools/update_readme.py`, and `tools/update_readme.py --check` passed. These
+review results supersede the initial draft's awaiting-review status.
