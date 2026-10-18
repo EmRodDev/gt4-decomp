@@ -1,11 +1,13 @@
+typedef float f32;
 typedef int s32;
 
-extern "C" void func_0036FF38(void);
-extern "C" void func_0036FF78(void);
+extern "C" f32 func_0036FF38(void *cam, f32 x);
+extern "C" f32 func_0036FF78(void *cam, f32 x);
 
-extern "C" void func_0036FF98(void *arg0, s32 arg1) {
-    if (arg1 != 0) {
-        return func_0036FF38();
+/* The float argument is in $f12 and the selector in $a1: the callees take (cam, x). */
+extern "C" f32 func_0036FF98(void *cam, f32 x, s32 selector) {
+    if (selector != 0) {
+        return func_0036FF38(cam, x);
     }
-    return func_0036FF78();
+    return func_0036FF78(cam, x);
 }

@@ -1,6 +1,7 @@
-extern "C" int func_0059E890(void);
+/* asinf: the C library wrapper around newlib's __ieee754_asinf. */
+extern "C" float func_0059E890(float x);
 
-extern "C" int func_0059D2A0(void)
+extern "C" float func_0059D2A0(float x)
 {
-    return func_0059E890();
+    return func_0059E890(x);
 }

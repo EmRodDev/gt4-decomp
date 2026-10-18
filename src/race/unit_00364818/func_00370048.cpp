@@ -1,11 +1,14 @@
+typedef float f32;
 typedef int s32;
 
-extern "C" void func_0036FFC0(void);
-extern "C" void func_00370010(void);
+/* Cam is the camera object whose limits the callees read; the two helpers compute the
+ * same value from either the first or the second parameter set, selected by arg1. */
+extern "C" f32 func_0036FFC0(void *cam, f32 x);
+extern "C" f32 func_00370010(void *cam, f32 x);
 
-extern "C" void func_00370048(void *arg0, s32 arg1) {
-    if (arg1 != 0) {
-        return func_0036FFC0();
+extern "C" f32 func_00370048(void *cam, s32 selector, f32 x) {
+    if (selector != 0) {
+        return func_0036FFC0(cam, x);
     }
-    return func_00370010();
+    return func_00370010(cam, x);
 }

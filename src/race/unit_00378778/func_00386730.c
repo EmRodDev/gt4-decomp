@@ -2,7 +2,7 @@
 void *memcpy(void *, const void *, unsigned int);
 
 s32 func_00407208(s32, s32);                    /* extern */
-s32 func_005F63B0();                            /* extern */
+void func_005F63B0(void *, void *);
 s32 func_005F63E8(s32, s32);                    /* extern */
 
 struct func_00386730_arg0 {
@@ -19,7 +19,7 @@ struct func_00386730_arg1 {
 };
 
 void *func_00386730(void *arg0, void *arg1) {
-    func_005F63B0();
+    func_005F63B0(arg0, arg1);
     func_005F63E8(arg0 + 0x40, arg1 + 0x40);
     func_00407208(arg0 + 0x160, arg1 + 0x160);
     func_00407208(arg0 + 0x260, arg1 + 0x260);
