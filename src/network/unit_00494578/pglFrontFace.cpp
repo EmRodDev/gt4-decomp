@@ -4,7 +4,7 @@
 struct AlternateSetting { int value; };
 struct ScratchSettings { char unknown[0x2CC]; int alternate; };
 extern "C" void func_004ABB00(ScratchSettings *);
-extern "C" void func_004A19D8(AlternateSetting setting)
+extern "C" void pglFrontFace(AlternateSetting setting)
 {
     ScratchSettings *scratch = (ScratchSettings *)spr_base();
     scratch->alternate = setting.value;
