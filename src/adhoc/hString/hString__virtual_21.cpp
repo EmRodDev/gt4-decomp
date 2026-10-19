@@ -18,13 +18,26 @@ extern Rep D_00659FA8;
 extern "C" char *func_005C2560(Rep *);
 extern "C" Str *func_005CE388(Str *, u32, u32, const Str *, u32, u32);
 struct Entry { short delta, idx; void *fn; };
+
+/* Layout backed by include/gt4/hObject.h and config/class_layout.json:
+ *   HObjectHeader: 0x00 ref_count, 0x04 vtable
+ *   vtable slot 3  (0x18 / 8): toString(Str *) const
+ *   vtable slot 11 (0x58 / 8): toInt() const
+ */
+struct HObjectHeader {
+    void *ref_count;
+    Entry *vtbl;
+};
+
 static inline void strcall(Str *r, void *o) {
- Entry *e=(Entry *)(*(char **)((char *)o+4)+0x18);
- ((void (*)(Str *,void *))e->fn)(r,(char *)o+e->delta);
+    HObjectHeader *obj = (HObjectHeader *)o;
+    Entry *e = &obj->vtbl[3];
+    ((void (*)(Str *, void *))e->fn)(r, (char *)o + e->delta);
 }
 static inline int intcall(void *o) {
- Entry *e=(Entry *)(*(char **)((char *)o+4)+0x58);
- return ((int (*)(void *))e->fn)((char *)o+e->delta);
+    HObjectHeader *obj = (HObjectHeader *)o;
+    Entry *e = &obj->vtbl[11];
+    return ((int (*)(void *))e->fn)((char *)o + e->delta);
 }
 static inline void assign(H *d, H *s) {
  if (d != s) { void *v=s->p; if(v)func_003285A8(v); if(d->p)func_003285F8(d->p); d->p=v; }
