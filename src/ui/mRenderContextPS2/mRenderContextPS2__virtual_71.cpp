@@ -1,14 +1,27 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
-struct Entry { short delta, index; void (*fn)(void *); };
+typedef short s16;
+typedef int s32;
+
+struct VEntry { s16 delta; s16 index; void (*fn)(void *); };
 struct Rect { char pad0[8]; int width; int padC; int x, y, dx, dy; };
-struct Obj { int first; Entry *vtbl; char pad[0x1D5C-8]; Rect rect; char pad2[0x1C]; int enabled; };
-extern "C" int func_00215B80(Obj *) throw();
+
+struct mRenderContextPS2Layout {
+    int first;
+    VEntry *vtbl;
+    char pad[0x1D5C - 8];
+    Rect rect;
+    char pad2[0x1C];
+    int enabled;
+};
+
+extern "C" int func_00215B80(void *) throw();
 extern "C" Rect *func_00214F80(int) throw();
 extern "C" int func_00105818(Rect *);
 extern "C" void func_004A6788(float, float, float, float, float, float, float, float);
-extern "C" void mRenderContextPS2__virtual_71(Obj *self) {
+
+extern "C" void mRenderContextPS2__virtual_71(mRenderContextPS2Layout *self) {
     if (self->enabled != 0) {
-        Entry *e = (Entry *)((char *)self->vtbl + 0x238);
+        VEntry *e = &self->vtbl[71];
         e->fn((char *)self + e->delta);
         Rect *r = func_00214F80(func_00215B80(self));
         float width = (float)r->width;

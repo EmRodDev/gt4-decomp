@@ -1,3 +1,4 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef int s32;
 typedef short s16;
 typedef float f32;
@@ -15,7 +16,7 @@ struct VObj_60 {
 
 static inline f32 vcall_60(void *o) {
     VObj_60 *obj = (VObj_60 *)o;
-    VEntry_60 *e = (VEntry_60 *)((char *)obj->vtbl + 0x60);
+    VEntry_60 *e = &obj->vtbl[12];
     return e->fn((char *)obj + e->delta);
 }
 

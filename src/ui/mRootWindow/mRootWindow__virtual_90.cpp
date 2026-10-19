@@ -17,26 +17,26 @@ struct Str {
     char pad[0xC];
 };
 
-struct VObj {
-    char pad0[4];
-    char *vtbl;
-};
-
-struct VEntry {
-    short delta;
-    short index;
-    s32 (*fn)(void *);
-};
-
 struct VEntryCall {
     short delta;
     short index;
     void (*fn)(void *, s32 *, s32, void *);
 };
 
+struct VObj {
+    char pad0[4];
+    VEntryCall *vtbl;
+};
+
+struct Vec {
+    float v[3];
+};
+
 struct Obj {
     char pad0[0x9C];
     s32 flags;
+    char padA0[0xCC - 0xA0];
+    Vec vCC;
 };
 
 extern Rep D_00659FA8;
@@ -70,24 +70,12 @@ struct MethodHandle {
     ~MethodHandle() { func_002F9B38(this, 2); }
 };
 
-static inline s32 vcall10(VObj *o) {
-    VEntry *e = (VEntry *)(o->vtbl + 0x58);
-    return e->fn((char *)o + e->delta);
-}
-
 static inline void vcall20(VObj *o, s32 *ret, s32 n, void *args) {
-    VEntryCall *e = (VEntryCall *)(o->vtbl + 0xA8);
+    VEntryCall *e = &o->vtbl[21];
     e->fn((char *)o + e->delta, ret, n, args);
 }
 
-#define DESTROY_ARGS()                          \
-    {                                           \
-        Value *q = args + 2;                    \
-        while (args != q) {                     \
-            --q;                                \
-            func_00309378(q, 2);                \
-        }                                       \
-    }
+#define DESTROY_ARGS()                              {                                                   Value *q = args + 2;                            while (args != q) {                                 --q;                                            func_00309378(q, 2);                        }                                           }
 
 static inline void set_arg(Value *dst, s32 *p0, s32 *tv) {
     s32 newVal;
@@ -111,9 +99,10 @@ static inline void set_arg(Value *dst, s32 *p0, s32 *tv) {
 extern "C" void *func_00235C00(void *);
 extern "C" void func_002350C8(void *, unsigned, void *, void *) throw();
 extern "C" void mPhotoMapWindow__virtual_90(void *, int);
+
 extern "C" void mRootWindow__virtual_90(Obj *self, s32 arg1) {
     if (func_00235C00(self) != 0) {
-        func_002350C8((char*)self + 0xCC, 0, func_00235C00(self), self);
+        func_002350C8(&self->vCC, 0, func_00235C00(self), self);
     }
     if (func_00265D00(self) != 0) {
         MethodHandle h;
@@ -152,7 +141,6 @@ extern "C" void mRootWindow__virtual_90(Obj *self, s32 arg1) {
                 Value args[2];
                 s32 tmp[4];
                 s32 tv1;
-
 
                 SET_ARG(0, tv1, arg1)
 

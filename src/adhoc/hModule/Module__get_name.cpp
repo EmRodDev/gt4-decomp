@@ -70,7 +70,10 @@ struct VEntry {
     short index;
     void *fn;
 };
-#define VCALL1(R, o, off, a) ({ VEntry *e_ = (VEntry *)(*(char **)((char *)(o) + 4) + (off)); ((R(*)(void *, ...))e_->fn)((char *)(o) + e_->delta, a); })
+struct VObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
 
 extern "C" void func_00304210(void *arg0) throw();
 extern "C" void func_003041B8(void *arg0, int arg1) throw();
@@ -132,7 +135,7 @@ extern "C" void Module__get_name(s32 *arg0, s32 arg1, s32 mode, void *arg3) {
         }
         func_00312318(pv, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = ((Rep *)ps->p) - 1;
             q->release();
         }
         func_003041B8(&h, 2);
@@ -142,7 +145,7 @@ extern "C" void Module__get_name(s32 *arg0, s32 arg1, s32 mode, void *arg3) {
         Val *pv = &v;
         func_00312370(pv, arg3);
         void *o = h.p;
-        VEntry *e = (VEntry *)(*(char **)((char *)o + 4) + 0x190);
+        VEntry *e = &((VObj *)o)->vtbl[50];
         char *rcv = (char *)o + e->delta;
         u8 *a1 = func_00314920(pv->p);
         ((void (*)(void *, u8 *))e->fn)(rcv, a1);

@@ -1,3 +1,4 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef short s16;
 typedef int s32;
 
@@ -7,15 +8,17 @@ struct VEntry {
     void (*fn)(void *);
 };
 
-struct Obj {
+struct mRenderContextPS2Layout {
     char pad[0x4];
-    char *vtbl;
+    VEntry *vtbl;
+    char pad8[0x1D5C - 8];
+    s32 rect_data[8];
 };
 
 extern "C" void func_00105728(s32 *arg0);
 
-extern "C" void mRenderContextPS2__virtual_70(Obj *self) {
-    VEntry *e = (VEntry *)(self->vtbl + 0x1D0);
+extern "C" void mRenderContextPS2__virtual_70(mRenderContextPS2Layout *self) {
+    VEntry *e = &self->vtbl[58];
     e->fn((char *)self + e->delta);
-    func_00105728((s32 *)((char *)self + 0x1D5C));
+    func_00105728(self->rect_data);
 }

@@ -71,7 +71,10 @@ struct VEntry {
     short index;
     void *fn;
 };
-#define VCALL1(R, o, off, a) ({ VEntry *e_ = (VEntry *)(*(char **)((char *)(o) + 4) + (off)); ((R(*)(void *, ...))e_->fn)((char *)(o) + e_->delta, a); })
+struct VObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
 
 extern "C" void func_002ED5C0(void *arg0, int arg1);
 extern "C" void *func_002EEEB0(void *ret, void *self, s32 x);
@@ -103,12 +106,12 @@ extern "C" void hString__virtual_22(void *self, s32 *out, void **objA, void *a3,
     s32 oldVal;
     Str sA;
     Str sB;
-    VEntry *e1 = (VEntry *)(*(char **)((char *)*objA + 4) + 0x18);
+    VEntry *e1 = &((VObj *)*objA)->vtbl[3];
     ((void (*)(Str *, void *))e1->fn)(&sA, (char *)*objA + e1->delta);
-    VEntry *e2 = (VEntry *)(*(char **)((char *)*objB + 4) + 0x18);
+    VEntry *e2 = &((VObj *)*objB)->vtbl[3];
     Str *pb = &sB;
     ((void (*)(Str *, void *))e2->fn)(pb, (char *)*objB + e2->delta);
-    u32 idx = func_005F00D0(&sA, pb->p, 0, *(u32 *)(pb->p - 0x10));
+    u32 idx = func_005F00D0(&sA, pb->p, 0, ((Rep *)pb->p)[-1].len);
     if (idx == (u32)-1) {
         if (out != (s32 *)objA) {
             newVal = *(s32 *)objA;
@@ -122,7 +125,7 @@ extern "C" void hString__virtual_22(void *self, s32 *out, void **objA, void *a3,
             *out = newVal;
         }
     } else {
-        void *r = func_005CB368(&sA, idx, *(u32 *)(pb->p - 0x10), 0, 0);
+        void *r = func_005CB368(&sA, idx, ((Rep *)pb->p)[-1].len, 0, 0);
         Val tmp;
         Val *pt = &tmp;
         func_00314B20(pt, r);
@@ -140,11 +143,11 @@ extern "C" void hString__virtual_22(void *self, s32 *out, void **objA, void *a3,
         func_00312318(pt, 2);
     }
     {
-        Rep *q = (Rep *)(pb->p - 0x10);
+        Rep *q = ((Rep *)pb->p) - 1;
         q->release();
     }
     {
-        Rep *q = (Rep *)(sA.p - 0x10);
+        Rep *q = ((Rep *)sA.p) - 1;
         q->release();
     }
 }

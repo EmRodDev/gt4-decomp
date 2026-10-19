@@ -42,7 +42,7 @@ extern "C" void MGameInputData__get_name(s32 *arg0) {
         if (d->sel != 0) {
             p = func_005C2560(d);
         } else {
-            p = (char *)d + 0x10;
+            p = (char *)(d + 1);
             d->ref++;
         }
         pA0[0] = (s32)p;
@@ -60,7 +60,7 @@ extern "C" void MGameInputData__get_name(s32 *arg0) {
     }
     func_00312318(p90, 2);
     {
-        Rep *q = (Rep *)(pA0[0] - 0x10);
+        Rep *q = ((Rep *)pA0[0]) - 1;
         if (--q->ref == 0) {
             s32 cap = q->cap + 0x10;
             func_00326798(q, cap, 4, func_005C11A8()->name);

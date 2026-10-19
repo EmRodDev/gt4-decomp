@@ -1,14 +1,16 @@
+#include "gt4/RaceSinglePlayerInformation.h"
+#include "gt4/RaceEntryCar.h"
 typedef int s32;
 
-struct Obj {
+struct EntryCarObj {
     char pad[0x14];
     s32 unk14;
 };
 
-extern "C" void RaceEntryCar__setPlayerSpec(struct Obj *arg0, void *arg1);
+extern "C" void RaceEntryCar__setPlayerSpec(struct RaceEntryCar *arg0, const void *arg1);
 
-extern "C" void RaceSinglePlayerInformation__updateEntryCar(void *arg0, struct Obj *arg1) {
+extern "C" void RaceSinglePlayerInformation__updateEntryCar(struct RaceSinglePlayerInformation *arg0, struct EntryCarObj *arg1) {
     if (arg1->unk14 == 0) {
-        RaceEntryCar__setPlayerSpec(arg1, (char *)arg0 + 0x130);
+        RaceEntryCar__setPlayerSpec((struct RaceEntryCar *)arg1, arg0->unk130);
     }
 }

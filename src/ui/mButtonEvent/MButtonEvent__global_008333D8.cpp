@@ -47,7 +47,7 @@ extern "C" void MButtonEvent__global_008333D8(void *arg0, void *arg1, s32 arg2, 
     if (arg2 == 6) {
         func_0027F378(buf, arg1);
         func_0022AD20(p1, args);
-        func_00255110(p2, (char *)args + 4);
+        func_00255110(p2, args + 1);
         {
             s32 *q1 = p1;
             func_0028EA10((S_0028EA10 *)buf[0], q1[0]);
@@ -59,25 +59,25 @@ extern "C" void MButtonEvent__global_008333D8(void *arg0, void *arg1, s32 arg2, 
         {
             Obj *o = args[2];
             Dst *h = (Dst *)buf[0];
-            VE58 *e = (VE58 *)(o->vtbl + 0x58);
+            VE58 *e = ((VE58 *)o->vtbl) + 11;
             h->a20 = e->fn((char *)o + e->delta);
         }
         {
             Obj *o = args[3];
             Dst *h = (Dst *)buf[0];
-            VE58 *e = (VE58 *)(o->vtbl + 0x58);
+            VE58 *e = ((VE58 *)o->vtbl) + 11;
             h->b24 = e->fn((char *)o + e->delta);
         }
         {
             Obj *o = args[4];
             Dst *h = (Dst *)buf[0];
-            VE60 *e = (VE60 *)(o->vtbl + 0x60);
+            VE60 *e = ((VE60 *)o->vtbl) + 12;
             h->c28 = e->fn((char *)o + e->delta);
         }
         {
             Obj *o = args[5];
             Dst *h = (Dst *)buf[0];
-            VE60 *e = (VE60 *)(o->vtbl + 0x60);
+            VE60 *e = ((VE60 *)o->vtbl) + 12;
             h->d2c = e->fn((char *)o + e->delta);
         }
         func_002550B8(p2, 2);

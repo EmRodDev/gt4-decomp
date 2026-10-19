@@ -1,11 +1,16 @@
 typedef int s32;
 
-struct Obj {
+struct BrakingSignDisplay {
     char pad[0x54];
     s32 unk54;
 };
 
-extern "C" void RaceSimplePanel__setBrakingSign(void *arg0, s32 arg1) {
-    Obj *obj = (Obj *)((char *)arg0 + 0x17C);
+struct RaceSimplePanelLayout {
+    char pad0[0x17C];
+    BrakingSignDisplay braking_display;
+};
+
+extern "C" void RaceSimplePanel__setBrakingSign(RaceSimplePanelLayout *arg0, s32 arg1) {
+    BrakingSignDisplay *obj = &arg0->braking_display;
     obj->unk54 = (obj->unk54 & 0xFFFFFF) | (arg1 << 24);
 }

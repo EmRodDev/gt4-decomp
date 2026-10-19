@@ -1,3 +1,4 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef short s16;
 typedef int s32;
 
@@ -12,7 +13,7 @@ extern "C" void MActor__rewind(void) {
     func_001FEFA8(&g);
     {
         VObj *o = g.p;
-        VEntry *e = (VEntry *)((char *)o->vtbl + 0x198);
+        VEntry *e = &o->vtbl[51];
         e->fn((char *)o + e->delta);
     }
     func_001FEF50(&g, 2);

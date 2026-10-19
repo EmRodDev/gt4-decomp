@@ -23,9 +23,14 @@ struct VEntry3 {
     void (*fn)(void *self, void *a, void *b);
 };
 
-struct Obj {
+struct VObj3 {
     char pad0[4];
-    char *vtbl;
+    VEntry3 *vtbl;
+};
+
+struct RootWindowObj {
+    char pad0[0xE8];
+    s32 flags;
 };
 
 extern Rep D_00659FA8;
@@ -40,11 +45,11 @@ extern "C" Slot *func_005C2630(Slot *str, s32 pos, s32 n1, const char *s, s32 n2
 extern "C" Heap *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 
-extern "C" void mRootWindow__virtual_63(Obj *arg0, Obj *arg1) {
+extern "C" void mRootWindow__virtual_63(RootWindowObj *arg0, VObj3 *arg1) {
     Slot a;
     Slot b;
     mSceneViewFace__virtual_63();
-    if (*(s32 *)((char *)arg0 + 0xE8) & 0x10) {
+    if (arg0->flags & 0x10) {
         func_00229D18(&a, func_0025C110(arg0));
         Slot *ps = &b;
         const char *src = hModule__getName(arg0);
@@ -61,7 +66,7 @@ extern "C" void mRootWindow__virtual_63(Obj *arg0, Obj *arg1) {
             func_005C2630(ps, 0, -1, src, func_0057F260(src));
         }
         {
-            VEntry3 *e = (VEntry3 *)(arg1->vtbl + 0x1B0);
+            VEntry3 *e = &arg1->vtbl[54];
             e->fn((char *)arg1 + e->delta, &a, ps);
         }
         {

@@ -1,3 +1,10 @@
-unsigned char DynamicsConductor__GetNumberOfPylonsToBeTouched(void *arg0) {
-    return *((unsigned char *)arg0 + 0xF85E);
+typedef unsigned char u8;
+
+struct DynamicsConductorLayout {
+    char pad0[0xF85E];
+    u8 pylons_to_touch;
+};
+
+extern "C" u8 DynamicsConductor__GetNumberOfPylonsToBeTouched(DynamicsConductorLayout *arg0) {
+    return arg0->pylons_to_touch;
 }
