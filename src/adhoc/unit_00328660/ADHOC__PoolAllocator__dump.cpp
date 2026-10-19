@@ -5,6 +5,11 @@ typedef float f32;
 
 struct VE0 { short d; short i; u32 (*fn)(void *); };
 struct VE1 { short d; short i; void *(*fn)(void *, u32); };
+
+/* Layout backed by ADHOC::PoolAllocator:
+ *   0x10: get (slot 2)
+ *   0x18: size (slot 3)
+ */
 struct VT { char pad0[0x10]; VE1 get; VE0 size; };
 struct Obj { VT *vt; };
 
@@ -31,13 +36,13 @@ extern "C" void ADHOC__PoolAllocator__dump(Obj *self, void *out) {
             VE1 *g;
             HOutput__printf(out, D_0069EE48, i);
             HOutput__operator_inc(out);
-            g = (VE1 *)((char *)self->vt + 0x10);
+            g = &self->vt->get;
             ADHOC__Pool__dump(g->fn((char *)self + g->d, i), out);
             HOutput__operator_dec(out);
             HOutput__printf(out, D_0069ED58);
-            g = (VE1 *)((char *)self->vt + 0x10);
+            g = &self->vt->get;
             b += func_00328A60(g->fn((char *)self + g->d, i));
-            g = (VE1 *)((char *)self->vt + 0x10);
+            g = &self->vt->get;
             u32 j = i;
             i++;
             a += func_00328A70(g->fn((char *)self + g->d, j));

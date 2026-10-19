@@ -16,9 +16,12 @@ struct Obj {
     Sub *unk0;
 };
 
+/* Layout backed by include/gt4/hIO.h:
+ *   vtable slot 51 (0x198 / 8): write(buf, len)
+ */
 extern "C" void func_002FFAC0(struct Obj *arg0, s32 arg1, s32 arg2, s32 arg3) {
     Sub *a3 = arg0->unk0;
-    VEntry *e = (VEntry *)((char *)a3->vtbl + 0x198);
+    VEntry *e = &a3->vtbl[51];
 
     e->fn((char *)a3 + e->delta, arg1, arg2);
 }

@@ -59,8 +59,12 @@ static inline void release(Str *s) {
 inline Str::Str(const Str &src) { p = src.rep()->grab(); }
 inline Str::~Str() { release(this); }
 
+/* Layout backed by include/gt4/hIO.h and bastring.h:
+ *   vtable slot 55 (0x1B8 / 8): get_char()
+ *   vtable slot 52 (0x1A0 / 8): is_eof()
+ */
 static inline s32 get(VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x1B8);
+    VEntry *e = &o->vtbl[55];
     return ((s32 (*)(void *))e->fn)((char *)o + e->delta);
 }
 
@@ -77,12 +81,12 @@ extern "C" Str hIO__sget(VObj *arg1) {
         }
         s.p = d;
     }
-    VEntry *e = (VEntry *)((char *)arg1->vtbl + 0x1A0);
+    VEntry *e = &arg1->vtbl[52];
     if (((s32 (*)(void *))e->fn)((char *)arg1 + e->delta) != 0) return s;
     s32 c;
     while ((c = get(arg1)) != -1) {
         if (c == 10) return s;
-        func_005CB368(&s, *(s32 *)(s.p - 0x10), 0, 1, (char)c);
+        func_005CB368(&s, s.rep()->len, 0, 1, (char)c);
     }
     return s;
 }
