@@ -6,6 +6,7 @@ struct Obj { char pad[0xA0]; Scale scale; };
 struct Handle { Obj *p; char pad[12]; };
 struct Info { const char *name; };
 struct VEntry { short delta,index; void (*fn)(Str *,void *); };
+/* Layout backed by include/gt4/hObject.h and bastring.h: slot 3 (0x18 / 8) */
 struct VObj { int data; VEntry *vtbl; };
 extern Rep D_00659FA8;
 extern char D_00699070[];
@@ -18,7 +19,7 @@ extern "C" Str *func_005C2630(Str *,unsigned int,unsigned int,const char *,unsig
 extern "C" Info *func_005C11A8();
 extern "C" void func_00326798(void *,int,int,const char *);
 static inline void release(Str *s) {
- Rep *r = (Rep *)(s->p-16);
+ Rep *r = (Rep *)s->p - 1;
  if (--r->ref == 0) {
   int size = r->cap+16;
   func_00326798(r,size,4,func_005C11A8()->name);
@@ -31,13 +32,13 @@ extern "C" void MTextFace__set_text(void *arg0,void *arg1,int n,VObj **reader) {
   Str s;
   func_002434C8(&h,arg1);
   if (!isNull(reader)) {
-   VEntry *e = (VEntry *)((char *)(*reader)->vtbl+0x18);
+   VEntry *e = &(*reader)->vtbl[3];
    Str *ps = &s;
    Obj *p = h.p;
    e->fn(ps,(char *)(*reader)+e->delta);
    func_00245270(p,ps);
    release(ps);
-   Scale *sc = (Scale *)((char *)h.p+0xA0);
+   Scale *sc = &h.p->scale;
    float x = sc->sx, y = sc->sy;
    sc->x = x;
    sc->y = y;

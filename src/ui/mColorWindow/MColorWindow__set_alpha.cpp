@@ -7,9 +7,10 @@ struct VEntry {
     void (*fn)(void *, s32, f32);
 };
 
+/* Layout backed by include/gt4/mColorWindow.h: slot 59 (0x1D8 / 8) */
 struct VObj {
     char pad0[4];
-    char *vtbl;
+    VEntry *vtbl;
 };
 
 extern "C" void func_00287C88(void *arg0, int arg1);
@@ -21,7 +22,7 @@ extern "C" void func_002FC870(void *arg0, int arg1);
 extern "C" void func_002FC8C8(void *arg0, void *arg1);
 extern "C" s32 func_002FE250(s32 arg0);
 
-extern "C" void MColorWindow__set_alpha(void *arg0, void *arg1, s32 arg2, void *arg3)
+extern "C" void MColorWindow__set_alpha(void *arg0, void *arg1, s32 arg2, void **arg3)
 {
     s32 buf0[4];
     s32 buf1[4];
@@ -36,12 +37,12 @@ extern "C" void MColorWindow__set_alpha(void *arg0, void *arg1, s32 arg2, void *
         func_002F7BC0(p_s2, arg3);
         p_s0 = buf2;
         if (!(arg2 < 2)) {
-            func_002FC8C8(p_s0, (char *)arg3 + 4);
+            func_002FC8C8(p_s0, arg3 + 1);
             v_s3 = func_002FE250(*p_s0);
             func_002FC870(p_s0, 2);
         }
         VObj *o = (VObj *)buf0[0];
-        VEntry *e = (VEntry *)(o->vtbl + 0x1D8);
+        VEntry *e = &o->vtbl[59];
         char *self = (char *)o + e->delta;
         f32 f = func_002F9158((void *)*p_s2);
         e->fn(self, v_s3, f);
