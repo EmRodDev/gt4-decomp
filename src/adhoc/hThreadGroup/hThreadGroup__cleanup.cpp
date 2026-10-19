@@ -29,13 +29,22 @@ extern "C" void func_003285F8(s32);
 extern "C" void func_00318538(void *, s32);
 extern "C" void func_005F1AE0(void *);
 
-extern "C" void hThreadGroup__getClassID(s32 *arg0) {
+struct hThreadGroupClean {
+    s32 word0;
+    void *vt;
+    s32 word8;
+    s32 wordC;
+    s32 alloc;
+    s32 list;
+};
+
+extern "C" void hThreadGroup__getClassID(hThreadGroupClean *arg0) {
     s32 buf0[4];
     s32 buf1[4];
     s32 *p_s1;
     s32 newVal;
     s32 oldVal;
-    p_s1 = (s32 *)((char *)arg0 + 0x10);
+    p_s1 = &arg0->alloc;
     hObject__cleanup();
     buf1[0] = 0;
     func_00318508(buf0, buf1);
@@ -51,5 +60,5 @@ extern "C" void hThreadGroup__getClassID(s32 *arg0) {
         *p_s1 = newVal;
     }
     func_00318538(buf0, 0x2);
-    func_005F1AE0((char *)arg0 + 0x14);
+    func_005F1AE0(&arg0->list);
 }

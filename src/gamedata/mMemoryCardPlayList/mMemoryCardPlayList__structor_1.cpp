@@ -9,7 +9,9 @@ struct hObjectNative {
 };
 
 struct CopyBlock_0017D490 {
-    u64 words[0x191];
+    u64 words[0x190];
+    s32 count;
+    s32 pad;
 };
 
 struct mMemoryCardPlayListNative : hObjectNative {
@@ -25,13 +27,13 @@ extern "C" u32 mMemoryCardPlayList__vtable;
 mMemoryCardPlayListNative::mMemoryCardPlayListNative(const CopyBlock_0017D490 *source)
     : hObjectNative() {
     vtable = (u32)&mMemoryCardPlayList__vtable;
-    void *allocation;
+    CopyBlock_0017D490 *allocation;
     if (source != 0) {
-        allocation = exception__structor_0(0xC88);
-        *(CopyBlock_0017D490 *)allocation = *source;
+        allocation = (CopyBlock_0017D490 *)exception__structor_0(0xC88);
+        *allocation = *source;
     } else {
-        allocation = exception__structor_0(0xC88);
-        *(s32 *)((u8 *)allocation + 0xC80) = 0;
+        allocation = (CopyBlock_0017D490 *)exception__structor_0(0xC88);
+        allocation->count = 0;
     }
     data = allocation;
     initialized = 1;

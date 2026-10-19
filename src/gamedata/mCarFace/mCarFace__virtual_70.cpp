@@ -6,7 +6,16 @@ struct Entry {
     void (*fn)(void *, void *, void *, Vec4 *, void *, void *, void *, int);
 };
 struct Obj { int x; Entry *vt; };
-struct Self { char pad[0x29c]; int field29c; int field2a0; Obj *obj; };
+struct Self {
+    char pad0[0xA0];
+    char fA0[0x2C];
+    int fCC;
+    char fD0[0x68];
+    char f138[0x164];
+    int field29c;
+    int field2a0;
+    Obj *obj;
+};
 extern "C" void mWidget__virtual_70(void *, void *, int);
 extern "C" float func_002313E0(void *);
 extern "C" float func_00231400(void *);
@@ -27,7 +36,7 @@ extern "C" void mCarFace__virtual_70(Self *self, void *arg1, int arg2) {
         rect.h = h;
         Obj *obj = *holder;
         Entry *e = obj->vt + 58;
-        e->fn((char *)obj + e->delta, arg1, (char *)self + 0xcc, &rect,
-              (char *)self + 0xa0, (char *)self + 0xd0, (char *)self + 0x138, self->field29c);
+        e->fn((char *)obj + e->delta, arg1, &self->fCC, &rect,
+              self->fA0, self->fD0, self->f138, self->field29c);
     }
 }

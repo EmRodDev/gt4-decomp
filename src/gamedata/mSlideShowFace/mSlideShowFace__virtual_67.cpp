@@ -6,6 +6,9 @@ struct Obj {
     s32 fA0, fA4, fA8, fAC;
     s32 bufs[2];
     s32 fB8;
+    char media_stream[0x1DE0];  /* 0xBC..0x1E9B */
+    char media_decoder[0xB4];   /* 0x1E9C..0x1F4F */
+    s32 unk1F50;
 };
 extern "C" void mTextFace__virtual_67(void *);
 extern "C" void func_001AAF80(void *);
@@ -32,6 +35,6 @@ extern "C" void mSlideShowFace__virtual_67(Obj *self) {
     }
     s32 m = malloc(0x80000);
     self->fB8 = m;
-    func_001C6E00((char *)self + 0xBC, self->bufs, m, 0x80000);
-    func_001C7298((char *)self + 0x1E9C);
+    func_001C6E00(self->media_stream, self->bufs, m, 0x80000);
+    func_001C7298(self->media_decoder);
 }
