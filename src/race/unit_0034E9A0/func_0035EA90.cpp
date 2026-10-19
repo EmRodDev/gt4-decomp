@@ -6,7 +6,7 @@ extern float D_00843928[12];
 extern float D_00843958[12];
 extern float D_006208D0[6];
 extern "C" unsigned char DynamicsConductor__getCourseType(DynamicsConductor *self);
-extern "C" float func_0035EA08() throw();
+extern "C" void func_0035EA08() throw();
 extern "C" void func_0035E968() throw();
 
 extern "C" void func_0035EA90(DynamicsConductor *self) {

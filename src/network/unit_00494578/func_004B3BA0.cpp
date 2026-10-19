@@ -8,13 +8,13 @@ struct Obj {
     s32 unk10;
 };
 
-extern "C" void func_004B3BE8(Obj *arg0);
+extern "C" void func_004B3BE8(Obj *arg0, s32 blockSize, char *start, unsigned size);
 
-extern "C" void func_004B3BA0(Obj *arg0, s32 arg1) {
+extern "C" void func_004B3BA0(Obj *arg0, s32 arg1, char *start, unsigned size) {
     arg0->unk0 = arg1;
     arg0->unk4 = 0;
     arg0->unk8 = 0;
     arg0->unkC = 0;
     arg0->unk10 = 0;
-    return func_004B3BE8(arg0);
+    return func_004B3BE8(arg0, arg1, start, size);
 }

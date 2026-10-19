@@ -2,7 +2,7 @@
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
 
-f32 func_00344978(s32);                             /* extern */
+f32 func_00344978(s32, f32);                             /* extern */
 f32 func_003449A8(s32, f32);                        /* extern */
 f32 func_003449D8(s32, f32);                        /* extern */
 
@@ -21,7 +21,7 @@ void *func_003D70B0(struct func_003D70B0_arg0 *arg0, struct func_003D70B0_arg1 *
     f32 temp_f21;
     f32 temp_f23;
 
-    temp_f23 = func_00344978(arg1->unk4) * 0x1.ca5dc00000000p+5f;
+    temp_f23 = func_00344978(arg1->unk4, fparg0) * 0x1.ca5dc00000000p+5f;
     temp_f21 = func_003449D8(arg1->unk4, fparg0) * 0x1.ca5dc00000000p+5f;
     temp_f0 = func_003449A8(arg1->unk4, fparg0) * 0x1.ca5dc00000000p+5f;
     arg0->unk0 = temp_f23;

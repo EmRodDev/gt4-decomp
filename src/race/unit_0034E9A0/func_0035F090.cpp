@@ -13,7 +13,7 @@ extern V6 D_008439A0;
 extern V6 D_008439B8[2];
 extern V6 D_008439E8[2];
 extern int D_00843A18;
-extern "C" float func_0035EA08(void) throw();
+extern "C" void func_0035EA08(void) throw();
 extern "C" int func_0035EFB8(void) throw();
 extern "C" void *func_005A48D8(void *, int, unsigned);
 

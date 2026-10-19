@@ -26,7 +26,7 @@ struct Obj002676A8 {
 };
 
 extern "C" s32 func_00206868(S *arg0);
-extern "C" void func_0025BAA0(C *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+extern "C" void func_0025BAA0(C *arg0, f32 *left, f32 *top, f32 *right, f32 *bottom);
 extern "C" void func_0025BAD8(C *c, f32 fparg0, f32 fparg1, f32 fparg2, f32 fparg3);
 extern "C" s32 func_0025C300(S *arg0);
 extern "C" s32 func_00267698(Obj *arg0);
@@ -37,7 +37,7 @@ extern "C" void func_00266830(Obj *arg0, s32 arg1) {
     f32 fb[4];
 
     if ((func_00267698(arg0) ^ 3) != 0) {
-        func_0025BAA0((C *)arg0, (s32)&fb[0], (s32)&fb[1], (s32)&fb[2], (s32)&fb[3]);
+        func_0025BAA0((C *)arg0, &fb[0], &fb[1], &fb[2], &fb[3]);
         func_002676A8((Obj002676A8 *)arg0, 3);
         func_0025BAD8((C *)arg0, fb[0], fb[1], fb[2], fb[3]);
     }

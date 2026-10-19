@@ -5,9 +5,9 @@ typedef float f32;
 
 extern unsigned char D_00620E24;
 
-extern "C" s32 func_00354AC0(char *a0);
+extern "C" void func_00354AC0(char *a0);
 
-extern "C" s32 func_00354AF8(char *arg0, char *arg1) {
+extern "C" void func_00354AF8(char *arg0, char *arg1) {
     char *self = arg0;
     char *a3 = self + 0x104;
     u8 a2;
@@ -40,5 +40,6 @@ extern "C" s32 func_00354AF8(char *arg0, char *arg1) {
         }
     }
 
+    // Tail call: the original jumps to func_00354AC0 (void) rather than calling and returning.
     return func_00354AC0(arg0);
 }

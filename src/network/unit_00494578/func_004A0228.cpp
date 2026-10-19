@@ -1,4 +1,4 @@
-typedef unsigned long u64;
+typedef unsigned long long u64;
 struct Regs {
     char pad[0x158];
     union {
@@ -22,9 +22,9 @@ extern "C" void func_004A0228(Regs *r)
     r->r1C8 = 0;
     r->r1D0 = 0;
     r->r1A8 = 0;
-    r->r158.d &= ~0x8000UL;
-    r->r1C0 = 0x400000000UL;
+    r->r158.d &= ~0x8000ULL;
+    r->r1C0 = 0x400000000ULL;
     r->r1B8 = 0x60;
-    r->r1B0 = 0x2000000001300000UL;
-    r->r1D8 |= 0x801E801E80UL;
+    r->r1B0 = 0x2000000001300000ULL;
+    r->r1D8 |= 0x801E801E80ULL;
 }

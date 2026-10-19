@@ -14,6 +14,8 @@ struct func_00430750_arg0 {
     s32 unk60;
 };
 
+void func_00430850(s32 arg0, s32 arg1);
+
 s32 func_00430750(struct func_00430750_arg0 *arg0) {
     arg0->unk0 = -1;
     arg0->unk8 = 0;

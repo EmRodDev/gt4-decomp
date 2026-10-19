@@ -1,8 +1,8 @@
 typedef int s32;
 typedef float f32;
-char *func_0025BF60(void);
+char *func_0025BF60(char *self);
 void func_002E9730(char *arg0, f32 fparg0, f32 fparg1) {
-    char *t = func_0025BF60();
+    char *t = func_0025BF60(arg0);
     if (*(s32 *)(arg0 + 0xC4) != 0) {
         *(f32 *)(t + 8) = fparg0;
         *(f32 *)(t + 0xC) = fparg1;
