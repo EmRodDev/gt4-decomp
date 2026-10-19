@@ -1,7 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 struct V { float x, y, z; };
 struct M {
-    char pad0[0xC4]; void *c4; char padc8[0x34]; int fc; char pad100[8];
+    char pad0[0xC4]; void *c4; char padc8[0x10]; void *unkD8; char padDC[0x20]; int fc; char pad100[8];
     float f108; float f10c; V v110; float f11c;
 };
 extern "C" void func_0025BAA0(void *, float *, float *, float *, float *);
@@ -12,7 +12,7 @@ extern "C" void func_0057CE40(void *, int);
 extern "C" int func_0057CF10(void *, int);
 extern "C" int func_002C98F0(M *self, int arg1) {
     if (self->c4 != 0 && self->fc != 0) {
-        char *s1 = (char *)self + 0xD8;
+        void *s1 = &self->unkD8;
         int s3 = *(int *)s1;
         int s4 = func_0057CF10(s1, arg1);
         if (s4 != 0) {
@@ -48,5 +48,5 @@ extern "C" int func_002C98F0(M *self, int arg1) {
         }
         return s4;
     }
-    return func_0057CF10((char *)self + 0xD8, arg1);
+    return func_0057CF10(&self->unkD8, arg1);
 }

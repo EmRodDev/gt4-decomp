@@ -7,14 +7,14 @@ struct S {
     void *vt;
     char p1[0xB8];
     int c0, c4, c8;
-    char pCC[0xC];
+    void *pCC[3];
     Sub s;
     V3 v;
     float f8;
     int fc, f100, f104;
     char p108[8];
     V3 w;
-    char p11c0[0];
+    float f11C;
 };
 
 extern "C" S *mFBox__structor_0(S *s);
@@ -32,9 +32,9 @@ extern "C" void mOptionMenu__structor_0(S *self) {
     self->c4 = 0;
     self->vt = mOptionMenu__vtable;
     self->c8 = 0;
-    func_002FA120((char *)self + 0xCC);
-    func_002FA120((char *)self + 0xD0);
-    func_002FA120((char *)self + 0xD4);
+    func_002FA120(&self->pCC[0]);
+    func_002FA120(&self->pCC[1]);
+    func_002FA120(&self->pCC[2]);
     sp->a = 0;
     sp->b = 0;
     sp->c = 1;
@@ -46,7 +46,7 @@ extern "C" void mOptionMenu__structor_0(S *self) {
     self->f100 = 0;
     self->f104 = 0;
     new (&self->w) V3;
-    *(float *)((char *)self + 0x11C) = 0.0f;
+    self->f11C = 0.0f;
     mWidget__setWindowW(self, 128.0f);
     mWidget__setWindowH(self, 24.0f);
     func_00265F10(self, 1);

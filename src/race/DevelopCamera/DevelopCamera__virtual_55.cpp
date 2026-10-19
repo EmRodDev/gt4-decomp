@@ -8,8 +8,19 @@ struct Out {
     f32 f8, fC, f10, f14, f18, f1C;
 };
 struct Item { char pad[0x18]; s32 i18; };
+struct Slot {
+    char pad0[0x10];
+    Item *item;
+    char pad14[0x19C - 0x14];
+};
 struct Cam {
     Entry *vt;
+    char pad4[0xC];
+    Slot slots[5];
+    char padSlots[0x9BC - 0x10 - 5 * sizeof(Slot)];
+    s32 idx;
+    char pad9C0[0xC14 - 0x9C0];
+    Out *out;
 };
 
 extern "C" void func_001C5D70(Out *);
@@ -18,13 +29,13 @@ extern "C" void func_00374B58(Cam *, s32, f32 *, s32, f32, f32, f32);
 
 extern "C" Out *DevelopCamera__virtual_55(Cam *self) {
     f32 v[4];
-    s32 idx = *(s32 *)((char *)self + 0x9BC);
-    Out *out = *(Out **)((char *)self + 0xC14);
-    Item *item = *(Item **)((char *)self + idx * 0x19C + 0x20);
+    s32 idx = self->idx;
+    Out *out = self->out;
+    Item *item = self->slots[idx].item;
     func_001C5D70(out);
     if (item != 0) {
         s32 i18 = item->i18;
-        Entry *e = (Entry *)((char *)self->vt + 0xD8);
+        Entry *e = &self->vt[27];
         func_00374B58(self, e->fn((char *)self + e->delta, idx), v, i18, 0x1.333332p-3f, 0x1.999998p+0f, 1.4f);
         f32 a = v[0];
         f32 d = v[1];

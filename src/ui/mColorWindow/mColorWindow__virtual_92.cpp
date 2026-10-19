@@ -5,7 +5,12 @@ struct Vec4 { f32 x, y, z, w; };
 struct VT0 { short delta; short pad; void *ti; };
 struct Base { int x; VT0 *vt; };
 struct VE { short delta; short index; f32 (*fn)(void *, int); };
-struct Obj { int x; char *vt; };
+struct Obj {
+    int x;
+    VE *vt;
+    char pad8[0xC4 - 8];
+    char unkC4[1];
+};
 
 extern char mRenderContextPS2__tf[];
 extern char mRenderContext__tf[];
@@ -22,7 +27,7 @@ extern "C" void *GT4MC__FileGT4GameData__loadInstance(void *, void *, int, void 
 extern "C" void mColorWindow__virtual_92(Obj *self, Base *arg1) {
     Vec4 v;
     void *p = 0;
-    char *s3 = (char *)self + 0xC4;
+    char *s3 = self->unkC4;
     if (arg1 != 0) {
         VT0 *t = arg1->vt;
         p = GT4MC__FileGT4GameData__loadInstance(t->ti, mRenderContextPS2__tf, 0, (char *)arg1 + t->delta, mRenderContext__tf, arg1);
@@ -37,7 +42,7 @@ extern "C" void mColorWindow__virtual_92(Obj *self, Base *arg1) {
     v.y = b;
     v.z = c;
     v.w = d;
-    VE *e = (VE *)(self->vt + 0x1C8);
+    VE *e = &self->vt[57];
     f32 r = e->fn((char *)self + e->delta, 0);
     func_00218170(p, s3, &v, r);
 }

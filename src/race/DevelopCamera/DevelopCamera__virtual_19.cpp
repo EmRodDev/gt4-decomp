@@ -14,7 +14,7 @@ struct Obj {
     VEntry *vtbl;
     char pad4[0x9BC - 4];
     s32 unk9BC;
-    char pad9C0[0xA08 - 0x9C0];
+    char param9C0[0xA08 - 0x9C0];
     float unkA08;
 };
 
@@ -25,5 +25,5 @@ extern "C" float DevelopCamera__virtual_19(Obj *self)
     if (target == 0)
         return self->unkA08;
     VEntry *f = &target->vtbl[19];
-    return ((float (*)(void *, void *))f->fn)((char *)target + f->delta, (char *)self + 0x9C0);
+    return ((float (*)(void *, void *))f->fn)((char *)target + f->delta, self->param9C0);
 }

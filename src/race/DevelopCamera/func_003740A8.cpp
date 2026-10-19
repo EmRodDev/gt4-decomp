@@ -1,3 +1,21 @@
-struct O;struct E {short adjust,pad;O *(*call)(void *,int);};struct S{E *table;char pad[0x9b8];int index;};struct Slot{char pad[0x168];O *object;char tail[0x30];inline O *get()const{return object;}};
+struct O;
+struct E { short adjust, pad; O *(*call)(void *, int); };
+struct Slot { char pad[0x168]; O *object; char tail[0x30]; inline O *get() const { return object; } };
+struct S {
+    E *table;
+    char pad[0xC];
+    Slot slots[5];
+    char pad8[0x9BC - 0x10 - 5 * sizeof(Slot)];
+    int index;
+};
 extern "C" int func_00380D98(O *);
-extern "C" int func_003740A8(S *s){int index=s->index;Slot *slot=(Slot *)((char *)s+0x10)+index;E *e=s->table+27;O *o=e->call((char *)s+e->adjust,index);if(!o)return 0;O *target=slot->get();if(o!=target)return 0;return func_00380D98(o);}
+extern "C" int func_003740A8(S *s) {
+    int index = s->index;
+    Slot *slot = &s->slots[index];
+    E *e = s->table + 27;
+    O *o = e->call((char *)s + e->adjust, index);
+    if (!o) return 0;
+    O *target = slot->get();
+    if (o != target) return 0;
+    return func_00380D98(o);
+}

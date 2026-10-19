@@ -12,7 +12,7 @@ struct Obj_00109910 {
 };
 
 extern "C" void mWidget__setAlpha_2(Obj_00109910 *arg0) {
-    VEntry_00109910 *e = (VEntry_00109910 *)((char *)arg0->vtbl + 0x1D0);
+    VEntry_00109910 *e = &arg0->vtbl[58];
 
     e->fn((char *)arg0 + e->delta);
 }

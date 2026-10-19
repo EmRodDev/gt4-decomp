@@ -1,7 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 struct Blk { long w[8]; } __attribute__((aligned(8)));
-extern "C" void DevelopCamera__virtual_23(char *self, const Blk *src, float f) {
-    Blk *dst = (Blk *)(self + 0x9C0);
+struct CamObj {
+    char pad0[0x9C0];
+    Blk blk;
+};
+extern "C" void DevelopCamera__virtual_23(CamObj *self, const Blk *src, float f) {
+    Blk *dst = &self->blk;
     *dst = *src;
-    *(float *)((char *)dst + 0x40) = f;
+    ((float *)(dst + 1))[0] = f;
 }

@@ -1,10 +1,5 @@
 typedef int s32;
 typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
 
 struct Rep {
     s32 len;
@@ -31,20 +26,24 @@ extern "C" s32 func_002B7110(s32);
 extern "C" void func_002450E8(void *, s32);
 
 static inline void str_release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+    Rep *q = (Rep *)s->p - 1;
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);
     }
 }
 
-extern "C" void mTextFace__virtual_63(s32 *arg0) {
+struct mTextFaceInternal {
+    char pad0[0x104];
+    s32 unk104;
+};
+
+extern "C" void mTextFace__virtual_63(mTextFaceInternal *arg0) {
     Str s0;
-    char *v_s3;
-    v_s3 = (char *)arg0 + 0x104;
+    s32 *v_s3 = &arg0->unk104;
     mSceneViewFace__virtual_63();
-    func_002B71D0(&s0, *(s32 *)(char *)v_s3);
+    func_002B71D0(&s0, *v_s3);
     func_00245270(arg0, &s0);
     str_release(&s0);
-    func_002450E8(arg0, func_002B7110(*(s32 *)(char *)v_s3));
+    func_002450E8(arg0, func_002B7110(*v_s3));
 }
