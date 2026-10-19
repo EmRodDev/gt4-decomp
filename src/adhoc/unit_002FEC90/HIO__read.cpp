@@ -16,9 +16,12 @@ struct Obj {
     Sub *unk0;
 };
 
+/* Layout backed by include/gt4/hIO.h:
+ *   vtable slot 50 (0x190 / 8): read(buf, len)
+ */
 extern "C" void HIO__read(struct Obj *arg0, s32 arg1, s32 arg2, s32 arg3) {
     Sub *a3 = arg0->unk0;
-    VEntry *e = (VEntry *)((char *)a3->vtbl + 0x190);
+    VEntry *e = &a3->vtbl[50];
 
     e->fn((char *)a3 + e->delta, arg1, arg2);
 }

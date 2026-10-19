@@ -16,8 +16,12 @@ struct Str {
 };
 struct VEntry { short delta; short index; int (*fn)(void *, const char *, unsigned int); };
 struct Obj { int field0; VEntry *vtbl; };
+
+/* Layout backed by include/gt4/hIO.h:
+ *   vtable slot 51 (0x198 / 8): write(buf, len)
+ */
 extern "C" void hIO__sput(Obj *self, Str *s) {
     const char *text = s->c_str();
-    VEntry *e = (VEntry *)((char *)self->vtbl + 0x198);
+    VEntry *e = &self->vtbl[51];
     e->fn((char *)self + e->delta, text, s->length());
 }

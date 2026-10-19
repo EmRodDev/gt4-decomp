@@ -3,6 +3,12 @@ typedef int s32;
 typedef unsigned int u32;
 
 struct Pool;
+
+/* Layout backed by ADHOC::Pool (Chunk size 0x1C):
+ *   0x00: owner
+ *   0x04..0x0F: f4, f8, fC
+ *   0x10..0x1B: f10, f14, f18
+ */
 struct Chunk {
     Pool *owner;
     s32 f4, f8, fC;
@@ -37,8 +43,6 @@ extern "C" void func_003288F8(Pool *p) {
             s32 total = sz * n;
             Chunk *c = func_00578CF0(0x10, total + 0x1C);
             char *a;
-            char *last;
-            char **end;
             c->owner = p;
             c->f4 = 0;
             c->f8 = 0;
@@ -47,7 +51,7 @@ extern "C" void func_003288F8(Pool *p) {
             c->f14 = 0;
             c->f18 = 0;
             if (total != 0) {
-                char *first = (char *)c + 0x1C;
+                char *first = (char *)(c + 1);
                 c->f14 = first;
                 c->f18 = first + sz * (n - 1);
                 for (a = first; a < c->f18; a += sz) {

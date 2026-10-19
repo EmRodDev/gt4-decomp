@@ -20,8 +20,12 @@ struct S00659988 {
 
 struct VEntry_18 { s16 delta; s16 index; void (*fn)(void *, void *); };
 struct VObj_18 { char pad0[4]; VEntry_18 *vtbl; };
+
+/* Layout backed by include/gt4/hObject.h:
+ *   vtable slot 3 (0x18 / 8): toString(Str *)
+ */
 static inline void vcall_18_ret(void *ret, char *o) {
-    VEntry_18 *e = (VEntry_18 *)((char *)((VObj_18 *)o)->vtbl + 0x18);
+    VEntry_18 *e = &((VObj_18 *)o)->vtbl[3];
     e->fn(ret, o + e->delta);
 }
 extern "C" void func_0030D390(void *, void *, void *) throw();
@@ -50,9 +54,10 @@ extern "C" void adhoc__GetAbsolute(s32 *arg0, s32 arg1, void *arg2) {
     s32 newVal;
     s32 oldVal;
     if (arg1 == 2) {
-        vcall_18_ret((char *)&s0, (char *)(*(s32 *)(char *)arg2));
+        s32 *args = (s32 *)arg2;
+        vcall_18_ret((char *)&s0, (char *)args[0]);
         p_s4 = &s1;
-        vcall_18_ret((char *)p_s4, (char *)(*(s32 *)((char *)arg2 + 4)));
+        vcall_18_ret((char *)p_s4, (char *)args[1]);
         func_0030D390(&s3, &s0, p_s4);
         p_s1 = buf2;
         func_00314B20(p_s1, &s3);
