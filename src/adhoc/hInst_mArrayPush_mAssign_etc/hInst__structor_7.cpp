@@ -8,24 +8,29 @@ extern "C" void func_00326798(void *arg0, s32 arg1, s32 arg2, const char *arg3);
 extern void *hInst__vtable;
 extern void *mClassDefine__vtable;
 
-struct hInst__structor_7_arg0 {
-    char pad0[0x4];
-    void *unk4;
-    char pad8[0x14];
-    s32 unk1C;
+/* Layout backed by config/class_layout.json (size 0x20) and config/class_fields.json:
+ *   0x04: vptr
+ *   0x0C: class name / symbol handle object (dtor func_0030F808)
+ *   0x1C: unk1C (released via func_003286B8)
+ */
+struct mClassDefineLayout {
+    void *ref_count;
+    void *vtable;
+    s32 unk8;
+    char class_handle[0x10];   /* 0x0C..0x1B */
+    s32 unk1C;                 /* 0x1C */
 };
 
-extern "C" void hInst__structor_7(void *arg0, s32 arg1) {
-    s32 p;
-    ((struct hInst__structor_7_arg0 *)arg0)->unk4 = &mClassDefine__vtable;
-    p = ((struct hInst__structor_7_arg0 *)arg0)->unk1C;
+extern "C" void hInst__structor_7(mClassDefineLayout *self, s32 arg1) {
+    self->vtable = &mClassDefine__vtable;
+    s32 p = self->unk1C;
     if (p != 0) {
         func_003286B8(p);
     }
-    func_0030F808((char *)arg0 + 0xC, 2);
-    ((struct hInst__structor_7_arg0 *)arg0)->unk4 = &hInst__vtable;
-    RefCounter__structor_2(arg0, 0);
+    func_0030F808(self->class_handle, 2);
+    self->vtable = &hInst__vtable;
+    RefCounter__structor_2(self, 0);
     if (arg1 & 1) {
-        return func_00326798(arg0, 0x20, 4, "RefCounter");
+        return func_00326798(self, 0x20, 4, "RefCounter");
     }
 }

@@ -9,7 +9,20 @@ extern "C" void func_00309378(void *arg0, s32 arg1);
 extern "C" void func_003285A8(RefCounter *p);
 extern "C" void func_003285F8(RefCounter *p);
 
-extern "C" void hScriptMethod__call_const(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
+/* Layout backed by config/class_layout.json (size 0x10):
+ *   0x00: ref_count
+ *   0x04: vtable (hScriptMethod)
+ *   0x08: unk8
+ *   0x0C: bytecode / code pointer passed to hThread__execCode
+ */
+struct hScriptMethodLayout {
+    void *ref_count;
+    void *vtable;
+    s32 unk8;
+    s32 bytecode;
+};
+
+extern "C" void hScriptMethod__call_const(hScriptMethodLayout *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 buf0[4];
     s32 buf1[4];
     s32 *p_s5;
@@ -18,7 +31,7 @@ extern "C" void hScriptMethod__call_const(s32 *arg0, s32 *arg1, s32 arg2, s32 ar
 
     func_00319268(buf0);
     p_s5 = buf1;
-    hThread__execCode(p_s5, buf0[0], (char *)arg0 + 0xC, arg2, arg3, arg4);
+    hThread__execCode(p_s5, buf0[0], &arg0->bytecode, arg2, arg3, arg4);
     if (arg1 != p_s5) {
         newVal = *p_s5;
         if (newVal != 0) {
