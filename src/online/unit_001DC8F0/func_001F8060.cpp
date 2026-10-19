@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Handle {
     void *p;
@@ -24,10 +23,8 @@ extern "C" void func_00326798(void *, s32, s32, const char *);
 
 extern "C" s32 func_001F1368(void *);
 extern void mUpdateContext__Sync(int);
-extern "C" s32 func_004F73D8(void *, s32);
 extern "C" s32 func_001F1368(void *);
 extern void mUpdateContext__Sync(int);
-extern "C" void func_002ED590(Handle *, int *);
 extern "C" Handle *func_002EFBF0(Handle *);
 extern "C" void func_002EEEB0(Handle *, void *, Handle *);
 extern "C" void func_00309378(Handle *, int);

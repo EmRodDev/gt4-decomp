@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct RacePS2BaseLayout {
     char pad0[0x3628];

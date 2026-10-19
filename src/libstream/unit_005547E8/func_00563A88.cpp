@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" u32 func_00563198(int bits);
 extern "C" s32 func_00563158(s32 bits);

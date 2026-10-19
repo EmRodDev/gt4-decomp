@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct S448980 { char pad[0x15]; unsigned char flag; };
 

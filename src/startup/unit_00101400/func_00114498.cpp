@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef long s64;
+#include "types.h"
 
 struct Cfg { char pad[0x5B6]; u8 b5B6; };
 struct C0 { char pad[0x18]; Cfg *p18; };

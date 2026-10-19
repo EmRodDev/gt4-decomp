@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern char D_006235A8[];
 extern s32 PDISTD__LOCALE;

@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" void RaceBase__setAcceleratedTime(f32 arg0);
 

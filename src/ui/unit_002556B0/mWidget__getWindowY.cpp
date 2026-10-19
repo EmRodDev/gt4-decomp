@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct C { char pad[0x34]; int f34; };
 extern "C" void mWidget__getWindowGeometry(struct C *, int *, int, float *, int, int);

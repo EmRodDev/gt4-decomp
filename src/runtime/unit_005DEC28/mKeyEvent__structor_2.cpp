@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void mWindowEvent__structor_1(void *arg0, s32 arg1);
 extern "C" void func_00326798(void *arg0, s32 arg1, s32 arg2, const char *arg3);

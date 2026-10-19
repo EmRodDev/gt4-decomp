@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 struct R { unsigned int a, b, c, d; };
 struct Out { int zero; u8 d, c, b, a; };
 extern char D_006CC058[];

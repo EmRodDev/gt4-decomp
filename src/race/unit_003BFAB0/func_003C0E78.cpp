@@ -6,7 +6,7 @@ struct VObj { char pad[0x64]; VEntry *vtbl; };
 struct Self { char pad[0x84]; VObj *m84; };
 
 static inline s32 vcall(VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x298);
+    VEntry *e = &o->vtbl[83];
     return e->fn((char *)o + e->delta);
 }
 

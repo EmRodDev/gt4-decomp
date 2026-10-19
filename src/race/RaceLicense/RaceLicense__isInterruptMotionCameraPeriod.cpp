@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct RaceLicenseLayout {
     char pad0[0x24E5C];

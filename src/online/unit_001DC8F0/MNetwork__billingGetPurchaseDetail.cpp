@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 struct RefCounter;
 struct Str { char *p; s32 pad[3]; };
 struct VE { s16 delta; s16 pad; void (*fn)(Str *, void *); };

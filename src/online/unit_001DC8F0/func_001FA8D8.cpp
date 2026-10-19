@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct StringRep { u32 len; u32 res; u32 ref; u32 selfish; };
 struct String { char *dat; char pad[0xC]; };
@@ -49,11 +48,6 @@ struct VEntryStr {
 extern StringRep D_00659FA8;
 extern char D_00645570[];
 extern char D_006959D8[];
-extern char D_00696D38[];
-extern char D_00696D28[];
-extern char D_00695AE0[];
-extern char D_00696D48[];
-extern char D_00696D50[];
 
 extern "C" char *func_005C2560(StringRep *r);
 extern "C" String *func_005C2630(String *str, u32 pos, u32 n1, const char *s, u32 n2);
@@ -65,12 +59,7 @@ extern const char *D_00618DF0[];
 extern char D_00696E00[];
 extern "C" void func_002FE278(s32 *, s32);
 extern "C" void func_002FC870(s32 *, int);
-extern "C" void func_001F84E0(Self *, char *);
-extern "C" s32 func_001F2BB0(Self *, const char *, s32);
-extern "C" int func_005A5A30(char *, u32, const char *, ...);
 struct Pipe; extern "C" void func_00227110(void *, char *);
-extern "C" void func_00227128(void *, int);
-extern "C" void func_00227BE0(s32, const char *);
 extern "C" void func_002FA120(void *);
 extern "C" void func_002F9B38(void *, int);
 extern "C" s32 HSymID__GetID(String *);

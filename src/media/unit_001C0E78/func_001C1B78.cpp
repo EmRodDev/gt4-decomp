@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned int u32;
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_001C1B78(u8 *dst, u32 width, u32 rows, u32 div, u32 lim, u8 *src, u32 pitch, u32 unused, u32 step, u32 step2)
 {

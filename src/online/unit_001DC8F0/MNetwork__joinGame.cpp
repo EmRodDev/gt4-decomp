@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Str {
     char *p;
@@ -8,7 +8,6 @@ struct Str {
 extern "C" void func_001DC5F8(void *, int) throw();
 extern "C" void func_001DC650(void *, void *) throw();
 extern "C" void *func_001F4D58(void *);
-extern "C" s32 func_001F4DA8(void *);
 extern "C" void *func_001F33B8(void *, int);
 extern "C" void *func_001F4C98(void *, int, int);
 extern "C" void func_002FC870(void *, int);

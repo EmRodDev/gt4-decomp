@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void RaceCarModel__virtual_01(s32 *arg0);
 extern "C" void RaceDriverModel__structor_1(void *arg0, s32 arg1);

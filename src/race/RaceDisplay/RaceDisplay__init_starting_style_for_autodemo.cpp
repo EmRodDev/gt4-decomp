@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef short s16;
-typedef float f32;
+#include "types.h"
 
 struct VEntryI { s16 delta; s16 index; void (*fn)(void *self, s32 a, f32 b); };
 struct VEntryF { s16 delta; s16 index; void (*fn)(void *self, f32, f32, f32, f32); };

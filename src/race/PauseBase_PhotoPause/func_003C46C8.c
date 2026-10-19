@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void *exception__structor_0(s32);
 void func_00474F38(void *a, s32 b, s32 c, s32 d);
 void func_00475D78(void *a, char *b, void *c);

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 struct S { char pad[0x74]; f32 unk74; char pad2[0x98-0x74-4]; s32 unk98; };
 

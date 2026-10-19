@@ -1,7 +1,6 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 struct Obj { int v; };
 static inline void ctor(Obj *const self,int n) { self->v=n; }
-extern "C" int func_00325010(void *,void *,int,void (*)(),void (*)(),void (*)());
 extern "C" void func_00328800(void *,int,int);
 extern "C" void func_00328860(void *,int);
 extern char D_00663FF0[], D_00664018[];

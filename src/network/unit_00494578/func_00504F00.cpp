@@ -1,5 +1,4 @@
-typedef int s32;
-typedef signed char s8;
+#include "types.h"
 
 struct Blk_00504BB8;
 

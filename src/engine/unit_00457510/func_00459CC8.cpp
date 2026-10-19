@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 /* Returns a float table entry; the first argument is a pointer to the owner pointer. */
 extern "C" f32 func_00364D78(void *arg0, s32 arg1);

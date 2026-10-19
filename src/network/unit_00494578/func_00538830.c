@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned u32;
+#include "types.h"
 s32 func_00538830(s32 *arg0) {
     u32 i;
     if (arg0 != 0) {

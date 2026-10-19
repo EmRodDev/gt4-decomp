@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_0021C9D8(void *arg0);
 extern "C" void hObject__structor_2(void *arg0, s32 arg1);

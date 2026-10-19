@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 mWidget__getWindowW(void *arg0);
 extern "C" s32 mWidget__getWindowH(void *arg0);

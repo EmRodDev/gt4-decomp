@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct func_0034C750_arg0 {
     char pad0[0xDA5C];

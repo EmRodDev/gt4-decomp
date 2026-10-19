@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 struct Data { int size; char pad[20]; u16 flags; };
 struct Source { char pad[0x40]; u16 count; };
 extern "C" int func_0052D9C8(int, Data **, Source *, int);

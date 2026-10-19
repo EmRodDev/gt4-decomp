@@ -1,6 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct Header { u8 type, count; u16 id; };
 struct Size { int x, w, h; };
 struct Table { int x, n; char pad8[0x20]; Size *sizes[64]; int offsets[64]; };

@@ -1,5 +1,4 @@
-typedef float f32;
-typedef short s16;
+#include "types.h"
 
 struct func_00350ED0_arg0 {
     char pad0[0x54C];

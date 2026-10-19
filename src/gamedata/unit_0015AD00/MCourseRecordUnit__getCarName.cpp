@@ -20,14 +20,12 @@ struct S00659988 {
 };
 
 extern Rep D_00659FA8;
-extern u8 D_0068FF98;
 
 extern "C" void func_002FC8C8(void *arg0, void *arg1);
 extern "C" s32 func_002FE250(void *arg0);
 extern "C" void func_002FC870(void *arg0, int arg1);
 extern "C" void func_0015AAC0(void *arg0, void *arg1);
 extern "C" s64 func_00433708(char* arg0, unsigned arg1);
-extern "C" void* func_005A48D8(void *dst, s32 fill, s32 size);
 extern "C" void func_004481B8(u64 code, char *dst);
 extern "C" char *func_005C2560(Rep *src);
 extern "C" s32 func_0057F260(void *s);

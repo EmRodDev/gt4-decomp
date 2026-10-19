@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 extern "C" s32 func_002FF840(void *arg0);
 

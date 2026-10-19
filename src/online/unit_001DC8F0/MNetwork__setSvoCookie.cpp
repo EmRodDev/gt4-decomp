@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Rep { s32 len, cap, ref, sel; };
 struct Str { char *p; char pad[12]; };
 union Temp { Str s; s32 h[4]; };

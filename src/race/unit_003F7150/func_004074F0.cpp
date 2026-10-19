@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_004074F0(s32 *arg0) {
     s32 delta;

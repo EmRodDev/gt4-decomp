@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned int u32;
+#include "types.h"
 struct S { char pad[0x44]; u32 v; };
 extern "C" void func_00491F98(void);
 extern u32 D_00624988;

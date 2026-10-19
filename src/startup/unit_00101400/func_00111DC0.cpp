@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 struct Car { char pad[0x3448]; int flag; };
 struct Wheel { char pad[8]; Car *car; };
 struct Parent { char pad[0x60]; Wheel *wheel; };

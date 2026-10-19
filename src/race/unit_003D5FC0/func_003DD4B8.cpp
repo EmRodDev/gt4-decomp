@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void StrobeHandler__readFile(void *arg0, const char *arg1, s32 arg2);
 extern "C" void func_00473CC0(s32 arg0);

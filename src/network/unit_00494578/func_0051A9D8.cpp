@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Stream { char pad[8]; unsigned used; char padC[4]; char *data; };
 struct Rec { unsigned char state,b1,b2,b3,b4,b5; char pad6[6]; int slot; char *base,*end,*cursor; int f1c,timer,f24,stamp; Stream stream; };
 struct Msg { unsigned char id,b1,b2,b3,b4,b5; unsigned short capacity,f8,length; char data[1]; };

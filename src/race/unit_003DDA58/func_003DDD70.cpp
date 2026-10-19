@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 extern "C" void func_003DDC70(char *,int) throw();
 extern "C" void func_003DDD70(char *self) {
     if(*(int *)self==0x34504552) {

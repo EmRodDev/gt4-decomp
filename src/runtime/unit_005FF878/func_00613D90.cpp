@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" {
 void memcpy(s32 a, s32 b, s32 c);
 void func_0057B410(void *a, s32 b);

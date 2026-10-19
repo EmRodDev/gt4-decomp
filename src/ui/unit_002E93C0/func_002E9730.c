@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 char *func_0025BF60(char *self);
 void func_002E9730(char *arg0, f32 fparg0, f32 fparg1) {
     char *t = func_0025BF60(arg0);

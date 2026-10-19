@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 D_006214CC;
 extern char RaceCourse__model_arena_[];

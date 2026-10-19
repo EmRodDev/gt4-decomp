@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 
 struct S0037D260 {
     char pad1[0x268];

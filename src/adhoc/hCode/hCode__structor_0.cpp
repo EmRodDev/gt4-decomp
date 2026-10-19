@@ -7,9 +7,6 @@
 struct TypeInfo { const char *name; };
 extern "C" void *func_00326750(unsigned,int,const char*);
 extern "C" void func_00326798(void*,int,int,const char*);
-extern "C" void *func_005A47D4(void*,const void*,unsigned) throw();
-extern "C" TypeInfo *func_005EE2B0();
-extern "C" TypeInfo *func_005C11A8();
 struct Sym { int p; Sym(int n=0):p(n){} Sym(const Sym&o):p(o.p){} ~Sym(){} Sym&operator=(const Sym&o){if(this!=&o)p=o.p;return *this;} };
 extern "C" TypeInfo*HSymID__tf();
 template<class T>struct Alloc {typedef size_t size_type;typedef ptrdiff_t difference_type;typedef T*pointer;typedef const T*const_pointer;typedef T&reference;typedef const T&const_reference;typedef T value_type;template<class U>struct rebind{typedef Alloc<U>other;};Alloc()throw(){} Alloc(const Alloc&)throw(){}template<class U>Alloc(const Alloc<U>&)throw(){}~Alloc()throw(){} inline T*allocate(size_type n,const void * =0);void deallocate(T*p,size_type n){func_00326798(p,n*4,4,HSymID__tf()->name);}size_type max_size()const throw(){return size_t(-1)/4;}void construct(T*p,const T&x){new(p)T(x);}void destroy(T*p){p->~T();}};

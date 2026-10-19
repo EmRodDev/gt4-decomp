@@ -5,7 +5,7 @@ struct VEntry { s16 delta; s16 index; s32 *(*fn)(void *, s32); };
 struct VObj { char pad[4]; VEntry *vtbl; };
 struct ArrayElement { char pad[0x10]; VObj *object; s32 index; };
 static inline s32 *vcall(char *o, s32 index) {
-    VEntry *e = (VEntry *)((char *)((VObj *)o)->vtbl + 0x68);
+    VEntry *e = &((VObj *)o)->vtbl[13];
     return e->fn(o + e->delta, index);
 }
 extern "C" void func_003285A8(s32);

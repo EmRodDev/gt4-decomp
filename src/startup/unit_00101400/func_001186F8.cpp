@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Car { char p0[0x20]; char x[0x3444 - 0x20]; s32 idx; };
 struct Lst { s32 count; char p[4]; s32 cars; };
 struct Wnd { char p[0x60]; s32 lst; char q[0xC]; s32 spec; };

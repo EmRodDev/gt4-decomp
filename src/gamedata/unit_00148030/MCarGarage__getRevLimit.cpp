@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Rep { s32 len,cap,ref,sel; };
 struct Str { char *p; char pad[12]; };
 struct VEntry {short delta,index;void (*fn)(Str*,void*);};

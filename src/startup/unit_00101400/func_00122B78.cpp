@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Rep { s32 len; s32 cap; s32 ref; s32 sel; };
 struct Str { char *p; char pad[0xC]; };
 struct S00659988 { const char *name; };

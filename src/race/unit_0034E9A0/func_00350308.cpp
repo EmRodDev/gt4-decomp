@@ -1,5 +1,4 @@
-typedef int s32;
-typedef signed char s8;
+#include "types.h"
 
 struct Sub {
     char pad[0x608];

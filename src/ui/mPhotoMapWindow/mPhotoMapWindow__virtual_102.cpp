@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 typedef void (*VFn208160)(void *, void *);
 struct VEntry208160 { s16 delta; s16 index; VFn208160 fn; };
 struct Obj208160 { char p0[4]; char *vt; };

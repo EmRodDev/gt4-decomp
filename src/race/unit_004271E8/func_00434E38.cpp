@@ -9,7 +9,6 @@ extern "C" void func_00440EC8(void *, long);
 extern "C" void func_00440F78(void *);
 extern "C" void func_00441298(void *, int);
 extern "C" void func_003434A8(void *, int);
-extern "C" void SPEC_DATABASE__CarEquipments__setVariationOrder(void *, int);
 extern char D_00688280[];
 
 struct Base { char header[8]; ~Base() __asm__("func_0043A408"); };

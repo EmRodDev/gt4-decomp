@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 
 extern char RaceShiftPositionDisplay__vtable[];
 extern "C" void *RaceDisplayObjectBase__structor_0(void *);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -52,7 +52,6 @@ struct Global {
 
 extern Global D_00645570;
 extern Rep D_00659FA8;
-extern char D_00696D10[];
 
 extern "C" s32 func_001F1368(void *) throw();
 extern "C" void mUpdateContext__Sync(s32);

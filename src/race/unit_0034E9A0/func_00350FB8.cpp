@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef short s16;
+#include "types.h"
 extern "C" float func_00350E28(void *);
 extern "C" int func_003F1F98(void *);
 

@@ -6,7 +6,6 @@ struct VT { char p[0x64]; char *tbl; };
 struct Obj { char p[0x64]; char *vt; };
 struct S { char p0[0x58]; void *u58; char p5c[0x4C]; Obj *uA8; char pAC[0x174]; };
 extern char D_00693E70[];
-extern char *D_00622F4C_;
 extern "C" void func_00109A28(void *, void *);
 extern "C" int GranTurismo4__MenuGameObject__startProject(void *, char *, void *);
 extern "C" void func_001C85E0(void *);

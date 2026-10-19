@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" s32 D_00655F20;
 extern "C" s32 D_00657080;

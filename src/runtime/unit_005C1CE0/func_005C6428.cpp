@@ -40,7 +40,7 @@ struct GarageHandle_005C6428 : ScriptHandle_005C6428 {
 struct ScriptArrayHandle_005C6428 : ScriptHandle_005C6428 {
     ScriptArrayHandle_005C6428(const ScriptArrayHandle_005C6428 &) __asm__("func_002ED5A8");
     ~ScriptArrayHandle_005C6428() __asm__("func_002ED5C0");
-    ScriptHandle_005C6428 &operator[](int) __asm__("func_002EFCE0");
+    ScriptHandle_005C6428 &operator[](int) __asm__("HArray__operator_index");
 };
 
 struct TypeInfoName_005C6428 { const char *name; };

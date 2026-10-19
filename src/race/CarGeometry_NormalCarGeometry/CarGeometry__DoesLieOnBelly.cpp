@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 typedef int s32;
 

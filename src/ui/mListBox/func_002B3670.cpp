@@ -1,6 +1,4 @@
-typedef int s32;
-typedef float f32;
-typedef unsigned long long u64;
+#include "types.h"
 struct Item {
     char pad0[0xC];
     f32 f0C;

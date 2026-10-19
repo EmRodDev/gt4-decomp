@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
+#include "types.h"
 typedef struct Entry { s32 h; char pad[0x14]; } Entry;
 typedef struct O2 {
     char pad0[0x84];

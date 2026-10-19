@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 
 extern unsigned char D_00621FF8[];
 extern float D_00845940[];

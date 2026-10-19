@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long s64;
+#include "types.h"
 struct In { s32 f0; };
 extern "C" s32 func_00529E30(s32, s64);
 extern "C" s32 func_00524C50(In *p, s64 h) {

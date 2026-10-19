@@ -1,4 +1,4 @@
-typedef unsigned long u64;
+#include "types.h"
 extern "C" void func_0054D5C8(void);
 extern "C" int func_00563198(int);
 extern "C" void func_00563258(unsigned);

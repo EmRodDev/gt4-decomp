@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" void func_004BC868(u8 *arg0, const u16 *arg1, int arg2) {
     if (arg2 > 0) {

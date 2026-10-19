@@ -101,7 +101,7 @@ inline Mid::operator Elem() const { return Elem(*this); }
 struct ArrayRef : Ref {
     ArrayRef(const ArrayRef &) __asm__("func_002ED5A8");
     ~ArrayRef() __asm__("func_002ED5C0");
-    Ref &operator[](int) __asm__("func_002EFCE0");
+    Ref &operator[](int) __asm__("HArray__operator_index");
 };
 inline bool operator<(const Elem &left, const Elem &right) { return left.score < right.score; }
 typedef less<Elem> Less;

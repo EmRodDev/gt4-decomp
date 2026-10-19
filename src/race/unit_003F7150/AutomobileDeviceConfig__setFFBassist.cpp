@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct Obj_003F7160 { char pad[0x2]; s16 unk2; };
 

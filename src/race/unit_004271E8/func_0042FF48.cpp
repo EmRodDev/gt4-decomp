@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 func_0042FF48(void *arg0) {
     char *self = (char *)arg0;

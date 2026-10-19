@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 hModule__ClassID_;
 

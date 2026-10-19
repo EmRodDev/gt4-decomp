@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" void func_005449C8(u32 *arg0, u32 arg1) {
     u32 *p = arg0;

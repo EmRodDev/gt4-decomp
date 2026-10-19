@@ -23,9 +23,6 @@ extern "C" void func_0026A118(String *s, int n);
 extern "C" void func_0026A540(char *p);
 extern "C" void func_00235C80(char *self, void *v);
 extern "C" void mTextFace__virtual_68(void *self, void *a);
-extern "C" void mTextFace__virtual_67(void *self, void *a);
-extern "C" s32 func_0025C110(void *self);
-extern "C" void func_00229D18(String *s, s32 r);
 extern "C" void func_003286B8(void *a);
 
 static inline char *grab(StringRep *r) {

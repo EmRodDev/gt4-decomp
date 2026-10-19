@@ -9,7 +9,6 @@ static inline void vcall(Target *o, f32 v) {
     e->fn((char *)o + e->delta, v);
 }
 
-extern "C" void mActor__initialize(void);
 
 extern "C" void mFadeActor__rewind(Fade *a) {
     f32 v = a->f1C;

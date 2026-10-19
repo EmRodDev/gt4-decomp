@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 struct Entry { int state; int *obj; int zero; char pad[0x20]; u16 serial; char tail[0x16]; };
 struct Obj { void *parent; int *slots[32]; Entry *entries; char pad[0x3C]; u16 serial; };
 extern "C" void func_00526040(Obj *, int *, u16 *);

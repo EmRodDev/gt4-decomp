@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 f32 mWidget__getWindowW(void *);
 f32 mWidget__getWindowH(void *);
 f32 func_002D4980(void *);

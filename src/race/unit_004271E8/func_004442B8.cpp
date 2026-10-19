@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 extern "C" void func_004442B8(volatile char *p) {
     int i; volatile char *q;
     *(volatile s64 *)(p + 0x0) = -1;

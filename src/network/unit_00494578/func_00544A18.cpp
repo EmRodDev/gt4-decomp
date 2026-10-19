@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 extern "C" void func_00544A18(u32 *p, u32 n) {
     u32 i;
     for (i = 0; i < 32; i++, p++) {

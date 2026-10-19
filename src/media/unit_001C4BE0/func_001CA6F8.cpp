@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Self6F8 {
     s32 f0;

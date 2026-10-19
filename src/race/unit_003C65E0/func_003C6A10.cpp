@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_003C6A10(s32 *arg0) {
     s32 var_a0 = *arg0;

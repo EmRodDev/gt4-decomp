@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef signed char s8;
+#include "types.h"
 typedef s32 (*Fn)(s32, s32);
 extern "C" void func_00519880(void *, void *, Fn) throw();
 extern "C" s32 func_00519A20(s8, void *, u32, u32, s32, void *, void *);

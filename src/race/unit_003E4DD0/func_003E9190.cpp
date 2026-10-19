@@ -1,9 +1,4 @@
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct func_003E9190_arg0 {
     u8 *unk0;

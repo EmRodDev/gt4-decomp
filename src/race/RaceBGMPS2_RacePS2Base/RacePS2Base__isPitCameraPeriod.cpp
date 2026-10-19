@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 Pitmen__isPitCameraPeriod(s32 arg0);
 

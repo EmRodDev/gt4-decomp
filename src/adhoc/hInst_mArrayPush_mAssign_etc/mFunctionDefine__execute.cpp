@@ -1,5 +1,4 @@
-typedef int s32;
-typedef signed char s8;
+#include "types.h"
 
 /* Layout backed by config/class_layout.json (mFunctionDefine size 0x10):
  *   0x00..0x07: base

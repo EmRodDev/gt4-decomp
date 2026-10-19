@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 char *func_0034C190(void *a, s32 b);
 void DynamicsConductorLicense__ProcessLap0ControlLine(void *a, s32 b, f32 f, s32 c, s32 d);
 void DynamicsConductorMission__ProcessLap0ControlLine(void *arg0, s32 arg1, s32 arg2, s32 arg3, f32 fparg0) {

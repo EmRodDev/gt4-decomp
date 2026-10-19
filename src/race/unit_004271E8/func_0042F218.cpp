@@ -1,7 +1,4 @@
-typedef unsigned char u8;
-typedef short s16;
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 
 struct Cmd0042F218 { u8 type; u8 x; s16 n; s32 pad; s64 handle; };
 

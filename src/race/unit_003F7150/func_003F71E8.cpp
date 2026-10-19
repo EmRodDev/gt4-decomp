@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 #define F(p,o) (*(float *)((char *)(p)+(o)))
 extern u8 D_00620CD8[];
 extern float D_006202A4,D_006202A8;

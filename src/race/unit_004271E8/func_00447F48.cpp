@@ -1,5 +1,4 @@
-typedef long long s64;
-typedef unsigned long long u64;
+#include "types.h"
 struct Rec { char b[24]; };
 extern char D_006235A8[];
 extern "C" bool SPEC_DATABASE__DatabaseStorage__getRow_2(void *db, int key, int type, Rec *out);

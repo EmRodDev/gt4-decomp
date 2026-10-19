@@ -64,7 +64,7 @@ extern "C" void MCarGarage__haveWing(void **arg0, void *arg1, s32 arg2, VObj **a
   func_0013BDC0(&h,arg1);
   VObj *o=*arg3;
   if(o) {
-   VEntry *e=(VEntry *)((char *)o->vtbl+0x18);
+   VEntry *e=&o->vtbl[3];
    sel=e->fn((char *)o+e->delta).c_str();
    if(func_0057F238(sel,D_0068F798)==0) sel=0;
   }

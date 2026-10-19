@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Obj { char pad[8]; s32 fd; s32 state; };
 extern "C" s32 func_005220F8(Obj *);
 extern "C" s32 func_005221B0(s32, s32, s32);

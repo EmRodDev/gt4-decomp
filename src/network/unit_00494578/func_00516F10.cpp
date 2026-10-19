@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Record { unsigned char state,kind,flag,channel,zero,forever; char pad[2]; int value,owner; char *buffer; u32 end,start; int pos,length; short a,b; int more; char sub[4]; };
 struct Pool { char pad[0x10]; int first; u32 count; };
 struct Obj { char pad[0x104]; int id; };

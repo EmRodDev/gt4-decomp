@@ -46,8 +46,6 @@ struct Self {
 };
 extern "C" Ent2 *func_0034C190(Self *, int);
 extern "C" void func_00343D78(void *, int) throw();
-extern "C" void func_0034C0A0(Self *, int);
-extern "C" int func_0034C158(Self *, unsigned);
 extern "C" void func_0035DF80(char *, int, int, int);
 extern "C" void RaceDisplayGeneralTimeEvent__structor_1(Self *, int, int, int, unsigned, int);
 extern "C" void func_00363528(void *);

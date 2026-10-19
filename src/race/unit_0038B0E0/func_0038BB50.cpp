@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_0038BB50_arg0 {
     char pad0[0xE420];

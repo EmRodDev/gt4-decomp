@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Msg { volatile s32 a; volatile s32 b; volatile u32 c; volatile s32 d; };
 struct G1 { char pad[0x5C]; s32 unk5C; };
 struct G2 { char pad[0x128]; void (*unk128)(Msg *); s32 unk12C; };

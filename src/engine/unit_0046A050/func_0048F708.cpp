@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 extern signed char D_006B0C80[];
 extern "C" char *func_005A609C(char *, const char *);
 extern "C" void func_0048F708(u8 *dst, u8 *src, int n, const char *s) {

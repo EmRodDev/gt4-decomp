@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 enum State { STATE_0 };
 enum Kind { KIND_0, KIND_1 };
 struct Entry { int a, value; };

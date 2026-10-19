@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern char fflush[];
 extern "C" s32 func_005A43A8(s32 arg0, char *arg1);

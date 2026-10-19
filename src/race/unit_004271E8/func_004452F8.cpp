@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 
 struct S {
     s64 dummy[0x2F];

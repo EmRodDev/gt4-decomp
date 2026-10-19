@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct VEntry{short delta,index;void*fn;};
 struct Scale{float scale;s32 width,height;};
 struct Game{char pad[0x39DC4];s32 index;};

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned u32;
+#include "types.h"
 s32 func_00612AD8(char *arg0, s32 arg1) {
     s32 temp_t0;
     s32 temp_v0;

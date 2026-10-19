@@ -1,9 +1,7 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Val { s32 type; s32 v; };
 extern "C" void func_004768C0(Val *);
-extern "C" Val *func_00476790(Val *, const Val *);
 extern "C" u32 func_0057F260(const char *s);
 struct String2;
 extern "C" String2 *strobe__Any__setMember(String2 *str, u32 pos, u32 n1, const char *s, u32 n2);

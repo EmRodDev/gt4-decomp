@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 void func_00441E78(char *arg0, char *arg1, char *arg2) {
     s32 i;
     u16 *dst = (u16 *)(arg1 + 0x138);

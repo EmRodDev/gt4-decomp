@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" void func_00396B80(void *a0, s32 a1, s32 a2, f32 f12, f32 f13);
 extern "C" void CourseData__render_model(void *a0, s32 a1, s32 a2, f32 f12, f32 f13, f32 f14);

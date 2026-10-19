@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct LocalBuf {
     char unk0;

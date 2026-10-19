@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct VEntry1 {
     s16 delta;

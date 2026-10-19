@@ -1,7 +1,4 @@
-typedef long long s64;
-typedef unsigned long long u64;
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Obj;
 extern "C" s64 func_00449F58(Obj *) throw();
 extern "C" s64 func_00449F68(Obj *, s32) throw();

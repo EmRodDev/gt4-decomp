@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void RaceEntryCar__update(s32 arg0);
 extern "C" void func_004A5400(void);

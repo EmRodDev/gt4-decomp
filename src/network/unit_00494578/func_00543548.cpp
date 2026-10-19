@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 extern "C" s32 func_005428E8(u8 *) throw();
 extern "C" s32 func_005434B8(s32, s32, u8 *) throw();
 extern "C" s32 func_00543548(s32 a0, s32 a1, u8 *a2) {

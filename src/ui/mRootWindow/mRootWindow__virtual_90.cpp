@@ -56,7 +56,6 @@ extern "C" void func_00309348(void *h, s32 *val);
 extern "C" void func_00309378(void *h, int flags);
 extern "C" void func_003285A8(s32 p);
 extern "C" void func_003285F8(s32 p);
-extern "C" void func_005DB110(const char *fmt, const char *file, s32 line);
 
 struct Value {
     s32 p;

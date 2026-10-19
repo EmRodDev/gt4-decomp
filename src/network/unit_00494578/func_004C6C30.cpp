@@ -1,5 +1,4 @@
-typedef short s16;
-typedef int s32;
+#include "types.h"
 
 struct Node_004C6C30 {
     char pad0[0x11];

@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned char u8;
+#include "types.h"
 
 struct RefCounter;
 
@@ -38,7 +36,7 @@ extern "C" void MNetConf__SetProperties(s32 *arg0, void *arg1, s32 arg2, void *a
     p_s4 = buf3;
     func_00221B28(p_s4, arg1);
     obj = (char *)*p_s4;
-    e = (VEntry_330 *)((char *)((VObj_330 *)obj)->vtbl + 0x330);
+    e = &((VObj_330 *)obj)->vtbl[102];
     obj = obj + e->delta;
     r0 = func_00314920((u8 *)buf0[0]);
     {

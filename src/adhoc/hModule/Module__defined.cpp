@@ -78,15 +78,11 @@ struct VObj {
 
 extern "C" void func_00304210(void *arg0) throw();
 extern "C" void func_003041B8(void *arg0, int arg1) throw();
-extern "C" const char *hModule__getName(void *node);
-extern "C" void func_00312318(void *arg0, int arg1);
 extern "C" void func_00323D08(void *arg0);
 extern "C" void func_00323B60(void *arg0, int arg1);
 extern "C" void func_002FC870(void *arg0, int arg1);
 extern "C" void func_002FE278(void *arg0, int arg1);
 extern "C" s32 HSymID__GetID(void *arg0);
-extern "C" u8 *func_00314920(s32 arg0);
-extern "C" void func_00314B20(void *arg0, void *arg1);
 extern "C" void func_003285A8(s32 p);
 extern "C" void func_003285F8(s32 p);
 

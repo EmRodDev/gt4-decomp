@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" void RaceOnboardPanel__showSideGravity(char *arg0, u8 arg1) {
     s32 *p = (s32 *)(arg0 + 0xC24);

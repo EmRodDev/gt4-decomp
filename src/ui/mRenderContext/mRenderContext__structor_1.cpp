@@ -13,16 +13,6 @@ struct Handle { int value; ~Handle() __asm__("func_002292A0"); };
 struct R: Prefix {Item arr[100];int f1d00;Handle f1d04;R *f1d08;int f1d0c,f1d10;V4 v1d14;int f1d24,f1d28;float f1d2c,f1d30,f1d34;int f1d38,f1d3c,f1d40,f1d44,f1d48,f1d4c,f1d50,f1d54;void *f1d58; ~R() __asm__("func_0022B0A0"); static void operator delete(void *);};
 struct E {short delta,index;void (*fn)(void *,R *);};
 extern char mRenderContext__vtable[],D_006984C0[];
-extern "C" void *hObject__structor_0(void *);
-extern "C" void func_00574D78(void *);
-extern "C" int func_0024C7D8(void *,void *);
-extern "C" void func_00229540(void *);
-extern "C" void func_0022EBD8(void *);
-extern "C" void *func_00326750(unsigned,int,const char *);
-extern "C" void mOSKeyboard__structor_0(void *);
-extern "C" void func_003285A8(void *);
-extern "C" int mOSKeyboard__initialize(void *,R *);
-extern "C" void func_002306D0(void *,int);
 
 extern "C" void func_002C57D0(void *);
 extern "C" void func_003285F8(void *);

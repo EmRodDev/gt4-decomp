@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Rep;
 extern "C" char *func_005C2560(Rep *src) throw();

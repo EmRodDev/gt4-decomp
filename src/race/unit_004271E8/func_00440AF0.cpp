@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 
 struct __attribute__((aligned(8))) Elem00440AF0 {
     char pad[0x108];

@@ -24,7 +24,6 @@ struct S00659988 {
 };
 
 extern Rep D_00659FA8;
-extern s32 D_00659FB4;
 extern "C" char * func_005C2560(Rep *);
 extern "C" s32 func_0057F260(void *);
 extern "C" void * func_005C2630(void *, s32, s32, void *, s32);

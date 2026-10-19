@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Handle {
     void *p;
@@ -25,23 +24,16 @@ struct Item {
 };
 
 extern StringRep D_00659FA8;
-extern char D_00645570[];
 
 extern "C" char *func_005C2560(StringRep *r);
 extern "C" String *func_005C2630(String *str, u32 pos, u32 n1, const char *s, u32 n2);
 extern "C" u32 func_0057F260(const char *s) throw();
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *, s32, s32, const char *);
-extern "C" s32 func_004F7460(void *, Item **, s32);
-extern "C" s32 func_004F73D8(void *, s32);
-extern "C" s32 func_001F1368(void *) throw();
-extern void mUpdateContext__Sync(int);
-extern "C" void func_002ED590(Handle *, int *);
 extern "C" Handle *func_002EFBF0(Handle *);
 extern "C" void func_002EEEB0(Handle *, void *, Handle *);
 extern "C" void func_00309378(Handle *, int);
 extern "C" void func_002ED5C0(Handle *, int);
-extern "C" void func_002ED5A8(Handle *, Handle *);
 extern "C" void func_002FE278(Handle *, int);
 extern "C" void func_002FC870(Handle *, int);
 extern "C" void func_00314B20(Handle *, String *);

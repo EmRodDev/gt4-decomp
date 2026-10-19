@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 s32 mTextFace__virtual_67(void);
 void mSceneViewFace__virtual_67(char *arg0) {
     mTextFace__virtual_67();

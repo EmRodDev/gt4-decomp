@@ -1,6 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef signed char s8;
+#include "types.h"
 struct Src { char pad[0x170]; s32 f170, f174, f178; };
 struct Sx { char pad[0x130]; char p130[0x40]; s32 f170, f174; };
 struct Ent { s64 a; s32 b; s32 c; };

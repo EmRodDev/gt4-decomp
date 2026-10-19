@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef short s16;
+#include "types.h"
 
 /* 8-byte record copied with ldl/ldr (4-byte aligned):
    kind at +2, value at +4. */

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" float D_00623A24;
 extern "C" s32 D_00623A20;
 extern "C" s32 D_00623A28;

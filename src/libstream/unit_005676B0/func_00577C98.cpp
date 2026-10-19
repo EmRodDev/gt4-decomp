@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* The base class; its constructor is func_00577DF0. Its vptr sits at 0x4. */
 struct func_00577DF0 {

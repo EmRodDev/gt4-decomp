@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" f32 mWidget__getWindowY(void);
 extern "C" s32 func_0025BFE0(void *out, f32 a, f32 b);

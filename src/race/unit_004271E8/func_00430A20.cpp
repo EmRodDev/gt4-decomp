@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
+#include "types.h"
 
 struct func_00430A20_arg0 {
     char pad0[2];

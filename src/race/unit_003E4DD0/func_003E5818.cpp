@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" void func_003E6CC0(int *arg0, s32 arg1);
 extern "C" void func_003E6CE0(int *arg0, s32 arg1);

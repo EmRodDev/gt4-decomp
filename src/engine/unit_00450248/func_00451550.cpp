@@ -1,5 +1,4 @@
-typedef float f32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Elem00451550 {
     char pad[0xBC];

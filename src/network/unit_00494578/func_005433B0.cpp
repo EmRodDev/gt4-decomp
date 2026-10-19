@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Node { char pad[8]; s32 id; s32 x; void *a; void *b; void *c; };
 extern "C" void *func_00538988(s32) throw();
 extern "C" int func_005428E8(void *) throw();

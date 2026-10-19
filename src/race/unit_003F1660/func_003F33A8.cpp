@@ -1,6 +1,4 @@
-typedef int s32;
-typedef signed char s8;
-typedef float f32;
+#include "types.h"
 
 struct Sub_003F33A8 {
     char pad0[0x10DC];

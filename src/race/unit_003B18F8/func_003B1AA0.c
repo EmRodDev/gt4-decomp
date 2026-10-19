@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 void func_003B0820(char *a);
 s32 func_003B4040(void *, s32, f32, f32, f32, f32, f32, f32, f32);
 s32 func_003B1AA0(char *arg0, s32 arg1, f32 fparg0, f32 fparg1, f32 fparg2, f32 fparg3, f32 fparg4, f32 fparg5, f32 fparg6) {

@@ -56,7 +56,6 @@ extern "C" void func_003069F8(void *obj, Handle16 *h, s32 *val);
 extern "C" void func_003041B8(Handle16 *arg0, s32 arg1);
 extern "C" void func_002FC870(Handle16 *arg0, s32 arg1);
 extern "C" void func_002F9B38(Handle16 *arg0, s32 arg1);
-extern "C" s32 func_002FE250(void *arg0);
 
 extern "C" s32 func_003295E8(const char *arg0, s32 arg1, s32 arg2) {
     union {

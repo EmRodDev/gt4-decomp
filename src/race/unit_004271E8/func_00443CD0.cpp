@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct R { int a, b, c, d, e; };
 extern "C" void func_004AF6B8(R *);
 extern "C" R func_004AE6B0(char *);

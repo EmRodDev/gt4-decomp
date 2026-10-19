@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern void *HFrame__vtable;
 extern "C" void func_00326798(void *, s32, s32, const char *);

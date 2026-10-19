@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern char RaceMachineTest__vtable[];
 extern char DynamicsConductorMachineTest__vtable[];

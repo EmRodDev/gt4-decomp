@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern f32 D_00624DAC;
 extern f32 D_00624DB0;

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern void *mTransition__vtable;
 extern "C" void hObject__structor_2(void *, s32);

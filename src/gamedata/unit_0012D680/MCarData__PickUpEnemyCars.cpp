@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -42,7 +41,6 @@ extern char D_0068E7F8[];
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" int func_004487D8(const char *arg0, s32 *dest);
-extern "C" s16 func_00448868(s32 *arg0);
 extern "C" void *func_002FE278(void *arg0, s32 arg1);
 extern "C" void func_002FC870(void *arg0, int arg1);
 extern "C" void func_003285A8(s32 arg0);
@@ -74,14 +72,11 @@ static inline void release(Str *s) {
 
 
 extern Rep D_00659FA8;
-extern char D_0068E830[], D_0068E838[];
 extern "C" char *func_005C2560(Rep *arg0);
 extern "C" s32 func_0057F260(const char *arg0);
 extern "C" void func_005C2630(Str *arg0, s32 pos, s32 n, const char *text, s32 length);
 extern "C" void *func_00314B20(void *arg0, Str *arg1);
 extern "C" void func_00312318(void *arg0, s32 arg1);
-extern "C" void func_00312370(void *arg0, void *arg1);
-extern "C" const char *func_00314AD8(s32 arg0);
 static inline void empty(Str *s) {
     Rep *q = &D_00659FA8;
     char *p;
@@ -93,9 +88,6 @@ static inline void empty(Str *s) {
     }
     s->p = p;
 }
-extern char D_0068E848[];
-extern "C" s32 func_00448AD0(const char *, void *);
-extern "C" s32 func_00447CA0(long long, char *);
 
 struct Entry { char label[64]; float score; };
 extern "C" void func_0013BDC0(void *, void *);

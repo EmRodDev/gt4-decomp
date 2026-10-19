@@ -1,9 +1,4 @@
-typedef signed char s8;
-typedef unsigned char u8;
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" void mBox__deepCopy(void *arg0, void *arg1);
 extern "C" void *GT4MC__FileGT4GameData__loadInstance(s32, s32, s32, void *, s32, void *);

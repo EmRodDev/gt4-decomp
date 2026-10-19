@@ -29,7 +29,7 @@ extern "C" void func_003285F8(RefCounter *p);
 extern "C" s64 func_0044A048(void *o, s64 key, s32 arg2);
 
 static inline s32 vcall_58(VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x58);
+    VEntry *e = &o->vtbl[11];
     return e->fn((char *)o + e->delta);
 }
 

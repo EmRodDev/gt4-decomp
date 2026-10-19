@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Inner { char pad0[8]; s32 unk8; char padC[0x2070 - 0xC]; s32 unk2070; };
 struct Obj { char pad0[0x18]; s32 unk18; char pad1C[0x20]; s32 unk3C; s32 unk40; Inner *unk44; };
 extern "C" s32 func_0053A878(void *) throw();

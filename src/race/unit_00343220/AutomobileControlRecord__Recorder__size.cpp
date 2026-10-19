@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Inner003465E0 {
     char pad[4];

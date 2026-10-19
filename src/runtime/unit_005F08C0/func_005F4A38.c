@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 void func_00346080(void *, int);
 

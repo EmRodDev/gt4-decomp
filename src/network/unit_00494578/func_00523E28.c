@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 s32 func_00523E28(char *arg0, u16 *arg1) {
     if (arg1 == 0) return 2;
     *arg1 = 0;

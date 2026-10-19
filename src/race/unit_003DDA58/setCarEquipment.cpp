@@ -1,6 +1,4 @@
-typedef int s32;
-typedef signed char s8;
-typedef long long s64;
+#include "types.h"
 
 struct Blk8 {
     s64 q[47];

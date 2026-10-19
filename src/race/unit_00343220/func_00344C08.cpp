@@ -1,7 +1,4 @@
-typedef unsigned char u8;
-typedef signed char s8;
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 struct Sub { u8 pad[0x18]; f32 f; };
 struct Obj { u8 pad[0x10]; Sub *s; };

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* The base class; its constructor is hObject__structor_0. Its vptr sits at 0x4. */
 struct hObject__structor_0 {

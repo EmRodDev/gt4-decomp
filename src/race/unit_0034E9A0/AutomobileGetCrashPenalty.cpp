@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 
 struct S { char pad[0x60E]; u16 unk60E; };
 

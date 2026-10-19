@@ -5,10 +5,6 @@ struct S {
     s32 f84; s32 f88; s32 f8c; char pad90[0x14];
     s32 fA4; s32 fA8; s32 fAC; s32 fB0; void *fB4;
 };
-extern long long D_00697118;
-extern "C" double func_0057F470(long long);
-extern "C" double dpmul(double, double);
-extern "C" long long func_0057F3C0(double);
 extern "C" void func_001FDE68(S *, s32) throw();
 extern "C" s32 func_004A7C60(void);
 extern "C" s32 func_0054EDA0(void *);

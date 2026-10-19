@@ -8,8 +8,6 @@
 
 extern "C" void *func_00326750(int size, int align, const char *name);
 extern "C" void func_00326798(void *p, int size, int align, const char *name);
-extern "C" void *func_00575E60(int heap, int size);
-extern "C" void func_00575DA0(void *p, int size);
 
 /* gcc 2.96's type_info: the name first, the vtable pointer after it */
 struct TypeInfo {
@@ -57,12 +55,10 @@ extern Rep D_00659FA8;
 extern char D_0069DEC0[], D_0069DEC8[], D_0069DED0[], D_0069DED8[];
 extern "C" char *func_005C2560(Rep *);
 extern "C" TypeInfo *func_005C11A8();
-extern "C" TypeInfo *func_005DC030();
 extern "C" u32 func_0057F260(const char *) throw();
 extern "C" Str *func_005C2630(Str *,u32,u32,const char *,u32);
 extern "C" Str *func_005CE388(Str *,u32,u32,const Str *,u32,u32);
 extern "C" int func_005CD320(const Str *,const char *,u32,u32);
-extern "C" char *func_005A609C(char *,const char *);
 inline char *Rep::grab() { if(sel) return func_005C2560(this); ++ref; return data(); }
 inline void Rep::release() { if(--ref==0) { int size=cap+16; func_00326798(this,size,4,func_005C11A8()->name); } }
 struct Str {

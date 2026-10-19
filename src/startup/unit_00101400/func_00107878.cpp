@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct E { char b[0x3C]; };
 struct G { E e[2]; s32 cur; };
 struct T { char pad[0x28]; s32 f28; char pad2[0x3C - 0x2C]; G g1; G g2; };

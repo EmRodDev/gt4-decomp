@@ -19,7 +19,6 @@ extern "C" void func_004EF1F0(void *s);
 extern "C" void func_004F0098(void);
 extern "C" void func_00107F68(void);
 extern "C" void func_00107FD8(void);
-extern "C" void *memset(void *d, int c, unsigned n) __asm__("func_005A48D8");
 extern "C" void func_00329F50(char *d, int n, const char *s);
 extern "C" void func_0042FBB0(G *g, const char *s);
 extern "C" void func_0042FC50(G *g, const char *s);

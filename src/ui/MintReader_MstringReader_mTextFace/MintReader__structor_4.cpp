@@ -17,7 +17,6 @@ extern "C" Str *func_005C2630(Str *, u32, u32, const char *, u32);
 extern "C" s32 mSlideShowFace__virtual_61(char *, void *);
 extern "C" s32 func_0020FD38(void *, Str *, Cb *);
 extern "C" void MReaderBase__structor_0(Cb *, s32);
-extern "C" void func_0020FE28(Str *, void *, Str *);
 extern "C" int MboolReader__structor_7(char *,void *);
 extern "C" void func_002B7118(void *,Str *);
 extern "C" void func_002B7310(void *,Str *);

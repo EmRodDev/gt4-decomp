@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" void mUpdateContextPS2__virtual_67(char *arg0, s32 arg1, s32 arg2)
 {

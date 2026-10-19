@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" int func_005A5A30(void *arg0, s32 arg1, const char *arg2, void *arg3, void *arg4);
 extern "C" char *hModule__getName(void);

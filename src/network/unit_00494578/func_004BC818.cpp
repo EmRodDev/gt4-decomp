@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" void func_004BC818(u16 *arg0, u8 *arg1, s32 arg2) {
     s32 half = (arg2 + (s32)((unsigned)arg2 >> 31)) >> 1;

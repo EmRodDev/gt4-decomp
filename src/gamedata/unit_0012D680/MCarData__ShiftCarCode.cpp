@@ -79,7 +79,6 @@ struct VEntryString_18 { s16 delta_0, index_2; String_005C2630 (*function_4)(voi
 struct VObj_At04 { char unknown_00[4]; char *vtable_4; };
 extern "C" s32 func_00448AD0(const char *, CodeInfo_00448B48 *);
 extern "C" s32 func_00447CA0(s64, char *);
-extern char D_0068E848[];
 static inline String_005C2630 text_18(VObj_At04 *object) {
     VEntryString_18 *entry = (VEntryString_18 *)(object->vtable_4 + 0x18);
     return entry->function_4((char *)object + entry->delta_0);

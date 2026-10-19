@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* hObject; its constructor is hObject__structor_0. The vptr follows its first word. */
 struct hObject__structor_0 {

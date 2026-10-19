@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Func0053DED0Sub {
     char pad0[0xC];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Obj {
     char *vt;
     char p1[0x100];

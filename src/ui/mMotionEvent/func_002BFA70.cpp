@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" void *func_00326750(unsigned int size, int align, const char *name);
 extern "C" s32 mMotionEvent__structor_0(void *arg0, void *arg1, void *arg2, f32 fparg0, f32 fparg1);

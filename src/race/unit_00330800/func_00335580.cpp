@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long s64;
+#include "types.h"
 
 struct Sub {
     char pad0[0x78];

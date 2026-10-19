@@ -1,5 +1,4 @@
-typedef short s16;
-typedef int s32;
+#include "types.h"
 
 struct VEntry { s16 delta; s16 index; s32 (*fn)(void *); };
 struct Obj { s32 m0; VEntry *vtbl; };
@@ -15,7 +14,7 @@ extern "C" void MMemoryCardFile__set_dispstep(void *a0, void *a1, void *a2, Obj 
     func_00174148(&g, a1);
     Obj *o = *a3;
     Inner *in = g.p->in;
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x58);
+    VEntry *e = &o->vtbl[11];
     in->f4A = e->fn((char *)o + e->delta);
     func_001740F0(&g, 2);
 }

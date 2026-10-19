@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Buf {
     char pad[0x1800];
     s32 n;

@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef signed char s8;
+#include "types.h"
 
 struct VEntry_16C {
     s16 delta;
@@ -26,7 +24,7 @@ extern "C" void MGameStats__set_time_to_start(void *, void *, s32, void **arg3) 
     func_0016BF98((void *)buf);
     s1 = buf[0];
     obj = (Obj_16C *)*arg3;
-    e = (VEntry_16C *)((char *)obj->vtbl + 0x58);
+    e = &obj->vtbl[11];
     r = (short)e->fn((char *)obj + e->delta);
     *(short *)((char *)s1 + 0x34) = r;
     func_0016BF40((void *)buf, 2);

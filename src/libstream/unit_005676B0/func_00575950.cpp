@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Blk {
     u32 w0;
     Blk *f4;

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct S_00238F70 { char pad[0x100]; s32 unk100; };
 

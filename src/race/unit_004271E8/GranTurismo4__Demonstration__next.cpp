@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void *memcpy(void *, const void *, unsigned);
 struct Glob { char pad[0x39E1C]; s32 f39E1C; };
 extern Glob *D_00622F4C;

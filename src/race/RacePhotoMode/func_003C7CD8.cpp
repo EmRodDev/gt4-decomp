@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef float f32;
+#include "types.h"
 
 extern "C" void func_003BBBC0(void *self, u32 innerColor, u32 outerColor, f32 innerRadius, f32 outerRadius);
 extern "C" s32 func_004AA0D0(void *, void *, f32, f32, f32, f32, f32);

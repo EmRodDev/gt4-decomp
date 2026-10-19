@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned char u8;
+#include "types.h"
 
 struct VA { s16 delta; s16 index; void (*fn)(char *, char *, s32); };
 struct VB { s16 delta; s16 index; s32 (*fn)(char *, s32); };

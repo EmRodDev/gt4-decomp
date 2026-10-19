@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef short s16;
-typedef float f32;
+#include "types.h"
 
 struct VEnt { s16 off; s16 pad; void *(*fn)(void *, s32); };
 struct VTab { char pad[0xD0]; VEnt e; };

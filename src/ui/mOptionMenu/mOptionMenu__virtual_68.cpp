@@ -15,15 +15,10 @@ extern "C" s32 func_0057F260(const char *) throw();
 extern "C" void *func_005C2630(Str *,s32,s32,const char *,s32);
 extern "C" TI *func_005C11A8();
 extern "C" void func_00326798(void *,s32,s32,const char *);
-extern "C" void *func_002C8180(void *) throw();
 extern "C" void *func_002556B0(void *);
 extern "C" s32 HSymID__GetID(void *);
 extern "C" void func_003069F8(void *,void *,void *);
-extern "C" void *func_00263368(void *,void *);
-extern "C" void mWidget__setWindowPosition(void *,float,float);
-extern "C" void mWidget__setActive(void *,void *);
 extern "C" void func_002550B8(void *,s32);
-extern "C" void func_002C8410(void *,void *);
 static inline void init(Str *s,const char *src) {
  Rep *r=&D_00659FA8; char *d;
  if (r->sel) d=func_005C2560(r);

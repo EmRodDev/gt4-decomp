@@ -1,6 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef unsigned long u64;
+#include "types.h"
 
 struct Ent { s32 val; s32 key; };
 struct Obj { char pad[8]; s32 count; char pad2[4]; Ent ents[1]; };

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" s32 SystemSoundGetOutputMode(void);
 extern "C" f32 SystemSoundGetOutputModeVolume(s32 i, s32 j);

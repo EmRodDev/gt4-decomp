@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 /* Partial list header. Entries begin at +0x10, occupy eight bytes,
    and this accessor returns the second word of the selected entry. */
 struct List { s32 unknown00; s32 count; unsigned char unknown08[8]; };

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" char *func_003EEC90(char *self, s32 value) {
     s32 misses = 0;

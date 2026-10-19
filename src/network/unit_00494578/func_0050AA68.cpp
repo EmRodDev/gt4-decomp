@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" char D_00853580[];
 extern "C" s32 memcpy(s32 arg0, char *arg1, s32 arg2);

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef unsigned char u8;
-typedef signed char s8;
+#include "types.h"
 
 struct Self { char pad0[0x490]; s32 n; };
 

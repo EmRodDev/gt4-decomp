@@ -1,4 +1,4 @@
-typedef signed char s8;
+#include "types.h"
 
 struct S { char pad[0x18]; s8 unk18; };
 

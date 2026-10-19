@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long s64;
+#include "types.h"
 struct Ent { s64 id; char name[1]; };
 extern "C" void func_00448F18(void *);
 extern "C" int func_00448FF8(void *, const char *);

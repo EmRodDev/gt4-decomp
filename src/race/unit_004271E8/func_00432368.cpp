@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void func_00431D80(void *p);
 struct Root { virtual ~Root(); };
 struct func_0043A3F8 : Root {

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_005039A8_obj {
     char pad0[8];

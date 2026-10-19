@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
+#include "types.h"
 struct Ent { char pad[0x2C]; u16 unk2C; char pad2E[0x16]; };
 struct Obj { char pad0[0x84]; Ent *unk84; };
 struct D { s16 a; s16 b; u16 c; };

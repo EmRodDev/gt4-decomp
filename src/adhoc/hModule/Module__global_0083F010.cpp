@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" char D_0083F0B0[];
 
 extern "C" void HModule__dynamicAssign(s32 *buf, void *src);

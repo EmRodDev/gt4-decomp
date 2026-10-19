@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct VEntry001BE7E0 {
     s16 delta;
@@ -19,7 +19,7 @@ struct Obj001BE7E0 {
 extern "C" void mEyetoyFacePS2__virtual_95(struct Obj001BE7E0 *arg0, int arg1) {
     struct Sub001BE7E0 *a2 = arg0->unkA0;
     if (a2 != 0) {
-        VEntry001BE7E0 *e = (VEntry001BE7E0 *)((char *)a2->vtbl + 0x1B0);
+        VEntry001BE7E0 *e = &a2->vtbl[54];
         e->fn((char *)a2 + e->delta, arg1);
     }
 }

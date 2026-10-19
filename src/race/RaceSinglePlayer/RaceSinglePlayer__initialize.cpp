@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 struct RaceSinglePlayerLayout {
     char pad0[0xCC8];

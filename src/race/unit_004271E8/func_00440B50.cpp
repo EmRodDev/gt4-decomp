@@ -1,5 +1,4 @@
-typedef long long s64;
-typedef int s32;
+#include "types.h"
 struct Slot { s64 q[47]; };
 struct Self { s64 pad; Slot slots[3]; s64 pad2[4]; s32 cur; };
 extern "C" void func_00440268(Self *, s64, s32);

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef short s16;
+#include "types.h"
 struct VEntry { s16 delta; s16 index; void (*fn)(void *); };
 struct Lamp {
     char pad0[1];

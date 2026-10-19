@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern const char **DisplayRText__rtext_ptrs_;
 extern char D_006A2368[];

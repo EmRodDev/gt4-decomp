@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct A8 { s32 p0; };
 struct B60 { char pad[8]; s32 p8; };
 struct Q { char pad[0x60]; s32 p60; char pad2[0x70 - 0x64]; s32 p70; };
@@ -10,7 +10,6 @@ struct Frame {
     char pad5C[4];
     char sp60[0x10];
 };
-extern char D_0068D7E0[];
 extern char *D_00622F4C;
 extern "C" void func_0010F718(void *, void *);
 extern "C" void ShowRoomCar__structor_0(void *);
@@ -22,7 +21,6 @@ extern "C" void *func_00433260(s32, s32, s32, void *);
 extern "C" s32 func_00433C10(void *, s32);
 extern "C" s32 func_00445350(void *);
 extern "C" s32 func_004454C0(void *);
-extern "C" s32 func_00445B88(void *);
 extern "C" s32 func_004462E0(void *);
 extern "C" s32 func_00446320(void *);
 extern "C" s32 func_004472A0(s32);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Base { char pad[0x64]; virtual void v0(); virtual void v1(); };
 struct Obj : public Base { char pad2[0x1000]; };
 extern "C" {

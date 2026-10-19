@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef signed char s8;
-typedef unsigned char u8;
+#include "types.h"
 
 extern char mSound__vtable[];
 extern char D_00698E08[];

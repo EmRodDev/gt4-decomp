@@ -1,4 +1,4 @@
-typedef signed char s8;
+#include "types.h"
 
 extern "C" void func_00353570(char *arg0) {
     s8 *p = (s8 *)(arg0 + 0xF830);

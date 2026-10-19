@@ -1,6 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef unsigned char u8;
+#include "types.h"
 struct Item { char pad[0x18]; void *p18; };
 struct List { s32 count; s32 pad4; Item **items; };
 struct Src { char pad[0x60]; List *list; char pad64[0xC]; void *p70; };

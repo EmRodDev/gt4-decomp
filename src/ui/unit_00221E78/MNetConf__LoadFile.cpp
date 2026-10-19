@@ -48,7 +48,7 @@ extern "C" void MNetConf__LoadFile(s32 *arg0, void *arg1, s32 arg2, void *arg3) 
         p_s5 = buf3;
         func_00312370(p_s5, (char *)arg3 + 8);
         obj = (char *)buf0[0];
-        e = (VEntry *)((char *)((VObj *)obj)->vtbl + 0x2F0);
+        e = &((VObj *)obj)->vtbl[94];
         obj = obj + e->delta;
         r0 = func_002FE250((void *)p_s7[0]);
         r1 = func_00314920((u8 *)p_s6[0]);

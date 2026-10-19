@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef float f32;
+#include "types.h"
 
 struct Sub_003680F8 {
     char pad0[0x247];

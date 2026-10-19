@@ -1,11 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef unsigned int u32;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 extern char D_0069C0A8[];
 extern u32 PDISTD__LOCALE[];

@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Block { u32 size; Block *next; char data[1]; };
 struct Range { int unk0; u32 pos, cap, used; char *base; u32 total; };
 struct Part { void *data; u32 size; };

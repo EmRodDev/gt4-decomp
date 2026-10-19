@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct RacePhotoModeCameraManagerLayout {
     char pad0[0x9C0];

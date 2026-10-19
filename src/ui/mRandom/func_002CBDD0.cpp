@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void *mRandom__structor_0(void *self);
 extern "C" void *func_00326750(unsigned int size, int align, const char *name);

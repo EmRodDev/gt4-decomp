@@ -1,5 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned short u16;
+#include "types.h"
 struct Req { void *obj; int handle; int id; int user; };
 struct Req2 { void *obj; int handle; int id; int result; int user; };
 struct Obj { char pad0[0x104]; int kind; char pad108[0x60]; int (*notify)(Req2 *); int userN; int (*accept)(Req *); int userA; };

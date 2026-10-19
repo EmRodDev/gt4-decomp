@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void mUpdateContext__Sync(s32 arg0);
 

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 mMCFileActor__virtual_04(void) {
     return 0x80;

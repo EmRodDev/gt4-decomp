@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" s32 func_003CC8E8(void);
 extern "C" void RaceEntryCar__update(s32 arg0);

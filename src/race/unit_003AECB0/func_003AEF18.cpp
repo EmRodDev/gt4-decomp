@@ -4,7 +4,6 @@ struct TextureState { char physicalPrefix[32];unsigned long clamp; };
 struct Texture { char physicalPrefix[24];TextureState*state; };
 extern "C" int func_00499728(Texture*);
 extern "C" void func_0049CC48(TextureState*);
-extern "C" void func_004A4550(unsigned,int);
 extern "C" float func_003AFD18(float,float,unsigned);
 extern "C" void func_003AF6E0(float,float,float,float,float,float,float,float);
 // PLZCW is the EE packed leading-sign-count hardware operation.

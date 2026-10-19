@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void ScrollBarUnit__inc(void *arg0, float fparg0);
 extern "C" void mWidget__setWindowX(void *c, float y);

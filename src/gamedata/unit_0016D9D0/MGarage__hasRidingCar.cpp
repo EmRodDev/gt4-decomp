@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" void func_0016D848(void *);
 extern "C" void func_0016D7F0(void *, s32);

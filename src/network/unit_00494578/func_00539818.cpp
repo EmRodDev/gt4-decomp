@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 struct Obj { u8 unk0; char pad1[3]; s32 unk4; s32 unk8; };
 extern "C" s32 func_00539B08(Obj *);
 extern "C" s32 func_00539BE0(s32 *);

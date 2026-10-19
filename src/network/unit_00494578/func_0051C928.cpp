@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 struct M { u8 a, b; M(int type, int enabled) { a = type; b = enabled != 0; } };
 struct V { char p[0x80]; int f80; };
 extern "C" int func_0051BE28(void) throw();

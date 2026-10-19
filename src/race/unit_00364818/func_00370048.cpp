@@ -1,5 +1,4 @@
-typedef float f32;
-typedef int s32;
+#include "types.h"
 
 /* Cam is the camera object whose limits the callees read; the two helpers compute the
  * same value from either the first or the second parameter set, selected by arg1. */

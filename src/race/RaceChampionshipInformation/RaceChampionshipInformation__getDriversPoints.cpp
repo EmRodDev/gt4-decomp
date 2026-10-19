@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Elem003EF1C8 {
     char pad0[0x2F8];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern char D_006895F0[];
 void func_004EF4D8(char *arg0) {
     *(char **)(arg0 + 0x90) = D_006895F0;

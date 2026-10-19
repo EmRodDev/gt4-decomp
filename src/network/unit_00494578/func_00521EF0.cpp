@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 
 struct Addr8 {
     u8 bytes[8];

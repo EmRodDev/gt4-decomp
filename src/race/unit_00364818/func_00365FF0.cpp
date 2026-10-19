@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct B { char pad[0xCCEC]; f32 cell[1][6]; };
 

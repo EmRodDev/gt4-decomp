@@ -6,7 +6,6 @@ extern "C" void func_00312370(void*,void*);
 extern "C" void func_00312318(void*,int);
 extern "C" Str*func_00314920(int);
 extern "C" void func_001279E8(void*,const char*);
-extern "C" void func_00127A90(void*,const char*);
 static inline const char*c_str(Str*s){int len=((Rep*)s->p)[-1].len;if(len==0)return D_0068DEA8;s->p[len]=0;return s->p;}
 extern "C" void MQuickWork__set_selectedCommand(void*,void*arg1,int,void*args){
   int buf0[4],buf1[4];int*ps;int self;

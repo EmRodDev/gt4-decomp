@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Node { int next; int key; int val; };
 struct HT { Node *b[15]; int freelist; };
 struct Rec { char p[0x16]; unsigned char f16; };

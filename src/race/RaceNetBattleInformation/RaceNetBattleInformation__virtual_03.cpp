@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 
 struct S { char pad[0xAB0]; s64 unkAB0; };
 

@@ -9,11 +9,8 @@ struct Owner { int pad0; int *handle; char pad8[0x54]; int p5c; char pad60[0x10]
 struct Entry { short delta, pad; void *fn; };
 struct Found { char pad0[0x5c]; Entry *entry; };
 extern Rep D_00659E20;
-extern char D_006A3500[], D_006A3350[];
 extern "C" void func_00608F30();
 extern "C" void func_00607408();
-extern "C" int func_003D8BE8(Owner *,Car *) throw();
-extern "C" void func_003DA518(int *,int,const char *,int) throw();
 extern "C" Found *func_00480878(int,Str *);
 extern "C" void free(void *) throw();
 extern "C" int func_0057DA20(char *,const char *,...) throw();

@@ -1,8 +1,7 @@
-typedef int s32;
+#include "types.h"
 struct VEnt { short adj; short pad; s32 (*fn)(void *); };
 struct Vt { char pad[0x98]; VEnt e98; };
 struct Self { char pad[0x12C]; Vt *vt; char pad2[0x130 - 0x130]; };
-extern char D_00622F4C_[];
 extern s32 D_00622F4C;
 extern "C" void func_003BB440(void *, s32);
 extern "C" void RacePlayerSpec__createEquipments(void *, long, int, int);

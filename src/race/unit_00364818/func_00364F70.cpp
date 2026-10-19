@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct Inner {
     char pad[0x12];

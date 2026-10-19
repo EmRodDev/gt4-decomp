@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 func_00324F98(void);
 extern s32 mManager__ClassID_;

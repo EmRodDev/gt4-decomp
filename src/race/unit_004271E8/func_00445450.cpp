@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long s64;
+#include "types.h"
 struct Tab { char pad[0x1E4]; s32 f1E4; };
 extern "C" s32 SPEC_DATABASE__DatabaseStorage__getRow_2(void *, int, int, void *);
 extern "C" s64 func_004454C0(s64 *);

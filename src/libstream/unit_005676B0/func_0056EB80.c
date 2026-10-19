@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 s32 func_0057F260(s32);
 void func_005A609C(s32, s32);
 struct B { char pad[0x30]; s32 size; };

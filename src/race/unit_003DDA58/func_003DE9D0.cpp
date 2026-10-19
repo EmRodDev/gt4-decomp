@@ -5,6 +5,6 @@ extern "C" Root *D_00621CB4;
 
 extern "C" void func_003DE9D0(int unused, int *arg1) {
     Obj *self = D_00621CB4->race;
-    VEntry *entry = (VEntry *)((char *)self->vtbl + 0x1F0);
+    VEntry *entry = &self->vtbl[62];
     entry->fn((char *)self + entry->delta, arg1);
 }

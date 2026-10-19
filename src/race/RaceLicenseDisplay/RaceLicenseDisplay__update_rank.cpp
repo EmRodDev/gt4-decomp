@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" void RaceRankDisplay__setRank(char *arg0, s32 arg1, s32 arg2);
 extern "C" void RaceRankDisplay__virtual_09(char *arg0, float arg1);

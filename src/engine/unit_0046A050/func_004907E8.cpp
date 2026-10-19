@@ -1,6 +1,4 @@
-typedef short s16;
-typedef unsigned short u16;
-typedef int s32;
+#include "types.h"
 
 struct Tbl004907E8 {
     char pad0[0x12];

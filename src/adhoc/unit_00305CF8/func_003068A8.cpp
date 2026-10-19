@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 HSymID__GetID(s32 arg0);
 extern "C" void func_00306780(s32 arg0, s32 *arg1, s32 arg2);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Demo { s32 state; char sub[0x20]; char name[0x20]; s32 f44; char p[8]; s32 f50; };
 extern char *D_00622F4C;
 extern "C" {

@@ -9,7 +9,6 @@ extern "C" N **func_005EEFE8(N **, Tree *, u32 *);
 extern "C" void func_005EF030(void *, Tree *, It *, Pair *);
 extern "C" void func_00323B48(void *, void *);
 extern "C" void func_00323B60(void *, int);
-extern "C" s32 hValue__isValid(s32);
 extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 extern "C" void func_00305F80(void *, u32 *, s32 *) throw();

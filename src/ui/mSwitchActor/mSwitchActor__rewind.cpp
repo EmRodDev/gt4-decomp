@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 struct VEntry { short delta; short index; void (*fn)(void *, void *); };
 struct Obj { void *f0; VEntry *vtbl; };
 struct SW {

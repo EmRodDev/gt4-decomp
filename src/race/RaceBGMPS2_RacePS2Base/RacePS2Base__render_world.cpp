@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct V { short d, i; void *fn; };
 struct Buf { int v[15]; };
 struct Global { Buf b[2]; int cur; };

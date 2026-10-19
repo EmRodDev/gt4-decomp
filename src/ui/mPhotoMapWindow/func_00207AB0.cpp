@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" s32 func_00206868(s32);
 extern "C" void mWidget__getWindowSize(s32, s32, s32);

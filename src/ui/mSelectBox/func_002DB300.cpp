@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Cur { s32 w0; s32 w4; s32 w8; };
 struct S { char p0[0xBC]; Cur cur; };
 extern "C" s32 func_00206868(S *arg0);

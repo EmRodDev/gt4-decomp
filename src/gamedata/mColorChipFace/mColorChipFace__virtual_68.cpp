@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct RefCounter;
 struct Owner { char pad0[0xA8]; s32 *slots[2]; };
 extern "C" void mTextFace__virtual_68(Owner *self);

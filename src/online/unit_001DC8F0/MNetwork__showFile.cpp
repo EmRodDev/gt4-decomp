@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void MNetwork__fileGet(s32 *);
 extern "C" void func_0023B1D8(void *, int);
 extern "C" void func_0023B478(void *);

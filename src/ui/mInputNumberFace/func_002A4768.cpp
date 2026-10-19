@@ -43,8 +43,6 @@ extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" s32 HSymID__GetID(Str *s);
 extern "C" void func_003069F8(Obj *obj, void *h, s32 *val);
 extern "C" void func_0030BB18(void *h);
-extern "C" void func_0024E348(void *h, s32 *val);
-extern "C" void func_0024E378(void *h, int flags);
 extern "C" void func_00309378(void *h, int flags);
 extern "C" void func_003285A8(s32 p);
 extern "C" void func_003285F8(s32 p);

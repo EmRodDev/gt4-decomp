@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 union U { u16 h; u8 b[2]; };
 struct Raw { char b[4]; };
 struct Loc { U lo, hi; u16 size; int copy; };

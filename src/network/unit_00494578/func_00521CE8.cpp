@@ -1,6 +1,4 @@
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef unsigned int u32;
+#include "types.h"
 struct Obj { char pad[0x218]; u16 tag; };
 extern "C" int func_00539188(u8 *,u16 *);
 extern "C" int func_00521E58(Obj *,u8 *,u32,u32 *);

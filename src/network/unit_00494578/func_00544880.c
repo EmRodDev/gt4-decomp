@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 s32 func_00544880(s32 *arg0) {
     s32 i;
     for (i = 0; i < 0x20; i++) {

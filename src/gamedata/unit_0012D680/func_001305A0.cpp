@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" s32 func_00444190(void *);
 extern "C" s32 func_004443A8(void *, const char *);
 extern "C" void SPEC_DATABASE__CarEquipments__setVariationOrder(void *, s32);

@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" void func_00486AA0(char *arg0, char *arg1) {
     int i = 0xC;

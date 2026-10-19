@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct El { char p[0x30]; s32 u30; char q[8]; };
 struct Blk { El e[2]; s32 idx; };
 struct O {

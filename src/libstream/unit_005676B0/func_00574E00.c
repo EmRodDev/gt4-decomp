@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void func_005768D8(char *a);
 void func_00574E00(char *arg0) {
     if (*(s32 *)(arg0 + 0x28) != 0) {

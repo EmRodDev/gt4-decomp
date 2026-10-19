@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef float f32;
+#include "types.h"
 
 struct S0024A198 {
     char pad0[0x118];

@@ -19,10 +19,8 @@ extern "C" void func_00480FA0(Stack *, int);
 extern "C" void free(void *) throw();
 extern "C" void func_0057D9C0(const char *, ...);
 extern "C" int func_0057F260(const char *) throw();
-extern "C" void *func_005A47D4(void *, const void *, u32) throw();
 extern "C" void *func_005A6AB0(void *, const void *, int) throw();
 extern char D_006ADD30[], D_006ADD38[];
-extern void *D_00659E2C[];
 struct Val {
  int type, value;
  Val():type(1) {}

@@ -1,10 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -45,7 +39,6 @@ static inline void vcall_18_ret(void *ret, VObj_18 *o) {
 }
 extern char D_006915D0[];
 extern Rep D_00659FA8;
-extern s32 D_00659FB4;
 extern "C" void *func_0017FB28(void *, void *) throw();
 extern "C" void func_004398C0(s32, const char *);
 extern "C" void func_0017FAD0(void *, s32) throw();

@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef long s64;
+#include "types.h"
 struct Blk { s64 q[0x102]; };
 struct Game { char pad[0x38D40]; Blk blk; };
 struct Self { char pad0[0xCC8]; u32 fCC8; char pad1[0xD6C - 0xCCC]; s32 fD6C; char pad2[0xD960 - 0xD70]; Blk blk; };

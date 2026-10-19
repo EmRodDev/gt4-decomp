@@ -1,5 +1,4 @@
-typedef float f32;
-typedef int s32;
+#include "types.h"
 
 struct Parent {
     char pad0x2C[0x2C];

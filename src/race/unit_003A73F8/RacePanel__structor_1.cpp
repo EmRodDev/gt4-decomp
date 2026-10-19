@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 struct RacePanel {
     char pad0[0x14];
     s32 unk14;

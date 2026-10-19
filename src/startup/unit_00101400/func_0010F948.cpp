@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 struct __attribute__((packed)) B32 { s64 a, b, c, d; };
 struct A8 { s32 p0; };
 struct B60 { char pad[8]; A8 *p8; };

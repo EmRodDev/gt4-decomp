@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 
 struct Obj {
     char pad[0x60E];

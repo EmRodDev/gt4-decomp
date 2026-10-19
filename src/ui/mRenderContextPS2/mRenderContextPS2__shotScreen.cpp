@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 
 extern "C" s64 mRenderContextPS2__shotScreen(void) {
     return 0;

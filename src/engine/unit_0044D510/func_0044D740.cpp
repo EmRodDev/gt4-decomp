@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 
 struct P2 { s32 a; s32 b; };
 struct Obj { char p0[0x28]; s64 p28; struct P2 p30; char p38[8]; };

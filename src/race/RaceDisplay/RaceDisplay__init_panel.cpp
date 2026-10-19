@@ -13,7 +13,6 @@ extern Global D_006184D0;
 extern "C" int func_003A18A8(char *,int) throw();
 extern "C" void RaceDisplayObjectBase__setLocation(Obj *,short,short);
 extern "C" void RaceMiniMap__virtual_07(Obj *,short,short);
-extern "C" void *func_005A48D8(void *,int,unsigned int);
 static inline void vc(Obj *p,int off,int a,int b) {
  Vt *v=(Vt *)((char *)p->vt+off);
  ((void (*)(void *,int,int))v->fn)((char *)p+v->delta,a,b);

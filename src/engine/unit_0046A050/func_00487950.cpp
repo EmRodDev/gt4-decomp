@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct Quat { f32 x, y, z, w; };
 extern "C" void func_0057D8A0(f32, f32 *, f32 *);

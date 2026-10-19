@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 extern "C" int func_005279B0(char *o, u16 *out) {
     u16 min = 0xFFFE;
     u16 best = 0xFFFF;

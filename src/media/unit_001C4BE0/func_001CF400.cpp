@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct H { u32 k0; u32 k4; char d[0xE8]; };
 struct VE { short delta; short index; int (*fn)(void *, char *, void *, int); };
 struct Blob { char d[0xE8]; };

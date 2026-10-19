@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 
 /* 12-byte block copied as 8 bytes (ldl/ldr) plus a 4-byte unaligned tail
    (lwl/lwr, swl/swr): kind at +2, index (u16) at +4, value at +8. */

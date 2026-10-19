@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -32,13 +31,8 @@ extern char D_006959D8[];
 
 extern "C" void func_001DC5F8(void *, int) throw();
 extern "C" void func_001DC650(void *, void *) throw();
-extern "C" void *func_001F7C68(void *);
-extern "C" void func_001F7CB8(void *, void *, const char *, s32, s32, s32, s32, s32);
-extern "C" void func_002ED5C0(void *, int);
-extern "C" s32 hArray__size(void *);
 extern "C" void func_002FC870(void *, int);
 extern "C" void func_002FE278(void *, s32);
-extern "C" s32 func_002FC840(void *, void *);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" void func_003285A8(void *p);
 extern "C" void func_003285F8(void *p);

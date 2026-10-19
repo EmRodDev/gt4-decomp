@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 struct Ref { char p[0x18]; void *r18; };
 struct Obj {
     char p0[8]; int state; char p1[4]; Ref *ref; char p2[0x64]; float f78;

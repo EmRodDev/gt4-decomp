@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern char RaceLicenseDisplay__vtable[];
 extern char RaceValueDisplayBase__vtable[];
 extern "C" void RaceABMonitor__structor_0(void *, s32);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Rep { s32 len, cap, ref, sel; };
 extern "C" void func_001DC650(void *, void *) throw();
 extern "C" void func_001DC5F8(void *, s32) throw();

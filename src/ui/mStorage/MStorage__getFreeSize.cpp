@@ -1,10 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -25,7 +19,7 @@ struct S00659988 {
 struct VEntry_1a8 { s16 delta; s16 index; s32 (*fn)(void *); };
 struct VObj_1a8 { char pad0[4]; VEntry_1a8 *vtbl; };
 static inline s32 vcall_1a8(char *o) {
-    VEntry_1a8 *e = (VEntry_1a8 *)((char *)((VObj_1a8 *)o)->vtbl + 0x1a8);
+    VEntry_1a8 *e = &((VObj_1a8 *)o)->vtbl[53];
     return e->fn(o + e->delta);
 }
 extern "C" void func_00240420(void *);

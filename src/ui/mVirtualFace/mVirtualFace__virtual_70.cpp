@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct VObj { char pad0[4]; char *vtbl; };
 struct Obj { char pad0[0xA0]; VObj *handler; };

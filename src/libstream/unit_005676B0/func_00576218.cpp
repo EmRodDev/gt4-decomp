@@ -1,5 +1,4 @@
-typedef int s32;
-typedef signed char s8;
+#include "types.h"
 
 extern "C" int write(s32 a0, s32 a1, s32 a2);
 

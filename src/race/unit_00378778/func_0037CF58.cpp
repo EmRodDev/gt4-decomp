@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef long long s64;
+#include "types.h"
 
 struct Obj0037CF58 {
     char pad0[0x168];

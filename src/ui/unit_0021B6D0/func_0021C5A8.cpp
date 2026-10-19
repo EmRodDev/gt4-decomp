@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_0021C5A8_obj {
     s32 magic;

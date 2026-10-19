@@ -1,5 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned short u16;
+#include "types.h"
 struct Node {
     char pad[0x1C];
     u32 f1C;

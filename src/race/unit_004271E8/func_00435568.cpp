@@ -1,4 +1,4 @@
-typedef long s64;
+#include "types.h"
 struct F0 { unsigned a : 1; };
 struct F1 { long pad : 1; long x : 32; };
 struct F2 { long pad : 2; long y : 32; };

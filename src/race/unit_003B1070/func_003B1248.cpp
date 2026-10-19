@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Item3B1248 {
     char pad[0x40];

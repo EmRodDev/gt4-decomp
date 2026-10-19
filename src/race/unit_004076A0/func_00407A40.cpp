@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 
 extern "C" s32 func_0057DA20(s32 arg0, char *arg1, s32 arg2);

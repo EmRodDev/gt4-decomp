@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void *func_00438E60(void *arg0, void *arg1) {
     __builtin_memcpy((char *)arg0 + 4, arg1, 0xAC);

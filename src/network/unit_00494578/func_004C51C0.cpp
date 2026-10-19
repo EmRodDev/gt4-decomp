@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" s32 func_004C51C0(u16 *arg0, s32 arg1) {
     u16 want = (u16)arg1;
