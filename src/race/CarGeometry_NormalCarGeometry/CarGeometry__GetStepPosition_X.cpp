@@ -10,6 +10,10 @@ struct ObjInner {
     VEntry *vtbl;
 };
 
+/* Layout backed by include/gt4/CarGeometry.h and include/gt4/NormalCarGeometry.h:
+ *   CarGeometry: forwarding wrapper to inner geometry instance at 0x1C
+ *   vtable slot 8 (0x40 / 8)
+ */
 struct Obj {
     char pad[0x1C];
     ObjInner *unk1C;
@@ -17,7 +21,7 @@ struct Obj {
 
 extern "C" void CarGeometry__GetStepPosition_X(Obj *arg0, void *arg1) {
     ObjInner *a1 = arg0->unk1C;
-    VEntry *e = (VEntry *)((char *)a1->vtbl + 0x40);
+    VEntry *e = &a1->vtbl[8];
 
     e->fn((char *)a1 + e->delta, arg1);
 }

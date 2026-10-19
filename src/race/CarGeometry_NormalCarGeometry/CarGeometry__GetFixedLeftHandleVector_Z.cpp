@@ -11,6 +11,10 @@ struct Inner_0020E640 {
     VEntry_0020E640 *vtbl;
 };
 
+/* Layout backed by include/gt4/CarGeometry.h and include/gt4/NormalCarGeometry.h:
+ *   CarGeometry: forwarding wrapper to inner geometry instance at 0x1C
+ *   vtable slot 42 (0x150 / 8)
+ */
 struct Obj_0020E640 {
     char pad[0x1C];
     Inner_0020E640 *unk8;
@@ -18,7 +22,7 @@ struct Obj_0020E640 {
 
 extern "C" void CarGeometry__GetFixedLeftHandleVector_Z(struct Obj_0020E640 *arg0) {
     Inner_0020E640 *a1 = arg0->unk8;
-    VEntry_0020E640 *e = (VEntry_0020E640 *)((char *)a1->vtbl + 0x150);
+    VEntry_0020E640 *e = &a1->vtbl[42];
 
     e->fn((char *)a1 + e->delta);
 }
