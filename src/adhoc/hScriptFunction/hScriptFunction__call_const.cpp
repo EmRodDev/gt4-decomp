@@ -10,7 +10,20 @@ extern "C" void func_00309378(void *arg0, s32 arg1);
 extern "C" void func_003285A8(RefCounter *p);
 extern "C" void func_003285F8(RefCounter *p);
 
-extern "C" void hScriptFunction__call_const(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
+/* Layout backed by include/gt4/hScriptFunction.h and config/class_layout.json (size 0x10):
+ *   0x00: ref_count
+ *   0x04: vtable (hScriptFunction)
+ *   0x08: unk8
+ *   0x0C: bytecode / code pointer passed to hThread__execCode
+ */
+struct hScriptFunctionLayout {
+    void *ref_count;
+    void *vtable;
+    s32 unk8;
+    s32 bytecode;
+};
+
+extern "C" void hScriptFunction__call_const(hScriptFunctionLayout *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     s32 buf0[4];
     s32 buf1[4];
     s32 buf2[4];
@@ -25,7 +38,7 @@ extern "C" void hScriptFunction__call_const(s32 *arg0, s32 *arg1, s32 arg2, s32 
     v_s0 = buf0[0];
     p_s5 = buf1;
     func_0030BB18(p_s6);
-    hThread__execCode(p_s5, v_s0, (char *)arg0 + 0xC, p_s6, arg2, arg3);
+    hThread__execCode(p_s5, v_s0, &arg0->bytecode, p_s6, arg2, arg3);
     if (arg1 != p_s5) {
         newVal = *p_s5;
         if (newVal != 0) {

@@ -16,17 +16,32 @@ struct Owner {
     Lst *lst;
 };
 
+/* Layout backed by mStringConst__structor_0.cpp:
+ *   0x00: count (RefCounter)
+ *   0x04: vtbl (mStringConst vtable)
+ *   0x08: str (String member at 0x8)
+ */
+struct String {
+    char *dat;
+};
+
+struct mStringConst {
+    s32 count;
+    void *vtbl;
+    String str;
+};
+
 extern "C" void func_00312318(void *arg0, int arg1);
 extern "C" void func_00314B20(void *arg0, void *arg1);
 extern "C" void func_003285A8(RefCounter *p);
 extern "C" void func_003285F8(RefCounter *p);
 
-extern "C" void mStringConst__execute(void *arg0, Owner *arg1) {
+extern "C" void mStringConst__execute(mStringConst *self, Owner *arg1) {
     s32 buf0[4];
     Lst *s2;
     s32 *s1;
 
-    func_00314B20(buf0, (char *)arg0 + 8);
+    func_00314B20(buf0, &self->str);
     s2 = arg1->lst;
     s1 = &s2->items[s2->count];
     if (s1 != buf0) {
