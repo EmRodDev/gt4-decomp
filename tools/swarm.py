@@ -753,6 +753,22 @@ def cmd_assign(a):
         source = tier_candidates(a.tier, a.fresh) if a.tier else candidates(a.max_bytes, a.min_bytes, a.deferred)
         pool = {k: v for k, v in source.items() if k not in leased}
         count = a.count or (tiers()[a.tier]["count"] if a.tier else 6)
+        if getattr(a, "priority", None):
+            # An explicit order (a JSON list of {"addr": "00573360", ...}, hottest first), e.g. what the
+            # native port executes most: take the first open ones, ignoring areas.
+            order = [int(r["addr"], 16) for r in json.load(open(a.priority))]
+            picked = [x for x in order if x in pool][:count]
+            now = time.strftime("%Y-%m-%d %H:%M:%S")
+            for addr in picked:
+                state["leases"][f"{addr:08x}"] = {"worker": a.worker, "area": area_of(addr), "time": now, "tier": a.tier}
+            save_leases(state)
+            os.makedirs(os.path.join(SWARM, a.worker), exist_ok=True)
+            print(json.dumps({"worker": a.worker, "tier": a.tier, "area": "priority",
+                              "remaining_in_area": sum(1 for x in order if x in pool) - len(picked),
+                              "draft_dir": f"build/swarm/{a.worker}",
+                              "functions": [{"addr": f"{x:08x}", "bytes": pool[x], "name": rtti_name(x) or ""}
+                                            for x in picked]}, indent=1))
+            return
         areas = by_area(pool)
         if not areas:
             print(json.dumps({"worker": a.worker, "area": None, "functions": []}))
@@ -1265,6 +1281,7 @@ def main():
         p.add_argument("--max-bytes", type=int, default=256)
         p.add_argument("--min-bytes", type=int, default=8)
         p.add_argument("--deferred", action="store_true", help="functions given up on before")
+        p.add_argument("--priority", help="JSON list of {addr} in the order to take them (assign only)")
     p = sub.add_parser("plan"); p.add_argument("n", type=int, nargs="?", default=3, help="Claude worker slots")
     p = sub.add_parser("release"); p.add_argument("worker", nargs="?"); p.add_argument("--all", action="store_true")
     sub.add_parser("rules")
