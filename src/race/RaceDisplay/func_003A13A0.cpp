@@ -4,14 +4,14 @@ typedef float f32;
 
 struct Table { char pad[8]; char **entries; };
 struct Ctx { char pad[0x60]; Table *tbl; };
+struct Disp { char pad[0x20]; unsigned int color; };
 struct Self {
     char pad0[4];
     Ctx *ctx;
     char pad8[0x17BC - 8];
-    char disp[1];
+    Disp disp;
 };
 struct Globals { char pad[0x188]; char *fmt; };
-struct Disp { char pad[0x20]; unsigned int color; };
 
 extern Globals *DisplayRText__rtext_ptrs_;
 extern char D_006A0718[];
@@ -26,7 +26,7 @@ extern "C" void func_003A13A0(Self *self, s32 idx) {
     char *fmt = DisplayRText__rtext_ptrs_->fmt;
     char *b = buf;
     if (fmt) {
-        d = (Disp *)((char *)self + 0x17BC);
+        d = &self->disp;
         func_0057DA20(b, fmt, self->ctx->tbl->entries[idx] + 0x348C);
         RaceEventDisplay__clear(d, 0.0f);
         d->color = 0x80C8C8C8;

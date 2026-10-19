@@ -21,7 +21,9 @@ struct Self {
     Comp c11B0;
     char pad11b0[0x252C - 0x11B0 - sizeof(Comp)];
     Comp c252C;
-    char pad2540[0x2D78 - 0x252C - sizeof(Comp)];
+    char pad2540[0x267C - 0x252C - sizeof(Comp)];
+    char msg267C[0x27CC - 0x267C];
+    char msg27CC[0x2D78 - 0x27CC];
     Comp c2D78;
     char pad2d8c[0x2DA0 - 0x2D78 - sizeof(Comp)];
     Comp c2DA0;
@@ -65,7 +67,7 @@ extern "C" void func_0039FAD0(Self *self, s32 arg1) {
     if (c->flag != 0) vc0(c, 0x28);
     Comp *d = &self->c252C;
     if (d->flag != 0) vc0(d, 0x28);
-    RaceMessageDisplay__render_main((char *)self + 0x267C);
-    RaceMessageDisplay__render_main((char *)self + 0x27CC);
+    RaceMessageDisplay__render_main(self->msg267C);
+    RaceMessageDisplay__render_main(self->msg27CC);
     func_0039D390(self);
 }

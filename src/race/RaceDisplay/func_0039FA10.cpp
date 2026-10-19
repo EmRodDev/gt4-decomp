@@ -18,8 +18,12 @@ struct Self {
     u32 w58;
     char pad5c[0x11B0 - 0x5C];
     Comp c11B0;
-    char pad11b0[0x2BBC - 0x11B0 - sizeof(Comp)];
+    char pad11b0[0x267C - 0x11B0 - sizeof(Comp)];
+    char msg267C[0x27CC - 0x267C];
+    char msg27CC[0x2BBC - 0x27CC];
     Comp c2BBC;
+    char pad2bbc[0x3EEC - 0x2BBC - sizeof(Comp)];
+    char music3EEC[1];
 };
 
 extern "C" void func_0039FC50(Self *);
@@ -39,11 +43,11 @@ extern "C" void func_0039FA10(Self *self) {
     if (b->flag != 0) vc(b);
     if (self->b3C != 0) {
         func_0039FC50(self);
-        RaceMusicDisplay__render_main((char *)self + 0x3EEC);
+        RaceMusicDisplay__render_main(self->music3EEC);
         if (self->b3D != 0 || (self->w58 & 0x80) != 0) {
             func_003A0178(self);
         }
     }
-    RaceMessageDisplay__render_main((char *)self + 0x267C);
-    RaceMessageDisplay__render_main((char *)self + 0x27CC);
+    RaceMessageDisplay__render_main(self->msg267C);
+    RaceMessageDisplay__render_main(self->msg27CC);
 }

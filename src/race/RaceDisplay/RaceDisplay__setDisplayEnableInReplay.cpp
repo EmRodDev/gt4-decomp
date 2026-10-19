@@ -12,7 +12,7 @@ struct Obj_003A2008 {
 };
 
 extern "C" void RaceDisplay__setDisplayEnableInReplay(struct Obj_003A2008 *arg0, s32 arg1) {
-    VEntry_003A2008 *e = (VEntry_003A2008 *)((char *)arg0->vtbl + 0x1C0);
+    VEntry_003A2008 *e = &arg0->vtbl[56];
 
     e->fn((char *)arg0 + e->delta, arg1 != 0);
 }

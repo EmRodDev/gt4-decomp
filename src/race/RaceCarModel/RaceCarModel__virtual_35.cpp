@@ -62,17 +62,12 @@ struct VEntryF {
 struct RaceCarModel {
     char pad0[0x4];
     Car *car;
-    char *vtbl;
+    VEntry *vtbl;
     char padC[0xC];
     Sub18 unk18;
-    char pad58[0x1680 - 0x58];
+    char pad58[0x1678 - 0x58];
+    f32 arr[2];
     s32 unk1680;
-};
-
-/* The base class at offset 8 (its vtable pointer is RaceCarModel's); per-index factors. */
-struct Base8 {
-    char pad0[0x1670];
-    f32 arr[1];
 };
 
 struct Vec4 {
@@ -105,7 +100,7 @@ extern "C" void RaceCarModel__virtual_35(RaceCarModel *self, void *drawer, s32 a
     sub = &self->unk18;
     hasX = func_003446B8(car) != 0;
     {
-        VEntry *e = (VEntry *)(self->vtbl + 0x50);
+        VEntry *e = &self->vtbl[10];
         g = e->fn((char *)self + e->delta);
     }
     params = car->holder->info->params;
@@ -115,7 +110,7 @@ extern "C" void RaceCarModel__virtual_35(RaceCarModel *self, void *drawer, s32 a
     }
     func_004A53F8();
     {
-        VEntryF *e = (VEntryF *)(self->vtbl + 0x108);
+        VEntryF *e = (VEntryF *)&self->vtbl[33];
         e->fn((char *)self + e->delta, arg3);
     }
     {
@@ -125,7 +120,7 @@ extern "C" void RaceCarModel__virtual_35(RaceCarModel *self, void *drawer, s32 a
             u16 idx = el->index;
             if (idx != 0) {
                 Vec4 *t = func_003917D8();
-                f32 s = func_003916E0(&t[idx - 1], ((Base8 *)((char *)self + 8))->arr[idx - 1], el->scale);
+                f32 s = func_003916E0(&t[idx - 1], self->arr[idx - 1], el->scale);
                 func_003B8530(drawer, el, s, 1);
             } else {
                 func_003B8530(drawer, el, params->unk1794, 1);

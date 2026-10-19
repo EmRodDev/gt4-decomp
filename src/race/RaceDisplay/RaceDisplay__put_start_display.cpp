@@ -1,7 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 struct Entry { short delta; short index; void (*fn)(void *, float); };
-struct Obj { char *vt; };
 struct Message { char pad[0x18]; float x; float y; unsigned int color; };
+struct Obj {
+    char *vt;
+    char pad4[0x252c - 4];
+    Message msg252C;
+};
 struct Text { char pad[0x12c]; const char *start; };
 extern Text *DisplayRText__rtext_ptrs_;
 extern "C" int RaceDisplay__is_play_mode(Obj *);
@@ -16,7 +20,7 @@ static inline void invoke(Obj *self, int off, float value) {
 extern "C" void RaceDisplay__put_start_display(Obj *self) {
     if (RaceDisplay__is_play_mode(self)) {
         const char *font = RaceDisplay__get_race_signal_font(self);
-        Message *m = (Message *)((char *)self + 0x252c);
+        Message *m = &self->msg252C;
         RaceMessageDisplay__setFont(m, font, 0);
         m->color = 0x80c8c8c8;
         position(m, 0.0f, 0x1.333332p-3f);

@@ -7,7 +7,13 @@ typedef unsigned char u8;
 struct VEnt { s16 delta; s16 idx; void *fn; };
 struct Msg { char pad[0x20]; s32 color; };
 struct Table { char pad[0x124]; char *name; };
-struct Self { char *vtbl; };
+struct Self {
+    VEnt *vtbl;
+    char pad4[0x228C - 4];
+    Msg msg228C;
+    char pad22B0[0x22C0 - 0x228C - sizeof(Msg)];
+    char osc[1];
+};
 struct Arg { char pad[0x6FE]; u8 b6fe; };
 
 extern Table *DisplayRText__rtext_ptrs_;
@@ -21,9 +27,9 @@ extern char D_006A0470[];
 
 extern "C" void RaceDisplay__update_automobile_message(Self *self, Arg *arg) {
     char buf[0x80];
-    char *osc = (char *)self + 0x22C0;
+    char *osc = self->osc;
     s32 n = func_0035FC80(arg);
-    Msg *m = (Msg *)((char *)self + 0x228C);
+    Msg *m = &self->msg228C;
     if (n > 0) {
         func_0057DA20(buf, DisplayRText__rtext_ptrs_->name, n);
         RaceMessageDisplay__setFont(m, D_006A0470, 1);
@@ -32,7 +38,7 @@ extern "C" void RaceDisplay__update_automobile_message(Self *self, Arg *arg) {
         Oscillator__setCycle(osc, 1.0f, 1.0f);
         RaceMessageDisplay__setMessage(m, buf, 0x1.999998p-3f, 0.0f);
     } else {
-        VEnt *e = (VEnt *)(self->vtbl + 0xE0);
+        VEnt *e = &self->vtbl[28];
         ((void (*)(void *, s32))e->fn)((char *)self + e->delta, arg->b6fe);
     }
 }

@@ -29,8 +29,10 @@ struct Self {
     char pad35[0x3B - 0x35];
     u8 u3B;
     char pad3c[8];
-    u32 w44;
-    u8 u45_unused;
+    union {
+        u32 w;
+        u8 b[4];
+    } u44;
 };
 
 extern char D_00621514;
@@ -87,8 +89,8 @@ extern "C" void func_0039E9B0(Self *self) {
             }
         }
     }
-    if (self->u34 != 0 && *((u8 *)self + 0x45) == 0) {
-        self->w44 = (self->w44 & 0xFFFF00FF) | 0x100;
+    if (self->u34 != 0 && self->u44.b[1] == 0) {
+        self->u44.w = (self->u44.w & 0xFFFF00FF) | 0x100;
         if (self->u3B != 0) vc0(self, 0x160);
     }
     u8 n2 = ctx->n901;

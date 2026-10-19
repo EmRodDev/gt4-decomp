@@ -19,12 +19,16 @@ struct Obj {
     s32 flags;
     char pad2[0x11B0 - 0x5C];
     Sub s11B0;
-    char pad3[0x2A6C - 0x11B0 - sizeof(Sub)];
+    char pad11c8[0x267C - 0x11B0 - sizeof(Sub)];
+    char msg267C[0x27CC - 0x267C];
+    char msg27CC[0x2A6C - 0x27CC];
     Sub s2A6C;
     char pad4[0x2BBC - 0x2A6C - sizeof(Sub)];
     Sub s2BBC;
     char pad5[0x2D78 - 0x2BBC - sizeof(Sub)];
     Sub s2D78;
+    char pad2d90[0x3EEC - 0x2D78 - sizeof(Sub)];
+    char music3EEC[1];
 };
 
 extern "C" void func_0039FC50(Obj *);
@@ -73,7 +77,7 @@ extern "C" void func_0039F878(Obj *self, s32 arg1) {
     }
     if ((flags & ~0x80) == 0) {
         func_0039FC50(self);
-        RaceMusicDisplay__render_main((char *)self + 0x3EEC);
+        RaceMusicDisplay__render_main(self->music3EEC);
     }
     s = &self->s2A6C;
     if (s->flag != 0) {
@@ -83,6 +87,6 @@ extern "C" void func_0039F878(Obj *self, s32 arg1) {
     if (s->flag != 0) {
         sub_call0(s);
     }
-    RaceMessageDisplay__render_main((char *)self + 0x267C);
-    RaceMessageDisplay__render_main((char *)self + 0x27CC);
+    RaceMessageDisplay__render_main(self->msg267C);
+    RaceMessageDisplay__render_main(self->msg27CC);
 }
