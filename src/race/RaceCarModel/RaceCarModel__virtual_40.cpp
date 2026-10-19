@@ -1,7 +1,8 @@
 typedef int s32;
 
-struct Obj {
-    char pad[0x18];
+struct RaceCarModelLayout {
+    char pad0[0x18];
+    char car_model[0x5C8];
 };
 
 struct Result {
@@ -11,14 +12,14 @@ struct Result {
 
 extern "C" Result *func_00450FB0(void *arg0);
 
-extern "C" s32 RaceCarModel__virtual_40(Obj *arg0) {
-    s32 var_v1;
-    Result *temp_v0;
+extern "C" s32 RaceCarModel__virtual_40(RaceCarModelLayout *arg0) {
+    s32 res;
+    Result *resObj;
 
-    temp_v0 = func_00450FB0((char *)arg0 + 0x18);
-    var_v1 = 0;
-    if (temp_v0 != 0) {
-        var_v1 = temp_v0->unk38;
+    resObj = func_00450FB0(arg0->car_model);
+    res = 0;
+    if (resObj != 0) {
+        res = resObj->unk38;
     }
-    return var_v1;
+    return res;
 }

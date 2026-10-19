@@ -1,8 +1,20 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
-struct VEntry { short delta; short index; int (*fn)(void *, int *); };
-struct Obj { char pad[0x64]; VEntry *vtbl; };
-extern "C" int RaceBase__getRaceMode(Obj *self, int *mode) {
+typedef short s16;
+typedef int s32;
+
+struct VEntry {
+    s16 delta;
+    s16 index;
+    s32 (*fn)(void *, s32 *);
+};
+
+struct RaceBaseLayout {
+    char pad[0x64];
+    VEntry *vtbl;
+};
+
+extern "C" s32 RaceBase__getRaceMode(RaceBaseLayout *self, s32 *mode) {
     *mode = -1;
-    VEntry *e = (VEntry *)((char *)self->vtbl + 0x2F8);
+    VEntry *e = &self->vtbl[95];
     return e->fn((char *)self + e->delta, mode);
 }

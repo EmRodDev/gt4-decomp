@@ -1,3 +1,4 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef short s16;
 typedef int s32;
 typedef float f32;
@@ -8,13 +9,12 @@ struct VEntry {
     void (*fn)(void *, s32, f32, f32);
 };
 
-struct Obj {
+struct RaceBaseLayout {
     char pad0[0x64];
     VEntry *vtbl;
 };
 
-extern "C" void RaceBase__handleTimeLimit(struct Obj *arg0) {
-    VEntry *e = (VEntry *)((char *)arg0->vtbl + 0x2B8);
-
+extern "C" void RaceBase__handleTimeLimit(RaceBaseLayout *arg0) {
+    VEntry *e = &arg0->vtbl[87];
     e->fn((char *)arg0 + e->delta, 6, 0.0f, 0.0f);
 }

@@ -72,6 +72,11 @@ public:
     virtual void loadGhostInputs(void *);  /* slot 63 */
 };
 
+struct RaceSolitaireLayout {
+    char pad0[0xF0F8];
+    s32 unkF0F8;
+};
+
 extern "C" void RaceSolitaire__loadReplaceData(Race *self, void *data);
 extern "C" void RaceSolitaire__loadReplaceInputs(Race *self, void *data, bool b);
 
@@ -80,7 +85,7 @@ extern "C" void RaceSolitaire__loadTrackInputs_2(Race *self, s32 mode, void *dat
     if (mode == 0) {
         RaceSolitaire__loadReplaceData(self, data);
         RaceSolitaire__loadReplaceInputs(self, data, true);
-        *(s32 *)((char *)self + 0xF0F8) = 1;
+        ((RaceSolitaireLayout *)self)->unkF0F8 = 1;
     } else {
         self->loadReplayInputs(data);
         self->loadGhostInputs(data);
