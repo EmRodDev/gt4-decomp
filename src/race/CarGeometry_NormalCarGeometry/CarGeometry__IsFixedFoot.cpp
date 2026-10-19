@@ -11,13 +11,17 @@ struct Inner {
     VEntry *vtbl;
 };
 
+/* Layout backed by include/gt4/CarGeometry.h and include/gt4/NormalCarGeometry.h:
+ *   CarGeometry: forwarding wrapper to inner geometry instance at 0x1C
+ *   vtable slot 47 (0x178 / 8)
+ */
 struct Obj {
     char pad[0x1C];
     Inner *unk1C;
 };
 
 static inline s32 vcall(struct Inner *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x178);
+    VEntry *e = &o->vtbl[47];
     return e->fn((char *)o + e->delta);
 }
 
