@@ -7,8 +7,11 @@ struct Items { char pad0[0x14]; s32 *list; char pad1[8]; s32 count; };
 struct Self { char pad[0x2c]; Items *items; };
 extern "C" void func_003285A8(s32 p);
 extern "C" void func_003285F8(s32 p);
+/* Layout backed by config/class_layout.json (mAssign size 0x08) and VM HThread:
+ *   VObj: vtable slot 18 (0x90 / 8) is assign(HObject const&)
+ */
 static inline void vcall(VObj *o, s32 *value) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x90);
+    VEntry *e = &o->vtbl[18];
     e->fn((char *)o + e->delta, value);
 }
 extern "C" void mAssign__execute(void *arg0, Self *self) {

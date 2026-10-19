@@ -8,9 +8,13 @@ struct Items { char pad0[0x14]; s32 *list; char pad1[8]; s32 count; };
 struct Rhs { char pad0[0x30]; s32 *tab; };
 struct Self { char pad0[0x24]; Rhs *rhs; s32 *out; Items *items; };
 
+/* Layout backed by config/class_layout.json (mJumpZero size 0x0C) and VM HThread:
+ *   mJumpZero: 0x00..0x07 base, 0x08 target jump offset
+ *   VObj: vtable slot 11 (0x58 / 8) is boolean/truthiness evaluation
+ */
 static inline s32 vcall(void *o) {
     VObj *ob = (VObj *)o;
-    VEntry *e = (VEntry *)((char *)ob->vtbl + 0x58);
+    VEntry *e = &ob->vtbl[11];
     return e->fn((char *)o + e->delta);
 }
 

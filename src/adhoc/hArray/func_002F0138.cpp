@@ -10,13 +10,25 @@ struct VE {
 extern "C" void func_00309360(void *h, s32 val);
 extern "C" void func_00309378(void *h, s32 flags);
 
+/* Layout backed by include/gt4/hArray.h and config/class_layout.json:
+ *   hArrayHeader: 0x00 ref_count, 0x04 vtable
+ *   vtable slot 14 (0x70 / 8): get element at index
+ *   vtable slot 15 (0x78 / 8): set element at index
+ */
+struct hArrayHeader {
+    void *ref_count;
+    VE *vtbl;
+};
+
 static inline s32 get70(void *o, s32 n) {
-    VE *e = (VE *)(*(char **)((char *)o + 4) + 0x70);
+    hArrayHeader *arr = (hArrayHeader *)o;
+    VE *e = &arr->vtbl[14];
     return ((s32 (*)(void *, s32))e->fn)((char *)o + e->delta, n);
 }
 
 static inline void set78(void *o, s32 a, s32 b) {
-    VE *e = (VE *)(*(char **)((char *)o + 4) + 0x78);
+    hArrayHeader *arr = (hArrayHeader *)o;
+    VE *e = &arr->vtbl[15];
     ((void (*)(void *, s32, s32))e->fn)((char *)o + e->delta, a, b);
 }
 

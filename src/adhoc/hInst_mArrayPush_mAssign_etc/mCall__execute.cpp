@@ -8,8 +8,12 @@ struct Outer { char pad[0x2c]; Items *items; };
 struct Self { char pad[8]; s32 count; };
 extern "C" void func_00318508(void *, Outer **) throw();
 extern "C" void func_00318538(void *, s32) throw();
+/* Layout backed by config/class_layout.json (mCall size 0x0C) and VM HThread:
+ *   Self (mCall): 0x00..0x07 base, 0x08 arg count
+ *   VObj: vtable slot 20 (0xa0 / 8) is call(HObject&, int, HObject const*)
+ */
 static inline void vcall(VObj *o, void *result, s32 n, s32 *args) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0xa0);
+    VEntry *e = &o->vtbl[20];
     e->fn((char *)o + e->delta, result, n, args);
 }
 static inline s32 *pop(Items *it, s32 n) {
