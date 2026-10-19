@@ -38,13 +38,23 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void mAttributePush__read(s32 *arg0, void *arg1) {
+/* Layout backed by config/class_layout.json (size 0xC, 12 bytes) and config/class_fields.json:
+ *   0x00: ref_count
+ *   0x04: vtable (mAttributePush)
+ *   0x08: sym_id / symbol ID
+ */
+struct mAttributePushLayout {
+    void *ref_count;
+    void *vtable;
+    s32 sym_id;
+};
+
+extern "C" void mAttributePush__read(mAttributePushLayout *self, void *arg1) {
     Str s0;
     s32 buf1[4];
-    char *v_s1;
+    s32 *v_s1 = &self->sym_id;
     s32 *p_s0;
     s32 t1;
-    v_s1 = (char *)arg0 + 0x8;
     {
         Rep *r = &D_00659FA8;
         char *d;
@@ -60,8 +70,8 @@ extern "C" void mAttributePush__read(s32 *arg0, void *arg1) {
     p_s0 = buf1;
     t1 = HSymID__GetID(&s0);
     *p_s0 = t1;
-    if ((char *)v_s1 != (char *)p_s0) {
-        *(s32 *)(char *)v_s1 = t1;
+    if (v_s1 != p_s0) {
+        *v_s1 = t1;
     }
     str_release(&s0);
 }

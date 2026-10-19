@@ -13,9 +13,14 @@ struct Rep {
     s32 sel;
 };
 
-struct Str {
+/* Layout backed by GCC 2.96 libstdc++ std::basic_string (bastring.h):
+ *   Rep header precedes data pointer: Rep *rep() const { return (Rep *)p - 1; }
+ *   size() is rep()->len at offset -0x10.
+ */
+struct String {
     char *p;
     char pad[0xC];
+    Rep *rep() const { return (Rep *)p - 1; }
 };
 
 struct S00659988 {
@@ -24,9 +29,9 @@ struct S00659988 {
 
 struct VEntry_18 { s16 delta; s16 index; void (*fn)(void *, void *); };
 struct VObj_18 { char pad0[4]; VEntry_18 *vtbl; };
-static inline void vcall_18_ret(void *ret, char *o) {
-    VEntry_18 *e = (VEntry_18 *)((char *)((VObj_18 *)o)->vtbl + 0x18);
-    e->fn(ret, o + e->delta);
+static inline void vcall_18_ret(void *ret, VObj_18 *o) {
+    VEntry_18 *e = o->vtbl + 3;  /* slot 3: offset 0x18 */
+    e->fn(ret, (char *)o + e->delta);
 }
 extern "C" void func_002FE278(void *, s32);
 extern "C" void func_003285A8(s32);
@@ -35,23 +40,22 @@ extern "C" void func_002FC870(void *, s32);
 extern "C" struct S00659988 * func_005C11A8(void);
 extern "C" void func_00326798(void *, s32, s32, const char *);
 
-static inline void str_release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+static inline void str_release(String *s) {
+    Rep *q = s->rep();
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);
     }
 }
 
-extern "C" void string__get_size(s32 *arg0, void *arg1) {
+extern "C" void string__get_size(s32 *arg0, VObj_18 **arg1) {
     s32 buf0[4];
-    Str s1;
-    Str *p_s2;
+    String s1;
+    String *p_s2 = &s1;
     s32 newVal;
     s32 oldVal;
-    p_s2 = &s1;
-    vcall_18_ret((char *)p_s2, (char *)(*(s32 *)(char *)arg1));
-    func_002FE278(buf0, *(s32 *)((char *)(p_s2->p) - 0x10));
+    vcall_18_ret(p_s2, *arg1);
+    func_002FE278(buf0, p_s2->rep()->len);
     if (arg0 != buf0) {
         newVal = buf0[0];
         if (newVal != 0) {
