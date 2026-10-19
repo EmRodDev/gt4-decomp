@@ -52,12 +52,12 @@ extern "C" void MOption__setDeviceFeedback(s32 *arg0, void *arg1, s32 arg2, char
         p_s5 = buf1;
         func_002FC8C8(p_s5, arg3);
         p_s4 = buf2;
-        func_00312370(p_s4, (char *)arg3 + 0x4);
+        func_00312370(p_s4, (char **)(arg3 + 1));
         p_s3 = buf3;
-        func_00312370(p_s3, (char *)arg3 + 0x8);
+        func_00312370(p_s3, (char **)(arg3 + 2));
         p_s0 = buf4;
         if (!((arg2 < 0x4))) {
-            func_002FC8C8(p_s0, (char *)arg3 + 0xc);
+            func_002FC8C8(p_s0, (char **)(arg3 + 3));
             v_s6 = func_002FE250(*p_s0);
             func_002FC870(p_s0, 0x2);
         }

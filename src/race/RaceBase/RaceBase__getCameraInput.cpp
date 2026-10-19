@@ -1,22 +1,23 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef short s16;
 typedef int s32;
 
-struct VEntry_00338CD8 {
+struct VEntry {
     s16 delta;
     s16 index;
     s32 (*fn)(void *);
 };
 
-struct Obj_00338CD8 {
+struct RaceBaseLayout {
     char pad0[0x64];
-    VEntry_00338CD8 *unk64;
+    VEntry *vtbl;
 };
 
-static inline s32 vcall(Obj_00338CD8 *o) {
-    VEntry_00338CD8 *e = (VEntry_00338CD8 *)((char *)o->unk64 + 0x230);
+static inline s32 vcall(RaceBaseLayout *o) {
+    VEntry *e = &o->vtbl[70];
     return e->fn((char *)o + e->delta);
 }
 
-extern "C" void RaceBase__getCameraInput(Obj_00338CD8 *arg0) {
+extern "C" void RaceBase__getCameraInput(RaceBaseLayout *arg0) {
     vcall(arg0);
 }

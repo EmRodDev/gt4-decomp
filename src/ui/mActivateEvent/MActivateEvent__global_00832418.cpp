@@ -42,7 +42,7 @@ extern "C" void MActivateEvent__global_00832418(s32 *arg0, void *arg1, s32 arg2,
         p_s1 = buf1;
         func_0022AD20(p_s1, arg3);
         p_s0 = buf2;
-        func_00255110(p_s0, (char *)arg3 + 0x4);
+        func_00255110(p_s0, arg3 + 1);
         func_0028EA10(buf0[0], *p_s1);
         func_0028EA70(buf0[0], *p_s0);
         func_002550B8(p_s0, 0x2);

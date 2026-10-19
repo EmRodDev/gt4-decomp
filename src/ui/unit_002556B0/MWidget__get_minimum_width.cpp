@@ -10,6 +10,7 @@ struct VEntry {
     f32 (*fn)(void *);
 };
 
+/* Layout backed by include/gt4/mWidget.h: slot 12 (0x60 / 8) */
 struct VObj {
     char pad0[4];
     VEntry *vtbl;
@@ -48,7 +49,7 @@ extern "C" void MWidget__get_minimum_width(s32 *arg0, void *arg1, s32 arg2, void
         func_002F7B68(buf, 2);
     } else if (arg2 == 1) {
         VObj *o = (VObj *)arg3[0];
-        VEntry *e = (VEntry *)((char *)o->vtbl + 0x60);
+        VEntry *e = &o->vtbl[12];
         *s2 = e->fn((char *)o + e->delta);
     }
 }

@@ -39,7 +39,7 @@ extern "C" void MMusic__load(void *self, void *arg1, s32 n, VObj **args) {
     if (n > 0) {
         void *o = h.o;
         VObj *obj = args[0];
-        VEntry *e = (VEntry *)((char *)obj->vtbl + 0x18);
+        VEntry *e = &obj->vtbl[3];
         e->fn(&s, (char *)obj + e->delta);
         const char *cs = c_str(&s);
         release(&s);

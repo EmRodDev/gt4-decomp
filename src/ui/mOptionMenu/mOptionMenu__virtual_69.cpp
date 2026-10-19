@@ -1,6 +1,8 @@
 typedef int s32;
 typedef float f32;
 
+struct V3 { f32 x, y, z; };
+
 struct Opt {
     char pad0[0xC0];
     void *c0;
@@ -10,7 +12,8 @@ struct Opt {
     s32 fc;
     char pad2[4];
     s32 f104;
-    char pad3[0x14];
+    char pad3[8];
+    V3 w;
     f32 f11C;
 };
 
@@ -41,9 +44,9 @@ extern "C" void mOptionMenu__virtual_69(Opt *arg0, s32 arg1) {
     if (arg0->c4 != 0) {
         if (arg0->fc != 0) {
             if (arg0->f104 != 0) {
-                char *s0 = (char *)arg0 + 0x110;
+                V3 *s0 = &arg0->w;
                 func_0057B0F8(s0, arg0->f11C, 0x1.999998p-2f);
-                func_0025BA08(arg0->c4, *(f32 *)(s0 + 8));
+                func_0025BA08(arg0->c4, s0->z);
                 if (arg0->c8 != 0) {
                     func_0025B500(arg0->c4, sv, sv + 1, sv + 2, sv + 3);
                     func_0025B538(arg0->c8, sv[0] + 4.0f, sv[1] + 4.0f, sv[2], sv[3]);

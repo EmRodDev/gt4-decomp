@@ -6,8 +6,9 @@ struct Dst { char pad[0x20]; s32 f20; s32 f24; float f28; float f2C; };
 struct Holder { Dst *p; char pad[12]; };
 struct VEntryI { s16 delta; s16 index; s32 (*fn)(void *); };
 struct VEntryF { s16 delta; s16 index; float (*fn)(void *); };
-struct VObj { char pad0[4]; char *vtbl; };
-struct Args { char pad[8]; VObj *o8; VObj *oC; VObj *o10; VObj *o14; };
+struct VObjI { char pad0[4]; VEntryI *vtbl; };
+struct VObjF { char pad0[4]; VEntryF *vtbl; };
+struct Args { void *a0; void *a4; VObjI *o8; VObjI *oC; VObjF *o10; VObjF *o14; };
 
 extern "C" void func_0022ACC8(void *, int);
 extern "C" void func_0022AD20(void *, void *);
@@ -18,12 +19,12 @@ extern "C" void func_0028EA70(void *, s32);
 extern "C" void func_002A9610(void *, int) throw();
 extern "C" void func_002A9668(void *) throw();
 
-static inline s32 vc58(VObj *o) {
-    VEntryI *e = (VEntryI *)(o->vtbl + 0x58);
+static inline s32 vc58(VObjI *o) {
+    VEntryI *e = &o->vtbl[11];
     return e->fn((char *)o + e->delta);
 }
-static inline float vc60(VObj *o) {
-    VEntryF *e = (VEntryF *)(o->vtbl + 0x60);
+static inline float vc60(VObjF *o) {
+    VEntryF *e = &o->vtbl[12];
     return e->fn((char *)o + e->delta);
 }
 
@@ -36,7 +37,7 @@ extern "C" void MKeyEvent__global_00837318(void *arg0, void *arg1, s32 arg2, Arg
         Holder *pa = &a;
         func_0022AD20(pa, arg3);
         Holder *pb = &b;
-        func_00255110(pb, (char *)arg3 + 4);
+        func_00255110(pb, &arg3->a4);
         func_0028EA10(sp0.p, *(s32 *)pa);
         func_0028EA70(sp0.p, *(s32 *)pb);
         sp0.p->f20 = vc58(arg3->o8);

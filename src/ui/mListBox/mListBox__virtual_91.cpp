@@ -1,10 +1,17 @@
 typedef int s32;
 typedef unsigned long long u64;
+
 struct VEntry {
     short delta;
     short index;
     void *fn;
 };
+
+struct WidgetObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
+
 struct Obj {
     char pad0[0x124];
     s32 u124;
@@ -12,6 +19,7 @@ struct Obj {
     s32 u13C;
     s32 u140;
 };
+
 extern char D_008381C8[];
 extern "C" void mBox__virtual_91(Obj *, s32);
 extern "C" s32 func_00265DC8(Obj *);
@@ -19,7 +27,7 @@ extern "C" u64 func_00266088(void *);
 extern "C" void func_00266100(Obj *, u64);
 extern "C" u64 func_00266128(void *);
 extern "C" void func_002661A0(Obj *, u64);
-extern "C" void *func_002B4DA0(Obj *, s32, s32);
+extern "C" WidgetObj *func_002B4DA0(Obj *, s32, s32);
 extern "C" void func_00576788(char *);
 extern "C" void func_005767C0(char *);
 
@@ -31,9 +39,9 @@ extern "C" void mListBox__virtual_91(Obj *self, s32 arg1) {
         func_00576788(D_008381C8);
         s32 i;
         for (i = self->u13C; i <= self->u140; i++) {
-            void *w = func_002B4DA0(self, i, 0);
+            WidgetObj *w = func_002B4DA0(self, i, 0);
             if (w != 0) {
-                VEntry *e = (VEntry *)(*(char **)((char *)w + 4) + 0x2E0);
+                VEntry *e = &w->vtbl[92];
                 ((void (*)(void *, s32))e->fn)((char *)w + e->delta, arg1);
                 if (func_00266088(w) != 0) s3 = 1;
                 if (func_00266128(w) != 0) s4 = 1;

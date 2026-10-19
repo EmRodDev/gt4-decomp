@@ -6,13 +6,16 @@ struct VEntry_00109910 {
     void (*fn)(void *);
 };
 
+/* Layout backed by include/gt4/SpecialCarGeometry.h:
+ *   SpecialCarGeometry: virtual function dispatch via vtable slot 3 (0x18 / 8)
+ */
 struct Obj_00109910 {
     char pad[0x0];
     VEntry_00109910 *vtbl;
 };
 
 extern "C" void SpecialCarGeometry__GetOppositeSeatPosition_Y(Obj_00109910 *arg0) {
-    VEntry_00109910 *e = (VEntry_00109910 *)((char *)arg0->vtbl + 0x18);
+    VEntry_00109910 *e = &arg0->vtbl[3];
 
     e->fn((char *)arg0 + e->delta);
 }

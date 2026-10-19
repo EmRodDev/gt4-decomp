@@ -6,6 +6,9 @@ struct VEntry {
     void (*fn)(void *);
 };
 
+/* Layout backed by include/gt4/DevelopCamera.h:
+ *   DevelopCamera: forwarding wrapper via vtable slot 4 (0x20 / 8)
+ */
 struct ObjInner {
     VEntry *vtbl;
 };
@@ -17,7 +20,7 @@ struct Obj {
 
 extern "C" void DevelopCamera__virtual_03(Obj *arg0) {
     ObjInner *a1 = arg0->unkC44;
-    VEntry *e = (VEntry *)((char *)a1->vtbl + 0x20);
+    VEntry *e = &a1->vtbl[4];
 
     e->fn((char *)a1 + e->delta);
 }

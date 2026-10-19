@@ -1,6 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 struct Vt { short delta, index; void *fn; };
-struct Obj { unsigned int flags; char pad[16]; Vt *vt; };
+struct Obj {
+    unsigned int flags;
+    char pad[16];
+    Vt *vt;
+    char pad18[0x388 - 0x18];
+    unsigned int unk388;
+};
 struct Entry { Obj *p; short x,y,w,h; unsigned char a,b; };
 struct Global { char pad[32]; int mode; };
 extern Global D_006184D0;
@@ -25,9 +31,9 @@ extern "C" void RaceDisplay__init_panel(char *self,int arg1) {
  Entry *p;
  switch(mode) {
  case 0: *(Obj **)(self+20)=p0; p=a; break;
- case 1: *(Obj **)(self+20)=p1; p=b; *(unsigned int *)((char *)p1+0x388)&=~255; break;
+ case 1: *(Obj **)(self+20)=p1; p=b; p1->unk388 &= ~255; break;
  case 2: *(Obj **)(self+20)=p1; p=c; break;
- case 3: *(Obj **)(self+20)=p1; p=f; *(unsigned int *)((char *)p1+0x388)=(*(unsigned int *)((char *)p1+0x388)&~255)|1; break;
+ case 3: *(Obj **)(self+20)=p1; p=f; p1->unk388 = (p1->unk388 & ~255) | 1; break;
  case 4: *(Obj **)(self+20)=p4; p=d; break;
  case 5: *(Obj **)(self+20)=p1; p=e; break;
  default: *(Obj **)(self+20)=0; return;

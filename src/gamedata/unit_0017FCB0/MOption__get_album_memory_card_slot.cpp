@@ -22,11 +22,26 @@ struct S00659988 {
     const char *name;
 };
 
+struct OptionData {
+    char pad[0x1178];
+    s32 album_memory_card_slot;
+};
+
+struct Inner {
+    char pad[0x10];
+    OptionData *p10;
+};
+
+struct Handle {
+    Inner *p;
+    char pad[0xC];
+};
+
 struct VEntry_58 { s16 delta; s16 index; s32 (*fn)(void *); };
 struct VObj_58 { char pad0[4]; VEntry_58 *vtbl; };
-static inline s32 vcall_58(char *o) {
-    VEntry_58 *e = (VEntry_58 *)((char *)((VObj_58 *)o)->vtbl + 0x58);
-    return e->fn(o + e->delta);
+static inline s32 vcall_58(VObj_58 *o) {
+    VEntry_58 *e = &o->vtbl[11];
+    return e->fn((char *)o + e->delta);
 }
 extern "C" void func_0017FB28(void *);
 extern "C" void func_0017FAD0(void *, s32);
@@ -35,24 +50,24 @@ extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 extern "C" void func_002FC870(void *, s32);
 
-extern "C" void MOption__get_album_memory_card_slot(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
+extern "C" void MOption__get_album_memory_card_slot(s32 *arg0, void *arg1, s32 arg2, VObj_58 **arg3) {
+    Handle buf0;
     s32 buf1[4];
-    s32 v_s0;
+    Inner *v_s0;
     s32 t1;
     s32 *p_s1;
     s32 newVal;
     s32 oldVal;
     if (arg2 > 0) {
-        func_0017FB28(buf0);
-        v_s0 = buf0[0];
-        t1 = vcall_58((char *)*(s32 *)arg3);
-        *(s32 *)((char *)*(s32 *)((char *)v_s0 + 0x10) + 0x1178) = t1;
-        func_0017FAD0(buf0, 0x2);
+        func_0017FB28(&buf0);
+        v_s0 = buf0.p;
+        t1 = vcall_58(*arg3);
+        v_s0->p10->album_memory_card_slot = (s32)t1;
+        func_0017FAD0(&buf0, 0x2);
     } else {
-        func_0017FB28(buf0);
+        func_0017FB28(&buf0);
         p_s1 = buf1;
-        func_002FE278(p_s1, *(s32 *)((char *)*(s32 *)((char *)buf0[0] + 0x10) + 0x1178));
+        func_002FE278(p_s1, buf0.p->p10->album_memory_card_slot);
         if (arg0 != p_s1) {
             newVal = *p_s1;
             if (newVal != 0) {
@@ -65,6 +80,6 @@ extern "C" void MOption__get_album_memory_card_slot(s32 *arg0, void *arg1, s32 a
             *arg0 = newVal;
         }
         func_002FC870(p_s1, 0x2);
-        func_0017FAD0(buf0, 0x2);
+        func_0017FAD0(&buf0, 0x2);
     }
 }

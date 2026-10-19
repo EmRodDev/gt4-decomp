@@ -71,7 +71,10 @@ struct VEntry {
     short index;
     void *fn;
 };
-#define VCALL1(R, o, off, a) ({ VEntry *e_ = (VEntry *)(*(char **)((char *)(o) + 4) + (off)); ((R(*)(void *, ...))e_->fn)((char *)(o) + e_->delta, a); })
+struct VObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
 
 extern "C" void func_00304210(void *arg0) throw();
 extern "C" void func_003041B8(void *arg0, int arg1) throw();
@@ -106,7 +109,7 @@ extern "C" void Module__defineStatic(s32 *arg0, s32 arg1, s32 mode, void **arg3)
         Str *ps = &s;
         Val v;
         void *o = *arg3;
-        VEntry *e1 = (VEntry *)(*(char **)((char *)o + 4) + 0x18);
+        VEntry *e1 = &((VObj *)o)->vtbl[3];
         void *hp = h.p;
         ((void (*)(Str *, void *))e1->fn)(ps, (char *)o + e1->delta);
         Val *pv = &v;
@@ -114,19 +117,19 @@ extern "C" void Module__defineStatic(s32 *arg0, s32 arg1, s32 mode, void **arg3)
         func_00306938(hp, ps, pv);
         func_00309378(pv, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = ((Rep *)ps->p) - 1;
             q->release();
         }
     } else if (mode == 2) {
         Str s;
         void *o = *arg3;
-        VEntry *e1 = (VEntry *)(*(char **)((char *)o + 4) + 0x18);
+        VEntry *e1 = &((VObj *)o)->vtbl[3];
         void *hp = h.p;
         Str *ps = &s;
         ((void (*)(Str *, void *))e1->fn)(ps, (char *)o + e1->delta);
-        func_00306938(hp, ps, (char *)arg3 + 4);
+        func_00306938(hp, ps, arg3 + 1);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = ((Rep *)ps->p) - 1;
             q->release();
         }
     }

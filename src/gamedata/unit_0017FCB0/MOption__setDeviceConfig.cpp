@@ -49,10 +49,10 @@ extern "C" void MOption__setDeviceConfig(s32 *arg0, void *arg1, s32 arg2, char *
         p_s3 = buf1;
         func_002FC8C8(p_s3, arg3);
         p_s2 = buf2;
-        func_00312370(p_s2, (char *)arg3 + 0x4);
+        func_00312370(p_s2, (char **)(arg3 + 1));
         p_s0 = buf3;
         if (!((arg2 < 0x3))) {
-            func_002FC8C8(p_s0, (char *)arg3 + 0x8);
+            func_002FC8C8(p_s0, (char **)(arg3 + 2));
             v_s4 = func_002FE250(*p_s0);
             func_002FC870(p_s0, 0x2);
         }

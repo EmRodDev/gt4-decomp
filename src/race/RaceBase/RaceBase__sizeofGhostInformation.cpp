@@ -1,19 +1,19 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef short s16;
 typedef int s32;
 
-struct VEntry_00389388 {
+struct VEntry {
     s16 delta;
     s16 index;
     s32 (*fn)(void *);
 };
 
-struct Obj_00389388 {
+struct RaceBaseLayout {
     char pad0[0x64];
-    VEntry_00389388 *vtbl;
+    VEntry *vtbl;
 };
 
-extern "C" s32 RaceBase__sizeofGhostInformation(struct Obj_00389388 *arg0) {
-    VEntry_00389388 *e = (VEntry_00389388 *)((char *)arg0->vtbl + 0x210);
-
+extern "C" s32 RaceBase__sizeofGhostInformation(RaceBaseLayout *arg0) {
+    VEntry *e = &arg0->vtbl[66];
     return e->fn((char *)arg0 + e->delta) + 0x1AA4;
 }

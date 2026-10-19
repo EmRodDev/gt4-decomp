@@ -7,6 +7,7 @@ struct VEntry_58 {
     s32 (*fn)(void *);
 };
 
+/* Layout backed by include/gt4/mWidget.h: slot 11 (0x58 / 8) */
 struct VObj_58 {
     s32 pad0;
     VEntry_58 *vtbl;
@@ -26,7 +27,7 @@ extern "C" void MWidget__set_active(s32 arg0, void *arg1, s32 arg2, void **arg3)
     func_00255110(buf, arg1);
     obj = (VObj_58 *)*arg3;
     s1 = buf[0];
-    entry = (VEntry_58 *)((char *)obj->vtbl + 0x58);
+    entry = &obj->vtbl[11];
     r = entry->fn((char *)obj + entry->delta);
     mWidget__setActive((void *)s1, (void *)(s32)(r != 0));
     func_002550B8(buf, 2);

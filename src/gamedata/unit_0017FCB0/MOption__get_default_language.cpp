@@ -22,11 +22,26 @@ struct S00659988 {
     const char *name;
 };
 
+struct OptionData {
+    char pad[0x1650];
+    char default_language[1];
+};
+
+struct Inner {
+    char pad[0x10];
+    OptionData *p10;
+};
+
+struct Handle {
+    Inner *p;
+    char pad[0xC];
+};
+
 struct VEntry_18 { s16 delta; s16 index; void (*fn)(void *, void *); };
 struct VObj_18 { char pad0[4]; VEntry_18 *vtbl; };
-static inline void vcall_18_ret(void *ret, char *o) {
-    VEntry_18 *e = (VEntry_18 *)((char *)((VObj_18 *)o)->vtbl + 0x18);
-    e->fn(ret, o + e->delta);
+static inline void vcall_18_ret(void *ret, VObj_18 *o) {
+    VEntry_18 *e = &o->vtbl[3];
+    e->fn(ret, (char *)o + e->delta);
 }
 extern char D_006915D0[];
 extern Rep D_00659FA8;
@@ -46,15 +61,15 @@ extern "C" struct S00659988 * func_005C11A8(void);
 extern "C" void func_00326798(void *, s32, s32, const char *);
 
 static inline void str_release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+    Rep *q = (Rep *)s->p - 1;
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);
     }
 }
 
-extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
+extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, VObj_18 **arg3) {
+    Handle buf0;
     Str s1;
     s32 buf2[4];
     Str s3;
@@ -65,26 +80,27 @@ extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, c
     s32 newVal;
     s32 oldVal;
     if (arg2 > 0) {
-        func_0017FB28(buf0, arg1);
+        func_0017FB28(&buf0, arg1);
         Str *t = &s1;
-        s32 owner = buf0[0];
+        Inner *owner = buf0.p;
         vcall_18_ret(t, *arg3);
         c = 0;
         {
-            if (*(s32 *)((char *)t->p - 0x10) == 0) {
+            s32 len = ((Rep *)t->p - 1)->len;
+            if (len == 0) {
                 c = D_006915D0;
             } else {
-                *(char *)((char *)t->p + *(s32 *)((char *)t->p - 0x10)) = 0;
+                t->p[len] = 0;
                 c = t->p;
             }
         }
-        func_004398C0(*(s32 *)((char *)owner + 0x10) + 0x1650, c);
+        func_004398C0((s32)owner->p10->default_language, c);
         str_release(t);
-        func_0017FAD0(buf0, 0x2);
+        func_0017FAD0(&buf0, 0x2);
     } else {
-        func_0017FB28(buf0, arg1);
+        func_0017FB28(&buf0, arg1);
         p_s3 = &s3;
-        v_s0 = func_004398B0(*(s32 *)((char *)buf0[0] + 0x10) + 0x1650);
+        v_s0 = func_004398B0((s32)buf0.p->p10->default_language);
         {
             Rep *r = &D_00659FA8;
             char *d;
@@ -112,6 +128,6 @@ extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, c
         }
         func_00312318(p_s1, 0x2);
         str_release(p_s3);
-        func_0017FAD0(buf0, 0x2);
+        func_0017FAD0(&buf0, 0x2);
     }
 }

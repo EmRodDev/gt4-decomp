@@ -60,7 +60,7 @@ extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 
 static inline void str_release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+    Rep *q = (Rep *)s->p - 1;
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);
@@ -74,12 +74,12 @@ extern "C" void MOption__get_difficulty(s32 *arg0, void *arg1, s32 arg2, VObj **
         {
             Inner *op = buf.p;
             VObj *o = *arg3;
-            VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+            VEntry *e = &o->vtbl[3];
             const char *c;
             s32 len;
             Str t = e->fn((char *)o + e->delta);
             Str *pt = &t;
-            len = *(s32 *)(pt->p - 0x10);
+            len = ((Rep *)pt->p - 1)->len;
             if (len == 0) {
                 c = D_006915D0;
             } else {

@@ -45,7 +45,7 @@ extern "C" void MColorFace__setColor(s32 *arg0, void *arg1, s32 arg2, char **arg
         func_00203678(p_s2, arg3);
         p_s0 = buf2;
         if (!((arg2 < 0x2))) {
-            func_002FC8C8(p_s0, (char *)arg3 + 0x4);
+            func_002FC8C8(p_s0, (char **)(arg3 + 1));
             v_s3 = func_002FE250(*p_s0);
             func_002FC870(p_s0, 0x2);
         }

@@ -15,6 +15,9 @@ struct Self {
     signed char c2C;
     char pad2d[2];
     signed char id2F;
+    char pad30[0x23DC - 0x30];
+    char msg23DC[0x291C - 0x23DC];
+    char msg291C[1];
 };
 struct Obj { char *vtbl; };
 
@@ -57,8 +60,8 @@ extern "C" void func_0039EE78(Self *self) {
                 }
                 VEnt *e3 = (VEnt *)(self->vtbl + 0xA8);
                 ((void (*)(void *, void *, s32, s32))e3->fn)((char *)self + e3->delta, DisplayRText__rtext_ptrs_[idx], 0, 0);
-                RaceMessageDisplay__clear((char *)self + 0x23DC);
-                RaceMessageDisplay__clear((char *)self + 0x291C);
+                RaceMessageDisplay__clear(self->msg23DC);
+                RaceMessageDisplay__clear(self->msg291C);
             }
         }
     }

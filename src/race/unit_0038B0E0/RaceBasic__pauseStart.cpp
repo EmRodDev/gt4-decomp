@@ -1,8 +1,10 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef int s32;
+typedef short s16;
 
-struct VEntry_428 {
-    short delta;
-    short index;
+struct VEntry {
+    s16 delta;
+    s16 index;
     void (*fn)(void *);
 };
 
@@ -18,31 +20,31 @@ struct Mid_428 {
     s32 fD0;
 };
 
-struct Obj_428 {
+struct RaceBasicLayout {
     char pad0[0x64];
-    char *vt;
+    VEntry *vt;
     char pad1[4];
     Mid_428 *f6C;
     char pad2[0xE400 - 0x70];
-    s32 fE400;
+    void *unkE400;
     char pad3[0xE418 - 0xE404];
-    s32 fE418;
+    void *unkE418;
 };
 
-extern "C" void RaceBasic__setPause(Obj_428 *arg0, s32 arg1);
+extern "C" void RaceBasic__setPause(void *arg0, s32 arg1);
 extern "C" void CourseData__setPause(void *self, s32 on);
 extern "C" void PauseBase__setTimeLimit(void *arg0, s32 arg1);
 
-extern "C" void RaceBasic__pauseStart(Obj_428 *self, s32 arg1) {
-    s32 v = arg1;
+extern "C" void RaceBasic__pauseStart(RaceBasicLayout *self, void *arg1) {
+    void *v = arg1;
     if (v == 0) {
-        v = *(s32 *)((char *)self + 0xE400);
+        v = self->unkE400;
     }
-    *(s32 *)((char *)self + 0xE418) = v;
+    self->unkE418 = v;
     if (v != 0) {
-        PauseBase__setTimeLimit((void *)v, self->f6C->fD0);
+        PauseBase__setTimeLimit(v, self->f6C->fD0);
         RaceBasic__setPause(self, 1);
-        VEntry_428 *e = (VEntry_428 *)(self->vt + 0x2D0);
+        VEntry *e = &self->vt[90];
         e->fn((char *)self + e->delta);
         CourseData__setPause(self->f6C->p80->p4, 1);
     }

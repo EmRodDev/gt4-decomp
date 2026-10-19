@@ -39,12 +39,12 @@ extern "C" void MOptionMenu__setIndex(s32 *arg0, void *arg1, s32 arg2, char **ar
     s32 v_s1;
     if (arg2 >= 0x2) {
         v_s2 = 0;
-        if (*(s32 *)(char *)arg3 != 0) {
+        if (*arg3 != 0) {
             func_0022AD20(buf0, arg3);
             v_s2 = buf0[0];
             func_0022ACC8(buf0, 0x2);
         }
-        func_002FC8C8(buf0, (char *)arg3 + 0x4);
+        func_002FC8C8(buf0, arg3 + 1);
         p_s0 = buf1;
         func_002C7310(p_s0, arg1);
         v_s1 = *p_s0;

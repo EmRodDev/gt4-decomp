@@ -18,7 +18,7 @@ extern "C" void func_003285A8(void *);
 extern "C" void func_003285F8(void *);
 static inline int get(Handle *h, int i) {
     Value *p = *HArray__operator_index(h, i);
-    VEntry *v = (VEntry *)((char *)p->vt + 0x58);
+    VEntry *v = &p->vt[11];
     return v->fn((char *)p + v->delta);
 }
 static inline void store(Handle *p, const Vec4 *v) {

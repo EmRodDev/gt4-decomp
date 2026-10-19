@@ -22,11 +22,11 @@ extern "C" void func_002F7B68(H *,int);
 extern "C" void func_003285A8(Obj *);
 extern "C" void func_003285F8(Obj *);
 static inline H *index(Obj *o,int i) {
- Entry *e=(Entry *)(o->vt+0x70);
+ Entry *e = &((Entry *)o->vt)[14];
  return ((H *(*)(void *,int))e->fn)((char *)o+e->delta,i);
 }
 static inline float value(Obj *o) {
- Entry *e=(Entry *)(o->vt+0x60);
+ Entry *e = &((Entry *)o->vt)[12];
  return ((float (*)(void *))e->fn)((char *)o+e->delta);
 }
 static inline void assign(H *d,H *s) {
@@ -60,7 +60,7 @@ extern "C" void MGraphFace__get_points(H *out,H *ctx,int argc,H *args) {
    if(hObject__isInstanceOf(o,mBlob__GetClassID())) {
     H *pa=&a;
     func_001FFF88(pa,args);
-    void *data=*(void **)((char *)pa->p+0x10);
+    void *data = ((struct { char pad[0x10]; void *p; } *)pa->p)->p;
     func_001FFF30(pa,2);
     if(data)func_0029F798(self.p,data);
    }

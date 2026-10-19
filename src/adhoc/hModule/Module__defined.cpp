@@ -71,7 +71,10 @@ struct VEntry {
     short index;
     void *fn;
 };
-#define VCALL1(R, o, off, a) ({ VEntry *e_ = (VEntry *)(*(char **)((char *)(o) + 4) + (off)); ((R(*)(void *, ...))e_->fn)((char *)(o) + e_->delta, a); })
+struct VObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
 
 extern "C" void func_00304210(void *arg0) throw();
 extern "C" void func_003041B8(void *arg0, int arg1) throw();
@@ -112,8 +115,8 @@ extern "C" void Module__defined(s32 *arg0, s32 arg1, s32 mode, void **arg3) {
         Val *po = &o10;
         func_00323D08(po);
         void *o = *arg3;
-        VEntry *e1 = (VEntry *)(*(char **)((char *)o + 4) + 0x18);
-        VEntry *e2 = (VEntry *)(*(char **)((char *)h.p + 4) + 0x198);
+        VEntry *e1 = &((VObj *)o)->vtbl[3];
+        VEntry *e2 = &((VObj *)h.p)->vtbl[51];
         char *rcv2 = (char *)h.p + e2->delta;
         Val *pv = &v20;
         Str *ps = &s30;
@@ -121,7 +124,7 @@ extern "C" void Module__defined(s32 *arg0, s32 arg1, s32 mode, void **arg3) {
         pv->p = HSymID__GetID(ps);
         ((void (*)(void *, void *, void *))e2->fn)(rcv2, po, pv);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = ((Rep *)ps->p) - 1;
             q->release();
         }
         func_002FE278(pv, po->p != 0);

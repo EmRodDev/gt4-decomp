@@ -21,6 +21,11 @@ struct Str {
 struct S00659988 {
     const char *name;
 };
+struct mScaleBarLayout {
+    char pad0[0xF8];
+    s32 h;
+    s32 h2;
+};
 
 extern Rep D_00659FA8;
 extern s32 D_00659FB4;
@@ -43,7 +48,7 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void mScaleBar__virtual_63(s32 *arg0) {
+extern "C" void mScaleBar__virtual_63(mScaleBarLayout *arg0) {
     s32 buf0[4];
     s32 buf1[4];
     Str s2;
@@ -70,7 +75,7 @@ extern "C" void mScaleBar__virtual_63(s32 *arg0) {
     func_005C2630(p_s0, 0, -0x1, v_s1, func_0057F260(v_s1));
     t1 = HSymID__GetID(p_s0);
     buf0[0] = t1;
-    func_003069F8(arg0, (char *)arg0 + 0xf8, buf0);
+    func_003069F8(arg0, &arg0->h, buf0);
     str_release(p_s0);
     v_s1 = (char *)&D_00698B98;
     p_s0 = &s4;
@@ -88,6 +93,6 @@ extern "C" void mScaleBar__virtual_63(s32 *arg0) {
     func_005C2630(p_s0, 0, -0x1, v_s1, func_0057F260(v_s1));
     t2 = HSymID__GetID(p_s0);
     buf0[0] = t2;
-    func_003069F8(arg0, (char *)arg0 + 0xfc, buf0);
+    func_003069F8(arg0, &arg0->h2, buf0);
     str_release(p_s0);
 }

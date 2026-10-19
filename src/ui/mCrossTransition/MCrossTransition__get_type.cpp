@@ -34,7 +34,7 @@ extern "C" void MCrossTransition__get_type(s32 *arg0, void *arg1, s32 arg2, VObj
     func_00289700(&buf, arg1);
     if (arg2 > 0) {
         VObj *o = *arg3;
-        VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+        VEntry *e = &o->vtbl[3];
         Str t = e->fn((char *)o + e->delta);
         Str *pt = &t;
         s32 len = *(s32 *)(pt->p - 16);

@@ -28,6 +28,10 @@ struct VEntry {
     void (*fn)(void *, void *);
 };
 
+/* Layout backed by include/gt4/hObject.h and bastring.h:
+ *   VObj: HObjectHeader vtable slot 3 (0x18 / 8) is toString(Str *) const
+ *   Rep: GCC 2.96 basic_string header at p - sizeof(Rep)
+ */
 struct VObj {
     char pad[4];
     VEntry *vtbl;
@@ -50,7 +54,7 @@ extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 
@@ -64,7 +68,7 @@ static inline const char *c_str(Str *s) {
 }
 
 static inline void release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+    Rep *q = (Rep *)s->p - 1;
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);

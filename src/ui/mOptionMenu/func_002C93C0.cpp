@@ -1,9 +1,17 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef int s32;
 struct E { short d; short pad; void (*fn)(void *, void *, s32, void *); };
-struct VObj { char pad[4]; char *vt; };
+struct VObj { char pad[4]; E *vtbl; };
 struct S {
-    char pad0[0xD0]; VObj *h; char padd4[0x8]; s32 dc; char pade0[0x1C]; s32 fc; s32 f100; s32 f104;
+    char pad0[0xD0];
+    VObj *h;
+    char padd4[4];
+    void *unkD8;
+    s32 dc;
+    char pade0[0x1C];
+    s32 fc;
+    s32 f100;
+    s32 f104;
 };
 struct Cur { void *p; char pad[0xC]; };
 extern char D_0069C7B8[];
@@ -32,7 +40,7 @@ extern "C" void func_002C93C0(S *self, s32 arg1, s32 arg2) {
     if (arg2 == 0)
         func_002C8198(self, arg1);
     else
-        func_0057CE40((char *)self + 0xD8, self->f100);
+        func_0057CE40(&self->unkD8, self->f100);
     func_00235C80(mWidget__getRootWindow(self), self);
     func_00231F60(arg1, 0);
     self->fc = 0;
@@ -60,7 +68,7 @@ extern "C" void func_002C93C0(S *self, s32 arg1, s32 arg2) {
         }
         func_00309378(t, 2);
         VObj *o = *hp;
-        E *e = (E *)(o->vt + 0xA8);
+        E *e = &o->vtbl[21];
         e->fn((char *)o + e->d, h0, 1, r);
         s32 *p = rbuf + 1;
         while (r != p) {

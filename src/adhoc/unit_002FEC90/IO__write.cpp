@@ -29,6 +29,10 @@ struct VEntry {
     s32 (*fn)(void *, const char *, s32);
 };
 
+/* Layout backed by config/class_layout.json, include/gt4/*.h, and bastring.h:
+ *   VObj: stream vtable slot 51 (0x198 / 8) is write(const void *buf, s32 count)
+ *   Rep: GCC 2.96 basic_string header at p - sizeof(Rep)
+ */
 struct VObj {
     char pad[4];
     VEntry *vtbl;
@@ -84,7 +88,7 @@ extern "C" void IO__write(s32 *arg0, void *arg1, s32 arg2, void *arg3) {
         ps = &s;
         {
             char *sp = func_00314920(px->p)->p;
-            Rep *r = (Rep *)(sp - 0x10);
+            Rep *r = (Rep *)sp - 1;
             char *d;
             if (r->sel != 0) {
                 d = func_005C2560(r);
@@ -96,7 +100,7 @@ extern "C" void IO__write(s32 *arg0, void *arg1, s32 arg2, void *arg3) {
         }
         {
             VObj *vo = (VObj *)o.p;
-            VEntry *e = (VEntry *)((char *)vo->vtbl + 0x198);
+            VEntry *e = &vo->vtbl[51];
             void *self = (char *)vo + e->delta;
             const char *c = c_str(&s);
             s32 res = e->fn(self, c, str_length(&s));

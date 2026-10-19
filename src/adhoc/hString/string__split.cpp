@@ -70,7 +70,10 @@ struct VEntry {
     short index;
     void *fn;
 };
-#define VCALL1(R, o, off, a) ({ VEntry *e_ = (VEntry *)(*(char **)((char *)(o) + 4) + (off)); ((R(*)(void *, ...))e_->fn)((char *)(o) + e_->delta, a); })
+struct VObj {
+    char pad0[4];
+    VEntry *vtbl;
+};
 
 extern "C" void func_002ED5C0(void *arg0, int arg1);
 extern "C" void *func_002EEEB0(void *ret, void *self, s32 x);
@@ -107,7 +110,7 @@ extern "C" void string__split(s32 *arg0, s32 arg1, s32 mode, void **arg3) {
         void *o = *arg3;
         Str *ps = &s;
         void *hp = h.p;
-        VEntry *e1 = (VEntry *)(*(char **)((char *)o + 4) + 0x18);
+        VEntry *e1 = &((VObj *)o)->vtbl[3];
         Val *pv = &v;
         ((void (*)(Str *, void *))e1->fn)(ps, (char *)o + e1->delta);
         func_00314B88(pv, hp, ps);
@@ -124,7 +127,7 @@ extern "C" void string__split(s32 *arg0, s32 arg1, s32 mode, void **arg3) {
         }
         func_002ED5C0(pv, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = ((Rep *)ps->p) - 1;
             q->release();
         }
         func_00312318(&h, 2);

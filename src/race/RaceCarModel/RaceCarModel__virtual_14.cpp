@@ -4,7 +4,13 @@ struct VEntry { short delta; short index; s32 (*fn)(void *); };
 struct B { void *p; };
 struct A { char pad[0x7c]; B *b; };
 struct Data { char pad[0x18]; A *a; s32 pad2; s32 x; s32 y; };
-struct Obj { char pad[8]; VEntry *vtbl; char pad2[8]; Data *data; };
+struct Obj {
+    char pad[8];
+    VEntry *vtbl;
+    char pad2[8];
+    Data *data;
+    char car_model[0x5C8];
+};
 extern "C" s32 func_003EDAD8(void);
 extern "C" Data *func_00575E60(s32, s32);
 extern "C" void func_004AE268(void *, s32, Data *, s32, s32);
@@ -29,8 +35,8 @@ extern "C" void RaceCarModel__virtual_14(Obj *o, s32 arg) {
     s32 y = d->y;
     s32 x = d->x;
     if (y && x) {
-        VEntry *e = (VEntry *)((char *)o->vtbl + 0x38);
+        VEntry *e = &o->vtbl[7];
         func_00458290(y, x, e->fn((char *)o + e->delta));
     }
-    func_00453480((char *)o + 0x18, x);
+    func_00453480(o->car_model, x);
 }

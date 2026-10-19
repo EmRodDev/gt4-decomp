@@ -1,14 +1,17 @@
 typedef int s32;
 
-struct Inner {
-    s32 unkNeg10;
+struct Rep {
+    s32 len;
+    s32 cap;
+    s32 ref;
+    s32 sel;
 };
 
 struct Obj {
     char pad[0x10];
-    Inner *unk10;
+    char *dat;
 };
 
 extern "C" s32 func_00314B10(Obj *arg0) {
-    return *(s32 *)((char *)arg0->unk10 - 0x10);
+    return ((Rep *)arg0->dat)[-1].len;
 }

@@ -19,7 +19,7 @@ extern "C" void func_002857C0(Face *self,S *ctx) {
  half*=0.5f;
  float r=minval(radius,half);
  int bx=1;
- VC *v=(VC*)((char*)ctx->v+0x198);
+ VC *v=(VC*)(ctx->v+51);
  v->fn((char*)ctx+v->delta,self->color);
  if (!(w*0.5f<=r)) bx=0;
  int by=1;

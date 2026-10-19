@@ -5,7 +5,7 @@ extern "C" void *BlockUnit__initialize(Obj *,int,int) throw();
 extern "C" void func_0027A1E8(void *,Obj *) throw();
 extern "C" void func_0027B138(Obj *self,Obj *other) {
     int i=0;
-    E *e=(E *)((char *)other->vt+0x238);
+    E *e = other->vt + 71;
     e->fn((char *)other+e->delta);
     if(self->n34>0) {
         do {
