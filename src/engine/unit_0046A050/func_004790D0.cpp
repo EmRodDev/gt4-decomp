@@ -1,9 +1,7 @@
 void func_004790D0(int *arg0, int arg1)
 {
-    int temp_v0;
-
-    temp_v0 = *arg0;
-    if (temp_v0 != 0) {
-        *arg0 = temp_v0 + arg1;
+    int val = *arg0;
+    if (val != 0) {
+        *arg0 = val + arg1;
     }
 }
