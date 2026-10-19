@@ -6,6 +6,10 @@ struct S00659988 { const char *name; };
 struct Str { char *p; s32 pad[3]; };
 union U { Str s; s32 h[4]; };
 struct VEntry { s16 delta; s16 index; void (*fn)(void *, void *); };
+/* Layout backed by include/gt4/hObject.h and bastring.h:
+ *   VObj: HObjectHeader vtable slot 3 (0x18 / 8) is toString(Str *) const
+ *   Rep: GCC 2.96 basic_string header at p - sizeof(Rep)
+ */
 struct VObj { char pad[4]; VEntry *vtbl; };
 struct Equip { char pad[0x180]; };
 
@@ -22,7 +26,7 @@ extern "C" void SPEC_DATABASE__CarEquipments__setVariationOrder(Equip *, int);
 extern "C" s32 func_004443A8(Equip *, const char *);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 

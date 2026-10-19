@@ -28,6 +28,10 @@ struct VEntry {
     s32 (*fn)(void *, void *, s32);
 };
 
+/* Layout backed by config/class_layout.json, include/gt4/*.h, and bastring.h:
+ *   VObj: stream vtable slot 50 (0x190 / 8) is read(void *buf, s32 count)
+ *   Rep: GCC 2.96 basic_string header at p - sizeof(Rep)
+ */
 struct VObj {
     char pad[4];
     VEntry *vtbl;
@@ -71,7 +75,7 @@ extern "C" void IO__read(s32 *arg0, void *arg1, s32 arg2, void *arg3) {
         b = func_005C15B0(n);
         {
             VObj *vo = (VObj *)o.p;
-            VEntry *e = (VEntry *)((char *)vo->vtbl + 0x190);
+            VEntry *e = &vo->vtbl[50];
             len = e->fn((char *)vo + e->delta, b, n);
         }
         ps = &s;
@@ -108,7 +112,7 @@ extern "C" void IO__read(s32 *arg0, void *arg1, s32 arg2, void *arg3) {
             func_00312318(ph, 2);
         }
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = (Rep *)ps->p - 1;
             if (--q->ref == 0) {
                 s32 size = q->cap + 0x10;
                 func_00326798(q, size, 4, func_005C11A8()->name);

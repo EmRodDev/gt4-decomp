@@ -27,6 +27,10 @@ struct VEntry {
     void (*fn)(void *, void *);
 };
 
+/* Layout backed by include/gt4/hObject.h and bastring.h:
+ *   VObj: HObjectHeader vtable slot 3 (0x18 / 8) is toString(Str *) const, slot 11 (0x58 / 8) is toInt() const
+ *   Rep: GCC 2.96 basic_string header at p - sizeof(Rep)
+ */
 struct VObj {
     char pad0[4];
     VEntry *vtbl;
@@ -44,7 +48,7 @@ extern "C" void func_003285A8(s32 arg0);
 extern "C" void func_003285F8(s32 arg0);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 
@@ -58,7 +62,7 @@ static inline const char *c_str(Str *s) {
 }
 
 static inline void release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+    Rep *q = (Rep *)s->p - 1;
     if (--q->ref == 0) {
         s32 cap = q->cap + 0x10;
         func_00326798(q, cap, 4, func_005C11A8()->name);
@@ -92,7 +96,7 @@ extern "C" s32 func_004470E8(void *, long long);
 extern "C" const char *SPEC_DATABASE__RaceSpec__getRaceLabel(void *);
 extern "C" void func_00446FC8(void *, s32);
 static inline s32 v_int(VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x58);
+    VEntry *e = &o->vtbl[11];
     return ((s32 (*)(void *))e->fn)((char *)o + e->delta);
 }
 extern "C" void MCarData__GetRaceCode(s32 *arg0, s32 arg1, VObj **arg2) {
@@ -117,7 +121,7 @@ extern "C" void MCarData__GetRaceCode(s32 *arg0, s32 arg1, VObj **arg2) {
             if (arg1 >= 3) index = v_int(arg2[2]);
             if (index >= 3) index = 2;
             if (!kind) code = dest[index];
-            else code = ((long long *)((char *)dest + 0x18))[index];
+            else code = (dest + 3)[index];
             if (code != -1) {
 
                 void *p = work.record;
