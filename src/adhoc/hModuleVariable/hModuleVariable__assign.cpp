@@ -11,7 +11,18 @@ struct In {
     virtual void v008(void *, int);
     virtual void v009(void *, int);
 };
-struct Out { char pad[0x18]; In *p; char q[0]; };
-extern "C" void hModuleVariable__assign(Out *arg0, int arg1) {
-    arg0->p->v009((char *)arg0 + 0x14, arg1);
+/* Layout backed by include/gt4/hModuleVariable.h and config/class_layout.json (size 0x1C):
+ *   0x00..0x13: hVariable base fields (0x04 vtable)
+ *   0x14: target (variable target reference/value)
+ *   0x18: module (pointer to module)
+ */
+struct hModuleVariableLayout {
+    char base[0x14];
+    void *target;
+    In *module;
+};
+
+extern "C" void hModuleVariable__assign(hModuleVariableLayout *arg0, int arg1) {
+    arg0->module->v009(&arg0->target, arg1);
 }
+

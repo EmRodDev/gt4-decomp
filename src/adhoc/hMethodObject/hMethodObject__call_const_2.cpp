@@ -12,13 +12,22 @@ struct VObj {
     VEntry *vtbl;
 };
 
-struct Self {
-    char pad0[0x14];
-    VObj *m14;
+/* Layout backed by include/gt4/hMethodObject.h and config/class_layout.json (size 0x18):
+ *   0x00..0x0F: hObject base fields (0x04 vtable)
+ *   0x10: target object (HObject, size 4)
+ *   0x14: method / function object (VObj *, size 4)
+ */
+struct hMethodObjectLayout {
+    void *ref_count;
+    void *vtable;
+    s32 base_fields[2];
+    void *target;
+    VObj *method;
 };
 
-extern "C" void hMethodObject__call_const_2(Self *self, s32 a1, s32 a2, s32 a3) {
-    VObj *o = self->m14;
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x80);
-    e->fn((char *)o + e->delta, a1, (char *)self + 0x10, a2, a3);
+extern "C" void hMethodObject__call_const_2(hMethodObjectLayout *self, s32 a1, s32 a2, s32 a3) {
+    VObj *o = self->method;
+    VEntry *e = &o->vtbl[16];
+    e->fn((char *)o + e->delta, a1, &self->target, a2, a3);
 }
+

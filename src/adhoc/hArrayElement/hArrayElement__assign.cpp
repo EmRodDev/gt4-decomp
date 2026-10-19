@@ -12,16 +12,24 @@ struct Obj2 {
     VEntry *vtbl;
 };
 
-struct Obj {
-    char pad0[0x10];
-    struct Obj2 *unk10;
-    s32 unk14;
+/* Layout backed by include/gt4/hArrayElement.h and config/class_layout.json (size 0x18):
+ *   0x00..0x0F: hObject base fields (0x04 vtable)
+ *   0x10: target array / object (Obj2 *)
+ *   0x14: index (s32)
+ */
+struct hArrayElementLayout {
+    void *ref_count;
+    void *vtable;
+    s32 base_fields[2];
+    struct Obj2 *array;
+    s32 index;
 };
 
-extern "C" void hArrayElement__assign(struct Obj *arg0, s32 arg1) {
-    struct Obj2 *self2 = arg0->unk10;
-    s32 val = arg0->unk14;
-    VEntry *e = (VEntry *)((char *)self2->vtbl + 0x78);
+extern "C" void hArrayElement__assign(hArrayElementLayout *arg0, s32 arg1) {
+    struct Obj2 *self2 = arg0->array;
+    s32 val = arg0->index;
+    VEntry *e = &self2->vtbl[15];
 
     e->fn((char *)self2 + e->delta, val, arg1);
 }
+
