@@ -28,7 +28,7 @@ extern "C" void mPhotoRenderFace__virtual_67(mPhotoRenderFace *self, void *photo
     RacePhotoMode_00197798 *stream = func_00197798(photo);
     if (stream != 0) { stream->field_1e634 = 1; (void)stream->field_1e634; }
     PhotoData_00197788 *image = func_00197788(photo);
-    void *fallback = (char *)self + 0xC4;
+    void *fallback = self->field_c4;
     if (image != 0) {
         self->field_ec = (char *)func_00197788(photo) + 0x1C;
         int format;

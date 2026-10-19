@@ -1,7 +1,4 @@
-typedef int s32;
-typedef float f32;
-typedef unsigned int u32;
-typedef short s16;
+#include "types.h"
 
 struct VEntry {
     s16 delta;
@@ -9,22 +6,23 @@ struct VEntry {
     s32 (*fn)(void *, s32);
 };
 
-struct Obj {
+struct RacePS2Base {
     char pad0[0x64];
-    VEntry *vtbl;
+    VEntry *vtbl;             /* 0x64: vtable pointer */
     s32 unk68;
     s32 unk6C;
     s32 unk70;
+    char pad74[0x3628 - 0x74];
+    char pitmen[1];           /* 0x3628: pitmen coordinator */
 };
 
 extern "C" u32 func_00579330(s32 arg0);
 extern "C" void func_003CC7F8(void *arg0, s32 arg1);
 extern "C" void func_003D03E0(void *arg0, s32 arg1, f32 arg2);
 
-extern "C" void RacePS2Base__updatePitmen(Obj *self, f32 t) {
-    char *s1 = (char *)self + 0x3628;
-    VEntry *e = (VEntry *)((char *)self->vtbl + 0xD0);
+extern "C" void RacePS2Base__updatePitmen(RacePS2Base *self, f32 t) {
+    VEntry *e = self->vtbl + 26;
     s32 v = e->fn((char *)self + e->delta, 0);
-    func_003CC7F8(s1, func_00579330(v + 4));
-    func_003D03E0(s1, self->unk70, t);
+    func_003CC7F8(self->pitmen, func_00579330(v + 4));
+    func_003D03E0(self->pitmen, self->unk70, t);
 }
