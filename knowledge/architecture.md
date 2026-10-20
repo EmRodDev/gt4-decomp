@@ -176,7 +176,8 @@ and the geometry classes (hub, *GT4 file structure*).
 - **Rendering**: there is no single "renderer" class in the RTTI; drawing is spread over `mRenderContextPS2`, the model/image/movie/flash objects, `PGLXshapeBuilder`
   (0x494500) and unnamed code (unit_0046A050 and the GS/VU-side helpers). Image and media codecs: `Jpeg2Sys::*` (decoder/encoder, Huffman tables), `Ipic`/`IpicArchive`
   (preview images), `mpegif` (0x54DBB8, MPEG decode), the `strobe::*` Flash runtime, `GT4_Motion::*` (motion callbacks: geometry, lighting, perspective, render). The low-level
-  graphics path is **unknown** at this level of detail.
+  graphics path is only partially mapped.
+- **Shared graphics packets**: recovered 0x49E5F8 calls the register writer at 0x4AB350, wraps its output in DMA/VIF UNPACK and GIF A+D headers, and advances the state object's cursor (+0x1F8). The writer consumes dirty bits (+0x1D8) selected by the enabled mask (+0x1E8), accumulating them at +0x1E0. Even an empty payload gets two header quadwords. Twelve headless PCSX2 probes of the original helper and its actual writers confirmed exact packets and mask updates, including all 36 supported register bits. Its six direct callers include three unrecovered routines: 0x497838, 0x49C2A8 and 0x49C788.
 - **Camera**: `CameraBase` / `SceneCameraBase` (0x44F188, 9 virtuals), `DevelopCamera` (54 own methods, 0x371CA8), `RacePhotoModeCameraManager` (0x377C60) and the namespaced `CameraSys::*` family
   (follow, on-board, heli, pit-in, round, shot, photo cameras).
 - **Sound**: `GTSOUNDINSTRUMENT` (0x462500), `GTSOUNDINSTRUMENTJAM`, `EngineSound` (0x391878), `FileInstrumentStream`, `DirectivityMicrophone` (0x39A6F8), `RaceBGMBase` / `RaceBGMPS2` /
