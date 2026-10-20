@@ -1,41 +1,31 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Binds texture buffer to the race scene post-process rendering stage.
+ * Fetches GS texture descriptor from graphics buffer and passes display
+ * texture parameters to the low-level rendering context.
+ */
 #include "types.h"
 
-struct Rep {
-    s32 len;
-    s32 cap;
-    s32 ref;
-    s32 sel;
+extern "C" s32 func_003D2998(void *renderTarget);
+extern "C" void GSBuffer__getTexture(void *graphicsBuffer, void *outputTexDesc);
+extern "C" void func_003D2710(void *renderTarget, void *texDescriptor);
+extern "C" void func_003D25B0(void *renderTarget, s32 renderMode, s32 textureSlot, s32 contextParam);
+
+struct RaceSceneContext {
+    char headerPadding[0x6C];
+    s32 pipelineConfig;
+    s32 textureSlot;
 };
 
-struct Str {
-    char *p;
-    char pad[0xC];
-};
-
-struct S00659988 {
-    const char *name;
-};
-
-extern "C" s32 func_003D2998(void *);
-extern "C" void GSBuffer__getTexture(void *, void *);
-extern "C" void func_003D2710(void *, void *);
-extern "C" void func_003D25B0(void *, s32, s32, s32);
-
-struct func_0033DC88_arg0 {
-    char pad0[0x6C];
-    s32 unk6C;
-    s32 unk70;
-};
-
-extern "C" void func_0033DC88(s32 *arg0, void *arg1, s32 arg2) {
-    s32 buf0[4];
-    s32 buf1[4];
-    s32 buf2[4];
-    char *v_s1;
-    v_s1 = (char *)arg0 + 0x3628;
-    if (func_003D2998(v_s1) != 0) {
-        GSBuffer__getTexture(arg1, buf0);
-        func_003D2710(v_s1, buf0);
-        func_003D25B0(v_s1, arg2, ((struct func_0033DC88_arg0 *)arg0)->unk70, *(s32 *)((char *)(*(s32 *)((char *)(*(s32 *)((char *)(((struct func_0033DC88_arg0 *)arg0)->unk6C) + 0x80)) + 0x4)) + 0x80));
+extern "C" void func_0033DC88(s32 *sceneObject, void *graphicsBuffer, s32 renderMode) {
+    s32 texDescBuffer0[4];
+    s32 texDescBuffer1[4];
+    s32 texDescBuffer2[4];
+    char *renderTarget = (char *)sceneObject + 0x3628;
+    if (func_003D2998(renderTarget) != 0) {
+        GSBuffer__getTexture(graphicsBuffer, texDescBuffer0);
+        func_003D2710(renderTarget, texDescBuffer0);
+        RaceSceneContext *sceneCtx = (RaceSceneContext *)sceneObject;
+        func_003D25B0(renderTarget, renderMode, sceneCtx->textureSlot, *(s32 *)((char *)(*(s32 *)((char *)(*(s32 *)((char *)(sceneCtx->pipelineConfig) + 0x80)) + 0x4)) + 0x80));
     }
 }

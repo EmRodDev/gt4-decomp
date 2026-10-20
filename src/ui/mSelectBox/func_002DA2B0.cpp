@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * UI component setup and event binding for mSelectBox.
+ * Configures component state and dispatches virtual methods.
+ */
 #include "types.h"
 
 struct C {

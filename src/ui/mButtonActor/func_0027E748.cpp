@@ -1,3 +1,7 @@
+/**
+ * Component logic and event handler implementation for mButtonActor.
+ * Handles state transitions and low-level widget updates.
+ */
 #include "types.h"
 
 struct Rep {
