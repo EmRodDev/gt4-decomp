@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Component logic and event handler implementation for mTextBoxFace.
+ * Handles state transitions and low-level widget updates.
+ */
 typedef int s32;
 struct Rep { s32 len; s32 cap; s32 ref; s32 sel; };
 struct S00659988 { const char *name; };

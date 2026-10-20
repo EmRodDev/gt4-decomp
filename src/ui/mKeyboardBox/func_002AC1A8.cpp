@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * UI component setup and event binding for mKeyboardBox.
+ * Initializes the component descriptor and registers virtual method handlers.
+ */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;

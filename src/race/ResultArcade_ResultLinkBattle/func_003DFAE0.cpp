@@ -1,50 +1,55 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Updates arcade / link-battle race result presentation.
+ * Sorts race entries by finishing rank and populates the display slots
+ * with car icon numbers, car names, and the player rank.
+ */
 typedef int s32;
 
-struct Entry {
-    char pad0[0x10];
-    Entry *next;
-    s32 idx;
+struct RaceEntryItem {
+    char headerPadding[0x10];
+    RaceEntryItem *nextEntry;
+    s32 entryIndex;
 };
 
-struct Sub {
-    char pad0[0x14];
-    Entry *head;
+struct RaceEntryList {
+    char listPadding[0x14];
+    RaceEntryItem *headEntry;
 };
 
-extern "C" void RaceEntryBase__sortByRank(Sub *);
-extern "C" void ResultArcade__setPlayerRank(void *, s32) throw();
-extern "C" void ResultArcade__setCarName(void *, s32, Entry *);
-extern "C" void ResultArcade__setCarIconNumber(void *, s32, s32);
+extern "C" void RaceEntryBase__sortByRank(RaceEntryList *entryList);
+extern "C" void ResultArcade__setPlayerRank(void *resultDisplay, s32 rank) throw();
+extern "C" void ResultArcade__setCarName(void *resultDisplay, s32 rank, RaceEntryItem *entryItem);
+extern "C" void ResultArcade__setCarIconNumber(void *resultDisplay, s32 rank, s32 iconNum);
 
-extern "C" void func_003DFAE0(void *arg0, void *arg1) {
-    char *self = (char *)arg0;
-    s32 var_s3;
-    Entry *var_s0 = (Entry *)arg1;
-    char *var_s2;
-    if (*(s32 *)(self + 0x48) == 0) {
-        if (*(s32 *)self != 0) {
-            var_s3 = 0;
-            RaceEntryBase__sortByRank(*(Sub **)((char *)var_s0 + 0x60));
-            var_s0 = (*(Sub **)((char *)var_s0 + 0x60))->head;
-            if (var_s0 != 0) {
-                s32 *s4 = (s32 *)(self + 4);
-                var_s2 = self + 0x68;
+extern "C" void func_003DFAE0(void *resultDisplay, void *raceContext) {
+    char *displayBase = (char *)resultDisplay;
+    s32 currentRank;
+    RaceEntryItem *currentEntry = (RaceEntryItem *)raceContext;
+    char *slotPtr;
+    if (*(s32 *)(displayBase + 0x48) == 0) {
+        if (*(s32 *)displayBase != 0) {
+            currentRank = 0;
+            RaceEntryBase__sortByRank(*(RaceEntryList **)((char *)currentEntry + 0x60));
+            currentEntry = (*(RaceEntryList **)((char *)currentEntry + 0x60))->headEntry;
+            if (currentEntry != 0) {
+                s32 *playerIndexPtr = (s32 *)(displayBase + 4);
+                slotPtr = displayBase + 0x68;
                 do {
-                    s32 a2 = var_s0->idx;
-                    if (*(s32 *)((char *)(s4 + a2) + 0x10) == 0) {
-                        if (*(s32 *)var_s2 != a2) {
-                            ResultArcade__setCarIconNumber(arg0, var_s3, a2);
-                            ResultArcade__setCarName(arg0, var_s3, var_s0);
+                    s32 carIndex = currentEntry->entryIndex;
+                    if (*(s32 *)((char *)(playerIndexPtr + carIndex) + 0x10) == 0) {
+                        if (*(s32 *)slotPtr != carIndex) {
+                            ResultArcade__setCarIconNumber(resultDisplay, currentRank, carIndex);
+                            ResultArcade__setCarName(resultDisplay, currentRank, currentEntry);
                         }
-                        if (var_s0->idx == *s4) {
-                            ResultArcade__setPlayerRank(arg0, var_s3);
+                        if (currentEntry->entryIndex == *playerIndexPtr) {
+                            ResultArcade__setPlayerRank(resultDisplay, currentRank);
                         }
                     }
-                    var_s0 = var_s0->next;
-                    var_s2 += 0xC0;
-                    var_s3 += 1;
-                } while (var_s0 != 0);
+                    currentEntry = currentEntry->nextEntry;
+                    slotPtr += 0xC0;
+                    currentRank += 1;
+                } while (currentEntry != 0);
             }
         }
     }

@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Component logic and event handler implementation for mOptionMenu.
+ * Handles state transitions and low-level widget updates.
+ */
 typedef int s32;
 struct Rep { s32 len,cap,ref,sel; };
 struct Str { char *p; char pad[12]; };

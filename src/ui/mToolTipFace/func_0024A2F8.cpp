@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Component logic and event handler implementation for mToolTipFace.
+ * Handles state transitions and low-level widget updates.
+ */
 struct Str { char *p; };
 struct Filter { float a,b,value; };
 struct Obj {

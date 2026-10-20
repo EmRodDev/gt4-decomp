@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * UI component setup and event binding for mButtonActor.
+ * Initializes the component descriptor and registers virtual method handlers.
+ */
 #include "types.h"
 
 struct Rep {

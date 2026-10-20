@@ -1,10 +1,15 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * UI component setup and event binding for mSliderBar.
+ * Configures component state and dispatches virtual methods.
+ */
 #include "types.h"
 
-struct Rep {
-    s32 len;
-    s32 cap;
-    s32 ref;
-    s32 sel;
+struct StringRep {
+    s32 length;
+    s32 capacity;
+    s32 refCount;
+    s32 isStatic;
 };
 
 struct Str {
@@ -12,8 +17,8 @@ struct Str {
     char pad[0xC];
 };
 
-struct S00659988 {
-    const char *name;
+struct AllocatorInfo {
+    const char *allocatorName;
 };
 
 extern char D_0069CF88[];
