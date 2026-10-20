@@ -139,6 +139,8 @@ then runs the session (grid, lap logic, replay, results) with the simulation (se
   (`RaceNetRallyBattle`), `RacePhotoDevelop`, `RaceTrainingBase` (`RaceTraining`, `RaceMission`); `RaceSolitaire` with `RaceFreeRun`, `RaceLicense`,
   `RaceMachineTest`; `RacePhotoMode`; `RaceLanBattle`, `RaceNetBattle`, `RaceSplitBattle` (split screen). Parameter objects: `RaceInformation` and one
   subclass per mode; results `ResultArcade` / `ResultChampionship` / `ResultLicense` / `ResultLinkBattle`; entries `RaceEntryBase` / `RaceEntryCar`.
+- Shared event dispatch: recovered `RaceBase::updateCommon` (0x389758) updates the queue in the controller at receiver +0x6C, queue +0xF4. Event 7 calls the time-limit handler; event 1 calls race-end and returns 0 immediately; event 4 calls race-start and is cleared. Event 24 selects the receiver's mode object (+0x74): -1 toggles, -2 selects previous, -3 selects next; 10/19 use the configured key at +0xD60, and 11 uses +0xD64. Mode key 12 sets the additional boolean argument. Other paths return 1.
+- Goal event 5 is enumerated without removal and its integer payload is passed to the virtual handler. The queue's per-ID reference counts are at +0x808; the dispatcher rereads count[5] after every callback, so a handler can stop further notifications. Virtual entries carry signed `this` adjustments; race callbacks return void. These contracts were checked against the recovered queue helpers and with 16 controlled headless PCSX2 probes of the original dispatcher (queue helpers replaced by recording stubs).
 - HUD: `RaceDisplay` (56 own methods) plus 32 `RaceDisplayObjectBase` elements (speed, tachometer, boost, gear, shift lamp, lap/time/rank, minimap, fuel, tire wear,
   MTR and Prius panels, message/tooltip/music display) and event-driven messages (`RaceDisplay*Event`).
 - Pause/photo: `RacePause`, `SimplePause`, `PhotoPause`, `RacePhotoModeCameraManager`, `PhotoModeInput`, `RaceInput`.
@@ -174,7 +176,8 @@ and the geometry classes (hub, *GT4 file structure*).
 - **Rendering**: there is no single "renderer" class in the RTTI; drawing is spread over `mRenderContextPS2`, the model/image/movie/flash objects, `PGLXshapeBuilder`
   (0x494500) and unnamed code (unit_0046A050 and the GS/VU-side helpers). Image and media codecs: `Jpeg2Sys::*` (decoder/encoder, Huffman tables), `Ipic`/`IpicArchive`
   (preview images), `mpegif` (0x54DBB8, MPEG decode), the `strobe::*` Flash runtime, `GT4_Motion::*` (motion callbacks: geometry, lighting, perspective, render). The low-level
-  graphics path is **unknown** at this level of detail.
+  graphics path is only partially mapped.
+- **Shared graphics packets**: recovered 0x49E5F8 calls the register writer at 0x4AB350, wraps its output in DMA/VIF UNPACK and GIF A+D headers, and advances the state object's cursor (+0x1F8). The writer consumes dirty bits (+0x1D8) selected by the enabled mask (+0x1E8), accumulating them at +0x1E0. Even an empty payload gets two header quadwords. Twelve headless PCSX2 probes of the original helper and its actual writers confirmed exact packets and mask updates, including all 36 supported register bits. Its six direct callers include three unrecovered routines: 0x497838, 0x49C2A8 and 0x49C788.
 - **Camera**: `CameraBase` / `SceneCameraBase` (0x44F188, 9 virtuals), `DevelopCamera` (54 own methods, 0x371CA8), `RacePhotoModeCameraManager` (0x377C60) and the namespaced `CameraSys::*` family
   (follow, on-board, heli, pit-in, round, shot, photo cameras).
 - **Sound**: `GTSOUNDINSTRUMENT` (0x462500), `GTSOUNDINSTRUMENTJAM`, `EngineSound` (0x391878), `FileInstrumentStream`, `DirectivityMicrophone` (0x39A6F8), `RaceBGMBase` / `RaceBGMPS2` /
