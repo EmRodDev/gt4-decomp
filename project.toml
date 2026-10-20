@@ -243,3 +243,9 @@ retry_max_bytes = 8192
 count = 2
 tries = 10
 slots = 1
+
+# Race event dispatch needs both aliasing and cross-block CSE disabled.
+[compilers."ee-gcc2.96-nsa-nogcse"]
+dir = "~/.local/share/gt4/ee-gcc2.96"
+command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -fno-gcse -Iinclude"
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
