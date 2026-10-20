@@ -115,6 +115,12 @@ needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/d
 # The game's flags without global common-subexpression elimination: the 0x70002000 scratchpad
 # code (around 0x4a0000-0x4a8000) keeps the base address in one register across branches and
 # calls, which only -fno-gcse reproduces (found on 0x004a0690: 23 -> 3 differing instructions).
+[compilers."ee-gcc2.96-nogcse-as2004"]
+dir = "~/.local/share/gt4/ee-gcc2.96"
+command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-gcse -Iinclude\""
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
+needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
+
 [compilers."ee-gcc2.96-nogcse"]
 dir = "~/.local/share/gt4/ee-gcc2.96"
 command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-gcse -Iinclude"
