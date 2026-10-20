@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Ent { short delta; short pad; void *fn; };
 struct Obj { char p0[8]; char *vt; char p1[0x1670 - 12]; s32 f1670; s32 f1674; };
 struct Top { char p0[0x2880]; Obj *mid; };

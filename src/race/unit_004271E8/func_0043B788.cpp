@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 typedef s32 (*VFn0043B788)(void *self, void *a1, s32 a2);
 

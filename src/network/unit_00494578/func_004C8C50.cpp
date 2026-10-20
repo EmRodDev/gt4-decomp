@@ -1,4 +1,4 @@
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" u16 *func_004C8C50(u16 *arg0, u16 *arg1) {
     u16 *dst = arg0;

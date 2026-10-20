@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void free(s32 arg0);
 extern "C" void (*D_0064B71C)(s32);

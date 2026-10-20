@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 malloc(s32 arg0);
 extern "C" void mCarGarage__structor_2(s32 arg0, s32 arg1);

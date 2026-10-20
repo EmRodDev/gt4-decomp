@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 class DB {
 public:
     char pad0[0x64];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void *RaceInformation__structor_0(s32 *arg0);
 extern "C" void func_003D6268(char *arg0);
 extern "C" char D_00678718[];

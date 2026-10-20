@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 D_00844368;
 extern "C" char StandardComputeDriverPostureCaller__vtable;

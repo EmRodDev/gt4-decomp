@@ -1,6 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 struct Owner;
 struct Vt {
     char pad[0x48];

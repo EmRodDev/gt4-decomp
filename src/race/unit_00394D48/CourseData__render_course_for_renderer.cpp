@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" f32 D_006214DC;
 extern "C" void CourseData__evalVMMethods(void);

@@ -1,10 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -23,7 +17,6 @@ struct S00659988 {
 };
 
 extern Rep D_00659FA8;
-extern s32 D_00659FB4;
 extern "C" char * func_005C2560(Rep *);
 extern "C" void func_002FFA40(void *, void *);
 extern "C" s32 HSymID__GetID(void *);

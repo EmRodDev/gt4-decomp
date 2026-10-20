@@ -11,8 +11,6 @@ struct T {
 extern "C" void func_001053F8(void *, s32);
 extern "C" void func_00105460(void *, s32, s32);
 extern "C" void func_001054A0(void *, s32);
-extern "C" void func_001060F8(T *, s32, s32, s32);
-extern "C" void func_00106258(T *, s32, s32);
 extern "C" void func_004AA478(void);
 extern "C" s32 func_004AA570(s32, s32);
 

@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Time { u32 ms,sec,min,hour; u32 a,b,c,d,tick; };
 extern unsigned char D_0064C10E;
 extern Time D_0086B418;

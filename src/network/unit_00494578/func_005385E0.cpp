@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Obj { char *a, *b, *c, *d; };
 extern "C" int func_005385E0(Obj *p, int *out) {
     int ret = 2;

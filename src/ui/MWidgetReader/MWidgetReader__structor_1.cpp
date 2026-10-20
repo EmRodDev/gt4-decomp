@@ -14,7 +14,6 @@ extern "C" Str *func_005C2630(Str *,unsigned,unsigned,const char *,unsigned);
 extern "C" Name *func_005C11A8();
 extern "C" void func_00326798(void *,int,int,const char *);
 extern "C" void func_00213160(Str *,int,Str *) throw();
-extern "C" int func_00213158(Self *) throw();
 extern "C" int MWidgetReader__structor_3(Reader *,Obj **);
 extern "C" bool func_00269290(Reader *,Str *);
 extern "C" void *func_00306638(Str *,void *,Obj **);

@@ -174,7 +174,6 @@ extern void *malloc (size_t);
 
 extern void free (void *);
 
-extern int atexit (void (*)(void));
 
 # 60 "tsystem.h"
 
@@ -824,7 +823,6 @@ __gthread_mutex_unlock (__gthread_mutex_t *mutex __attribute__ ((__unused__)))
 
 # 46 "frame-dwarf2.c" 2
 
-extern __gthread_mutex_t object_mutex;
 
 typedef int sword __attribute__ ((mode (SI)));
 typedef unsigned int uword __attribute__ ((mode (SI)));

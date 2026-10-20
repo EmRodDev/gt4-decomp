@@ -537,9 +537,7 @@ struct cp_eh_info
 extern "C" cp_eh_info **func_005BC6E8 ();
 
 extern "C" void *func_005BCA88(size_t);
-extern "C" void func_005BCB68(void *);
 
-extern bool __is_pointer (void *);
 
 extern "C" void *
 func_005C16D8 (void);

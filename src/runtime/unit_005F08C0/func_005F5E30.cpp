@@ -1,5 +1,4 @@
-typedef unsigned long long u64;
-typedef int s32;
+#include "types.h"
 
 struct S005F5E30 {
     char pad0[0x268];

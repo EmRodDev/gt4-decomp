@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct S_00200EC0 { char pad[0xB4]; f32 unkB4; };
 

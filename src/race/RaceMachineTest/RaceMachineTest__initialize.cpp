@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct VE { short d; short i; s32 (*fn)(void *); };
 struct Obj {

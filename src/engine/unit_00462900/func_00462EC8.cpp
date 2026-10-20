@@ -15,7 +15,6 @@ extern "C" char *func_005A609C(char *, const char *);
 extern char D_00847580[];
 extern char D_00847180[];
 extern char D_00848650[];
-extern u8 D_006D0E79[];
 extern char D_006AB868[];
 
 extern "C" void func_00462EC8(const char *arg0) {

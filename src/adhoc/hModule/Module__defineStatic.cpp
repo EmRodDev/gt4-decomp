@@ -78,15 +78,9 @@ struct VObj {
 
 extern "C" void func_00304210(void *arg0) throw();
 extern "C" void func_003041B8(void *arg0, int arg1) throw();
-extern "C" const char *hModule__getName(void *node);
-extern "C" void func_00312318(void *arg0, int arg1);
 extern "C" void func_00306938(void *arg0, void *arg1, void *arg2);
 extern "C" void func_00309378(void *arg0, int arg1);
 extern "C" void func_0030BB18(void *arg0);
-extern "C" u8 *func_00314920(s32 arg0);
-extern "C" void func_00314B20(void *arg0, void *arg1);
-extern "C" void func_003285A8(s32 p);
-extern "C" void func_003285F8(s32 p);
 
 struct H {
     void *p;

@@ -8,7 +8,6 @@ struct Entry { short delta, pad; void *fn; };
 struct Found { char pad0[0x5c]; Entry *entry; };
 extern Rep D_00659E20;
 extern char D_006A3410[], D_006A3420[], D_006A3498[], D_006A34A0[];
-extern int D_00621C78[];
 extern "C" void func_00608F30();
 extern "C" void func_00607408();
 extern "C" int func_003D8C18(Owner *) throw();

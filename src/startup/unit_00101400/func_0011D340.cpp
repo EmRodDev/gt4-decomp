@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Spec { char pad[0x75]; unsigned char f75; };
 struct Inner { char pad[0x70]; s32 spec; };
 struct Src { char pad[0x6C]; s32 inner; };

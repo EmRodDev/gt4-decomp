@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 struct Ent { s32 type; char pad[0x40]; };
 struct Obj { char pad[0x84]; Ent *ents; };
 extern "C" void func_00527A70(Obj *, s32, s32) throw();

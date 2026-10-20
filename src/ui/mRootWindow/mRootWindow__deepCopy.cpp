@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef float f32;
-typedef short s16;
+#include "types.h"
 
 struct Rep {
     s32 len;

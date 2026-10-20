@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Rect {
     s32 x, y, w, h;

@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct Blk {
     char v[0x24];

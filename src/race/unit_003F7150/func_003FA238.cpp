@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct func_003FA238_arg0 {
     char pad0[0x1003E];

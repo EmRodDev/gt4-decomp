@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 struct Rep;
 extern "C" char *func_005C2560(Rep *src) throw();

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned int u32;
-typedef signed char s8;
+#include "types.h"
 
 struct Rec505938 {
     char pad0[0x12];

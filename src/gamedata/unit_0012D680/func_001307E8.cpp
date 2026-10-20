@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Entry { char label[64]; float score; };
 extern "C" s32 func_00448AD0(const char *, void *);
 extern "C" void func_001307E8(s32 *indices, s32 count, Entry *entries, s32 excluded) {

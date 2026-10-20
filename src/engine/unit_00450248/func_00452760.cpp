@@ -11,15 +11,12 @@ struct Self {
 };
 
 extern "C" void *func_00450FE0(Self *) throw();
-extern "C" void func_00452418(float, float, Self *) throw();
-extern "C" void func_00452480(Self *) throw();
 extern "C" void ModelSet2__begin(void *, void *);
 extern "C" void ModelSet2__end(void *);
 extern "C" void ModelSet2___render(void *, int, void *);
 extern "C" void func_004A60E0(float, float, float, float);
 extern "C" void func_004A6100(float, float, float, float);
 
-extern float D_008465B0[4];
 
 extern "C" void func_00452760(int arg0, float t)
 {

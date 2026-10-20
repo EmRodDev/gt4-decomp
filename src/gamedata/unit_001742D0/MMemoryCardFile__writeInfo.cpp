@@ -13,7 +13,6 @@ struct Type { const char *name; };
 struct Tex { u32 magic; Tex *self; u32 a,b; u16 c,w,d,e; void *gs,*img; u32 f,g,h,i; };
 struct Image { u16 *data; u16 a; unsigned char b,c; u16 w,h; };
 extern Rep D_00659FA8;
-extern char D_00690D18[];
 extern "C" void func_00174148(void *,void *) throw();
 extern "C" void func_001740F0(void *, int) throw();
 extern "C" void func_00312318(void *, int);
@@ -25,8 +24,6 @@ extern "C" s32 func_0057F260(const char *) throw();
 extern "C" Type *func_005C11A8();
 extern "C" char *func_005C2560(Rep *);
 extern "C" void *func_005C2630(Str *,u32,u32,const char *,u32);
-extern "C" Str *func_005CB368(Str *,u32,u32,u32,char);
-extern "C" void func_005CB5A0(Str *,u32,int);
 static inline void init(Str *s) {
  Rep *r=&D_00659FA8; char *p;
  if(r->sel) p=func_005C2560(r); else { p=(char *)(r+1); r->ref=r->ref+1; }

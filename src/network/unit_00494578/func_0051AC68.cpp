@@ -1,4 +1,4 @@
-typedef unsigned char u8;
+#include "types.h"
 struct Obj { char pad[0x104]; int index; };
 struct Entry { u8 state,b1,active,slot,pending,ready; char pad[0xa]; int value,other; char rest[0x14]; char sub[4]; };
 struct Global { char pad[0xA5B8]; int (*callbacks[16])(int,u8); int flags[16]; };

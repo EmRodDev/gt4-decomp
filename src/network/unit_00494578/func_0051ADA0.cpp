@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
+#include "types.h"
 enum State { STATE_0, STATE_5 = 5 };
 struct Ent { char pad0[0xC]; State unkC; char pad10[0x10]; s32 unk20; };
 struct Obj { Ent *slots[0x41]; s32 unk104; };

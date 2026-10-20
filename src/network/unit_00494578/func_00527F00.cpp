@@ -1,5 +1,4 @@
-typedef signed char s8;
-typedef unsigned char u8;
+#include "types.h"
 struct Obj { char pad[0x98]; s8 *links; };
 extern "C" int func_00527E10(Obj *, s8, s8 *) throw();
 extern "C" int func_00527F00(Obj *self, s8 value) {

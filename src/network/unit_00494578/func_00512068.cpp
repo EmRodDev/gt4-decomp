@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Node { char pad[8]; Node *next; };
 struct Segment { u32 length; Node *head; };
 struct Obj { char pad[0x3c]; u32 count; char gap[8]; Segment *segments; };

@@ -15,10 +15,8 @@ extern Font *PDISTD__global_font_manager;
 extern char D_006991B0[];
 extern "C" void func_00490290(Font *,const char *);
 extern "C" unsigned int func_00202EA8(float *,float);
-extern "C" void func_0025BAA0(void *,float *,float *,float *,float *);
 extern "C" void func_00490700(Font *,int,int,int,int);
 extern "C" int func_00490740(Font *,unsigned int);
-extern "C" void func_00490900(Font *,int,int);
 static inline const char *c_str(String *s) {
  int len=*(int *)(s->p-16);
  if (!len) return D_006991B0;

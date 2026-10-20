@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_0057DA20(void *dst, const char *fmt, s32 arg);
 extern "C" s32 func_0048F628(void *globalObj, const char *path, s32 *outObj, s32 flag);

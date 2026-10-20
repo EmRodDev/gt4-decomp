@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Object layout: vtable word at 0x48, fields at 0x24..0x44; sub-object at 0xC. */
 struct Obj00500DD8 {

@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 struct Obj {
     char p0[0x30]; f32 f30, f34, f38, f3C; char p1[0x54 - 0x40]; f32 f54; char p2[4]; f32 f5C; char p3[4]; int f64;
     char p4[0x78 - 0x68]; int f78;

@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 struct R { s64 a; s64 b; s64 c; s64 d; };
 extern "C" void func_00434D80(R *r) {
     s64 f8 = r->b;

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef short s16;
-typedef signed char s8;
+#include "types.h"
 struct Msg { s32 unk0; s32 unk4; s8 unk8; s8 unk9; char padA[6]; u32 unk10; s16 unk14; char data[1]; };
 extern char D_0064A280[];
 extern char D_0064A200[];

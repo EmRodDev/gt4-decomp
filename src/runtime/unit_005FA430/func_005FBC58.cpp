@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Target005FBC58 {
     char pad[0x3444];

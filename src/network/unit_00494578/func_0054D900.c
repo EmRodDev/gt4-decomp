@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 typedef struct { s32 (*f)(s32 a, s32 b); s32 a; } Hook;
 extern Hook D_0064C488;
 s32 func_0054D900(void) {

@@ -1,6 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef unsigned char u8;
+#include "types.h"
 struct Q { char pad[0x3E]; u8 b3e; };
 struct G { char pad[4]; char x4[0xC0]; s32 c4; };
 struct Base {

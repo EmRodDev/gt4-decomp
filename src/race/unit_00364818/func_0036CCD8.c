@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 f32 func_0036CB90(f32);
 void func_0036CCD8(f32 fparg0, f32 fparg1, f32 fparg2, f32 fparg3) {
     f32 temp_f1;

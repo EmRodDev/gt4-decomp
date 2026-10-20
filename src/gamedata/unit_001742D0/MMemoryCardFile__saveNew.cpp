@@ -8,20 +8,10 @@ struct Entry { short delta,index; int (*fn)(void *); };
 struct Obj { int x; Entry *vt; };
 struct Block { long data[152]; };
 extern Rep D_00659FA8;
-extern char D_006614F8[];
 extern "C" void func_00174148(void *,void *) throw();
 extern "C" void func_001740F0(void *,int) throw();
-extern "C" void func_0013BDC0(void *,void *);
-extern "C" char *func_00147D80(void *);
-extern "C" void func_0013BD68(void *,int);
-extern "C" int func_00435568(void *,int,void *);
-extern "C" void func_0017CA80(void *,int,void *);
 extern "C" void *func_001792D8(void *,void *);
 extern "C" void func_00179280(void *,int);
-extern "C" void func_001CDA10(void *);
-extern "C" int func_001CC528(void *,void *);
-extern "C" int func_001CEEC0(void *,void *,void *,void *,int);
-extern "C" void func_001CC060(void *,int);
 extern "C" const char *GT4MC__getFileResultString(int);
 extern "C" char *func_005C2560(Rep *);
 extern "C" int func_0057F260(const char *) throw();
@@ -43,8 +33,6 @@ struct File {char pad[0x1c];void *a; char gap[8];void *b;};
 struct Callback {void *vt;void (*fn)(int *);void *p;int pad;};
 extern char D_0065CDE0[],D_0065CE00[];
 extern "C" void func_001742F0(int *);
-extern "C" void func_002FE278(void *,int);
-extern "C" void func_002FC870(void *,int);
 static inline void assign(void **out,void **src) {
  if(out!=src) {void *v=src[0];if(v)func_003285A8(v);void *old=*out;if(old)func_003285F8(old);*out=v;}
 }

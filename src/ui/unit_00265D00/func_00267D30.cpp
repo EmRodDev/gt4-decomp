@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct Vec2 { f32 x; f32 y; };
 struct Src { char pad[0x78]; f32 unk78; f32 unk7C; };

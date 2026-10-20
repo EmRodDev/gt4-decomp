@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 extern "C" void func_004940E8(void *a0, void *a1, s32 a2, s32 a3);
 extern char D_00492ED0[];
 struct Obj {

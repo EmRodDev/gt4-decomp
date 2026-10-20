@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -70,7 +69,7 @@ extern "C" char *func_005C2560(Rep *r);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 

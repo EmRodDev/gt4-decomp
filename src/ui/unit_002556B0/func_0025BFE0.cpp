@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" bool func_0025BFE0(f32 *cur, f32 target, f32 rate) {
     f32 d = target - *cur;

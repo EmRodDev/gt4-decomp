@@ -1,7 +1,6 @@
 struct Node { int a; int len; int pad8; };
 struct Args { int a0; int a4; Node *n8; Node *nC; Node *n10; };
 struct Str9 { char c[9]; };
-extern char D_0064C3E4_dummy;
 extern char *D_0064C3E4;
 extern char D_006C8480[];
 extern char D_006C8478[];

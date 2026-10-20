@@ -5,7 +5,6 @@ extern "C" Heap *func_005C11A8();
 extern "C" void func_00326798(void *, int, int, const char *);
 extern "C" void func_003285A8(void *);
 extern "C" void func_003285F8(void *);
-extern "C" void func_00312370(void *, void *) throw();
 extern "C" void func_00312318(void *, int) throw();
 extern "C" void func_00314B20(void *, void *);
 struct Rep { u32 len, cap, ref, selfish;

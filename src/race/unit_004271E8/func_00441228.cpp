@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" char *func_00441228(char *arg0, s32 arg1) {
     return arg0 + (arg1 * 0x178) + 8;

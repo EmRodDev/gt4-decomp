@@ -20,7 +20,7 @@ extern "C" s32 func_00431C60(const char *);
 extern "C" void func_00430A58(s32, s32, s32);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 static inline Rep *str_rep(Str *s) { return (Rep *)s->p - 1; }

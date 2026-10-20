@@ -1,6 +1,4 @@
-typedef float f32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 
 struct func_00348368_arg0 {
     char pad0[0x467];

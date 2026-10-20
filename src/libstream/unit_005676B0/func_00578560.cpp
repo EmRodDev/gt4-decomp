@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 extern "C" {
 s64 func_005B8450(void);
 void __udivdi3(s64 a, int b);

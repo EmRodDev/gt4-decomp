@@ -37,7 +37,6 @@ struct VObj {
 
 extern char D_006959D8[];
 extern char D_00695A30[];
-extern char D_006959E0[];
 
 extern "C" void func_001DC5F8(void *, int) throw();
 extern "C" void func_001DC650(void *, void *) throw();
@@ -46,19 +45,11 @@ extern "C" s32 func_001F15A0(void *);
 extern "C" s32 func_001F2BB0(void *, const char *, s32);
 extern "C" void func_00227BE0(void *, const char *);
 extern "C" s32 func_005A5A30(char *, s32, const char *, ...);
-extern "C" void func_0023B1D8(void *, int);
-extern "C" void func_0023B478(void *);
-extern "C" void func_0023CA78(void *, const char *, const char *);
-extern "C" void func_002ED5C0(void *, int);
-extern "C" void func_002ED618(void *, void *);
-extern "C" s32 hArray__size(void *);
-extern "C" VObj **HArray__operator_index(void *, s32);
 extern "C" void func_002FC870(void *, int);
 extern "C" void func_002FE278(void *, s32);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" void func_003285A8(void *p);
 extern "C" void func_003285F8(void *p);
-extern "C" void func_0057DA20(void *, const char *, ...);
 extern "C" struct S00659988 *func_005C11A8(void);
 
 static inline void str_release(Str *s) {

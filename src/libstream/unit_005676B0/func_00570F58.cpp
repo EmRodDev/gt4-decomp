@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Copy { int x[4]; };
 struct Entry {
  int a0, busy, size; u32 len;

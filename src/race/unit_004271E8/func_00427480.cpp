@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern void *D_00622D50;
 extern "C" void *exception__structor_0(int);
 extern "C" void *func_004274E0(void *p);

@@ -5,7 +5,6 @@ struct Str { char *p; char pad[12]; };
 struct Info { const char *name; };
 extern Rep D_00659FA8;
 extern char D_0069CF60[],D_0069CF68[],D_0069CF70[];
-extern "C" void func_0025B500(void *,float *,float *,float *,float *);
 extern "C" void *func_0030BB18(void *);
 extern "C" char *func_005C2560(Rep *);
 extern "C" int func_0057F260(const char *) throw();

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef signed char s8;
+#include "types.h"
 
 extern "C" void func_0022AD20(void *arg0, void *arg1);
 extern "C" void func_0022ACC8(void *arg0, int arg1);

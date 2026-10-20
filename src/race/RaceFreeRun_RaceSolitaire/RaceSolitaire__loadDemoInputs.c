@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void AutomobileControlRecord__Manager__load(char *a, char *b, s32 c);
 void RaceSolitaire__loadDemoInputs(char *arg0, char *arg1) {
     char *s = arg0 + 0xE48C;

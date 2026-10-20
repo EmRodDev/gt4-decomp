@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types.h"
 struct Source {
     union {u64 word0;struct {u32 low0,high0;};};
     union {

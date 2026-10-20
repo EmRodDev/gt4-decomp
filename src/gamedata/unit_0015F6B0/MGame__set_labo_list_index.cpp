@@ -1,10 +1,9 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct VEntry_166CC8 { s16 delta; s16 index; s32 (*fn)(void *); };
 struct VObj_166CC8 { char pad0[4]; VEntry_166CC8 *vtbl; };
 static inline s32 vcall_166CC8(char *o) {
-    VEntry_166CC8 *e = (VEntry_166CC8 *)((char *)((VObj_166CC8 *)o)->vtbl + 0x58);
+    VEntry_166CC8 *e = &((VObj_166CC8 *)o)->vtbl[11];
     return e->fn(o + e->delta);
 }
 

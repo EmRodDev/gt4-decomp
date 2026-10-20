@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Elem64 { char p[64]; };
 struct Elem16 { char p[16]; };

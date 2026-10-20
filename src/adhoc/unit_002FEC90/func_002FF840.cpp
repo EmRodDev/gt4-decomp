@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
+#include "types.h"
 
 extern "C" void HIO__read(void *arg0, u8 *arg1, s32 arg2);
 

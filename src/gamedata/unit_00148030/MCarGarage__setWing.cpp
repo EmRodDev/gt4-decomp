@@ -22,7 +22,7 @@ extern "C" int func_0057F238(const char *, const char *) throw();
 extern "C" struct S00659988 *func_005C11A8(void);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 static inline Rep *str_rep(Str *s) { return (Rep *)s->p - 1; }

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 
 struct Inner {
     char pad0[0x262];

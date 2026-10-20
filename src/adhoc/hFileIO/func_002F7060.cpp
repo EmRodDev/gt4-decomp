@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Frame { union { char *p; s32 w; } u; s32 n; };
 

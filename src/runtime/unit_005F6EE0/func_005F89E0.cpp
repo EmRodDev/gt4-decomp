@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 struct Obj;
 
 extern "C" void Oscillator__setWaveform(Obj *arg0, f32 fparg0, f32 fparg1);

@@ -17,13 +17,10 @@ struct Str {
 };
 
 extern "C" Rep D_00659FA8;
-extern "C" char D_00697800[];
 extern "C" char *func_005C2560(Rep *r);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" s32 func_0020EEA0(void *, Str *);
-extern "C" int func_005A2F70(const char *);
-extern "C" float dptofp(int);
 
 static inline void release(Str *s) {
     Rep *q = (Rep *)(s->p - 0x10);

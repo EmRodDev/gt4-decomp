@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef float f32;
+#include "types.h"
 
 struct Rec_003E79F8 {
     s32 link : 13;

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 struct In { u8 b0; char p[0xB]; s32 fC; };
 extern "C" s32 func_005ADCF0(s32);
 extern "C" s32 func_00539B40(In *p, u8 *out) {

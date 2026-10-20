@@ -29,7 +29,7 @@ extern "C" char *func_005C2560(Rep *);
 extern "C" void *func_005C2630(Str *, u32, u32, const char *, u32);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 

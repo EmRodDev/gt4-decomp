@@ -41,10 +41,6 @@ extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" s32 MfloatReader__structor_0(void *self, void *node);
 extern "C" s32 func_0020FD38(void *node, Str *name, Reader *r);
 extern "C" void MReaderBase__structor_0(Reader *r, s32 flags);
-extern "C" void func_00200EB0(Obj *self, f32 v);
-extern "C" void func_00200EC0(Obj *self, f32 v);
-extern "C" void func_00200ED0(Obj *self, f32 v);
-extern "C" void func_00200EE0(Obj *self, f32 v);
 
 
 

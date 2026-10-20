@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern char SDDRV__VoiceSystem__master_[];
 

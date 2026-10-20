@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Data { int v[4]; };
 struct Entry { int w[4]; Data data; };
 struct State { char pad[0xF8]; u32 count; char padFC[0x1FC]; Entry entries[1024]; };

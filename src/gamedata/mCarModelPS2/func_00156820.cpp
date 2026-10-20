@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" s32 func_0049CE00(void);
 extern "C" void ModelSet2__registerExternalTexSet(s32, s32);
 extern "C" void func_00456918(float);

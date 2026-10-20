@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 struct VEntry { s16 delta; s16 index; void *(*fn)(void *, s32); };
 struct Peer {
     char pad[0x100];

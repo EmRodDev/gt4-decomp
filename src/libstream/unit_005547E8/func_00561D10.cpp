@@ -5,8 +5,6 @@ struct Copy60 { int w[0x10]; };
 
 extern "C" int func_005616E8(int a, int b);
 extern "C" void func_00561818(void *);
-extern "C" void func_00561770(void *);
-extern "C" void func_005617A8(void *);
 extern "C" int func_005B19B0(void *cd, int fno, int mode, void *send, int ssize, void *recv, int rsize, void *end, void *param);
 
 extern "C" int func_00561D10(int n, int *p) {

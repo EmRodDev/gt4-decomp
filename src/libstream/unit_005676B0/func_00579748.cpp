@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 func_00579748(s32 arg0) {
     s32 a = (arg0 & 3) == 0;

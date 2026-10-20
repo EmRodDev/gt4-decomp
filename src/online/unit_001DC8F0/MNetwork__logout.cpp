@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct RefCounter;
 
 extern "C" void func_001DC5F8(void *, s32) throw();

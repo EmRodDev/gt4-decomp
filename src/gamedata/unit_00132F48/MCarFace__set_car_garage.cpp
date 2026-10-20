@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Classes named after their constructors (func_00137DB8, func_0013BDC0); their sizes are only
    bounded by the frame (the first takes 0x11-0x20 bytes, the second at most 0x10). */

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void func_0055BDD0(char *a);
 void func_0055BDA0(char *arg0) {
     *(s32 *)(arg0 + 4) = 0;

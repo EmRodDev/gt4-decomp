@@ -17,7 +17,6 @@ extern Iface *D_0064B4B0;
 extern char D_0086B540[];
 extern char D_006C42F8[];
 extern int D_0064C118;
-extern "C" int func_0053BC28(char *,int,char *) throw();
 extern "C" int func_0053B6E8(char *,char *,Address *,int *) throw();
 extern "C" int func_00540BF8(int *,unsigned int,int);
 extern "C" void func_00540EB0(int);

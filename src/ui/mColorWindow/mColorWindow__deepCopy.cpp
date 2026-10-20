@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 extern char mColorWindow__tf[];
 extern char hObject__tf[];

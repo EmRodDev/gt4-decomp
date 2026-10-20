@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct A { char pad[4]; s32 f4; char pad2[0xFC]; u32 f104; };
 struct B { char pad[4]; s32 f4; };
 extern A *D_00854150;

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void RaceCarSound__playStop(void *arg0, s32 arg1);
 

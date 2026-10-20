@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" void Pitmen__StatusTeam__clear(char *arg0) {
     *(s32 *)(arg0 + 0x0) = 0;

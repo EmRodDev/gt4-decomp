@@ -1,4 +1,4 @@
-typedef unsigned long long u64;
+#include "types.h"
 struct Rec { char pad[0x13]; unsigned char t; char pad2[0xc]; };
 struct B { char pad[0x3444]; int v; };
 struct L { char pad[8]; B **items; };

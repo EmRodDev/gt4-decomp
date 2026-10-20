@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_003D31F8_arg0 {
     char pad0[0x9680];

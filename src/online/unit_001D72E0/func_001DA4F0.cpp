@@ -23,7 +23,6 @@ struct Rep {
 };
 
 extern "C" char *func_005C2560(Rep *r);
-extern Rep D_00659FA8;
 
 inline char *Rep::grab() {
     if (selfish)

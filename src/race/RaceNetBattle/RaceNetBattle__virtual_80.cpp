@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct RaceNetBattle {
     char pad[0x22C4C];

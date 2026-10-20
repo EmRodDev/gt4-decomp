@@ -1,6 +1,4 @@
-typedef float f32;
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 
 /* Constructor of a suspension-geometry helper: samples the car's suspension curves, solves the
    roll centre angle and resets the four wheel states. */

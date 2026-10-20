@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct S2C6110 {
     char p0[8];

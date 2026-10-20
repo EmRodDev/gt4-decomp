@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void MRectangleReader__structor_0(void *arg0);
 extern "C" void func_0024DB78(void *arg0, s32 arg1);

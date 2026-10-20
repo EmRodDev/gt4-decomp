@@ -16,8 +16,6 @@ extern "C" void func_00314B20(void *,void *);
 extern "C" void func_00312318(void *,int);
 extern "C" void func_003285A8(void *);
 extern "C" void func_003285F8(void *);
-extern "C" int func_00448AD0(const char *,void *);
-extern "C" int func_00447CA0(long long,char *);
 static inline Rep *rep(Str *s) { return (Rep *)s->p - 1; }
 static inline char *data(Rep *r) { return (char *)(r+1); }
 static inline int length(Str *s) { return rep(s)->len; }

@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" void func_00421640(f32 *out, const f32 *in) {
     int off = 12;

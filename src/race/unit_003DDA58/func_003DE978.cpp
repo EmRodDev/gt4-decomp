@@ -7,7 +7,7 @@ extern "C" int *func_0044D050();
 extern "C" void *func_003DE978() {
     int *p = func_0044D050();
     Obj *self = D_00621CB4->race;
-    VEntry *entry = (VEntry *)((char *)self->vtbl + 0x1E8);
+    VEntry *entry = &self->vtbl[61];
     entry->fn((char *)self + entry->delta, p);
     return (char *)p + *p;
 }

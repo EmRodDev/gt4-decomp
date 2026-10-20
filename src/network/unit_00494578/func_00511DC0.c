@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 s32 func_00511DC0(char *arg0, s32 *arg1) {
     s32 *p;
     if (arg1 == 0) return 1;

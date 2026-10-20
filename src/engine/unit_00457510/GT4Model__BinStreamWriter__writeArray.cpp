@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" void GT4Model__BinStreamWriter__write8u(s32 arg0, u8 arg1);
 

@@ -55,7 +55,7 @@ inline Mid::operator Elem() const { return Elem(*this); }
 struct ArrayRef : Ref {
     ArrayRef(const ArrayRef &) __asm__("func_002ED5A8");
     ~ArrayRef() __asm__("func_002ED5C0");
-    Ref &operator[](int) __asm__("func_002EFCE0");
+    Ref &operator[](int) __asm__("HArray__operator_index");
 };
 struct Heap { const char *name; };
 extern "C" Heap *func_005C9B90();

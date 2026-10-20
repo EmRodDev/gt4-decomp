@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Node { char pad0[4]; Node *next; char pad8[8]; u32 key; };
 extern Node **D_0064B70C;
 extern "C" void func_005439F0(u32, Node *) throw();

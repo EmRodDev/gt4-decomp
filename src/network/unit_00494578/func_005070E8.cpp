@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Blob {
     char d[0x64];

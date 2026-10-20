@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef float f32;
+#include "types.h"
 
 struct Vec4 { f32 x, y, z, w; };
 struct B { s32 f0; Vec4 v4; };

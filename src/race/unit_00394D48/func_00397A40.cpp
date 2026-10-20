@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void func_00397A98(s32 arg0, s32 arg1);
 struct ObjA; 
 struct ObjA { char pad0[0x4]; ObjA *unk4; char pad8[0x8]; s32 unk10; s32 unk14; };

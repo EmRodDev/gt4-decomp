@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 D_0062378C;
 extern "C" s32 SPEC_DATABASE__GetCarNameInfo(void *, s32 *);

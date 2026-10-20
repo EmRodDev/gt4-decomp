@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" s32 RaceBase__updateCommon(void *);
 extern "C" void RaceBase___terminate(void *);
 extern "C" void ErrorEventView__update(void *, void *);

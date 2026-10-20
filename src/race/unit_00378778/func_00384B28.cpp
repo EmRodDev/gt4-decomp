@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" f32 func_00384B28(f32 *arg0) {
     f32 v = *arg0;

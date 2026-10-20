@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct Obj {
     unsigned handle; int kind; unsigned state;
     char pad[0x58-12]; unsigned expected, count;

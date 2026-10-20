@@ -23,7 +23,6 @@ struct Arg {
 extern "C" void free(void *) throw();
 extern "C" void *func_00575E60(s32, s32);
 extern "C" void *func_005A4724(void *, const void *, u32);
-extern "C" void *func_005A47D4(void *, const void *, u32);
 
 template <class T>
 class Alloc {

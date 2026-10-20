@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct State { int a,b,c,type; };
 struct Self { char pad[0x100]; State *state; };
 struct Packet { u8 id; char pad[7]; u16 a,b,c,d,e; char pad12[4]; char text[1]; };

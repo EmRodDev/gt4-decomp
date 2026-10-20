@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 struct Item { char pad0[4]; s32 unk4; char pad8[0x10]; s32 unk18; };
 struct Obj { char pad0[4]; s32 unk4; s32 unk8; char padC[0x70]; Item *unk7C; };
 struct Vt { char pad0[0x80]; s32 (*f80)(void *, void *); };

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" void *func_005A48D8(void *, s32, s32);
 extern "C" void *memcpy(void *, const void *, s32);

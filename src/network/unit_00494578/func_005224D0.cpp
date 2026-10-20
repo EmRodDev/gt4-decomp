@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct __attribute__((aligned(8))) S { s32 lo; s32 hi; };
 

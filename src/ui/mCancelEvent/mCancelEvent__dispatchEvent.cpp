@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct VEntry {
     s16 delta;
@@ -16,7 +15,7 @@ struct mCancelEvent {
 };
 
 static inline s32 vcall_50(char *o) {
-    VEntry *e = (VEntry *)((char *)((mCancelEvent *)o)->vtbl + 0x50);
+    VEntry *e = &((mCancelEvent *)o)->vtbl[10];
     return e->fn(o + e->delta);
 }
 

@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" void *exception__structor_0(u32 arg0);
 extern "C" void RaceSplitBattle__structor_0(void *arg0);

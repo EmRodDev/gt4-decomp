@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_005061D8_arg0 {
     s32 unk0;

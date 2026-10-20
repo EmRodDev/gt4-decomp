@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct func_005F3BA8_arg0 {
     char pad0[0xCF40];

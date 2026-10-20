@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Layout backed by include/gt4/hArray.h and config/class_layout.json (size 0x24):
  *   0x00..0x0F: hObject base fields (0x04 vtable)

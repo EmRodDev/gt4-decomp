@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef long long s64;
+#include "types.h"
 extern "C" {
 int SPEC_DATABASE__DatabaseStorage__getRow(void *, s64, void *);
 int func_0044A048(void *);

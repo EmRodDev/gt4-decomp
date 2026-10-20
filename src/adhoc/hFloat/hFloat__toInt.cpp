@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 /* Layout backed by include/gt4/hFloat.h and config/class_layout.json (size 0x14):
  *   0x00: ref_count

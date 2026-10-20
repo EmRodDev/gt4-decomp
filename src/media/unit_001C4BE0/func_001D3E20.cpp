@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Image { char *start; char *finish; };
 struct Hdr { char pad0[8]; u32 flags; };
 extern "C" void *func_005A4724(void *, const void *, unsigned int);

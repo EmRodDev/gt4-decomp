@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef float f32;
+#include "types.h"
 
 extern "C" void mWidget__deepCopy(void *arg0, void *arg1);
 extern "C" void *GT4MC__FileGT4GameData__loadInstance(void *arg0, void *arg1, s32 arg2, void *arg3, void *arg4, void *arg5);

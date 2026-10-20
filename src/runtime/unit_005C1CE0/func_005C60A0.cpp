@@ -65,7 +65,7 @@ inline ScoredHandle_005C60A0::operator GarageScore_005C60A0() const { return Gar
 struct ScriptArrayHandle_005C60A0 : ScriptHandle_005C60A0 {
     ScriptArrayHandle_005C60A0(const ScriptArrayHandle_005C60A0 &) __asm__("func_002ED5A8");
     ~ScriptArrayHandle_005C60A0() __asm__("func_002ED5C0");
-    ScriptHandle_005C60A0 &operator[](int) __asm__("func_002EFCE0");
+    ScriptHandle_005C60A0 &operator[](int) __asm__("HArray__operator_index");
 };
 
 struct TypeInfoName_005C60A0 { const char *name; };

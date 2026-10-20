@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 extern "C" void mRootWindow__tf();
 extern "C" void func_005C0E78(void *a0, void *a1, void *a2);

@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct State { u32 mt[625]; int index; };
 extern State D_0064B720;
 extern "C" void func_00539670(u32);

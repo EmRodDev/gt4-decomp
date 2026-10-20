@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Ring {
     u32 wr;
     u32 rd;

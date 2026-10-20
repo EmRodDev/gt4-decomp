@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
+#include "types.h"
 struct Obj { char pad0[0x84]; char *unk84; char pad88[0x9C - 0x88]; u16 unk9C; };
 extern "C" void func_00527B28(Obj *, u16) throw();
 extern "C" s32 func_00527C70(Obj *arg0, u16 a1, u16 a2) {

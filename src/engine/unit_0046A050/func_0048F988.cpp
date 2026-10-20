@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 PDISTD__global_font_manager;
 extern s32 D_00624984;

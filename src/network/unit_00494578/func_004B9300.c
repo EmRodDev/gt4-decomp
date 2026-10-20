@@ -1,5 +1,4 @@
-typedef short s16;
-typedef int s32;
+#include "types.h"
 s16 func_004B9210(s32 a);
 s32 func_004B9300(s16 *arg0, s32 arg1) {
     s16 v = func_004B9210(arg1);

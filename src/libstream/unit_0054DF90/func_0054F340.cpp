@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Sem { char b[0xC0]; };
 extern Sem D_0086F640[2];

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 s32 func_00440B18(s32);
 void func_00440B50(char *a, s32 b, s32 c);
 void func_00440A68(char *arg0, s32 arg1, s32 arg2) {

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Layout backed by config/class_layout.json (mVariablePush size 0x1C):
  *   0x00: ref_count

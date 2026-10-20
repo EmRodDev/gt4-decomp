@@ -1,4 +1,4 @@
-typedef long s64;
+#include "types.h"
 struct Record { int x[6]; };
 struct VEntry { short delta, index; void (*fn)(void *); };
 struct Settings { char pad[0x38D20]; int low; char p[12]; int high; };

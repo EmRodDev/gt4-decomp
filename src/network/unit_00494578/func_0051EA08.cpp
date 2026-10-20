@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct Owner;
 struct Obj {
     int unused, kind;

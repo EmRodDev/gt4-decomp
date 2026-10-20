@@ -1,6 +1,4 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
-extern "C" void RaceSplitDisplayBase__structor_1(void *, int) throw();
-extern "C" void func_005C1628(void *) throw();
 struct Root { virtual void slot0(); };
 struct Display : Root {
     virtual void slot1();

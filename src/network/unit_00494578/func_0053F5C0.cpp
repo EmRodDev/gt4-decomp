@@ -17,7 +17,6 @@ extern const char *D_0064C158;
 extern const char *D_0064C15C;
 extern const char *D_0064C160;
 extern const char *D_0064C164;
-extern const char *D_0064C168;
 extern const char *D_0064C16C;
 extern const char *D_0064C170;
 extern const char *D_0064C174;

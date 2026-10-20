@@ -1,10 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 extern char D_00520968[];
 extern "C" s32 func_00520970(s32 arg0, s32 arg1, s32 *arg2);

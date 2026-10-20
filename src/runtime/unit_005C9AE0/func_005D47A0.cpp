@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* 44-byte record (0x2C): 40 bytes of payload, then the 4-byte sort key at +0x28. */
 struct Rec44 {

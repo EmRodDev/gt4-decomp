@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" void func_00127E60(void *arg0) {
     u32 pattern = 0x157529FF;

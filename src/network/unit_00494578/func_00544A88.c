@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void memcpy(char *a, char *b, s32 c);
 void func_00545EB8(char *a, s32 b);
 void func_00544A88(char *arg0, char *arg1, s32 arg2) {

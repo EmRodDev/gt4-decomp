@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 struct Obj44F9D0 { char pad[0x60]; f32 unk60; };
 

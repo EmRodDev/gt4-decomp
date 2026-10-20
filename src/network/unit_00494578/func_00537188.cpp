@@ -1,4 +1,4 @@
-typedef unsigned long long u64;
+#include "types.h"
 struct P8 { int a,b; };
 struct Record { int kind; P8 addr; };
 struct Global { int id; char pad4[0x4c]; P8 addr; int active; char pad5c[0x10]; int pending; };

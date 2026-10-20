@@ -6,7 +6,6 @@ extern "C" void free(void *) throw();
 #include <stl_uninitialized.h>
 #include <stl_vector.h>
 extern "C" void func_004768C0(void *);
-extern "C" void func_004078A0(void *);
 extern "C" void func_005C1628(void *) throw();
 struct Elem { int a,b,c; ~Elem() {} };
 struct Rep { int len,cap,ref,sel; };

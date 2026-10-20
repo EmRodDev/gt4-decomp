@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct Entry { int *data; char pad[12]; void *value10; int value14; };
 struct Obj { char pad0[0x88]; struct Entry *entries; u8 selected; char pad1[0x9C-0x8D]; u16 count; char pad2[0xBC-0x9E]; unsigned size; int valueC0; };
 struct Packet { u16 code; u8 index; u8 pad; };

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Obj1 { char pad[0xD4]; s32 fD4; };
 struct Self { char pad[0x20]; Obj1 *f20; char pad24[4]; };

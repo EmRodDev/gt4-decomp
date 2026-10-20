@@ -1,6 +1,4 @@
-typedef signed char s8;
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 extern "C" void func_003866D0(s8 *arg0, f32 fparg0);
 extern "C" void func_00386B28(s8 *first, f32 t);

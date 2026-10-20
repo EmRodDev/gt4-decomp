@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef short s16;
+#include "types.h"
 
 struct Ent {
     s16 delta;

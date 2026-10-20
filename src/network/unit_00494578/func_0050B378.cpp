@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 extern s32 D_0064A308;
 extern s32 D_0064A30C;
 extern s16 D_0064A310;

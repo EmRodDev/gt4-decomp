@@ -1,8 +1,8 @@
-typedef int s32;
+#include "types.h"
 struct VEntry { short delta; short index; s32 (*fn)(void *); };
 struct VObj { char pad[4]; VEntry *vtbl; };
 static inline s32 vcall(char *o) {
-    VEntry *e = (VEntry *)((char *)((VObj *)o)->vtbl + 0x58);
+    VEntry *e = &((VObj *)o)->vtbl[11];
     return e->fn(o + e->delta);
 }
 extern "C" void func_001DC650(void *, void *) throw();

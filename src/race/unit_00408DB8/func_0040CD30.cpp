@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" f32 func_0040CD30(void *arg0) {
     return *(f32 *)((char *)*(void **)arg0 + 0x4);

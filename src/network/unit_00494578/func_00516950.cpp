@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Size { int unk, width, height; };
 struct Entry { int unk, count; char pad8[0x20]; struct Size *sizes[64]; int offsets[64]; };
 struct Global { char pad[0x118]; int handle; char pad11c[0x81dc]; struct Entry entries[16]; };

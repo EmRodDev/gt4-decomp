@@ -7,7 +7,6 @@ struct State {
  char p4c[0x18c]; unsigned long a; char p1e0[8]; unsigned long b;
  char p1f0[8]; unsigned *cursor; char p1fc[0xe2c]; int frame;
 };
-extern unsigned char D_70002000[];
 extern unsigned char D_00624C70;
 extern unsigned D_0084AF30;
 extern int D_0084AF34;

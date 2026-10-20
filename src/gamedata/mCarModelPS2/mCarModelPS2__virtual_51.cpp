@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
+#include "types.h"
 
 struct Rep { s32 len, cap, ref, sel; };
 struct Str { char *p; char pad[0xC]; };
@@ -11,8 +9,6 @@ struct Object { char pad[4]; char *vtable; };
 
 extern char D_0068FD90[];
 extern char D_0068FD88[];
-extern "C" void func_00326798(void *, s32, s32, const char *);
-extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" const char *func_00450BF0(void *);
 extern "C" s32 func_00594470(const char *, const char *, s32);
 extern "C" s32 func_0057F238(const char *, const char *);

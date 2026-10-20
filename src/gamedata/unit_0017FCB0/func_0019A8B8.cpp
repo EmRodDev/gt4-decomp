@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Inner { char pad[0x1C]; s32 unk1C; };
 struct Obj { char pad[0xA0]; Inner *unkA0; };

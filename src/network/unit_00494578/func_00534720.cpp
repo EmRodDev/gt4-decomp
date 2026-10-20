@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Res { s32 unk0; s32 unk4; };
 extern s32 D_0064B4F0;
 extern "C" void *func_00535A18(unsigned int);

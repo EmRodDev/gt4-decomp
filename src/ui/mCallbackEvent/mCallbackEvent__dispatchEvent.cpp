@@ -6,7 +6,6 @@ extern "C" void func_005D4AD8(const char *,...);
 extern "C" const char *hModule__getName(void *);
 extern "C" int func_0028EA08(void *);
 extern "C" int func_0028EA18(void *);
-extern "C" int mEvent__propagateEvent(void *,int,int);
 static inline void *vcall(O *o) {
     E *e = (E *)(o->vt+0x50);
     return e->fn((char *)o+e->delta);

@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 struct Vec {
     f32 x;
     f32 y;

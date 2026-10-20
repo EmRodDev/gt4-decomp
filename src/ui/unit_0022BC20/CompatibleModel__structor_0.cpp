@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 struct CM { char pad0[0x48]; char *vptr; s32 f4C; s32 f50; s32 f54; s32 f58; };
 struct VE { short delta; short idx; void (*fn)(void *, void *, void *); };
 extern char CompatibleModel__vtable[];

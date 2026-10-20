@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
+#include "types.h"
 s32 RaceEventQueue__check(char *a, s32 b, void *c, s32 d);
 void func_003E1EA0(s32 a, char *b);
 void func_003E1E10(s32 arg0, char *arg1) {

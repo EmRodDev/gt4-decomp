@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 extern char D_006235A8[];
 s32 SPEC_DATABASE__DatabaseStorage__IsExistID(char *a);
 s32 SPEC_DATABASE__RaceSpec__setCourse(char *arg0, s64 arg1) {

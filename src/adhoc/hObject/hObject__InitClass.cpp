@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -35,7 +35,6 @@ extern "C" struct S00659988 *func_005C11A8(void);extern char D_0083F6A0[];
 extern "C" void func_00305550(Obj *arg0, void *arg1);
 
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" int hObject__GetClassID(void);
 extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
 extern "C" void func_002F36E0(Obj *arg0, void *arg1, void (*arg2)(void));
 extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));

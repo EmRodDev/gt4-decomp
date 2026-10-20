@@ -1,5 +1,4 @@
-typedef float f32;
-typedef unsigned char u8;
+#include "types.h"
 
 struct Rect { u8 unused; };
 struct Widget {

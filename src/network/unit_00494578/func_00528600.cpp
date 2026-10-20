@@ -1,6 +1,4 @@
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef signed char s8;
+#include "types.h"
 struct Obj { char pad[0x9c]; u16 count; };
 struct Info { int *items; int out[3]; u32 count; };
 extern "C" int func_00528160(Obj *,u32,u16,const unsigned char **) throw();

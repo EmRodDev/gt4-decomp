@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
+#include "types.h"
 
 s32 func_004C9298(u8 *arg0, u8 *arg1) {
     while (*arg0 == *arg1) {

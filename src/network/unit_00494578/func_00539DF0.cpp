@@ -1,6 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 struct St { int pad; u32 end, cur; int pad2, err; };
 extern "C" void func_00539DF0(int mode, St *s, u16 *val) {
     if (s->err == 0) {

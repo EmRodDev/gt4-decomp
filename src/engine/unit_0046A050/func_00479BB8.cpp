@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 static inline void relocate(s32 *field, s32 base)
 {

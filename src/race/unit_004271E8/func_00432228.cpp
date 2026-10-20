@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 func_004321F0();
 extern "C" void GranTurismo4__GetTimeString(s32 arg0, s32 arg1, s32 arg2);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 typedef float f32;
 
 struct Obj {

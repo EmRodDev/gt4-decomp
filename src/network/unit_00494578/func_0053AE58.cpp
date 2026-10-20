@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned int u32;
+#include "types.h"
 struct Time { int ms, sec, min, hour, day, month, year, pad, tick; };
 extern Time D_0086B418;
 extern "C" int func_005492C8(void *);

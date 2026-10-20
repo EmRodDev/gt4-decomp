@@ -1,5 +1,4 @@
-typedef signed char s8;
-typedef int s32;
+#include "types.h"
 
 struct func_00362E10_obj {
     char pad0[0x442];

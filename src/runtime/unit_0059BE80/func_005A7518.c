@@ -402,7 +402,6 @@ typedef struct
   long rem;
 } ldiv_t;
 
-extern int __mb_cur_max;
 
 void abort (void) __attribute__ ((noreturn));
 int abs (int);
@@ -538,25 +537,8 @@ struct tms;
 struct timeval;
 struct timezone;
 
-extern int _close_r (struct _reent *, int);
-extern int _execve_r (struct _reent *, char *, char **, char **);
-extern int _fcntl_r (struct _reent *, int, int, int);
-extern int _fork_r (struct _reent *);
 extern int _fstat_r (struct _reent *, int, struct stat *);
-extern int _getpid_r (struct _reent *);
-extern int _kill_r (struct _reent *, int, int);
-extern int _link_r (struct _reent *, const char *, const char *);
-extern _off_t _lseek_r (struct _reent *, int, _off_t, int);
-extern int _open_r (struct _reent *, const char *, int, int);
-extern _ssize_t _read_r (struct _reent *, int, void *, size_t);
-extern void *_sbrk_r (struct _reent *, size_t);
-extern int _stat_r (struct _reent *, const char *, struct stat *);
-extern unsigned long  _times_r (struct _reent *, struct tms *);
-extern int _unlink_r (struct _reent *, const char *);
-extern int _wait_r (struct _reent *, int *);
-extern _ssize_t _write_r (struct _reent *, int, const void *, size_t);
 
-extern int _gettimeofday_r (struct _reent *, struct timeval *tp, struct timezone *tzp);
 
 /*
  * Copyright (c) 1990 The Regents of the University of California.
@@ -577,7 +559,6 @@ extern int _gettimeofday_r (struct _reent *, struct timeval *tp, struct timezone
  *	%W% (UofMD/Berkeley) %G%
  */
 
-extern char **environ;
 
 void _exit (int __status ) __attribute__ ((noreturn));
 
@@ -661,19 +642,11 @@ int _execve (const char *__path, char * const __argv[], char * const __envp[] );
 
 long sysconf (int __name);
 
-extern int __svfscanf (FILE *, const char *,va_list);
-extern FILE *__sfp (struct _reent *);
-extern int __sflags (struct _reent *,const char*, int*);
 extern int __srefill (FILE *);
-extern int __sread (void *, char *, int);
-extern int __swrite (void *, char const *, int);
 extern fpos_t __sseek (void *, fpos_t, int);
-extern int __sclose (void *);
-extern int __stextmode (int);
 extern void __sinit (struct _reent *);
 extern void _cleanup_r (struct _reent *);
 extern void __smakebuf (FILE *);
-extern int _fwalk (struct _reent *, int (*)(FILE *));
 struct _glue * __sfmoreglue (struct _reent *,int n);
 extern int __srefill (FILE *fp);
 
@@ -712,7 +685,6 @@ struct __suio {
 };
 
 extern int __sfvwrite (FILE *, struct __suio *);
-extern int __swsetup (FILE *);
 
 /****************************************************************
  *
@@ -818,132 +790,29 @@ union __dmath
   double d;
 };
 
-extern const union __dmath __infinity[];
 
-extern double atan (double);
-extern double cos (double);
-extern double sin (double);
-extern double tan (double);
-extern double tanh (double);
-extern double frexp (double, int *);
-extern double modf (double, double *);
-extern double ceil (double);
-extern double fabs (double);
-extern double floor (double);
 
-extern double acos (double);
-extern double asin (double);
-extern double atan2 (double, double);
-extern double cosh (double);
-extern double sinh (double);
-extern double exp (double);
-extern double ldexp (double, int);
-extern double log (double);
-extern double log10 (double);
-extern double pow (double, double);
-extern double sqrt (double);
-extern double fmod (double, double);
 
-extern double infinity (void);
 extern double nan (void);
 extern int isnan (double);
 extern int isinf (double);
 extern int finite (double);
-extern double copysign (double, double);
-extern int ilogb (double);
 
-extern double asinh (double);
-extern double cbrt (double);
-extern double nextafter (double, double);
-extern double rint (double);
-extern double scalbn (double, int);
 
-extern double log1p (double);
-extern double expm1 (double);
 
-extern double acosh (double);
-extern double atanh (double);
-extern double remainder (double, double);
-extern double gamma (double);
-extern double gamma_r (double, int *);
-extern double lgamma (double);
-extern double lgamma_r (double, int *);
-extern double erf (double);
-extern double erfc (double);
-extern double y0 (double);
-extern double y1 (double);
-extern double yn (int, double);
-extern double j0 (double);
-extern double j1 (double);
-extern double jn (int, double);
 
-extern double hypot (double, double);
 
-extern double cabs();
-extern double drem (double, double);
 
-extern float atanf (float);
-extern float cosf (float);
-extern float sinf (float);
-extern float tanf (float);
-extern float tanhf (float);
-extern float frexpf (float, int *);
-extern float modff (float, float *);
-extern float ceilf (float);
-extern float fabsf (float);
-extern float floorf (float);
 
-extern float acosf (float);
-extern float asinf (float);
-extern float atan2f (float, float);
-extern float coshf (float);
-extern float sinhf (float);
-extern float expf (float);
-extern float ldexpf (float, int);
-extern float logf (float);
-extern float log10f (float);
-extern float powf (float, float);
-extern float sqrtf (float);
-extern float fmodf (float, float);
 
-extern float infinityf (void);
-extern float nanf (void);
 extern int isnanf (float);
 extern int isinff (float);
 extern int finitef (float);
-extern float copysignf (float, float);
-extern int ilogbf (float);
 
-extern float asinhf (float);
-extern float cbrtf (float);
-extern float nextafterf (float, float);
-extern float rintf (float);
-extern float scalbnf (float, int);
-extern float log1pf (float);
-extern float expm1f (float);
 
-extern float acoshf (float);
-extern float atanhf (float);
-extern float remainderf (float, float);
-extern float gammaf (float);
-extern float gammaf_r (float, int *);
-extern float lgammaf (float);
-extern float lgammaf_r (float, int *);
-extern float erff (float);
-extern float erfcf (float);
-extern float y0f (float);
-extern float y1f (float);
-extern float ynf (int, float);
-extern float j0f (float);
-extern float j1f (float);
-extern float jnf (int, float);
 
-extern float hypotf (float, float);
 
-extern float cabsf();
-extern float dremf (float, float);
 
-extern int signgam;
 
 struct exception
 
@@ -956,7 +825,6 @@ struct exception
   int err;
 };
 
-extern int matherr (struct exception *e);
 
 enum __fdlibm_version
 {
@@ -966,12 +834,8 @@ enum __fdlibm_version
   __fdlibm_posix
 };
 
-extern const enum __fdlibm_version __fdlib_version;
 
-extern int *func_005A3130 (void);
 
-extern const char * const _sys_errlist[];
-extern int _sys_nerr;
 
 union double_union
 {

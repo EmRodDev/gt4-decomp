@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Obj { char pad0[0x158]; s32 unk158; };
 struct Vt { char pad0[0x18]; s32 (*f18)(Obj *); s32 (*f1C)(void); s32 (*f20)(Obj *, s32); };
 extern Vt *D_0064B4AC;

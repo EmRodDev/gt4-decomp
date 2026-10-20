@@ -4,23 +4,14 @@ struct Item { long x; long id; long rest[2]; };
 struct G { char pad[16]; Item *items; };
 struct It { Item *p; int i; int pad[2]; };
 struct Desc { long data[3]; };
-extern "C" void func_0013BD68(H *, int);
-extern "C" int func_00145B20(void *, const void *, int);
-extern "C" void *func_00147D80(void *);
-extern "C" void func_00148030(H *);
 extern "C" void func_002ED5A8(H *, H *);
 extern "C" void func_002ED5C0(H *, int);
 extern "C" H *func_002EEEB0(H *, void *, H *);
 extern "C" H *func_002EFBF0(H *);
 extern "C" void func_00309378(H *, int);
-extern "C" int func_00435630(Item *);
 extern "C" int func_00435958(Item *, int);
-extern "C" void *func_00441248(void *);
-extern "C" int SPEC_DATABASE__CarEquipments__getDriveTrainType(void *);
-extern "C" int func_00445EB0(void *);
 extern "C" int func_00448820(long, Desc *);
 extern "C" unsigned char func_004488A8(Desc *);
-extern "C" unsigned char func_004488B8(Desc *);
 static inline void init(It *i, Item *p, int n) { i->p=p; i->i=n; }
 static inline int eq(const It *a, const It *b) { int r=0; if (a->p == b->p) r=a->i == b->i; return r; }
 static inline int neq(const It *a,const It *b) { return eq(a,b)^1; }

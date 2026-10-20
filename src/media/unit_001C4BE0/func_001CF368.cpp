@@ -1,6 +1,4 @@
-typedef unsigned short u16;
-typedef signed char s8;
-typedef int s32;
+#include "types.h"
 
 struct S001CF368 {
     char pad[0x48];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 _impure_ptr;
 extern "C" s32 func_005A4A88(s32 arg0, s32 arg1);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void RaceBasic__cleanup(void);
 extern "C" void func_004FB030(void *arg0);

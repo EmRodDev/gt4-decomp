@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef float f32;
+#include "types.h"
 
 struct B32 { char b[0x20]; };
 struct Tail { char pad[0x6DC]; B32 blk; };
@@ -27,4 +25,3 @@ extern "C" void func_0010FA58(A0 *arg0, u32 *arg1, u32 *arg2) {
 }
 
 struct Gl { char pad0[4]; char a[0x40]; };
-extern Gl *D_00622F4C_;

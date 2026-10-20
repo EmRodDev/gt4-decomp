@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Layout backed by include/gt4/mNetConfPS2.h, config/class_fields.json, and bastring.h:
  *   mNetConfPS2: offset 0x268 is unk268 (Table *table)

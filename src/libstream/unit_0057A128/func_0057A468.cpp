@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Obj { u8 *base; s32 pad4, pad8; u8 *table; };
 extern "C" s32 func_0057A2B8(s32 key, u8 *entry);
 static inline s32 rd16(const u8 *p) { return p[0] | (p[1] << 8); }

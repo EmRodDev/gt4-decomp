@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
-typedef float f32;
+#include "types.h"
 s32 Automobile__getDrawMode(void);
 u8 *func_00359510(s32 a);
 void func_00366718(char *arg0) {

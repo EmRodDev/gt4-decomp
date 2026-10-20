@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 typedef struct P { s32 a; s32 b; } P;
 void func_004AE5C0(void *a, s32 b, P *c);
 void *func_004AE588(void *arg0, s32 arg1, s32 arg2, s32 arg3) {

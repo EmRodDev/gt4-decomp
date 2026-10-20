@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Layout backed by include/gt4/mNetConfPS2.h and config/class_fields.json:
  *   mNetConfPS2: offset 0x370 is unk370 buffer of 0x100 bytes

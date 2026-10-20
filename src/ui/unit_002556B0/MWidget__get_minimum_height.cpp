@@ -1,5 +1,4 @@
-typedef int s32;
-typedef float f32;
+#include "types.h"
 
 struct W {
     s32 pad0;
@@ -18,7 +17,7 @@ struct VObj_60 {
 };
 
 static inline f32 vcall_60(char *o) {
-    VEntry_60 *e = (VEntry_60 *)((char *)((VObj_60 *)o)->vtbl + 0x60);
+    VEntry_60 *e = &((VObj_60 *)o)->vtbl[12];
     return e->fn(o + e->delta);
 }
 

@@ -23,7 +23,7 @@ extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 
 static inline void vcall(void *ret, VObj *o) {
-    VEntry *e = (VEntry *)((char *)o->vtbl + 0x18);
+    VEntry *e = &o->vtbl[3];
     e->fn(ret, (char *)o + e->delta);
 }
 

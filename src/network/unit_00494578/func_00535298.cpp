@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Clock { char pad[0x5c]; u32 ticks; };
 struct List { char pad0[0x104]; int selected; char pad1[0x144-0x108]; int state; char pad2[8]; int count; };
 struct Item { char pad[0x20]; int active; };

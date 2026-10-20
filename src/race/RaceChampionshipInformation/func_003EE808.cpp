@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Self;struct Context;struct Car;struct Object;
 extern "C" void*func_005C15B0(unsigned int);
 extern "C" void func_005C1628(void*);

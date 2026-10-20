@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef float f32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -53,7 +51,7 @@ extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len)
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 
 static inline f32 vcallf(VObjF *o) {
-    VEntryF *e = (VEntryF *)((char *)o->vtbl + 0x60);
+    VEntryF *e = &o->vtbl[12];
     return e->fn((char *)o + e->delta);
 }
 

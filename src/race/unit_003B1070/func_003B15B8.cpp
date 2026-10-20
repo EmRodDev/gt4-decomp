@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_003B11A8(char *arg0);
 extern "C" void ModelSet2__begin(void *arg0, void *arg1);

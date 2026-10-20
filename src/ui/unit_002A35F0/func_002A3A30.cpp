@@ -1,4 +1,4 @@
-typedef signed char s8;
+#include "types.h"
 
 struct Struct_002A3A30 {
     char pad[0xEE];

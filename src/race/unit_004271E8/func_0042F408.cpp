@@ -1,5 +1,4 @@
-typedef int s32;
-typedef long s64;
+#include "types.h"
 struct V { char tag; s64 val; };
 extern "C" s32 func_00440B18(s32 a);
 extern "C" void func_0042F0E0(void *self, V *v);

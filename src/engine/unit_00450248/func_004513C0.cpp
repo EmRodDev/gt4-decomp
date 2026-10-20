@@ -1,5 +1,4 @@
-typedef float f32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Struct_004513C0 {
     char pad0[0x4C];

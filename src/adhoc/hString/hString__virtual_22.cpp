@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 struct Heap { const char *name; };
 
@@ -76,12 +76,7 @@ struct VObj {
     VEntry *vtbl;
 };
 
-extern "C" void func_002ED5C0(void *arg0, int arg1);
-extern "C" void *func_002EEEB0(void *ret, void *self, s32 x);
-extern "C" void func_002EFBF0(void *arg0);
-extern "C" void func_00309378(void *arg0, s32 arg1);
 extern "C" void func_00312318(void *arg0, int arg1) throw();
-extern "C" void func_00312370(void *arg0) throw();
 extern "C" void func_00314B20(void *a, void *b);
 extern "C" void *func_005CB368(void *str, u32 pos, u32 n1, u32 n2, char c);
 extern "C" u32 func_005F00D0(const void *str, const char *s, u32 pos, u32 n);

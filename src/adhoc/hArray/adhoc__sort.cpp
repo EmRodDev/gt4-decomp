@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct H { s32 p; s32 pad[3]; };
 struct W { char *vp; char sub[4]; int pad[2]; };
 extern char D_006734F0[], hArrayCompare__vtable[], FunctionCompare__vtable[];

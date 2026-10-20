@@ -5,7 +5,6 @@ struct Self {
 };
 extern char RaceOnboardSpeedmeter__vtable[];
 extern "C" void *RaceRoundMeterBase__structor_0(Self *);
-extern "C" void RaceMeterBase__setScale(Self *, float, float);
 extern "C" void func_003BE808(Self *, float, float);
 extern "C" void func_003BE818(Self *, float, float);
 extern "C" void func_003BE828(Self *, float, float);

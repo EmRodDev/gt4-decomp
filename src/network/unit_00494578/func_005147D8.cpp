@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 D_0064A32C;
 extern void (*D_008A05A8)(char *a, s32 b);

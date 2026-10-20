@@ -1,4 +1,4 @@
-typedef float f32;
+#include "types.h"
 
 extern "C" void *DRIVERSUPPORT_NAME__GetMotoristDynamicParameter(void);
 extern "C" f32 DRIVERSUPPORT_NAME__MotoristDynamicParameter__getSeatAngleOffset(void *arg0);

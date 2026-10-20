@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 inline void *operator new(unsigned int, void *p) { return p; }
 inline void *operator new[](unsigned int, void *p) { return p; }
 struct Elem {

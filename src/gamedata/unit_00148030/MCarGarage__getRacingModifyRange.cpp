@@ -1,6 +1,4 @@
-typedef int s32;
-typedef long s64;
-typedef unsigned char u8;
+#include "types.h"
 
 extern "C" s32 func_0013BDC0(void *arg0, void *arg1);
 extern "C" void func_0013BD68(void *arg0, s32 arg1);

@@ -1,7 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned int u32;
-typedef long long s64;
+#include "types.h"
 struct A8 { s32 p0; };
 struct B60 { char pad[8]; s32 p8; };
 struct Q { char pad[0x60]; s32 p60; char pad2[0x70 - 0x64]; s32 p70; };
@@ -38,8 +35,6 @@ extern "C" s32 func_00445EE8(char *);
 extern "C" char *func_00445F30(char *);
 extern "C" s32 func_00445F70(char *);
 extern "C" char *func_00445FB8(char *);
-extern "C" char *SPEC_DATABASE__RaceSpec__getRaceLabel(void *);
-extern "C" char *func_004472A0(void *);
 extern "C" s32 func_00448820(s64, void *);
 extern "C" s16 func_004488A0(void *);
 extern "C" u32 func_00448908(void *);

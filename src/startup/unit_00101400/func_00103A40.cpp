@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 typedef void (*Fn)(s32, s32);
 struct G { char pad[0x1C]; s32 *p1c; };
 extern G *D_00618304;

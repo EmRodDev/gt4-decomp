@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 typedef int (*Handler)(int,int,int,void *);
 typedef void (*Update)(int*,int*,int*);
 typedef void (*Observer)(u32,u32,int,int,int,void*);

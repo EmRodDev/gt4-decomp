@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned int u32;
+#include "types.h"
 struct Data { int a,b,c,d; };
 struct Header {
     int state, zero, len; u32 size;

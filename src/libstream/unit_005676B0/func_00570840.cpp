@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Data { int a, b, c, d; };
 struct Owner;
 struct Chunk { char *data; int len; };

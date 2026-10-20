@@ -1,4 +1,4 @@
-typedef long s64;
+#include "types.h"
 struct Ent { s64 a; s64 b; };
 struct Ring { int head; int p4; int count; int pC; Ent e[0xB6A]; };
 struct Obj { int p0; int p4; Ring r; int pad[2]; int cnt; int flag; };

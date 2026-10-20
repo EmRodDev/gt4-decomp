@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 typedef struct E { s32 a, b, c, d; } E;
 typedef struct Q { E e[32]; s32 n; } Q;
 void func_004F8988(Q *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {

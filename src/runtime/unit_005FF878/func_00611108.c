@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 void free(s32 a);
 void func_00611108(char *arg0) {
     free(*(s32 *)(arg0 + 0));

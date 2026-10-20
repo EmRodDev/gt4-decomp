@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void RaceLoggerBuffer__clearSector(char *a) {
     s32 i;

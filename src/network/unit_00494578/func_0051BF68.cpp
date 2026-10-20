@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 struct Api { char pad[0xc]; void (*close)(); };
 struct Api2 { char pad[0x60]; int (*close)(int); };
 extern int D_0064AE0C,D_0064AE14,D_0064AE18,D_0064AE1C,D_0064AE20;

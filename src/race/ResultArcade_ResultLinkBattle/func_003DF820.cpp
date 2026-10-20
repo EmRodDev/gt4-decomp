@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 
 struct StringRep { u32 len; u32 res; u32 ref; u32 selfish; };
 struct String { char *dat; };

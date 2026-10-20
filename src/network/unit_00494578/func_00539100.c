@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef signed char s8;
+#include "types.h"
 s32 func_00539100(char *arg0, s16 arg1) {
     s32 r = 2;
     if (arg0 != 0) {

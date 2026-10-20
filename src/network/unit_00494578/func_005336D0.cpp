@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Res { s32 unk0; s32 unk4; };
 struct Obj { s32 unk0; s32 pad4; s32 unk8; };
 extern "C" s32 func_00533790(Obj *, void *, Res *);

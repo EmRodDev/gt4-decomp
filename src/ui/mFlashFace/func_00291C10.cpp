@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void *func_00326750(int size, int align, const char *name);
 extern "C" void mFlashFace__structor_0(void *obj);

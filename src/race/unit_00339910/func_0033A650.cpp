@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 
 struct Strm { s32 unk0; u32 unk4; u32 unk8; };
 struct A2E4 { char b[0x2E4]; };

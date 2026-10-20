@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct VEntry {
     s16 delta;
@@ -15,7 +15,7 @@ extern "C" void mUpdateContext__virtual_66(Obj *);
 
 extern "C" void mUpdateContextPS2__virtual_66(Obj *self) {
     mUpdateContext__virtual_66(self);
-    VEntry *e = (VEntry *)((char *)self->vtbl + 0x1C8);
+    VEntry *e = &self->vtbl[57];
 
     e->fn((char *)self + e->delta);
 }

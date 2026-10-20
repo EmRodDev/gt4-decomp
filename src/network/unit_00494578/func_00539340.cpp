@@ -1,4 +1,4 @@
-typedef unsigned int u32;
+#include "types.h"
 extern char D_0064B720[];
 extern "C" void func_00539340(u32 *src, u32 n) {
     u32 *p = (u32 *)D_0064B720;

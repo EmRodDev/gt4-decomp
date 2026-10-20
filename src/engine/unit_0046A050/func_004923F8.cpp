@@ -1,6 +1,4 @@
-typedef float f32;
-typedef unsigned short u16;
-typedef int s32;
+#include "types.h"
 struct G { char p0[0x54]; f32 f54; f32 f58; char p5c[0x80 - 0x5c]; s32 f80; };
 struct W { char p[0xC]; u16 w; u16 h; };
 extern G *PDISTD__global_font_manager;

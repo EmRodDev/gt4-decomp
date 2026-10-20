@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef float f32;
+#include "types.h"
 
 struct Item { int dummy; };
 struct List { char pad[8]; char **items; };

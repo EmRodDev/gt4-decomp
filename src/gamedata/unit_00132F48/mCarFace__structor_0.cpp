@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void *mWidget__structor_0(void *);
 extern "C" void *func_0021B6F0(void*);
 extern "C" void func_00210810(void*);

@@ -19,8 +19,6 @@ extern "C" Str *func_00314920(void *);
 extern "C" void func_00314B20(void *,void *);
 extern "C" void func_003285A8(void *);
 extern "C" void func_003285F8(void *);
-extern "C" char *malloc(int) throw();
-extern "C" void free(void *) throw();
 extern "C" int func_0057F260(const char *) throw();
 extern "C" char *func_005C2560(Rep *);
 extern "C" void *func_005C2630(Str *,int,int,const char *,int);

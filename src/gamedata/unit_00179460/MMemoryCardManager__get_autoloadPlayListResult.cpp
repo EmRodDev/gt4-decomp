@@ -1,10 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned short u16;
-typedef signed char s8;
-typedef unsigned char u8;
-typedef long s64;
-typedef float f32;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -23,7 +17,6 @@ struct S00659988 {
 };
 
 extern Rep D_00659FA8;
-extern s32 D_00659FB4;
 extern "C" void func_001792D8(void *);
 extern "C" void func_00179280(void *, s32);
 extern "C" s32 GT4MC__getFileResultString(s32);

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_004F9018_arg1 {
     char pad0[8];

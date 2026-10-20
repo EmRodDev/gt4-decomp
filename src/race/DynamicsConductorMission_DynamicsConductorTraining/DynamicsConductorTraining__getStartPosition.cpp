@@ -1,4 +1,4 @@
-typedef short s16;
+#include "types.h"
 
 struct B0034D030 {
     char pad[0xF86C];

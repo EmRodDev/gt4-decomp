@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 mInputTextFace__ClassID_;
 

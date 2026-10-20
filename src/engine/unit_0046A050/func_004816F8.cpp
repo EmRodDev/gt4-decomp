@@ -1,7 +1,6 @@
 struct R{int a,b,refs,cap;};
 struct Val;
 extern "C" void func_004768C0(Val *);
-extern "C" Val *func_00476768(Val *, const Val *);
 struct Val { int type; int v; Val() : type(1) {} ~Val() { func_004768C0(this); } };
 struct Str{char*p;Str(const char*);};
 extern R D_00659E20;extern char D_006ADF30[];

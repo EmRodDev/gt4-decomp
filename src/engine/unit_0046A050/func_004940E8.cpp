@@ -1,5 +1,4 @@
-typedef unsigned char u8;
-typedef unsigned int u32;
+#include "types.h"
 
 /* Text renderer state used while printing a formatted message. */
 struct TextCursor { const char *font_name; };

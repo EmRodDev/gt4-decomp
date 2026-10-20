@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Db { char p[0x1E4]; int f1E4; };
 extern Db D_006235A8;
 extern char D_006A6FB0[];

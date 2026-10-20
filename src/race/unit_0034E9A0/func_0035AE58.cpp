@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef float f32;
+#include "types.h"
 
 extern "C" f32 DynamicsConductor__GetCourseLength(char *arg0);
 extern "C" f32 func_0034C780(char *arg0, s32 arg1);

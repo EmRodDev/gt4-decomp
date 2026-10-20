@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Blk40 {
     s32 w[10];

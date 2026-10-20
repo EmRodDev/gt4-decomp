@@ -1,5 +1,4 @@
-typedef unsigned int u32;
-typedef signed char s8;
+#include "types.h"
 
 struct Obj {
     s8 unk0;

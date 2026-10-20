@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct B { char b[0x80]; };
 extern "C" s32 func_00544880(void *) throw();
 extern "C" void func_005460C8(void *, void *);

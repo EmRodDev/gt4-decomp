@@ -1,6 +1,4 @@
-typedef unsigned char u8;
-typedef int s32;
-typedef long long s64;
+#include "types.h"
 
 struct Packet0042F2E0 { u8 kind; u8 a; u8 b; s32 value; s64 data; };
 

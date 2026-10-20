@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct Ops {
     char pad[0x70];
     s32 (*fn)(s32, s32, s32);

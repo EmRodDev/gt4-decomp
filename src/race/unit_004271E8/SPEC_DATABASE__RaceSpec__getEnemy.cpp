@@ -1,4 +1,4 @@
-typedef long long s64;
+#include "types.h"
 struct RaceSpec;
 extern "C" int SPEC_DATABASE__RaceSpec__getEnemyCode(RaceSpec *, int);
 extern "C" int func_00444690(void *, int);

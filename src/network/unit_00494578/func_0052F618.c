@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 s32 func_00531910(s32, s32, s32);
 s32 func_00535780(s32);
 s32 func_00536CF8(void);

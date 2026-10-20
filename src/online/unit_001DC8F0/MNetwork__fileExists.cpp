@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct Rep {
     s32 len;
@@ -32,7 +31,6 @@ extern char D_006959D8[];
 
 extern "C" void func_001DC5F8(void *, int);
 extern "C" void func_001DC650(void *, void *);
-extern "C" void *func_001F7C68(void *);
 extern "C" void func_001F7CB8(void *, void *, const char *, s32, s32, s32, s32, s32);
 extern "C" void func_002ED5C0(void *, int);
 extern "C" s32 hArray__size(void *);

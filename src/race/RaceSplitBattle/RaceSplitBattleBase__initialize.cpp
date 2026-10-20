@@ -43,7 +43,7 @@ extern "C" void RaceSplitBattleBase__initialize(Self *self, void *arg1) {
     func_0033CC88(self);
     VEntryR *e = (VEntryR *)(self->tbl + 0x4C8);
     VObj *o = e->fn((char *)self + e->delta);
-    VEntry *e2 = (VEntry *)((char *)o->vtbl + 0x48);
+    VEntry *e2 = &o->vtbl[9];
     e2->fn((char *)o + e2->delta);
     func_00398B48((char *)self + 0xE170);
 }

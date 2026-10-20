@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 /* Layout backed by config/class_layout.json (mUndef size 0x18):
  *   0x00..0x07: base

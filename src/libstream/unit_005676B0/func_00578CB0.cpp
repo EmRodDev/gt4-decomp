@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern s32 malloc(s32);
 extern void func_00577F80(void);

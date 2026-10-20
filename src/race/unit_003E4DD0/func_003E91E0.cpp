@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Ent { u32 w; char pad[0x3C]; };
 struct Self { Ent *f0; short f4; };
 extern char D_006A3AA8[];

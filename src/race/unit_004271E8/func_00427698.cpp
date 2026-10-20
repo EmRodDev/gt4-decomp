@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct E16 { char pad[16]; };
 struct Hdr {
     s32 f0;

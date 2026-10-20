@@ -1,5 +1,4 @@
-typedef short s16;
-typedef int s32;
+#include "types.h"
 
 struct VEntry {
     s16 delta;
@@ -13,7 +12,7 @@ struct Obj00207F10 {
 };
 
 extern "C" void mPhotoMapWindow__virtual_99(struct Obj00207F10 *arg0, s32 arg1, s32 arg2) {
-    VEntry *e = (VEntry *)((char *)arg0->vtbl + 0x328);
+    VEntry *e = &arg0->vtbl[101];
 
     e->fn((char *)arg0 + e->delta, arg1, arg2, 0);
 }

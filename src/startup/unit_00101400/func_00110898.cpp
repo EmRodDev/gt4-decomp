@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 struct B2 { char a; char b; };
 struct Ent { B2 c; char pad[0x7E]; };
 struct Z { s32 w[4]; };

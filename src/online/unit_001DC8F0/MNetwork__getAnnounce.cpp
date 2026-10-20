@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned int u32;
+#include "types.h"
 
 struct StringRep { u32 len; u32 res; u32 ref; u32 selfish; };
 struct Str {
@@ -14,10 +12,7 @@ struct VEntry58 { s16 delta; s16 index; s32 (*fn)(void *); };
 struct Obj { char pad0[4]; char *vtbl; };
 
 extern StringRep D_00659FA8;
-extern char D_006959B0[];
 extern char D_006959D8[];
-extern char D_006959E0[];
-extern char D_006959F0[];
 
 extern "C" char *func_005C2560(StringRep *r);
 extern "C" Str *func_005C2630(Str *str, u32 pos, u32 n1, const char *s, u32 n2);
@@ -26,29 +21,8 @@ extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *, s32, s32, const char *);
 extern "C" void *func_001DC650(s32 *, void *);
 extern "C" void func_001DC5F8(s32 *, s32);
-extern "C" s32 func_001F16A8(s32);
-extern "C" s32 func_001F16D0(s32);
-extern "C" const char *func_001F1330(s32, const char *);
-extern "C" bool func_001F1600(s32, Str *, s32, s32);
-extern "C" void func_001F1738(void *, s32);
 extern "C" void func_002ED5C0(void *, s32);
 extern "C" s32 func_005CD320(Str *, const char *, u32, u32);
-extern "C" Str *func_001F23A8(Str *, s32, s32);
-extern "C" void func_00314B20(void *, Str *);
-extern "C" void func_00312318(void *, s32);
-extern "C" s32 func_005A5AD8(const char *, const char *, ...);
-extern "C" s32 func_001F2A28(s32, s32, s32, s32, s32, s32, s32);
-extern char D_00695A10[];
-extern char D_00695A18[];
-extern "C" void func_002ED618(s32 *, s32 *);
-extern "C" s32 hArray__size(s32);
-extern "C" s32 *HArray__operator_index(s32 *, s32);
-extern "C" s32 func_0057DA20(char *, const char *, ...);
-extern "C" void func_0023B478(void *);
-extern "C" void func_0023CA78(s32, const char *, const char *);
-extern "C" void func_0023B1D8(void *, s32);
-extern "C" void func_002FE278(s32 *, s32);
-extern "C" void func_002FC870(s32 *, s32);
 extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 

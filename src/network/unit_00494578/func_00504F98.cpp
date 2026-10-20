@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" s32 (*D_008A0180)(s32, s32);
 extern "C" s32 D_008A0148;

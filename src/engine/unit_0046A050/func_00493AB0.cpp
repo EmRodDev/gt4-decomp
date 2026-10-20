@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned long long u64;
+#include "types.h"
 extern char D_006AE560[];
 extern char D_006AE578[];
 extern "C" void func_00493628(s32, s32, s32, s32, s32, s32, s32, char *, s32, s32);

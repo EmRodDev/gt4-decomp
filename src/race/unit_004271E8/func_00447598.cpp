@@ -1,4 +1,4 @@
-typedef signed char s8;
+#include "types.h"
 
 struct func_00447598_arg1 {
     char pad0[0x6A6EF0];

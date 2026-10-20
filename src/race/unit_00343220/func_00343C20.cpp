@@ -1,8 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned int u32;
-typedef unsigned char u8;
-typedef float f32;
+#include "types.h"
 
 struct VE343C20 {
     s16 delta;

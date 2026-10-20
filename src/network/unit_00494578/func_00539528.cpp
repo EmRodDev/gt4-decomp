@@ -1,5 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
+#include "types.h"
 struct Tbl { u32 arr[0x271]; s32 idx; };
 extern Tbl D_0064B720;
 extern u32 D_0064C0E8;

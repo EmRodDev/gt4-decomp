@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct Obj;
 typedef s32 (*ObjFn)(Obj *, s32, s32);

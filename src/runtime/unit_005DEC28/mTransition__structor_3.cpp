@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern void *mColorTransition__vtable;
 extern void *mTransition__vtable;

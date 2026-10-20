@@ -26,7 +26,7 @@ extern "C" void func_0037BC68(Obj *self, s32 step, s32 mask) {
     self->m180 = 0;
     if (self->m18C != 0) {
         Inner *in = self->m18C->unk2880;
-        VEntry *e = (VEntry *)((char *)in->vtbl + 0x50);
+        VEntry *e = &in->vtbl[10];
         Res *r = (Res *)e->fn((char *)in + e->delta);
         s32 n = r->count;
         if (n > 0) {

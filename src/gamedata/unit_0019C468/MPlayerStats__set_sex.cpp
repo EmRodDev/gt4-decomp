@@ -1,6 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned char u8;
+#include "types.h"
 
 struct VEntry { s16 delta; s16 index; s32 (*fn)(void *); };
 struct Obj { char pad0[4]; VEntry *vtbl; };
@@ -16,7 +14,7 @@ extern "C" void MPlayerStats__set_sex(void *a0, void *a1, void *a2, Obj **a3) {
     func_0019C1D8(buf, a1);
     s1 = buf[0];
     obj = *a3;
-    e = (VEntry *)((char *)obj->vtbl + 0x58);
+    e = &obj->vtbl[11];
     *(u8 *)((char *)s1 + 0x11) = e->fn((char *)obj + e->delta);
     func_0019C180(buf, 2);
 }

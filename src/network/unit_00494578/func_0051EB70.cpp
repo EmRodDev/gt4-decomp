@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 struct O {
     s32 f0; char p4[4]; s32 f8; char p0c[0x4C]; s32 f58; s32 f5C; char p60[0x24];
     s32 f84; s32 (*f88)(s32, s32, s32, s32, s32);

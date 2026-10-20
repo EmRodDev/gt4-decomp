@@ -1,7 +1,4 @@
-typedef int s32;
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
+#include "types.h"
 struct Obj { s32 unk0; };
 void func_00525660(u8 *, u32 *, u16 *);
 s32 func_005262B0(struct Obj *, u16, u32, u8 *, s32);

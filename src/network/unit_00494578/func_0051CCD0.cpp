@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct func_0051CCD0_slot {
     s32 unk0;

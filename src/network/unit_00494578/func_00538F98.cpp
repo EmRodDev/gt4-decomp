@@ -1,6 +1,4 @@
-typedef int s32;
-typedef unsigned char u8;
-typedef unsigned short u16;
+#include "types.h"
 
 extern "C" s32 func_00538F98(u8 *arg0, u16 *arg1) {
     u8 *p = arg0;

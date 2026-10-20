@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 extern "C" void func_002550B8(void *, int);
 extern "C" void func_00255110(void *, void *);
 extern "C" void mWidget__getWindowSize(void *, s32 *, s32 *);

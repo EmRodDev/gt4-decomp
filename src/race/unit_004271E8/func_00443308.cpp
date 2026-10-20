@@ -8,7 +8,6 @@ struct Obj {
     void *f1EC;
 };
 extern char D_006882C0[];
-extern S8 D_006A6D18;
 extern "C" int func_00443308(Obj *o) {
     o->f0 = 0;
     o->f1EC = D_006882C0;

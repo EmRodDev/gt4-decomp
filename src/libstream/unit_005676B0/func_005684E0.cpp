@@ -1,5 +1,4 @@
-typedef unsigned int u32;
-typedef unsigned long u64;
+#include "types.h"
 extern "C" void func_0054D5C8(void);
 extern "C" int func_005684E0(int mode) {
     func_0054D5C8();

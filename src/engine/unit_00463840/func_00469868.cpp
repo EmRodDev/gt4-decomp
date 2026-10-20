@@ -1,5 +1,4 @@
-typedef signed char s8;
-typedef unsigned char u8;
+#include "types.h"
 
 struct SubStruct {
     char pad[0x51];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 struct RacePhotoModeCameraManagerLayout {
     char pad0[0xDD0];

@@ -1,4 +1,4 @@
-typedef int s32;
+#include "types.h"
 
 extern "C" void func_0033B358(float *out, s32 n, const float *a, const float *b, float t) {
     float u = 1.0f - t;

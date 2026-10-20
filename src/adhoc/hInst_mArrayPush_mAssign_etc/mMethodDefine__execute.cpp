@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 s32 func_002F47F0(s32);
 void func_002F4848(s32, s32);

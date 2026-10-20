@@ -1,5 +1,4 @@
-typedef int s32;
-typedef short s16;
+#include "types.h"
 
 struct VEntry {
     s16 delta;
@@ -27,7 +26,7 @@ extern "C" s32 IfRootEvent__virtual_01(Matcher *self, Obj **ref) {
     s32 t = func_0028EA18(*ref);
     if (t != 0) {
         Obj *o = *ref;
-        VEntry *e = (VEntry *)((char *)o->vtbl + 0x50);
+        VEntry *e = &o->vtbl[10];
         if (e->fn((char *)o + e->delta) == self->kind) {
             ok = mWidget__getRootWindow(t) == self->id;
         }

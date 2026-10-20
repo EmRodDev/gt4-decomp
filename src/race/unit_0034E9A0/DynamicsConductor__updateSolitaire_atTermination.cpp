@@ -1,8 +1,4 @@
-typedef int s32;
-typedef short s16;
-typedef unsigned int u32;
-typedef signed char s8;
-typedef unsigned char u8;
+#include "types.h"
 
 struct VEntry_240 {
     s16 delta;
