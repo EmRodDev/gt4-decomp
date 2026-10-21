@@ -82,6 +82,8 @@ def static_checks(path, old, new):
     om = re.match(r"/\* compiler:[^\n]*\*/", old)
     if om and not new.startswith(om.group(0)):
         return "marker", "the `/* compiler: ... */` first line was changed or moved"
+    if not om and re.match(r"\s*/\*\s*compiler:", new):
+        return "marker", "a `/* compiler: ... */` marker was ADDED: it selects the compiler profile of the file, never add one"
     oc, nc = strip_comments(old), strip_comments(new)
     ol, nl = literals(oc), literals(nc)
     if ol != nl:
