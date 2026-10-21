@@ -8,16 +8,6 @@
 003e2220  # 6 statements  src/race/unit_003E20A8/func_003E2220.cpp
 003e3290  # 6 statements  src/race/unit_003E20A8/func_003E3290.cpp
 003e3458  # 5 statements  src/race/unit_003E20A8/func_003E3458.cpp
-0048d3e0  # 4 statements  src/engine/unit_0046A050/func_0048D3E0.cpp
-0048d408  # 4 statements  src/engine/unit_0046A050/func_0048D408.cpp
-0048d430  # 4 statements  src/engine/unit_0046A050/func_0048D430.cpp
-0048d4c0  # 5 statements  src/engine/unit_0046A050/func_0048D4C0.cpp
-0048d680  # 4 statements  src/engine/unit_0046A050/func_0048D680.cpp
-0048d6c0  # 4 statements  src/engine/unit_0046A050/func_0048D6C0.cpp
-0048d700  # 4 statements  src/engine/unit_0046A050/func_0048D700.cpp
-0048df98  # 4 statements  src/engine/unit_0046A050/func_0048DF98.cpp
-0048dfd8  # 4 statements  src/engine/unit_0046A050/func_0048DFD8.cpp
-0048e018  # 4 statements  src/engine/unit_0046A050/func_0048E018.cpp
 0049e3e0  # 5 statements  src/network/unit_00494578/func_0049E3E0.cpp
 0049f0f0  # 6 statements  src/network/unit_00494578/func_0049F0F0.cpp
 004a20c8  # 4 statements  src/network/unit_00494578/func_004A20C8.cpp

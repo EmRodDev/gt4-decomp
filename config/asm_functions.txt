@@ -235,3 +235,15 @@
 004abd40 vector/MMI code, 8 asm statements (was func_004ABD40.cpp)
 004abec0 vector/MMI code, 21 asm statements (was func_004ABEC0.cpp)
 0056ba50 vector/MMI code, 13 asm statements (was func_0056BA50.cpp)
+
+# libvu0-style vector operations (a few VU0 instructions each: add, sub, scale, copy ...), written as inline asm.
+0048d3e0 VU0 vector operation, 4 asm statements (was func_0048D3E0.cpp)
+0048d408 VU0 vector operation, 4 asm statements (was func_0048D408.cpp)
+0048d430 VU0 vector operation, 4 asm statements (was func_0048D430.cpp)
+0048d4c0 VU0 vector operation, 5 asm statements (was func_0048D4C0.cpp)
+0048d680 VU0 vector operation, 4 asm statements (was func_0048D680.cpp)
+0048d6c0 VU0 vector operation, 4 asm statements (was func_0048D6C0.cpp)
+0048d700 VU0 vector operation, 4 asm statements (was func_0048D700.cpp)
+0048df98 VU0 vector operation, 4 asm statements (was func_0048DF98.cpp)
+0048dfd8 VU0 vector operation, 4 asm statements (was func_0048DFD8.cpp)
+0048e018 VU0 vector operation, 4 asm statements (was func_0048E018.cpp)
