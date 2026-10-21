@@ -1,0 +1,97 @@
+/* compiler: ee-gcc2.96-as2004 */
+typedef unsigned int u32;
+struct __attribute__((packed)) Word { u32 v; };
+struct Context { u32 count[2]; u32 state[4]; };
+#define F(x,y,z) ((z) ^ ((x) & ((y) ^ (z))))
+#define G(x,y,z) ((y) ^ ((z) & ((x) ^ (y))))
+#define H(x,y,z) ((x) ^ (y) ^ (z))
+#define I(x,y,z) ((y) ^ ((x) | ~(z)))
+#define STEP(f,a,b,c,d,x,t,s) (a) = ((a) + (f(b,c,d) + (x))) + (u32)(t); (a) = (((a) << (s)) | ((a) >> (32-(s)))) + (b)
+extern "C" void func_0057B888(Context *ctx, const unsigned char *input) {
+    u32 a=ctx->state[0], b=ctx->state[1], c=ctx->state[2], d=ctx->state[3];
+    u32 x[16];
+    x[0] = ((const Word *)(input + 0))->v;
+    x[1] = ((const Word *)(input + 4))->v;
+    x[2] = ((const Word *)(input + 8))->v;
+    x[3] = ((const Word *)(input + 12))->v;
+    x[4] = ((const Word *)(input + 16))->v;
+    x[5] = ((const Word *)(input + 20))->v;
+    x[6] = ((const Word *)(input + 24))->v;
+    x[7] = ((const Word *)(input + 28))->v;
+    x[8] = ((const Word *)(input + 32))->v;
+    x[9] = ((const Word *)(input + 36))->v;
+    x[10] = ((const Word *)(input + 40))->v;
+    x[11] = ((const Word *)(input + 44))->v;
+    x[12] = ((const Word *)(input + 48))->v;
+    x[13] = ((const Word *)(input + 52))->v;
+    x[14] = ((const Word *)(input + 56))->v;
+    x[15] = ((const Word *)(input + 60))->v;
+    STEP(F,a,b,c,d,x[0],0xd76aa478,7);
+    STEP(F,d,a,b,c,x[1],0xe8c7b756,12);
+    STEP(F,c,d,a,b,x[2],0x242070db,17);
+    STEP(F,b,c,d,a,x[3],0xc1bdceee,22);
+    STEP(F,a,b,c,d,x[4],0xf57c0faf,7);
+    STEP(F,d,a,b,c,x[5],0x4787c62a,12);
+    STEP(F,c,d,a,b,x[6],0xa8304613,17);
+    STEP(F,b,c,d,a,x[7],0xfd469501,22);
+    STEP(F,a,b,c,d,x[8],0x698098d8,7);
+    STEP(F,d,a,b,c,x[9],0x8b44f7af,12);
+    STEP(F,c,d,a,b,x[10],0xffff5bb1,17);
+    STEP(F,b,c,d,a,x[11],0x895cd7be,22);
+    STEP(F,a,b,c,d,x[12],0x6b901122,7);
+    STEP(F,d,a,b,c,x[13],0xfd987193,12);
+    STEP(F,c,d,a,b,x[14],0xa679438e,17);
+    STEP(F,b,c,d,a,x[15],0x49b40821,22);
+    STEP(G,a,b,c,d,x[1],0xf61e2562,5);
+    STEP(G,d,a,b,c,x[6],0xc040b340,9);
+    STEP(G,c,d,a,b,x[11],0x265e5a51,14);
+    STEP(G,b,c,d,a,x[0],0xe9b6c7aa,20);
+    STEP(G,a,b,c,d,x[5],0xd62f105d,5);
+    STEP(G,d,a,b,c,x[10],0x02441453,9);
+    STEP(G,c,d,a,b,x[15],0xd8a1e681,14);
+    STEP(G,b,c,d,a,x[4],0xe7d3fbc8,20);
+    STEP(G,a,b,c,d,x[9],0x21e1cde6,5);
+    STEP(G,d,a,b,c,x[14],0xc33707d6,9);
+    STEP(G,c,d,a,b,x[3],0xf4d50d87,14);
+    STEP(G,b,c,d,a,x[8],0x455a14ed,20);
+    STEP(G,a,b,c,d,x[13],0xa9e3e905,5);
+    STEP(G,d,a,b,c,x[2],0xfcefa3f8,9);
+    STEP(G,c,d,a,b,x[7],0x676f02d9,14);
+    STEP(G,b,c,d,a,x[12],0x8d2a4c8a,20);
+    STEP(H,a,b,c,d,x[5],0xfffa3942,4);
+    STEP(H,d,a,b,c,x[8],0x8771f681,11);
+    STEP(H,c,d,a,b,x[11],0x6d9d6122,16);
+    STEP(H,b,c,d,a,x[14],0xfde5380c,23);
+    STEP(H,a,b,c,d,x[1],0xa4beea44,4);
+    STEP(H,d,a,b,c,x[4],0x4bdecfa9,11);
+    STEP(H,c,d,a,b,x[7],0xf6bb4b60,16);
+    STEP(H,b,c,d,a,x[10],0xbebfbc70,23);
+    STEP(H,a,b,c,d,x[13],0x289b7ec6,4);
+    STEP(H,d,a,b,c,x[0],0xeaa127fa,11);
+    STEP(H,c,d,a,b,x[3],0xd4ef3085,16);
+    STEP(H,b,c,d,a,x[6],0x04881d05,23);
+    STEP(H,a,b,c,d,x[9],0xd9d4d039,4);
+    STEP(H,d,a,b,c,x[12],0xe6db99e5,11);
+    STEP(H,c,d,a,b,x[15],0x1fa27cf8,16);
+    STEP(H,b,c,d,a,x[2],0xc4ac5665,23);
+    STEP(I,a,b,c,d,x[0],0xf4292244,6);
+    STEP(I,d,a,b,c,x[7],0x432aff97,10);
+    STEP(I,c,d,a,b,x[14],0xab9423a7,15);
+    STEP(I,b,c,d,a,x[5],0xfc93a039,21);
+    STEP(I,a,b,c,d,x[12],0x655b59c3,6);
+    STEP(I,d,a,b,c,x[3],0x8f0ccc92,10);
+    STEP(I,c,d,a,b,x[10],0xffeff47d,15);
+    STEP(I,b,c,d,a,x[1],0x85845dd1,21);
+    STEP(I,a,b,c,d,x[8],0x6fa87e4f,6);
+    STEP(I,d,a,b,c,x[15],0xfe2ce6e0,10);
+    STEP(I,c,d,a,b,x[6],0xa3014314,15);
+    STEP(I,b,c,d,a,x[13],0x4e0811a1,21);
+    STEP(I,a,b,c,d,x[4],0xf7537e82,6);
+    STEP(I,d,a,b,c,x[11],0xbd3af235,10);
+    STEP(I,c,d,a,b,x[2],0x2ad7d2bb,15);
+    STEP(I,b,c,d,a,x[9],0xeb86d391,21);
+    ctx->state[0] += a;
+    ctx->state[1] += b;
+    ctx->state[2] += c;
+    ctx->state[3] += d;
+}
