@@ -203,3 +203,35 @@
 005b9a80 kernel-call stub (syscall), SDK assembly macro
 005b9a90 kernel-call stub (syscall), SDK assembly macro
 005b9aa0 kernel-call stub (syscall), SDK assembly macro
+
+# Vector (VU0/COP2) and MMI code whose body is a sequence of instructions: written as inline assembly,
+# so it is kept as assembly. Moved here from src/ by the inline asm limit (tools/asm_policy.py).
+00330e88 vector/MMI code, 11 asm statements (was func_00330E88.cpp)
+003e33c0 vector/MMI code, 12 asm statements (was func_003E33C0.cpp)
+003e34e8 vector/MMI code, 16 asm statements (was func_003E34E8.cpp)
+00450558 vector/MMI code, 23 asm statements (was func_00450558.cpp)
+0048d530 vector/MMI code, 9 asm statements (was func_0048D530.cpp)
+0048ea48 vector/MMI code, 28 asm statements (was func_0048EA48.cpp)
+0048eb10 vector/MMI code, 10 asm statements (was func_0048EB10.cpp)
+00496ef0 vector/MMI code, 15 asm statements (was func_00496EF0.cpp)
+004998a8 vector/MMI code, 16 asm statements (was func_004998A8.cpp)
+00499f18 vector/MMI code, 16 asm statements (was func_00499F18.cpp)
+0049b2c8 vector/MMI code, 12 asm statements (was func_0049B2C8.cpp)
+0049cfe8 vector/MMI code, 14 asm statements (was func_0049CFE8.cpp)
+0049e228 vector/MMI code, 17 asm statements (was func_0049E228.cpp)
+0049e430 vector/MMI code, 8 asm statements (was func_0049E430.cpp)
+0049e480 vector/MMI code, 28 asm statements (was func_0049E480.cpp)
+0049e548 vector/MMI code, 13 asm statements (was func_0049E548.cpp)
+0049e698 vector/MMI code, 23 asm statements (was func_0049E698.cpp)
+0049eb90 vector/MMI code, 17 asm statements (was func_0049EB90.cpp)
+0049ee00 vector/MMI code, 82 asm statements (was func_0049EE00.cpp)
+0049f038 vector/MMI code, 20 asm statements (was func_0049F038.cpp)
+0049f4c8 vector/MMI code, 45 asm statements (was func_0049F4C8.cpp)
+0049f658 vector/MMI code, 44 asm statements (was func_0049F658.cpp)
+0049f7d8 vector/MMI code, 58 asm statements (was func_0049F7D8.cpp)
+0049ffa0 vector/MMI code, 13 asm statements (was func_0049FFA0.cpp)
+004a5348 vector/MMI code, 10 asm statements (was RaceEntryCar__update.cpp)
+004a72f0 vector/MMI code, 8 asm statements (was func_004A72F0.cpp)
+004abd40 vector/MMI code, 8 asm statements (was func_004ABD40.cpp)
+004abec0 vector/MMI code, 21 asm statements (was func_004ABEC0.cpp)
+0056ba50 vector/MMI code, 13 asm statements (was func_0056BA50.cpp)
