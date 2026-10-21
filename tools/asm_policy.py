@@ -21,6 +21,11 @@ import re
 import sys
 
 MAX_ASM = 2
+# Scalar and system operations the C compiler has no operator for. Like a compiler builtin, one of
+# these may appear any number of times; they do not count towards MAX_ASM. Everything else (VU0 and
+# COP2 instructions, MMI sequences, loads and stores) is a body written in assembly and counts.
+INTRINSICS = {"sqrt.s", "rsqrt.s", "abs.s", "min.s", "max.s", "neg.s", "sync", "sync.l", "sync.p", "ei", "di",
+              "plzcw", "pcpyld", "pcpyud", "pref", "mtc1", "mfc1", "cfc1", "ctc1"}
 STRING = r'"(?:[^"\\]|\\.)*"'
 ASM_BLOCK = re.compile(r'\b(?:__asm__|asm)\s*(?:volatile|__volatile__)?\s*\(\s*((?:' + STRING + r'\s*)+)')
 FILE_SCOPE = re.compile(r'^(?:__asm__|asm)\s*\(', re.M)
@@ -75,7 +80,9 @@ def violations(src, addr=None):
         insns = [s for s in re.split(r'\\n|;', text) if s.strip() and not s.strip().startswith(".")]
         if len(insns) > 1:
             out.append(f"inline block of {len(insns)} instructions")
-        count += 1
+        first = text.strip().split()[0].lower() if text.strip() else ""
+        if first not in INTRINSICS:
+            count += 1
     if count > MAX_ASM and (addr is None or addr not in grandfathered()):
         out.append(f"{count} inline asm statements (at most {MAX_ASM}): a body made of them is assembly, "
                    "not decompiled code; if the original is hand-written assembly the function belongs in "
