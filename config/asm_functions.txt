@@ -247,3 +247,49 @@
 0048df98 VU0 vector operation, 4 asm statements (was func_0048DF98.cpp)
 0048dfd8 VU0 vector operation, 4 asm statements (was func_0048DFD8.cpp)
 0048e018 VU0 vector operation, 4 asm statements (was func_0048E018.cpp)
+# Hand-written in the original as well: VU0 helper library, crt0, newlib's r5900 string routines,
+# setjmp/longjmp, kernel-mode code, and routines the splitter cut into several entries.
+00100008 crt0 entry: sets $gp/$sp, clears .bss, kernel calls (syscall)
+004a7350 VU0 helper library (hand asm): $t0/$t1 by hand, li.s built by hand, empty jr slot
+004a7438 VU0 microprogram call: keeps $ra in $t2 and returns through it
+004a7454 VU0 helper library (hand asm): one store's lui/sb split around VU ops
+004a747c VU0 helper library (hand asm): store split around VU ops, VU op in the jr slot
+004a74a0 VU0 helper library (hand asm): store split around a VU op
+004a74b4 VU0 helper library (hand asm): alignment dispatch, $t0/$t1 by hand
+004a7550 VU0 helper library (hand asm): alignment dispatch, $t0/$t1 by hand
+004a75d8 VU0 helper library (hand asm): $ra saved with sq, VU ops interleaved with the epilogue
+004a7698 VU0 helper library (hand asm): store split around VU ops
+004a7774 VU0 helper library (hand asm)
+004a7844 VU0 helper library (hand asm): mfc1 into a0-a2 up front, store interleaved with VU ops
+004a7880 VU0 helper library (hand asm): no return, falls through into 004a7890
+004a7890 VU0 helper library (hand asm)
+004a7988 VU0 helper library (hand asm): ld $ra above vcallms
+004a79b0 VU0 helper library (hand asm): ld $ra above vcallms
+004a79d8 VU0 helper library (hand asm): ld $ra above vcallms
+004a7a00 VU0 helper library (hand asm): qmfc2 into $t0-$t3 by hand, store split around qmtc2
+004a7a54 VU0 helper library (hand asm): $t0-$t2 by hand
+004a7aa8 VU0 helper library (hand asm): $t0/$t1, bnel, branch into the middle
+004ac260 VU0 sine/cosine (hand asm): $t0-$t9 by hand, cvt.w.s as a raw word, one routine with 004ac334
+004ac334 VU0 sine/cosine (hand asm): second entry of the routine at 004ac260, branches across the boundary
+00539688 hand assembly: accumulates in $at, reads $t4-$t7 (o3 and o5)
+00563e10 hand-written assembly (trapping addi, pref of a zeroed register, empty delay slots)
+0058a280 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058a4a8 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058a5f8 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058a668 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058a7a8 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058a950 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058ab08 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+0058ac20 SDK hand assembly: one routine of 8 entries 0058a280-0058acb0 joined by j/branches into each other's middle, loads into $zero
+005a4644 memchr: newlib libc/machine/r5900/memchr.S, identical
+005a4724 memcpy: newlib r5900 memcpy.S (5 words differ: the assembler's short-loop fix)
+005a47d4 memmove: newlib r5900 memmove.S (the assembler's short-loop fix differs)
+005a58d8 setjmp: hand assembly (sq s0-s7/fp/sp/ra into the buffer), the pair of longjmp at 005a5930
+005a5930 longjmp: hand assembly (lq s0-s7/fp/sp/ra), no C form
+005a5dc8 strcat: newlib r5900 strcat.S (sq saves of $ra/$s0)
+005a5ef4 strchr: newlib r5900 strchr.S (1 word differs)
+005a609c strcpy: newlib r5900 strcpy.S (4 words differ)
+005a6ab0 strncpy: newlib r5900 strncpy.S (6 words differ)
+005b0f78 sceSifWriteBackDCache: hand asm (labelled instruction in a delay slot)
+005b7b18 kernel-mode switch: mtc0 ErrorEPC then eret
+005b9d00 exception handler: COP0 save/restore, syscall, eret
