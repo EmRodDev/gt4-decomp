@@ -1,3 +1,5 @@
+/* Counts down the byte at offset 0x5FB of the sub-object at +0x104: it is decremented unless it is already 0 or the
+ * sentinel 0xFF (the guard suggests 0xFF means 'not counting'; inferred). The decrement is spelled as + 0xFF, the u8 form that matched. */
 #include "types.h"
 
 struct Sub {
@@ -5,10 +7,10 @@ struct Sub {
     u8 unk5FB;
 };
 
-extern "C" void func_0035ACB0(void *arg0) {
-    struct Sub *temp_a0 = (struct Sub *)((char *)arg0 + 0x104);
+extern "C" void func_0035ACB0(void *self) {
+    struct Sub *state = (struct Sub *)((char *)self + 0x104);
 
-    if (temp_a0->unk5FB != 0 && temp_a0->unk5FB != 0xFF) {
-        temp_a0->unk5FB = temp_a0->unk5FB + 0xFF;
+    if (state->unk5FB != 0 && state->unk5FB != 0xFF) {
+        state->unk5FB = state->unk5FB + 0xFF;
     }
 }

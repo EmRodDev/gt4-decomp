@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Draws the text of a text face with word wrapping and justification (read from the code; the class is the one in the directory name).
+ * The text is split into words (func_00245A28, which also flags explicit line ends); words are measured with the global font manager
+ * (PDISTD) until a line is full. A full line has its leftover width spread over the gaps between words, the gap being capped at
+ * 2.5 space widths, and every word is drawn followed by that gap. A line that ends on a line break or on the last words uses the plain
+ * space width. A word that does not fit is carried to the next line, or split with func_00245B48. The text is fetched three
+ * times (cstr, source, length); they are kept as three separate fetches, as matched. */
 struct Rep { int len, cap, ref, sel; };
 struct Str { char *p; char pad[12]; };
 struct Obj { char pad[0x104]; void *text; };
@@ -37,40 +43,40 @@ static inline void release(Str *s) {
   func_00326798(r,size,4,func_005C11A8()->name);
  }
 }
-extern "C" void func_00245C90(Obj *o, void *ctx) {
- Str str, a, b;
+extern "C" void func_00245C90(Obj *self, void *context) {
+ Str content, copyA, copyB;
  char *cursor;
  int newline;
  char *words[32];
  char buf[64];
- float partial;
- void **text = &o->text;
- func_002B74B0(&str,*text);
- char *check = cstr(&str);
- release(&str);
- if (!check) return;
- Str *pa = &a;
- Str *ps = &str;
- func_002B74B0(pa,*text);
- char *source = pa->p;
- Str *pb = &b;
- func_002B74B0(pb,*text);
- int length = ((Rep *)(pb->p-16))->len;
+ float partialWidth;
+ void **text = &self->text;
+ func_002B74B0(&content,*text);
+ char *textCheck = cstr(&content);
+ release(&content);
+ if (!textCheck) return;
+ Str *ptrA = &copyA;
+ Str *contentPtr = &content;
+ func_002B74B0(ptrA,*text);
+ char *source = ptrA->p;
+ Str *ptrB = &copyB;
+ func_002B74B0(ptrB,*text);
+ int length = ((Rep *)(ptrB->p-16))->len;
  char *data;
  if (D_00659FA8.sel) data=func_005C2560(&D_00659FA8);
  else { ++D_00659FA8.ref; data=(char *)(&D_00659FA8+1); }
- ps->p=data;
- func_005C2630(ps,0,-1,source,length);
- release(pb);
- release(pa);
- cursor=cstr(&str);
- float width=func_00231420(ctx);
+ contentPtr->p=data;
+ func_005C2630(contentPtr,0,-1,source,length);
+ release(ptrB);
+ release(ptrA);
+ cursor=cstr(&content);
+ float maxWidth=func_00231420(context);
  newline=0;
  char *carry=0;
  int end=0;
- float space=(float)func_00491AC0(PDISTD__global_font_manager->font)*PDISTD__global_font_manager->scale;
+ float spaceWidth=(float)func_00491AC0(PDISTD__global_font_manager->font)*PDISTD__global_font_manager->scale;
  do {
-  float used=0.0f;
+  float lineWidth=0.0f;
   char **word=words;
   int count;
   for(count=0;count<32;count++,word++) {
@@ -81,46 +87,46 @@ extern "C" void func_00245C90(Obj *o, void *ctx) {
    float w;
    if(*words[count]) w=func_00490B38(PDISTD__global_font_manager,words[count]);
    else w=0.0f;
-   int full=width<=used+w;
+   int full=maxWidth<=lineWidth+w;
    if(newline || full || w==0.0f || end) {
     float extra=0.0f;
     PDISTD__global_font_manager->x=extra;
     if(count<=0) {
      PDISTD__global_font_manager->mode=0;
-     func_00490A08(PDISTD__global_font_manager,words[0],func_002314E8(ctx));
+     func_00490A08(PDISTD__global_font_manager,words[0],func_002314E8(context));
     } else if(full) {
-     int split=func_00245B48(word,buf,64,&partial,w,width-used);
-     if(split) used+=partial;
+     int split=func_00245B48(word,buf,64,&partialWidth,w,maxWidth-lineWidth);
+     if(split) lineWidth+=partialWidth;
      int gaps;
      if(split == 0) gaps=count-1; else gaps=count;
-     if(count>=2) used=space+(width-used)/(float)gaps;
-     else used=space+extra;
-     float limit=space*2.5f;
-     if(limit<used) used=limit;
+     if(count>=2) lineWidth=spaceWidth+(maxWidth-lineWidth)/(float)gaps;
+     else lineWidth=spaceWidth+extra;
+     float limit=spaceWidth*2.5f;
+     if(limit<lineWidth) lineWidth=limit;
      for(int i=0;i<count;i++) {
       PDISTD__global_font_manager->mode=0;
-      func_00490A08(PDISTD__global_font_manager,words[i],func_002314E8(ctx));
-      func_00490660(PDISTD__global_font_manager,used);
+      func_00490A08(PDISTD__global_font_manager,words[i],func_002314E8(context));
+      func_00490660(PDISTD__global_font_manager,lineWidth);
      }
      if(split) {
       PDISTD__global_font_manager->mode=0;
-      func_00490A08(PDISTD__global_font_manager,buf,func_002314E8(ctx));
+      func_00490A08(PDISTD__global_font_manager,buf,func_002314E8(context));
      }
      carry=words[count];
     } else {
      for(int i=0;i<=count;i++) {
       PDISTD__global_font_manager->mode=0;
-      func_00490A08(PDISTD__global_font_manager,words[i],func_002314E8(ctx));
-      func_00490660(PDISTD__global_font_manager,space);
+      func_00490A08(PDISTD__global_font_manager,words[i],func_002314E8(context));
+      func_00490660(PDISTD__global_font_manager,spaceWidth);
      }
     }
     PDISTD__global_font_manager->mode=1;
     func_00490760(PDISTD__global_font_manager);
     break;
    }
-   used+=w+space;
+   lineWidth+=w+spaceWidth;
   }
   if(count>=32) for(int i=0;i<count;i++) { }
  } while(!end || carry);
- release(&str);
+ release(&content);
 }

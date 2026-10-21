@@ -1,17 +1,20 @@
+/* Advances a damped spring by one 1/60 s step (inferred from the arithmetic): the velocity at +0x640 gains
+ * ((target at +0x588 - position at +0x63C) * 500 - velocity * 20) / 60, then the position at +0x63C gains velocity / 60.
+ * 500 acts as stiffness and 20 as damping. The step 1/60 is written as the hex float literal 0x1.111110p-6f, which is what matched. */
 #include "types.h"
 
-void func_00350D40(void *arg0) {
-    f32 k = 0x1.111110p-6f;
-    f32 *v = (f32 *)((char *)arg0 + 0x63C);
-    f32 t0 = *(f32 *)((char *)arg0 + 0x588);
-    f32 t3 = *v;
-    f32 *q = (f32 *)((char *)arg0 + 0x640);
-    f32 temp_f1 = *q;
-    f32 temp_f1_2;
-    f32 s;
+void func_00350D40(void *self) {
+    f32 timeStep = 0x1.111110p-6f;
+    f32 *position = (f32 *)((char *)self + 0x63C);
+    f32 target = *(f32 *)((char *)self + 0x588);
+    f32 positionBefore = *position;
+    f32 *velocity = (f32 *)((char *)self + 0x640);
+    f32 oldVelocity = *velocity;
+    f32 newVelocity;
+    f32 displacement;
 
-    temp_f1_2 = temp_f1 + ((((t0 - t3) * 500.0f) - (temp_f1 * 20.0f)) * k);
-    *q = temp_f1_2;
-    s = temp_f1_2 * k;
-    *v = *v + s;
+    newVelocity = oldVelocity + ((((target - positionBefore) * 500.0f) - (oldVelocity * 20.0f)) * timeStep);
+    *velocity = newVelocity;
+    displacement = newVelocity * timeStep;
+    *position = *position + displacement;
 }

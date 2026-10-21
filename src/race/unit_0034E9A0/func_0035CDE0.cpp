@@ -1,3 +1,5 @@
+/* Outputs a pair of values that start at 0.5 each. If func_0035C7C8 says so, the first is moved down by byte5/60 and the second
+ * up by func_0035C9B0(byte4)/24, both bytes read from the sub-state at +0x788. Meaning of the pair unknown. */
 #include "types.h"
 
 struct Obj;
@@ -11,12 +13,12 @@ struct Sub {
 extern "C" s32 func_0035C7C8(Obj *arg0);
 extern "C" s32 func_0035C9B0(s32 arg0);
 
-extern "C" void func_0035CDE0(Obj *arg0, f32 *arg1, f32 *arg2) {
-    *arg1 = 0.5f;
-    *arg2 = 0.5f;
-    if (func_0035C7C8(arg0) != 0) {
-        Sub *s = (Sub *)((char *)arg0 + 0x788);
-        *arg1 -= (f32)s->unk5 / 60.0f;
-        *arg2 += (f32)func_0035C9B0(s->unk4) / 24.0f;
+extern "C" void func_0035CDE0(Obj *self, f32 *outFirst, f32 *outSecond) {
+    *outFirst = 0.5f;
+    *outSecond = 0.5f;
+    if (func_0035C7C8(self) != 0) {
+        Sub *state = (Sub *)((char *)self + 0x788);
+        *outFirst -= (f32)state->unk5 / 60.0f;
+        *outSecond += (f32)func_0035C9B0(state->unk4) / 24.0f;
     }
 }

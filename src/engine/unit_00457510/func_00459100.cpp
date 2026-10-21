@@ -1,30 +1,33 @@
+/* Fixes up an object after it moved in memory (shape inferred): the field at +4 remembers the address the object had when its inner
+ * pointers were last valid, so offset = current address - remembered address. If it is non-zero, the remembered address is updated
+ * and each non-null pointer at +0x10 and +0x14 is shifted by that offset and passed to func_00454410 / func_00458238 respectively. */
 #include "types.h"
 
 struct Node {
     char pad0[4];
-    Node *prev;
+    Node *lastAddress;
     char pad8[0x4];
     s32 unkC;
-    s32 unk10;
-    s32 unk14;
+    s32 pointerA;
+    s32 pointerB;
 };
 
 extern "C" void func_00454410(s32 arg0);
 extern "C" void func_00458238(s32 arg0);
 
-extern "C" void func_00459100(Node *arg0) {
-    s32 offset = (char *)arg0 - (char *)arg0->prev;
+extern "C" void func_00459100(Node *self) {
+    s32 offset = (char *)self - (char *)self->lastAddress;
     if (offset != 0) {
-        arg0->prev = arg0;
-        if (arg0->unk10 != 0) {
-            s32 *p = (s32 *)((char *)arg0 + 0x10);
-            *p = *p + offset;
-            func_00454410(*p);
+        self->lastAddress = self;
+        if (self->pointerA != 0) {
+            s32 *firstPtr = (s32 *)((char *)self + 0x10);
+            *firstPtr = *firstPtr + offset;
+            func_00454410(*firstPtr);
         }
-        if (arg0->unk14 != 0) {
-            s32 *q = (s32 *)((char *)arg0 + 0x14);
-            *q = *q + offset;
-            func_00458238(*q);
+        if (self->pointerB != 0) {
+            s32 *secondPtr = (s32 *)((char *)self + 0x14);
+            *secondPtr = *secondPtr + offset;
+            func_00458238(*secondPtr);
         }
     }
 }

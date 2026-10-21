@@ -1,17 +1,19 @@
+/* Copies 16 floats (64 bytes, the size of a 4x4 matrix; inferred from the count only) from the source address to
+ * destination + 8, one float per iteration. memcpy is declared but not used: the loop is the form that matched. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
 
-void func_003B0898(s32 arg0, s32 arg1) {
-    s32 temp_v0;
-    s32 var_a2;
-    s8 *dst;
+void func_003B0898(s32 dstBase, s32 srcBase) {
+    s32 byteOffset;
+    s32 i;
+    s8 *dstBytes;
 
-    dst = (s8 *)(arg0 + 8);
-    var_a2 = 0;
+    dstBytes = (s8 *)(dstBase + 8);
+    i = 0;
     do {
-        temp_v0 = var_a2 * 4;
-        var_a2 += 1;
-        *(f32 *)(dst + temp_v0) = *(f32 *)(temp_v0 + arg1);
-    } while (var_a2 < 0x10);
+        byteOffset = i * 4;
+        i += 1;
+        *(f32 *)(dstBytes + byteOffset) = *(f32 *)(byteOffset + srcBase);
+    } while (i < 0x10);
 }

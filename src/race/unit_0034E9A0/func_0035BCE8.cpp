@@ -1,3 +1,5 @@
+/* Returns 1 unless bit 0x10 of the byte at 0x4B1 in the sub-state at +0x104 is set; when it is set, returns whether the
+ * 16-bit value at 0x64C equals 1. Purpose of the flag and of the value unknown. */
 #include "types.h"
 
 struct Sub {
@@ -7,13 +9,13 @@ struct Sub {
     s16 unk64C;
 };
 
-extern "C" s32 func_0035BCE8(void *arg0) {
-    struct Sub *temp_a0 = (struct Sub *)((char *)arg0 + 0x104);
-    s32 var_v0 = 1;
+extern "C" s32 func_0035BCE8(void *self) {
+    struct Sub *state = (struct Sub *)((char *)self + 0x104);
+    s32 result = 1;
 
-    if (!(temp_a0->unk4B1 & 0x10)) {
-        return var_v0;
+    if (!(state->unk4B1 & 0x10)) {
+        return result;
     }
-    var_v0 = temp_a0->unk64C == 1;
-    return var_v0;
+    result = state->unk64C == 1;
+    return result;
 }

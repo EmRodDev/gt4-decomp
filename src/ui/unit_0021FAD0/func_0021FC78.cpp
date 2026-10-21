@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Sets the string at +0xF0 of the object to the C string text (copy through the inlined refcounted-string helpers, releasing the old
+ * buffer), then rebuilds the handle stored at +0x114 from the string with func_00218A60: the new handle is retained and the old one
+ * released. Class not identified (directory unit_0021FAD0). The unused second argument is kept in the signature. */
 typedef int s32;
 
 struct Rep {
@@ -16,7 +19,7 @@ struct Obj {
     char pad0[0xF0];
     char *str;
     char pad1[0x114 - 0xF4];
-    s32 h;
+    s32 handleField;
 };
 
 extern Rep D_00659FA8;
@@ -40,10 +43,10 @@ static inline void str_release(char *p) {
     }
 }
 
-extern "C" void func_0021FC78(Obj *self, s32 unused, const char *arg2) {
-    char *buf[4];
-    char **p = buf;
-    char **dst = &self->str;
+extern "C" void func_0021FC78(Obj *self, s32 unused, const char *text) {
+    char *scratch[4];
+    char **p = scratch;
+    char **stringField = &self->str;
     {
         Rep *r = &D_00659FA8;
         char *d;
@@ -55,11 +58,11 @@ extern "C" void func_0021FC78(Obj *self, s32 unused, const char *arg2) {
         }
         *p = d;
     }
-    func_005C2630(p, 0, -1, arg2, func_0057F260(arg2));
-    if (buf != dst) {
-        str_release(*dst);
+    func_005C2630(p, 0, -1, text, func_0057F260(text));
+    if (scratch != stringField) {
+        str_release(*stringField);
         {
-            Rep *r = (Rep *)(buf[0] - 0x10);
+            Rep *r = (Rep *)(scratch[0] - 0x10);
             char *d;
             if (r->sel != 0) {
                 d = func_005C2560(r);
@@ -67,22 +70,22 @@ extern "C" void func_0021FC78(Obj *self, s32 unused, const char *arg2) {
                 d = (char *)(r + 1);
                 r->ref++;
             }
-            *dst = d;
+            *stringField = d;
         }
     }
-    str_release(buf[0]);
-    s32 *h = &self->h;
-    new (buf) R(func_00218A60((s32)dst));
-    if (h != (s32 *)buf) {
-        s32 newVal = ((s32 *)buf)[0];
+    str_release(scratch[0]);
+    s32 *handleField = &self->handleField;
+    new (scratch) R(func_00218A60((s32)stringField));
+    if (handleField != (s32 *)scratch) {
+        s32 newVal = ((s32 *)scratch)[0];
         if (newVal != 0) {
             func_003285A8(newVal);
         }
-        s32 oldVal = *h;
+        s32 oldVal = *handleField;
         if (oldVal != 0) {
             func_003285F8(oldVal);
         }
-        *h = newVal;
+        *handleField = newVal;
     }
-    func_0021D828(buf, 2);
+    func_0021D828(scratch, 2);
 }

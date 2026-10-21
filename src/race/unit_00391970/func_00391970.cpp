@@ -1,14 +1,17 @@
+/* Copies a described byte range into the buffer at +0x24 of the object and returns the object. The descriptor holds
+ * the source address at +4 and the byte count at +8 (inferred from the memcpy argument order).
+ * memcpy is declared with integer arguments here because that is the declaration that matched. */
 #include "types.h"
 
-struct Arg1 {
+struct ByteSpan {
     char pad0[4];
-    s32 unk4;
-    s32 unk8;
+    s32 source;
+    s32 byteCount;
 };
 
-extern "C" void memcpy(void *arg0, s32 arg1, s32 arg2);
+extern "C" void memcpy(void *dest, s32 source, s32 size);
 
-extern "C" void *func_00391970(void *arg0, Arg1 *arg1) {
-    memcpy((char *)arg0 + 0x24, arg1->unk4, arg1->unk8);
-    return arg0;
+extern "C" void *func_00391970(void *self, ByteSpan *span) {
+    memcpy((char *)self + 0x24, span->source, span->byteCount);
+    return self;
 }

@@ -1,3 +1,5 @@
+/* Stores value in the signed byte at +0x520 of the sub-state at +0x104, except when the owner's type byte (reached through
+ * the pointer at +0x10, offset 0x32) is 4 and the value is 0: then the store is skipped. Meaning of type 4 unknown. */
 #include "types.h"
 
 struct Inner {
@@ -15,10 +17,10 @@ struct Obj {
     Inner *unk10;
 };
 
-extern "C" void func_0036BEB8(Obj *arg0, int arg1) {
-    u8 type = arg0->unk10->unk32;
-    Sub *sub = (Sub *)((char *)arg0 + 0x104);
-    if (type != 4 || arg1 != 0) {
-        sub->unk520 = arg1;
+extern "C" void func_0036BEB8(Obj *self, int value) {
+    u8 ownerType = self->unk10->unk32;
+    Sub *sub = (Sub *)((char *)self + 0x104);
+    if (ownerType != 4 || value != 0) {
+        sub->unk520 = value;
     }
 }

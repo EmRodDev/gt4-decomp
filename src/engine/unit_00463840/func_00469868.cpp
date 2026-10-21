@@ -1,3 +1,5 @@
+/* If the byte at +0x51 of the sub-object at +0x14 equals the byte at +0x544 of the other object, sets it to -1
+ * ('none', inferred from the sentinel value). Meaning of the two bytes unknown. */
 #include "types.h"
 
 struct SubStruct {
@@ -10,10 +12,10 @@ struct Struct544 {
     u8 unk544;
 };
 
-extern "C" void func_00469868(void *arg0, struct Struct544 *arg1) {
-    struct SubStruct *temp_a0 = (struct SubStruct *)((char *)arg0 + 0x14);
+extern "C" void func_00469868(void *self, struct Struct544 *other) {
+    struct SubStruct *sub = (struct SubStruct *)((char *)self + 0x14);
 
-    if (temp_a0->unk51 == arg1->unk544) {
-        temp_a0->unk51 = -1;
+    if (sub->unk51 == other->unk544) {
+        sub->unk51 = -1;
     }
 }

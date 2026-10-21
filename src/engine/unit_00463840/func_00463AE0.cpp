@@ -1,41 +1,45 @@
+/* Maintains the byte at +0x14+0x1A: it is set to 1 unless a condition holds, and when it is still 0 afterwards it takes the byte at
+ * 0xCBE9 of the object linked at +4. The condition (call it active) needs the mode byte at +0x104+0x466 to be 1 or 2, func_0034C998 on
+ * the linked object to return 0, the float at +0x104+0x53C to be below 0x1.0AAAA8p+3 (25/3, about 8.33), the byte at +0x104+0x467 to
+ * be 0, and the flag argument to be non-zero. Meaning of all these fields unknown. */
 
 typedef int s32;
 typedef unsigned int u32;
 typedef unsigned char u8;
 typedef float f32;
 extern s32 func_0034C998(char *c);
-extern void func_00463AE0(char *arg0, s32 arg1)
+extern void func_00463AE0(char *self, s32 flag)
 {
-  char *s0 = arg0 + 0x104;
-  char *s1 = arg0 + 0x14;
-  u8 v = *((u8 *) (s0 + 0x466));
-  char *s2 = *((char **) (arg0 + 4));
-  s32 a1;
-  if (!(((u32) (v - 1)) < 2))
+  char *state = self + 0x104;
+  char *block14 = self + 0x14;
+  u8 mode466 = *((u8 *) (state + 0x466));
+  char *linked = *((char **) (self + 4));
+  s32 active;
+  if (!(((u32) (mode466 - 1)) < 2))
   {
-    a1 = 0;
+    active = 0;
   }
   else
   {
-    s32 c = func_0034C998(s2);
-    a1 = 0;
-    if (c == 0)
+    s32 blocked = func_0034C998(linked);
+    active = 0;
+    if (blocked == 0)
     {
-      if (!(0x1.0AAAA8p+3f <= (*((f32 *) (s0 + 0x53C)))))
+      if (!(0x1.0AAAA8p+3f <= (*((f32 *) (state + 0x53C)))))
       {
-        if ((*((u8 *) (s0 + 0x467))) == 0)
+        if ((*((u8 *) (state + 0x467))) == 0)
         {
-          a1 = arg1 != 0;
+          active = flag != 0;
         }
       }
     }
   }
-  if (a1 == 0)
+  if (active == 0)
   {
-    *((u8 *) (s1 + 0x1A)) = 1;
+    *((u8 *) (block14 + 0x1A)) = 1;
   }
-  if ((*((u8 *) (s1 + 0x1A))) == 0)
+  if ((*((u8 *) (block14 + 0x1A))) == 0)
   {
-    *((u8 *) (s1 + 0x1A)) = *((u8 *) (s2 + 0xCBE9));
+    *((u8 *) (block14 + 0x1A)) = *((u8 *) (linked + 0xCBE9));
   }
 }

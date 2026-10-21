@@ -1,3 +1,5 @@
+/* Finishes the automobile control recorder: if the pointer at +0x148 is set, calls
+ * AutomobileControlRecord::Recorder::finish on the Recorder part, which sits at +8 of the pointed object (name from the symbol table). */
 #include "types.h"
 
 struct Struct_00426C50 {
@@ -7,11 +9,11 @@ struct Struct_00426C50 {
 
 extern void AutomobileControlRecord__Recorder__finish(s32 *);
 
-extern "C" void func_00426C78(Struct_00426C50 *arg0) {
-    s32 *temp_v0;
+extern "C" void func_00426C78(Struct_00426C50 *self) {
+    s32 *recorderOwner;
 
-    temp_v0 = arg0->unk148;
-    if (temp_v0 != 0) {
-        AutomobileControlRecord__Recorder__finish((s32 *)((char *)temp_v0 + 8));
+    recorderOwner = self->unk148;
+    if (recorderOwner != 0) {
+        AutomobileControlRecord__Recorder__finish((s32 *)((char *)recorderOwner + 8));
     }
 }
