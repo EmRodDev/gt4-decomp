@@ -1,3 +1,8 @@
+/* Writes a JPEG start-of-frame header (SOF0, marker 0xFFC0) into the encoder's byte writer at +0x85C (identified from the byte
+ * sequence: marker, length 0x11 = 8 + 3 * 3, sample precision, height, width, 3 components, and per component an id 0..2, the
+ * horizontal/vertical sampling factors packed as (h << 4 | v) and a quantisation table number). func_0046F378 writes a 16-bit
+ * value and func_0046F300 a byte (inferred from the argument widths). 'frame' holds {width, height, precision} at +0, +4, +0xC;
+ * 'sampling' holds h,v for the three components; 'quantTables' the table number of each component. Part of the Jpeg2Sys encoder. */
 #include "types.h"
 
 struct Rep {
@@ -21,41 +26,41 @@ extern "C" void func_0046F300(void *, s32);
 
 struct func_0046C9F8_arg1 {
     char pad0[0x4];
-    s32 unk4;
+    s32 height;
     char pad8[0x4];
-    s32 unkC;
+    s32 precision;
 };
 
 struct func_0046C9F8_arg2 {
     char pad0[0x4];
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
+    s32 v0;
+    s32 h1;
+    s32 v1;
+    s32 h2;
+    s32 v2;
 };
 struct func_0046C9F8_arg3 {
     char pad0[0x4];
-    s32 unk4;
-    s32 unk8;
+    s32 table1;
+    s32 table2;
 };
 
-extern "C" void func_0046C9F8(s32 *arg0, struct func_0046C9F8_arg1 *arg1, s32 arg2, char **arg3) {
-    char *v_s0;
-    v_s0 = (char *)arg0 + 0x85c;
-    func_0046F378(v_s0, (0 | 0xffc0));
-    func_0046F378(v_s0, 0x11);
-    func_0046F300(v_s0, arg1->unkC);
-    func_0046F378(v_s0, arg1->unk4);
-    func_0046F378(v_s0, *(s32 *)(char *)arg1);
-    func_0046F300(v_s0, 0x3);
-    func_0046F300(v_s0, 0);
-    func_0046F300(v_s0, ((*(s32 *)(char *)arg2 << 4) | ((struct func_0046C9F8_arg2 *)arg2)->unk4));
-    func_0046F300(v_s0, *(s32 *)(char *)arg3);
-    func_0046F300(v_s0, 0x1);
-    func_0046F300(v_s0, ((((struct func_0046C9F8_arg2 *)arg2)->unk8 << 4) | ((struct func_0046C9F8_arg2 *)arg2)->unkC));
-    func_0046F300(v_s0, ((struct func_0046C9F8_arg3 *)arg3)->unk4);
-    func_0046F300(v_s0, 0x2);
-    func_0046F300(v_s0, ((((struct func_0046C9F8_arg2 *)arg2)->unk10 << 4) | ((struct func_0046C9F8_arg2 *)arg2)->unk14));
-    func_0046F300(v_s0, ((struct func_0046C9F8_arg3 *)arg3)->unk8);
+extern "C" void func_0046C9F8(s32 *encoder, struct func_0046C9F8_arg1 *frame, s32 sampling, char **quantTables) {
+    char *writer;
+    writer = (char *)encoder + 0x85c;
+    func_0046F378(writer, (0 | 0xffc0));
+    func_0046F378(writer, 0x11);
+    func_0046F300(writer, frame->precision);
+    func_0046F378(writer, frame->height);
+    func_0046F378(writer, *(s32 *)(char *)frame);
+    func_0046F300(writer, 0x3);
+    func_0046F300(writer, 0);
+    func_0046F300(writer, ((*(s32 *)(char *)sampling << 4) | ((struct func_0046C9F8_arg2 *)sampling)->v0));
+    func_0046F300(writer, *(s32 *)(char *)quantTables);
+    func_0046F300(writer, 0x1);
+    func_0046F300(writer, ((((struct func_0046C9F8_arg2 *)sampling)->h1 << 4) | ((struct func_0046C9F8_arg2 *)sampling)->v1));
+    func_0046F300(writer, ((struct func_0046C9F8_arg3 *)quantTables)->table1);
+    func_0046F300(writer, 0x2);
+    func_0046F300(writer, ((((struct func_0046C9F8_arg2 *)sampling)->h2 << 4) | ((struct func_0046C9F8_arg2 *)sampling)->v2));
+    func_0046F300(writer, ((struct func_0046C9F8_arg3 *)quantTables)->table2);
 }

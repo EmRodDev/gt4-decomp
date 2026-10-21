@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Constructor-shaped initialiser of a large object (about 0x6E88 bytes; inferred from the placement-new of a 1024-entry table of
+ * 0x20-byte blank entries at offset 0 and from the field set-up). Zeroes the counters at +0x5000, +0x6E30..+0x6E38 and +0x6E80..+0x6E84,
+ * builds the container at +0x5008 (func_00606568 then func_00606540 for its first pointer, count 0), stores the four initial
+ * values, sets the float at +0x6E28 to 1.0, and gives the member at +0x6E18 the colour value (inferred from the Color helper
+ * type kept in the source: its constructor and destructor are what make the compiler emit the temporary). The meaning of the
+ * individual fields is unknown. */
 inline void *operator new(unsigned, void *p) { return p; }
 struct Inner { Inner() {} };
 struct Blank { Inner i; char pad[0x1F]; };
@@ -28,27 +34,27 @@ struct Color { unsigned v; Color(unsigned x):v(x) {} ~Color() {} };
 extern "C" void func_0047E780(void *, unsigned);
 extern "C" void func_004A7550(void *);
 
-extern "C" int func_004791C0(Obj *o, int a1, int a2, int a3, int t0, float f) {
-    new (o) Holder;
-    o->i5000 = 0;
-    char *s = (char *)o + 0x5008;
-    func_00606568(s);
-    void *r = func_00606540(s);
-    ((Sub2 *)s)->b = 0;
-    ((Sub2 *)s)->a = r;
-    o->i6E14 = a1;
-    o->i6E20 = a2;
-    o->f6E24 = f;
-    o->f6E28 = 1.0f;
-    o->i6E7C = t0;
-    o->i6E30 = 0;
-    o->i6E34 = 0;
-    o->i6E38 = 0;
-    int *pair = &o->i6E80;
+extern "C" int func_004791C0(Obj *self, int init6E14, int init6E20, int color, int init6E7C, float init6E24) {
+    new (self) Holder;
+    self->i5000 = 0;
+    char *container = (char *)self + 0x5008;
+    func_00606568(container);
+    void *first = func_00606540(container);
+    ((Sub2 *)container)->b = 0;
+    ((Sub2 *)container)->a = first;
+    self->i6E14 = init6E14;
+    self->i6E20 = init6E20;
+    self->f6E24 = init6E24;
+    self->f6E28 = 1.0f;
+    self->i6E7C = init6E7C;
+    self->i6E30 = 0;
+    self->i6E34 = 0;
+    self->i6E38 = 0;
+    int *pair = &self->i6E80;
     pair[0] = 0;
     pair[1] = 0;
     unsigned tmp[4];
-    tmp[0] = a3;
-    func_0047E780(o->s6E18, tmp[0]);
-    func_004A7550(o->s6E3C);
+    tmp[0] = color;
+    func_0047E780(self->s6E18, tmp[0]);
+    func_004A7550(self->s6E3C);
 }

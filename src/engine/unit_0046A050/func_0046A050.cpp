@@ -1,16 +1,17 @@
+/* Array lookup through a pointer held at +8: returns table[index], or 0 when the table pointer is null. */
 #include "types.h"
 
 struct Struct_0046A050 {
     char pad0[8];
-    s32 *unk8;
+    s32 *table;
 };
 
-extern "C" s32 func_0046A050(Struct_0046A050 *arg0, s32 arg1) {
-    s32 *temp_v1;
+extern "C" s32 func_0046A050(Struct_0046A050 *self, s32 index) {
+    s32 *entries;
 
-    temp_v1 = arg0->unk8;
-    if (temp_v1 == 0) {
+    entries = self->table;
+    if (entries == 0) {
         return 0;
     }
-    return temp_v1[arg1];
+    return entries[index];
 }

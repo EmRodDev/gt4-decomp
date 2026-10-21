@@ -1,3 +1,8 @@
+/* Two 'quick' play-mode launchers on the same screen class (inferred from the mode strings): func_0011D1B8 runs "quick-license" and
+ * func_0011D270 runs "quick" (that second copy does not judge here; the matched one is func_0011D270.cpp). Each saves and clears the field at +0xF050, raises the busy flag at +0xDC of the object at +0x6C
+ * (func_0011D270 also raises +0xF0), sets up the screen with func_003BC5A8 / func_00387EF0 / func_0012BFC0 / func_0012BFD0, starts
+ * the mode with func_0010FE40, makes the virtual call in slot 87 and then restores everything. Same set-then-restore bracket as
+ * func_00119890 ("quick-practice"). The long list of virtual stubs only reproduces the vtable slot numbering. */
 #include "types.h"
 class DB {
 public:
@@ -104,37 +109,37 @@ extern "C" void func_0012BFD0(int);
 extern "C" void func_00387EF0(void *, int, int);
 extern "C" void func_003BC5A8(void *, s32);
 
-extern "C" void func_0011D1B8(D *d) {
-    char *p = d->p6c;
-    s32 saved = d->fF050;
-    d->fF050 = 0;
-    *(s32 *)(p + 0xDC) = 1;
-    func_003BC5A8(d, 0);
-    func_00387EF0(d, 2, 1);
-    func_0012BFC0((int)d);
+extern "C" void func_0011D1B8(D *screen) {
+    char *session = screen->p6c;
+    s32 saved = screen->fF050;
+    screen->fF050 = 0;
+    *(s32 *)(session + 0xDC) = 1;
+    func_003BC5A8(screen, 0);
+    func_00387EF0(screen, 2, 1);
+    func_0012BFC0((int)screen);
     func_0012BFD0(1);
     func_0010FE40("quick-license");
     func_0012BFC0(0);
-    d->v87();
-    *(s32 *)(p + 0xDC) = 0;
-    d->fF050 = saved;
+    screen->v87();
+    *(s32 *)(session + 0xDC) = 0;
+    screen->fF050 = saved;
 }
 
-extern "C" void func_0011D270(D *d) {
-    char *p = d->p6c;
-    s32 saved = d->fF050;
-    d->fF050 = 0;
-    *(s32 *)(p + 0xDC) = 1;
-    *(s32 *)(p + 0xF0) = 1;
-    func_003BC5A8(d, 1);
-    func_00387EF0(d, 4, 1);
-    func_0012BFC0((int)d);
+extern "C" void func_0011D270(D *screen) {
+    char *session = screen->p6c;
+    s32 saved = screen->fF050;
+    screen->fF050 = 0;
+    *(s32 *)(session + 0xDC) = 1;
+    *(s32 *)(session + 0xF0) = 1;
+    func_003BC5A8(screen, 1);
+    func_00387EF0(screen, 4, 1);
+    func_0012BFC0((int)screen);
     func_0012BFD0(1);
     func_0010FE40("quick");
     func_0012BFC0(0);
-    d->v87();
-    func_003BC5A8(d, 0);
-    *(s32 *)(p + 0xF0) = 0;
-    *(s32 *)(p + 0xDC) = 0;
-    d->fF050 = saved;
+    screen->v87();
+    func_003BC5A8(screen, 0);
+    *(s32 *)(session + 0xF0) = 0;
+    *(s32 *)(session + 0xDC) = 0;
+    screen->fF050 = saved;
 }

@@ -1,3 +1,5 @@
+/* Sets three fields of a small state object: +0x18 and +0x24 get the two arguments and +0x14 is cleared. func_004745E8 calls it
+ * with (a3, a4, 0xFF) right after func_00473620, so the 0xFF value looks like a maximum alpha/intensity (inferred; purpose unknown). */
 #include "types.h"
 
 struct Obj {
@@ -8,8 +10,8 @@ struct Obj {
     s32 unk24;
 };
 
-extern "C" void func_00473608(Obj *arg0, s32 arg1, s32 arg2) {
-    arg0->unk18 = arg1;
-    arg0->unk24 = arg2;
-    arg0->unk14 = 0;
+extern "C" void func_00473608(Obj *self, s32 value18, s32 value24) {
+    self->unk18 = value18;
+    self->unk24 = value24;
+    self->unk14 = 0;
 }

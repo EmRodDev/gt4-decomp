@@ -1,3 +1,7 @@
+/* Sets up the 32x32 texture object D_0088FED0 (names inferred from the pgluTex* calls): resets it, binds an image at the base address
+ * returned by func_004AB030 (stored in D_006D6190) with the constants 0x14 and 0x40, then sets two parameters with func_0049AF00 and
+ * func_0049AFD0 (0x20 x 0x20 size and two settings, both inferred only from the argument values). Finally D_006D6180 is set to
+ * base + 0x7C0, the address just past this image (inferred; meaning of the constants unknown). The argument is not used. */
 #include "types.h"
 
 struct Rep {
@@ -25,18 +29,18 @@ extern "C" void pgluTexImage(void *, s32, s32, s32, s32);
 extern "C" void func_0049AF00(void *, s32, s32);
 extern "C" void func_0049AFD0(void *, s32, s32);
 
-extern "C" void func_00491DE0(s32 *arg0) {
-    char *v_s1;
-    s32 t1;
-    char *v_s0;
-    t1 = func_004AB030();
-    v_s1 = (char *)&D_006D6190;
-    v_s0 = (char *)&D_0088FED0;
-    *(s32 *)(char *)v_s1 = t1;
-    pgluTexReset(v_s0);
-    pgluTexImage(v_s0, 0, *(s32 *)(char *)v_s1, 0x14, 0x40);
-    func_0049AF00(v_s0, 0x20, 0x20);
-    func_0049AFD0(v_s0, 0x4, 0x2);
-    func_0049AFD0(v_s0, 0x5, 0x2);
-    D_006D6180 = *(s32 *)(char *)v_s1 + 0x7c0;
+extern "C" void func_00491DE0(s32 *unused) {
+    char *baseSlot;
+    s32 base;
+    char *texture;
+    base = func_004AB030();
+    baseSlot = (char *)&D_006D6190;
+    texture = (char *)&D_0088FED0;
+    *(s32 *)(char *)baseSlot = base;
+    pgluTexReset(texture);
+    pgluTexImage(texture, 0, *(s32 *)(char *)baseSlot, 0x14, 0x40);
+    func_0049AF00(texture, 0x20, 0x20);
+    func_0049AFD0(texture, 0x4, 0x2);
+    func_0049AFD0(texture, 0x5, 0x2);
+    D_006D6180 = *(s32 *)(char *)baseSlot + 0x7c0;
 }

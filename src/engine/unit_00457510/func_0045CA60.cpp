@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-nogcse */
+/* Late adjustment of one simulated item after a step of length dt (shape inferred from the caller func_0045BB60). It acts only when
+ * func_003451B8 accepts the object at +0x450, when |f3C4| and |f3C8| are below 1.0, dt < 0.1 and the item is 'busy': any of the
+ * words at +0x3F4, +0x3F8, +0x43C is set, or one of 8 per-slot records (stride 0x44 / 0x2C) has a flag. Then f3D0 gains
+ * func_00344680(obj, 0) * 20 * f4DC and func_0045C5A8 is called. The inline abs.s is how the original takes the absolute values.
+ * The meaning of the fields is unknown. */
 struct Elem {
     char pad1[0x3C4];
     float f3C4, f3C8, pad3CC, f3D0;
@@ -15,29 +20,29 @@ extern "C" int func_003451B8(char *);
 extern "C" float func_00344680(char *, unsigned char *);
 extern "C" void func_0045C5A8(Elem *) throw();
 static inline float abs_(float x) { float r; __asm__("abs.s %0, %1" : "=f"(r) : "f"(x)); return r; }
-extern "C" void func_0045CA60(Elem *p, float dt)
+extern "C" void func_0045CA60(Elem *item, float dt)
 {
-    if (func_003451B8(p->f450)) {
-        int busy = ((p->f3F8 != 0) | (p->f3F4 != 0) | p->f43C) != 0;
+    if (func_003451B8(item->f450)) {
+        int busy = ((item->f3F8 != 0) | (item->f3F4 != 0) | item->f43C) != 0;
         if (!busy) {
-            int i = 0;
-            char *t2 = (char *)p + 8;
-            char *t1 = (char *)p + 0xC;
-            int *q2 = (int *)((char *)p + 0x248);
-            int *q1 = (int *)((char *)p + 0x244);
-            int off = 0x20;
+            int slot = 0;
+            char *flagsBase = (char *)item + 8;
+            char *wordBase = (char *)item + 0xC;
+            int *wordB = (int *)((char *)item + 0x248);
+            int *wordA = (int *)((char *)item + 0x244);
+            int slotOffset = 0x20;
             do {
-                if ((*(int *)(t2 + off) & 1) || *(int *)(t1 + off) || *q1 || *q2) { busy = 1; break; }
-                off += 0x44;
-                q1 = (int *)((char *)q1 + 0x2C);
-                q2 = (int *)((char *)q2 + 0x2C);
-                i++;
-            } while (i < 8);
+                if ((*(int *)(flagsBase + slotOffset) & 1) || *(int *)(wordBase + slotOffset) || *wordA || *wordB) { busy = 1; break; }
+                slotOffset += 0x44;
+                wordA = (int *)((char *)wordA + 0x2C);
+                wordB = (int *)((char *)wordB + 0x2C);
+                slot++;
+            } while (slot < 8);
         }
         float one = 1.0f;
-        if (abs_(p->f3C4) < one && abs_(p->f3C8) < one && dt < 0.1f && busy) {
-            p->f3D0 += func_00344680(p->f450, 0) * 20.0f * p->f4DC;
-            func_0045C5A8(p);
+        if (abs_(item->f3C4) < one && abs_(item->f3C8) < one && dt < 0.1f && busy) {
+            item->f3D0 += func_00344680(item->f450, 0) * 20.0f * item->f4DC;
+            func_0045C5A8(item);
         }
     }
 }

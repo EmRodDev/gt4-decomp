@@ -1,3 +1,10 @@
+/* Handles the end of one race for the results flow (shape inferred from the callees and arguments; many meanings unknown). It reads the
+ * race label of the session's race spec, looks up a per-race record in the global block D_00622F4C (+0x13E28) and posts a message to the
+ * queue at +0x568 (the same queue func_00110800 writes to). When the config byte at +0x5B6 is zero it only refreshes the screen
+ * (func_00110898), resets the record at +0x348 and posts a message. Otherwise the entries are sorted (RaceEntryBase::sortByRank), the
+ * player's rank is taken from func_00110570, an amount from func_004475A8 is added to the 64-bit total at +0x48 of the record and
+ * stored at +0x4A4 of the screen, and *bestRank keeps the smallest rank seen so far (inferred from the c < *arg test).
+ * For session modes 0 and 2 the score from RaceOrganization::getScore is also recorded. */
 #include "types.h"
 
 struct Cfg { char pad[0x5B6]; u8 b5B6; };
@@ -30,49 +37,49 @@ extern "C" s32 SPEC_DATABASE__RaceSpec__getRaceLabel(void *);
 extern "C" s32 func_004475A8(void *, u32);
 extern "C" s32 func_0057F238(s32, const char *);
 
-extern "C" void func_00114498(Arg0 *arg0, Arg1 *arg1, u8 *arg2) {
+extern "C" void func_00114498(Arg0 *screen, Arg1 *session, u8 *bestRank) {
     s32 flag = 0;
-    S1 *s1;
+    S1 *state;
     s32 name;
-    char *g;
-    char *s4, *s2;
-    void *s7;
-    s32 cc8 = ((Arg1b *)arg1)->fCC8;
-    if (cc8 == 0 || cc8 == 2) flag = 1;
-    s1 = arg1->p6C;
-    name = SPEC_DATABASE__RaceSpec__getRaceLabel(s1->p70);
-    g = D_00622F4C;
-    s2 = g + 0x348;
-    s7 = func_00430D20(g + 0x13E28, name);
-    s4 = g + 0x568;
-    if (s1->p60->p8->p0->p18->b5B6 == 0) {
-        func_00110898(arg0, s1);
-        func_0043AFF0(s2, 0);
+    char *globals;
+    char *messageQueue, *resultRecord;
+    void *raceRecord;
+    s32 mode = ((Arg1b *)session)->fCC8;
+    if (mode == 0 || mode == 2) flag = 1;
+    state = session->p6C;
+    name = SPEC_DATABASE__RaceSpec__getRaceLabel(state->p70);
+    globals = D_00622F4C;
+    resultRecord = globals + 0x348;
+    raceRecord = func_00430D20(globals + 0x13E28, name);
+    messageQueue = globals + 0x568;
+    if (state->p60->p8->p0->p18->b5B6 == 0) {
+        func_00110898(screen, state);
+        func_0043AFF0(resultRecord, 0);
         if (func_0057F238(name, D_0068D568) == 0) {
-            return func_0042F448(s4, D_00622F4C + 4, 2, 0xF, 0xE, 0x157529FF);
+            return func_0042F448(messageQueue, D_00622F4C + 4, 2, 0xF, 0xE, 0x157529FF);
         }
-        return func_0042F270(s4, name, 0xF, 0xE, 0x157529FF);
+        return func_0042F270(messageQueue, name, 0xF, 0xE, 0x157529FF);
     } else {
-        A60 *a = s1->p60;
-        s32 fp, s0, sp8;
-        RaceEntryBase__sortByRank(a);
-        fp = func_0035E3F0(s1->p60->p8->p0->p18);
-        s0 = func_00110570(s1, 0);
-        sp8 = func_004475A8(s1->p70, s0);
-        func_0043AFF0(s2, s0 + 1);
-        ((Rec *)s2)->f48 += sp8;
-        if (flag) func_00430A20(s7, RaceOrganization__getScore(s1, 0));
-        u8 c = s0;
-        if (c < *arg2) {
-            func_00430A58(s7, 2, c);
-            *arg2 = c;
+        A60 *entries = state->p60;
+        s32 value, rank, amount;
+        RaceEntryBase__sortByRank(entries);
+        value = func_0035E3F0(state->p60->p8->p0->p18);
+        rank = func_00110570(state, 0);
+        amount = func_004475A8(state->p70, rank);
+        func_0043AFF0(resultRecord, rank + 1);
+        ((Rec *)resultRecord)->f48 += amount;
+        if (flag) func_00430A20(raceRecord, RaceOrganization__getScore(state, 0));
+        u8 rankByte = rank;
+        if (rankByte < *bestRank) {
+            func_00430A58(raceRecord, 2, rankByte);
+            *bestRank = rankByte;
         }
         if (func_0057F238(name, D_0068D568) == 0) {
-            func_0042F448(s4, D_00622F4C + 4, 2, c, 0xE, fp);
+            func_0042F448(messageQueue, D_00622F4C + 4, 2, rankByte, 0xE, value);
         } else {
-            func_0042F270(s4, name, c, 0xE, fp);
+            func_0042F270(messageQueue, name, rankByte, 0xE, value);
         }
-        arg0->f4A4 = sp8;
-        func_00114390(arg0, arg1);
+        screen->f4A4 = amount;
+        func_00114390(screen, session);
     }
 }

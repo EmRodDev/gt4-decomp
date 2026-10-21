@@ -1,3 +1,5 @@
+/* Replaces a 2D vector (x, y floats) with the result of func_0048CF78(arg, vector). The copy constructor and operator= are spelled out
+ * because the compiled code copies the returned struct through a hidden return slot. */
 #include "types.h"
 
 struct Vec2 {
@@ -9,6 +11,6 @@ struct Vec2 {
 
 extern "C" Vec2 func_0048CF78(s32, const Vec2 &);
 
-extern "C" void func_0048CFC0(Vec2 *self, s32 arg1) {
-    *self = func_0048CF78(arg1, *self);
+extern "C" void func_0048CFC0(Vec2 *self, s32 arg) {
+    *self = func_0048CF78(arg, *self);
 }

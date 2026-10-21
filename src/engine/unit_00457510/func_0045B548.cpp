@@ -1,3 +1,7 @@
+/* Back-patches a length prefix in an output buffer (shape inferred from the arithmetic). The buffer 'out' keeps its start at +0 and
+ * its write cursor at +8. If the record's offset at +4 is non-negative, the record's second length at +8 becomes
+ * (bytes written so far) - offset; the cursor is moved back to start + offset, the record's first word and that length are written with
+ * func_0045AFC8, and the cursor is restored to start + bytes written. Does nothing for a negative offset. */
 #include "types.h"
 
 struct Rep {
@@ -20,23 +24,23 @@ extern "C" void func_0045AFC8(void *, s32);
 
 struct func_0045B548_arg0 {
     char pad0[0x4];
-    s32 unk4;
-    s32 unk8;
+    s32 offset;
+    s32 tailLength;
 };
 struct func_0045B548_arg1 {
     char pad0[0x8];
-    s32 unk8;
+    s32 cursor;
 };
 
-extern "C" void func_0045B548(s32 *arg0, void *arg1) {
-    s32 v_s0;
-    if (((struct func_0045B548_arg0 *)arg0)->unk4 >= 0) {
-        v_s0 = ((struct func_0045B548_arg1 *)arg1)->unk8;
-        v_s0 = (v_s0 - *(s32 *)(char *)arg1);
-        ((struct func_0045B548_arg0 *)arg0)->unk8 = (v_s0 - ((struct func_0045B548_arg0 *)arg0)->unk4);
-        ((struct func_0045B548_arg1 *)arg1)->unk8 = (*(s32 *)(char *)arg1 + ((struct func_0045B548_arg0 *)arg0)->unk4);
-        func_0045AFC8(arg1, *(s32 *)(char *)arg0);
-        func_0045AFC8(arg1, ((struct func_0045B548_arg0 *)arg0)->unk8);
-        ((struct func_0045B548_arg1 *)arg1)->unk8 = (*(s32 *)(char *)arg1 + v_s0);
+extern "C" void func_0045B548(s32 *record, void *out) {
+    s32 written;
+    if (((struct func_0045B548_arg0 *)record)->offset >= 0) {
+        written = ((struct func_0045B548_arg1 *)out)->cursor;
+        written = (written - *(s32 *)(char *)out);
+        ((struct func_0045B548_arg0 *)record)->tailLength = (written - ((struct func_0045B548_arg0 *)record)->offset);
+        ((struct func_0045B548_arg1 *)out)->cursor = (*(s32 *)(char *)out + ((struct func_0045B548_arg0 *)record)->offset);
+        func_0045AFC8(out, *(s32 *)(char *)record);
+        func_0045AFC8(out, ((struct func_0045B548_arg0 *)record)->tailLength);
+        ((struct func_0045B548_arg1 *)out)->cursor = (*(s32 *)(char *)out + written);
     }
 }

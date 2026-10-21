@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Constructor of an unnamed class (inferred from the placement-new calls on members and the field initialisation): the fields at +4
+ * and +8 point back at the object itself, like the sentinel of a circular list; +0xC takes 'a', +0x164 takes 'c', and 'b' goes to
+ * func_004751D0 at the end. Members include two Str members that copy the shared empty string D_00659E20 (reference-counted
+ * copy, as the inline Str constructor shows), and the pairs/triple that are zeroed by P2 / P3. Field meanings unknown. */
 typedef unsigned int u32;
 
 struct Rep2 {

@@ -1,24 +1,25 @@
+/* Multiplies all 16 floats of a 4x4 matrix (or 16-float vector block, row layout unknown) by one scalar, in place. */
 #include "types.h"
 
 struct Vec16 {
     f32 m[16];
 };
 
-extern "C" void func_0048E308(struct Vec16 *arg0, f32 fparg0) {
-    arg0->m[0] = arg0->m[0] * fparg0;
-    arg0->m[1] = arg0->m[1] * fparg0;
-    arg0->m[2] = arg0->m[2] * fparg0;
-    arg0->m[3] = arg0->m[3] * fparg0;
-    arg0->m[4] = arg0->m[4] * fparg0;
-    arg0->m[5] = arg0->m[5] * fparg0;
-    arg0->m[6] = arg0->m[6] * fparg0;
-    arg0->m[7] = arg0->m[7] * fparg0;
-    arg0->m[8] = arg0->m[8] * fparg0;
-    arg0->m[9] = arg0->m[9] * fparg0;
-    arg0->m[10] = arg0->m[10] * fparg0;
-    arg0->m[11] = arg0->m[11] * fparg0;
-    arg0->m[12] = arg0->m[12] * fparg0;
-    arg0->m[13] = arg0->m[13] * fparg0;
-    arg0->m[14] = arg0->m[14] * fparg0;
-    arg0->m[15] = arg0->m[15] * fparg0;
+extern "C" void func_0048E308(struct Vec16 *matrix, f32 scale) {
+    matrix->m[0] = matrix->m[0] * scale;
+    matrix->m[1] = matrix->m[1] * scale;
+    matrix->m[2] = matrix->m[2] * scale;
+    matrix->m[3] = matrix->m[3] * scale;
+    matrix->m[4] = matrix->m[4] * scale;
+    matrix->m[5] = matrix->m[5] * scale;
+    matrix->m[6] = matrix->m[6] * scale;
+    matrix->m[7] = matrix->m[7] * scale;
+    matrix->m[8] = matrix->m[8] * scale;
+    matrix->m[9] = matrix->m[9] * scale;
+    matrix->m[10] = matrix->m[10] * scale;
+    matrix->m[11] = matrix->m[11] * scale;
+    matrix->m[12] = matrix->m[12] * scale;
+    matrix->m[13] = matrix->m[13] * scale;
+    matrix->m[14] = matrix->m[14] * scale;
+    matrix->m[15] = matrix->m[15] * scale;
 }

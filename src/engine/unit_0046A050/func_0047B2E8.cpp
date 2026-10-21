@@ -1,3 +1,7 @@
+/* Script-native shaped function (inferred): it takes its arguments from the script value stack. With argCount arguments it pops one
+ * integer (func_004774A8 on the top element) when there is at least one, then four floats (func_00477460, truncated to int) when
+ * four more remain, drops any extra arguments with func_00480FA0, calls func_004807A0(arg1, intValue, four values) and returns
+ * the result slot set to 1. Unset values stay -1. What func_004807A0 does with them is unknown. */
 #include "types.h"
 
 struct E8 {
@@ -17,32 +21,32 @@ extern "C" void func_004807A0(s32, s32, s32, s32, s32, s32);
 extern "C" void func_00480F78(S00480F78 *);
 extern "C" void func_00480FA0(S00480F78 *, s32);
 
-extern "C" s32 *func_0047B2E8(s32 *arg0, s32 arg1, u32 arg2, S00480F78 *arg3) {
-    u32 n = arg2;
-    s32 fp = 0;
-    s32 s7 = -1;
-    s32 s6 = -1;
-    s32 s4 = -1;
-    s32 s2 = -1;
+extern "C" s32 *func_0047B2E8(s32 *result, s32 target, u32 argCount, S00480F78 *stack) {
+    u32 remaining = argCount;
+    s32 intValue = 0;
+    s32 value1 = -1;
+    s32 value2 = -1;
+    s32 value3 = -1;
+    s32 value4 = -1;
 
-    if (n != 0) {
-        n -= 1;
-        fp = func_004774A8(arg3->top - 1);
-        func_00480F78(arg3);
+    if (remaining != 0) {
+        remaining -= 1;
+        intValue = func_004774A8(stack->top - 1);
+        func_00480F78(stack);
     }
-    if (n >= 4U) {
-        n -= 4;
-        s7 = (s32)func_00477460(arg3->top - 1);
-        func_00480F78(arg3);
-        s6 = (s32)func_00477460(arg3->top - 1);
-        func_00480F78(arg3);
-        s4 = (s32)func_00477460(arg3->top - 1);
-        func_00480F78(arg3);
-        s2 = (s32)func_00477460(arg3->top - 1);
-        func_00480F78(arg3);
+    if (remaining >= 4U) {
+        remaining -= 4;
+        value1 = (s32)func_00477460(stack->top - 1);
+        func_00480F78(stack);
+        value2 = (s32)func_00477460(stack->top - 1);
+        func_00480F78(stack);
+        value3 = (s32)func_00477460(stack->top - 1);
+        func_00480F78(stack);
+        value4 = (s32)func_00477460(stack->top - 1);
+        func_00480F78(stack);
     }
-    func_00480FA0(arg3, (s32)n);
-    func_004807A0(arg1, fp, s7, s6, s4, s2);
-    *arg0 = 1;
-    return arg0;
+    func_00480FA0(stack, (s32)remaining);
+    func_004807A0(target, intValue, value1, value2, value3, value4);
+    *result = 1;
+    return result;
 }

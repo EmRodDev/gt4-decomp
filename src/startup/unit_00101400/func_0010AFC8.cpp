@@ -1,3 +1,8 @@
+/* Start-up registration of the menu callbacks (shape inferred from the calls): builds a frame object (func_002ECDE0), then registers
+ * init_menu and func_0012C9D0 under two names with func_002EAA50, passing the frame's handle at +0 each time (the names are string
+ * constants D_0068CFA0 / D_0068CFA8, built with the library string class: grab() copies the shared empty string, assign() fills it,
+ * destroy() releases it, so each name object lives and dies around its call). A third name D_0068CFB0 goes to func_00305CF8.
+ * The frame is torn down with func_002EA590 at the end. What the strings contain is unknown. */
 #include "types.h"
 
 struct Rep { u32 len; u32 res; u32 ref; u32 selfish; };
@@ -53,34 +58,34 @@ extern "C" void func_004361D0(void);
 extern "C" void func_0043A490(void);
 
 extern "C" void func_0010AFC8(void) {
-    Frame f;
-    Str *ps;
-    func_002ECDE0(&f);
-    func_001DC8F0(f.o10);
-    ps = &f.s20;
+    Frame frame;
+    Str *nameString;
+    func_002ECDE0(&frame);
+    func_001DC8F0(frame.o10);
+    nameString = &frame.s20;
     {
-        s32 h = f.h0;
-        construct(ps, D_0068CFA0);
-        func_002EAA50(h, ps, init_menu);
-        destroy(ps);
+        s32 h = frame.h0;
+        construct(nameString, D_0068CFA0);
+        func_002EAA50(h, nameString, init_menu);
+        destroy(nameString);
     }
     {
-        s32 h = f.h0;
-        construct(ps, D_0068CFA8);
-        func_002EAA50(h, ps, func_0012C9D0);
-        destroy(ps);
+        s32 h = frame.h0;
+        construct(nameString, D_0068CFA8);
+        func_002EAA50(h, nameString, func_0012C9D0);
+        destroy(nameString);
     }
     func_0043A490();
     func_004361D0();
-    func_002EC3A0(ps, f.h0);
+    func_002EC3A0(nameString, frame.h0);
     {
-        s32 s3 = (s32)ps->dat;
-        construct(&f.s30, D_0068CFB0);
-        func_00305CF8(s3, &f.s30);
-        destroy(&f.s30);
+        s32 nameChars = (s32)nameString->dat;
+        construct(&frame.s30, D_0068CFB0);
+        func_00305CF8(nameChars, &frame.s30);
+        destroy(&frame.s30);
     }
-    func_003041B8(ps, 2);
+    func_003041B8(nameString, 2);
     func_001051D8();
-    func_001DC5F8(f.o10, 2);
-    func_002EA590(&f, 2);
+    func_001DC5F8(frame.o10, 2);
+    func_002EA590(&frame, 2);
 }

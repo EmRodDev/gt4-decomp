@@ -1,3 +1,8 @@
+/* Calls a named handler: looks the string up with func_006066C8 (a table at D_00624570, third argument 0xF) and, when an entry is
+ * found, calls the function pointer stored at +8 of the entry with the result slot and the second argument. Otherwise the result
+ * slot is set to 1. An empty name is replaced by the shared empty string D_006AD838 and a non-empty one is NUL-terminated in
+ * place, which is what the inline c_str() does (shape of the library string class). Reads like a script-native dispatcher
+ * (inferred); the table's contents are unknown. */
 #include "types.h"
 
 struct String {
@@ -9,7 +14,7 @@ struct String {
     void terminate() const { rep()->data()[length()] = 0; }
 };
 
-extern "C" void *func_006066C8(void *arg0, char *arg1, int arg2);
+extern "C" void *func_006066C8(void *table, char *name, int flags);
 extern char D_00624570[];
 extern char D_006AD838[];
 
@@ -26,13 +31,13 @@ static inline const char *c_str(const String &s) {
     return s.data();
 }
 
-extern "C" s32 *func_0047B728(s32 *arg0, s32 arg1, String *arg2) {
-    void *r = func_006066C8((void *)c_str(*arg2), D_00624570, 0xF);
-    if (r) {
-        Callee *c = (Callee *)r;
-        c->fn(arg0, arg1);
-        return arg0;
+extern "C" s32 *func_0047B728(s32 *result, s32 argument, String *name) {
+    void *found = func_006066C8((void *)c_str(*name), D_00624570, 0xF);
+    if (found) {
+        Callee *entry = (Callee *)found;
+        entry->fn(result, argument);
+        return result;
     }
-    *arg0 = 1;
-    return arg0;
+    *result = 1;
+    return result;
 }
