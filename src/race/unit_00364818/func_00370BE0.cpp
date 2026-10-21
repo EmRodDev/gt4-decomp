@@ -1,3 +1,5 @@
+/* Camera reset (same object as func_0036FAE8): sets the mode pair to (0, 0x18), re-derives the view with func_00370548 and keeps a
+ * backup copy of the current vector and value pair (the same backup func_0036FAE8 makes after initialising; func_00370C68 restores it). */
 struct Pair {
     unsigned char a;
     unsigned char b;

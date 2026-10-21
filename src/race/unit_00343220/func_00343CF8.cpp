@@ -1,3 +1,5 @@
+/* Writes one value into the field at +0x1C8 of every wheel record (0xEC bytes apart; wheel count is the byte at +1 of the car info
+ * returned by func_00359510). */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -14,20 +16,20 @@ struct func_00343CF8_temp_v0 {
     u8 unk1;
 };
 
-void func_00343CF8(char *arg0, f32 fparg0) {
-    f32 *var_a0;
-    s32 var_a1;
-    char *temp_v0;
+void func_00343CF8(char *self, f32 value) {
+    f32 *wheelField;
+    s32 wheelIndex;
+    char *carInfo;
 
-    temp_v0 = (char *)(func_00359510(((struct func_00343CF8_arg0 *)arg0)->unk10));
-    var_a1 = 0;
-    if (((struct func_00343CF8_temp_v0 *)temp_v0)->unk1 != 0) {
-        var_a0 = (f32 *)(arg0 + 0x1C8);
+    carInfo = (char *)(func_00359510(((struct func_00343CF8_arg0 *)self)->unk10));
+    wheelIndex = 0;
+    if (((struct func_00343CF8_temp_v0 *)carInfo)->unk1 != 0) {
+        wheelField = (f32 *)(self + 0x1C8);
         do {
-            *var_a0 = fparg0;
-            var_a1 += 1;
-            var_a0 = (f32 *)((char *)var_a0 + 0xEC);
-        } while (var_a1 < (s32) ((struct func_00343CF8_temp_v0 *)temp_v0)->unk1);
+            *wheelField = value;
+            wheelIndex += 1;
+            wheelField = (f32 *)((char *)wheelField + 0xEC);
+        } while (wheelIndex < (s32) ((struct func_00343CF8_temp_v0 *)carInfo)->unk1);
     }
 }
 

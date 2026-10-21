@@ -1,4 +1,6 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Restores the camera's backup (see func_00370BE0): copies the saved vector and the value pair back and re-derives the view with
+ * func_00370548. */
 typedef int s32;
 typedef float f32;
 
@@ -20,9 +22,9 @@ struct Obj_00370C68 {
 extern "C" void func_005F5040(void *dst, void *src);
 extern "C" void func_00370548(Obj_00370C68 *obj, void *v, s32 n);
 
-extern "C" void func_00370C68(Obj_00370C68 *arg0) {
-    func_005F5040(arg0->mEC, arg0->mD8);
-    arg0->mE4.f = arg0->mF8.f;
-    arg0->mE4.i = arg0->mF8.i;
-    func_00370548(arg0, arg0->mD8, arg0->m80);
+extern "C" void func_00370C68(Obj_00370C68 *self) {
+    func_005F5040(self->mEC, self->mD8);
+    self->mE4.f = self->mF8.f;
+    self->mE4.i = self->mF8.i;
+    func_00370548(self, self->mD8, self->m80);
 }

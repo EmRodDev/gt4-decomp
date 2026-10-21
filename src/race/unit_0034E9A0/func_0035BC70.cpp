@@ -1,3 +1,6 @@
+/* Consumes a one-shot request: when bit 0 of the u16 at +0x5BC is set it is cleared, bit 0x10 is set, and the function returns a mask
+ * made of 1 (7 when bit 4 is set), bit 8 and 0x10 when the mode byte at +0x104+0x466 equals 1. Returns 0 when bit 0 was clear.
+ * The names of the bits are unknown. */
 
 typedef int s32;
 typedef unsigned short u16;
@@ -9,38 +12,38 @@ inline int inline_fn(s32 arg0, s32 arg1)
 
 s32 func_0035BC70(char *arg0)
 {
-  u16 *a2 = (u16 *) (arg0 + 0x5BC);
-  s8 *a0 = (s8 *) (arg0 + 0x104);
-  s32 r;
-  s32 v;
-  s32 a1;
-  s32 a3;
-  s32 t0;
-  s8 b;
-  s32 f;
-  v = (s32) (*a2);
-  r = 0;
-  v = v ^ 1;
-  a1 = inline_fn(v, 0x10);
-  v = v & 1;
-  if (v != 0)
+  u16 *flagsPtr = (u16 *) (arg0 + 0x5BC);
+  s8 *state = (s8 *) (arg0 + 0x104);
+  s32 mask;
+  s32 flags;
+  s32 newFlags;
+  s32 bit4;
+  s32 bit8;
+  s8 modeByte;
+  s32 notMode1;
+  flags = (s32) (*flagsPtr);
+  mask = 0;
+  flags = flags ^ 1;
+  newFlags = inline_fn(flags, 0x10);
+  flags = flags & 1;
+  if (flags != 0)
   {
-    return r;
+    return mask;
   }
-  *a2 = (u16) a1;
-  r = 1;
-  a3 = a1 & 4;
-  t0 = a1 & 8;
-  if (a3 != 0)
+  *flagsPtr = (u16) newFlags;
+  mask = 1;
+  bit4 = newFlags & 4;
+  bit8 = newFlags & 8;
+  if (bit4 != 0)
   {
-    r = 7;
+    mask = 7;
   }
-  b = a0[0x466];
-  r = inline_fn(t0, r);
-  f = ((s32) b) ^ 1;
-  if (f == 0)
+  modeByte = state[0x466];
+  mask = inline_fn(bit8, mask);
+  notMode1 = ((s32) modeByte) ^ 1;
+  if (notMode1 == 0)
   {
-    r = r | 0x10;
+    mask = mask | 0x10;
   }
-  return r;
+  return mask;
 }

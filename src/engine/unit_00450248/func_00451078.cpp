@@ -1,3 +1,5 @@
+/* Like func_004510B0 but the node comes from the owner's child pointer at +0x20+0xC (selector non-zero) or +0x24+0xC (selector zero); returns the
+ * node's field +0x7C or 0. */
 #include "types.h"
 
 struct Node_00451078 {
@@ -5,29 +7,29 @@ struct Node_00451078 {
     s32 unk7C;
 };
 
-extern "C" s32 func_00451078(s32 *arg0, s32 arg1) {
-    char *temp_a0;
-    char *addr;
-    s32 off;
-    s32 alt;
-    Node_00451078 *var_v0;
-    s32 var_v1;
+extern "C" s32 func_00451078(s32 *self, s32 selector) {
+    char *owner;
+    char *slotAddr;
+    s32 offset;
+    s32 altOffset;
+    Node_00451078 *node;
+    s32 result;
 
-    temp_a0 = *(char **)arg0;
-    if (temp_a0 != 0) {
-        alt = 0x24;
-        off = 0x20;
-        if (arg1 == 0) {
-            off = alt;
+    owner = *(char **)self;
+    if (owner != 0) {
+        altOffset = 0x24;
+        offset = 0x20;
+        if (selector == 0) {
+            offset = altOffset;
         }
-        addr = temp_a0 + off;
-        var_v0 = *(Node_00451078 **)(addr + 0xC);
+        slotAddr = owner + offset;
+        node = *(Node_00451078 **)(slotAddr + 0xC);
     } else {
-        var_v0 = 0;
+        node = 0;
     }
-    var_v1 = 0;
-    if (var_v0 != 0) {
-        var_v1 = var_v0->unk7C;
+    result = 0;
+    if (node != 0) {
+        result = node->unk7C;
     }
-    return var_v1;
+    return result;
 }

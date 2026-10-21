@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Initialises a camera object with defaults (inferred from the constants 128, 500, 100 and the world limits it reads): view size and
+ * range values, cleared vectors, -1 for unset indices. When an owner is given it reads the owner's world limits (start position
+ * and extents) to size the camera range and finds the starting track position with func_003FECB0/func_003FF0B8 (purpose of
+ * those two inferred from their use only). */
 typedef float f32;
 
 struct Limits {
@@ -42,13 +46,13 @@ extern "C" int func_003FF0B8(f32 *, Owner *, int, f32);
 extern "C" void *func_005A48D8(void *, int, unsigned int);
 extern "C" void func_005F5040(f32 *, f32 *);
 
-extern "C" void func_0036FAE8(Cam *c, Owner *owner, int a2) {
+extern "C" void func_0036FAE8(Cam *c, Owner *owner, int initArg) {
     f32 *p8 = &c->fD8;
     f32 *pC = &c->fDC;
     f32 *p0 = &c->fE0;
     c->f8 = 128.0f;
     c->fC = 128.0f;
-    c->i4 = a2;
+    c->i4 = initArg;
     c->owner = owner;
     c->f10 = 1.0f;
     c->f14 = 500.0f;

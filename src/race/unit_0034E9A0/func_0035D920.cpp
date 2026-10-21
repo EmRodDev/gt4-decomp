@@ -1,26 +1,28 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Computes two scalars as dot products of the 3-vector at +0x648 with the vectors at +0x140 and +0x14C, stores them at +0x104+0x53C
+ * and +0x540, then calls func_0035D6B0, which reads exactly those two fields. */
 typedef float f32;
 
 extern "C" int func_0035D6B0(void *arg0) throw();
 
 static inline bool more(int i) { if (i < 3) return true; return false; }
 extern "C" int func_0035D920(char *arg0) {
-    f32 *p = (f32 *)(arg0 + 0x104);
+    f32 *state = (f32 *)(arg0 + 0x104);
     int i = 0;
-    f32 sb = 0.0f;
-    f32 sc = 0.0f;
-    f32 *c = (f32 *)(arg0 + 0x14C);
-    f32 *a = (f32 *)(arg0 + 0x648);
-    f32 *b = (f32 *)(arg0 + 0x140);
+    f32 dotB = 0.0f;
+    f32 dotC = 0.0f;
+    f32 *vecC = (f32 *)(arg0 + 0x14C);
+    f32 *vecA = (f32 *)(arg0 + 0x648);
+    f32 *vecB = (f32 *)(arg0 + 0x140);
     do {
-        f32 x = *a++;
-        f32 y = *b++;
-        f32 z = *c++;
+        f32 x = *vecA++;
+        f32 y = *vecB++;
+        f32 z = *vecC++;
         i++;
-        sb += y * x;
-        sc += z * x;
+        dotB += y * x;
+        dotC += z * x;
     } while (more(i));
-    p[0x53C / 4] = sb;
-    p[0x540 / 4] = sc;
+    state[0x53C / 4] = dotB;
+    state[0x540 / 4] = dotC;
     return func_0035D6B0(arg0);
 }

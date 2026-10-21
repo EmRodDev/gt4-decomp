@@ -1,3 +1,6 @@
+/* Bounds-checked table lookup: the row (40 bytes each, count in the u16 at +0x16) and column (4 bytes each, starting at +0x1c in the
+ * row) give a value; when it is not negative it is passed with the sink's field 0x14 to func_004569F0. Does nothing for a missing
+ * sink or an out-of-range row. The table's meaning is unknown. */
 #include "types.h"
 
 struct Rep {
@@ -30,15 +33,15 @@ struct func_00457278_arg3 {
     s32 unk14;
 };
 
-extern "C" void func_00457278(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 v_s2;
-    if ((arg2 < (s32)*(u16 *)((char *)arg0 + 0x16))) {
-        if (arg3 != 0) {
-            v_s2 = *(s32 *)((char *)((((s32)arg1 << 2) + ((((arg2 << 2) + arg2) << 3) + ((struct func_00457278_arg0 *)arg0)->unk38))) + 0x1c);
-            if (v_s2 >= 0) {
-                func_004569D0(buf0, arg3);
-                func_004569F0(buf0, ((struct func_00457278_arg0 *)arg0)->unk5C, v_s2, ((struct func_00457278_arg3 *)arg3)->unk14);
+extern "C" void func_00457278(s32 *table, void *column, s32 row, char **sink) {
+    s32 scratch[4];
+    s32 cellValue;
+    if ((row < (s32)*(u16 *)((char *)table + 0x16))) {
+        if (sink != 0) {
+            cellValue = *(s32 *)((char *)((((s32)column << 2) + ((((row << 2) + row) << 3) + ((struct func_00457278_arg0 *)table)->unk38))) + 0x1c);
+            if (cellValue >= 0) {
+                func_004569D0(scratch, sink);
+                func_004569F0(scratch, ((struct func_00457278_arg0 *)table)->unk5C, cellValue, ((struct func_00457278_arg3 *)sink)->unk14);
             }
         }
     }

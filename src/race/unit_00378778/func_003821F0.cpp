@@ -1,3 +1,7 @@
+/* Picks a random trackside camera spot ahead of the car (replay/TV camera placement, inferred from the camera matrix
+ * calls at the end and the 'dist'/'range' fields it fills): samples the track a few seconds ahead of the car, offsets it sideways
+ * by 2 to 7 units, drops it onto the ground with a ray cast, and aims the camera back at the car with a small random tilt.
+ * Returns non-zero when the spot is usable (track query succeeded, ground found, car inside half the view range). */
 struct V { float x,y,z; float &X() { return x; } float &Y() { return y; } float &Z() { return z; } };
 struct Obj { char pad[8]; float dist,range; char pad10[0x18]; V trans, angles; char pad40[0x140]; void *rng; void *scene; };
 extern "C" {
@@ -46,83 +50,83 @@ extern "C" float func_0057D2B8(float) throw();
 extern "C" void *func_005A48D8(void *,int,unsigned);
 extern "C" void func_005F5230(void *,void *);
 static inline int negative(int n) { if(n<0) return 1; return 0; }
-extern "C" int func_003821F0(Obj *self,void *car,void *track,float t) {
+extern "C" int func_003821F0(Obj *self,void *car,void *track,float lookAheadSeconds) {
  V pos,rot,origin,dir,tmp,a,b,off,start,hit;
  int id;
- V *pd=&dir,*pv=&tmp;
- V *pr=&rot;
+ V *carPosPtr=&dir,*scratchPtr=&tmp;
+ V *rotPtr=&rot;
  void *rng=self->rng;
  clear(&pos);
  clear(&rot);
- float factor=t*(func_00578598(rng)*0.35f+0.5f);
+ float factor=lookAheadSeconds*(func_00578598(rng)*0.35f+0.5f);
  float x=func_00344798(car,0.0f);
  float y=func_003447F8(car,0.0f);
  float z=func_00344828(car,0.0f);
  origin.x=x;origin.y=y;origin.z=z;
- copy(pd,&origin);
+ copy(carPosPtr,&origin);
  float tx=func_00344720(car);
  float ty=func_00344748(car);
  float tz=func_00344770(car);
- pv->X()=tx; pv->Y()=ty;pv->Z()=tz;
- func_005F5268(pd,pv);
+ scratchPtr->X()=tx; scratchPtr->Y()=ty;scratchPtr->Z()=tz;
+ func_005F5268(carPosPtr,scratchPtr);
  float base=func_003447C8(car,0.0f);
  float speed=base-func_003447C8(car,1.0f);
- float rr=func_00578598(rng);
+ float rangeRandom=func_00578598(rng);
  float advance=speed*factor*60.0f;
- float range=rr*30.0f+50.0f;
- float u=base+advance;
- float prev=u-1.0f;
- clear(pv);
- int bad=negative(func_0034C518(track,6,0,&a,u));
+ float range=rangeRandom*30.0f+50.0f;
+ float aheadPos=base+advance;
+ float aheadPosBehind=aheadPos-1.0f;
+ clear(scratchPtr);
+ int bad=negative(func_0034C518(track,6,0,&a,aheadPos));
  int ok=!bad;
- if(func_0034C518(track,6,0,&b,prev)<0)ok=false;
+ if(func_0034C518(track,6,0,&b,aheadPosBehind)<0)ok=false;
  float dist=100.0f;
  float *ry,*rz;
  if(ok) {
-  V *po=&off;
+  V *sideOffset=&off;
   float dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
-  pv->X()=dx;pv->Y()=dy;pv->Z()=dz;
-  float angle=func_0036EA98(pv);
-  dist=sqr(func_005F5010(pv));
+  scratchPtr->X()=dx;scratchPtr->Y()=dy;scratchPtr->Z()=dz;
+  float angle=func_0036EA98(scratchPtr);
+  dist=sqr(func_005F5010(scratchPtr));
   float shift=func_00578598(rng)*5.0f+2.0f;
   if(func_00578598(rng)<0.5f)shift=-shift;
   set(&pos,a.x,a.y,a.z);
   float sx=-func_0057D2B8(angle);
   float sz=func_0057D1F0(angle)*shift;
-  set(po,sx*shift,0.0f,sz);
-  func_005F5230(&pos,po);
+  set(sideOffset,sx*shift,0.0f,sz);
+  func_005F5230(&pos,sideOffset);
   void *scene=self->scene;
-  V *ps=&start,*ph=&hit;
-  set(ps,a.x,a.y,a.z);
-  id=func_003FCB20(scene,ps);
+  V *rayStartPtr=&start,*rayHitPtr=&hit;
+  set(rayStartPtr,a.x,a.y,a.z);
+  id=func_003FCB20(scene,rayStartPtr);
   if(id<0) ok=false;
   else {
-   func_003FE7B0(scene,ps,&pos,ph,&id,1.2f);
+   func_003FE7B0(scene,rayStartPtr,&pos,rayHitPtr,&id,1.2f);
    id=-1;
-   float ground=func_003FE358(scene,ph,&id);
+   float ground=func_003FE358(scene,rayHitPtr,&id);
    if(id<0) ok=false;
    else {
     float *hy=&hit.Y();
     float h=ground+0x1.999998p-4f;
     *hy=h+func_00578598(rng)*0x1.333332p-1f;
-    func_005F5040(ph,&pos);
+    func_005F5040(rayHitPtr,&pos);
    }
   }
   ry=&rot.y;
   *ry=func_00578598(rng)*20.0f-15.0f;
-  pr->x=angle+func_00578598(rng)*20.0f-10.0f;
+  rotPtr->x=angle+func_00578598(rng)*20.0f-10.0f;
   rz=&rot.z;
   *rz=func_00578598(rng)*30.0f-15.0f;
  }
  else {ry=&rot.y;rz=&rot.z;}
- copy(pv,&origin);
- func_005F5268(pv,&pos);
- float diff=absf(func_0036EB98(func_0036EA98(pv),pr->x));
+ copy(scratchPtr,&origin);
+ func_005F5268(scratchPtr,&pos);
+ float diff=absf(func_0036EB98(func_0036EA98(scratchPtr),rotPtr->x));
  if(diff>range*0.5f)ok=false;
  self->dist=dist;self->range=range;
  func_005F5040(&pos,(char*)self+0x190);
  func_004A0690();func_004A53F8();func_004A7454();
- func_004A79D8(*rz);func_004A7988(*ry);func_004A79B0(pr->x);
+ func_004A79D8(*rz);func_004A7988(*ry);func_004A79B0(rotPtr->x);
  func_004A7844(-pos.x,-pos.y,-pos.z);
  func_004A7550((char*)self+0x100);func_004A5400();func_004A06F0();
  return ok;

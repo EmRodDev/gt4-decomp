@@ -1,3 +1,7 @@
+/* Visibility-style test for a camera (inferred from the degree-to-radian half-angle): builds a cube extent of size
+ * target.unk44 * 0.7002 / tan-like(fov / 2) + 0.5, asks the scene whether that volume at the camera position is free
+ * (func_003FDD60, inverted), and also fails when the field of view is wider than the angle derived from the camera's unk20.
+ * Returns non-zero when the shot is acceptable (meaning inferred). */
 #include "types.h"
 
 struct Inner {
@@ -19,20 +23,20 @@ extern "C" s32 func_003FDD60(s32 a, void *b, f32 *c);
 extern "C" f32 func_0057D008(f32 x);
 extern "C" f32 func_0057D380(f32 x);
 
-extern "C" s32 func_00380C50(struct Self *arg0, s32 arg1, struct Arg2 *arg2, f32 fparg0) {
-    f32 v[3];
-    struct Inner *s2;
-    f32 t;
-    s32 r;
+extern "C" s32 func_00380C50(struct Self *self, s32 scene, struct Arg2 *target, f32 fovDegrees) {
+    f32 extentVec[3];
+    struct Inner *camera;
+    f32 extent;
+    s32 result;
 
-    s2 = arg0->unk184;
-    t = arg2->unk44 * 0.70020754f * (1.0f / func_0057D380(fparg0 * 0.5f * 0.017453292f)) + 0.5f;
-    v[0] = t;
-    v[1] = t;
-    v[2] = t;
-    r = func_003FDD60(arg1, (char *)s2 + 4, v) ^ 1;
-    if (fparg0 < (2.0f * func_0057D008(1.0f / ((2.0f * s2->unk20) / 0.7f))) / 0.017453292f) {
-        r = 0;
+    camera = self->unk184;
+    extent = target->unk44 * 0.70020754f * (1.0f / func_0057D380(fovDegrees * 0.5f * 0.017453292f)) + 0.5f;
+    extentVec[0] = extent;
+    extentVec[1] = extent;
+    extentVec[2] = extent;
+    result = func_003FDD60(scene, (char *)camera + 4, extentVec) ^ 1;
+    if (fovDegrees < (2.0f * func_0057D008(1.0f / ((2.0f * camera->unk20) / 0.7f))) / 0.017453292f) {
+        result = 0;
     }
-    return r;
+    return result;
 }

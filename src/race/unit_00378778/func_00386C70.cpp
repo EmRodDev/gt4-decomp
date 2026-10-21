@@ -1,4 +1,6 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Crew count for a car model (CarGeometry::GetNumCrew): 0 when the geometry is invalid or flag 2 is set, 1 when the race has three
+ * or more cars (race count at +0xF8A0, inferred), otherwise whatever GetNumCrew reports. */
 typedef int s32;
 typedef unsigned short u16;
 
@@ -9,29 +11,29 @@ extern "C" void CarGeometry__structor_0(Local *, Arg *, s32);
 extern "C" u16 *func_0038DC18(Local *);
 extern "C" s32 CarGeometry__GetNumCrew(Local *) throw();
 
-static inline bool valid(Local *p) { return func_0038DC18(p) != 0; }
+static inline bool valid(Local *race) { return func_0038DC18(race) != 0; }
 
-extern "C" s32 func_00386C70(s32 arg0, Arg *arg1) {
-    Local loc;
-    char *p;
+extern "C" s32 func_00386C70(s32 unusedArg, Arg *geometryRef) {
+    Local geometry;
+    char *race;
 
-    CarGeometry__structor_0(&loc, arg1, 0);
-    if (!valid(&loc)) {
+    CarGeometry__structor_0(&geometry, geometryRef, 0);
+    if (!valid(&geometry)) {
         return 0;
     }
     for (;;) {
-    p = arg1->unk4;
-    s32 v = *func_0038DC18(&loc) & 2;
-    if (v) {
+    race = geometryRef->unk4;
+    s32 flag = *func_0038DC18(&geometry) & 2;
+    if (flag) {
         return 0;
     }
-    if (p != 0) {
-        v = *(s32 *)(p + 0xF8A0);
-        v = v < 3;
-        if (!v) {
+    if (race != 0) {
+        flag = *(s32 *)(race + 0xF8A0);
+        flag = flag < 3;
+        if (!flag) {
             return 1;
         }
     }
-    return CarGeometry__GetNumCrew(&loc);
+    return CarGeometry__GetNumCrew(&geometry);
     }
 }

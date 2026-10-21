@@ -1,4 +1,6 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Resets a small tracker: f34 = 0, f30 takes the value at data+0x56C, the counters are cleared, and, unless the global D_00623E54 is
+ * set, f2C decays toward zero by the amount at data+0x54C (never below zero). Purpose unknown. */
 struct Obj {
     char pad0[0x2C];
     float f2C;
@@ -20,12 +22,12 @@ extern "C" void func_00464ED8(Obj *obj) {
     obj->i3E = 0;
     obj->i3C = 0;
     if (D_00623E54 == 0) {
-        float a = obj->f2C;
-        float b = obj->f34;
-        if (b < a) {
-            float x = a - *(float *)(data + 0x54C);
-            obj->f2C = x;
-            if (x < b) obj->f2C = b;
+        float current = obj->f2C;
+        float floorValue = obj->f34;
+        if (floorValue < current) {
+            float decayed = current - *(float *)(data + 0x54C);
+            obj->f2C = decayed;
+            if (decayed < floorValue) obj->f2C = floorValue;
         }
     }
 }

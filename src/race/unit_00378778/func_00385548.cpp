@@ -1,43 +1,46 @@
+/* Returns a signed gain applied to value 9 of func_0035A540 (negated). mode 0: gain 0.4, and 0 when the angle from func_00385478
+ * is outside +-pi/2; other modes use the motorist dynamic parameter from DRIVERSUPPORT when set (func_0044FAB0), else 0.4.
+ * Meaning of the modes is unknown. */
 #include "types.h"
 
 struct Obj;
 struct func_0035A540_Obj;
 
 extern "C" f32 func_0035A540(func_0035A540_Obj *self, int k);
-extern "C" f32 func_00385478(Obj *arg0, s32 arg1);
+extern "C" f32 func_00385478(Obj *self, s32 mode);
 extern "C" void *DRIVERSUPPORT_NAME__GetMotoristDynamicParameter(void);
-extern "C" f32 func_0044FAB0(Obj *arg0);
+extern "C" f32 func_0044FAB0(Obj *self);
 
-extern "C" f32 func_00385548(Obj *arg0, s32 arg1)
+extern "C" f32 func_00385548(Obj *self, s32 mode)
 {
-  f32 var_f20;
-  f32 temp;
-  f32 r;
-  f32 hi;
-  f32 lo;
+  f32 gain;
+  f32 scaled;
+  f32 angle;
+  f32 upperLimit;
+  f32 lowerLimit;
 
-  if (arg1 == 0)
+  if (mode == 0)
   {
-    var_f20 = -func_0035A540((func_0035A540_Obj *) arg0, 9) * 0x1.999998p-2f;
-    r = func_00385478(arg0, 0);
-    hi = 0x1.921FB4p+0f;
-    lo = -0x1.921FB4p+0f;
-    if (r < lo)
+    gain = -func_0035A540((func_0035A540_Obj *) self, 9) * 0x1.999998p-2f;
+    angle = func_00385478(self, 0);
+    upperLimit = 0x1.921FB4p+0f;
+    lowerLimit = -0x1.921FB4p+0f;
+    if (angle < lowerLimit)
     {
-      var_f20 = 0.0f;
+      gain = 0.0f;
     }
-    else if (hi < r)
+    else if (upperLimit < angle)
     {
-      var_f20 = 0.0f;
+      gain = 0.0f;
     }
-    return var_f20;
+    return gain;
   }
 
-  var_f20 = 0x1.999998p-2f;
+  gain = 0x1.999998p-2f;
   if (DRIVERSUPPORT_NAME__GetMotoristDynamicParameter() != 0)
   {
-    var_f20 = func_0044FAB0((Obj *) DRIVERSUPPORT_NAME__GetMotoristDynamicParameter());
+    gain = func_0044FAB0((Obj *) DRIVERSUPPORT_NAME__GetMotoristDynamicParameter());
   }
-  temp = -func_0035A540((func_0035A540_Obj *) arg0, 9);
-  return temp * var_f20;
+  scaled = -func_0035A540((func_0035A540_Obj *) self, 9);
+  return scaled * gain;
 }

@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Spawns one particle (inferred from the pool, free list, life, fade and random size/speed/angle fields). Maps the input type to a
+ * particle type, skips it when that type is disabled or the alpha is nearly zero, takes a record from the free list (or recycles one),
+ * fills it with randomised look values and stores the plane it sits on (height solved from the plane equation a*x+b*y+c*z+d=0). */
 struct Vec3 { float x,y,z; };
 struct Node {
     int link:13; unsigned kind:3; unsigned char flags; signed char type;

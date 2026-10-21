@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* For each wheel computes two offsets (w->f28 and w->f2C) from the car data tables, scaled by one global factor and signed by
+ * which side of the car the wheel is on (b3C sign). Optional terms depend on two global switches and the sine/cosine of an angle.
+ * Purpose of the result unknown (it feeds wheel placement; not proven). */
 typedef int s32;
 typedef signed char s8;
 typedef unsigned char u8;

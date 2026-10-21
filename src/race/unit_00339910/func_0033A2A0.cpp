@@ -1,3 +1,6 @@
+/* Writes a race description to a binary stream (inferred from the BinStreamWriter calls): a block with the course code and a name,
+ * then one record per car (two names and one byte from a virtual call), an optional extra block when includeExtra is set, and
+ * finally per-car detail through func_0033A1B0. What the stream is used for (replay or save data) is unknown. */
 #include "types.h"
 
 struct VEnt { s16 off; s16 pad; u32 (*fn)(void *); };
@@ -34,20 +37,20 @@ extern "C" void func_0033A150(void *, s32) throw();
 extern "C" void func_0033A1B0(void *, void *, void *) throw();
 extern "C" void func_0045B548(void *, void *);
 
-extern "C" void func_0033A2A0(void *arg0, C *arg1, s32 arg2, s32 arg3) {
+extern "C" void func_0033A2A0(void *writer, C *session, s32 streamValue, s32 includeExtra) {
     s32 buf0[4];
     char name[0x100];
     u32 i = 0;
     u32 j;
-    func_0045B4D8(buf0, arg0, D_0069F310);
-    GT4Model__BinStreamWriter__write8u(arg0, 2);
-    B *b = arg1->unk6C;
+    func_0045B4D8(buf0, writer, D_0069F310);
+    GT4Model__BinStreamWriter__write8u(writer, 2);
+    B *b = session->unk6C;
     func_00447CA0(SPEC_DATABASE__RaceSpec__getCourseCode(b->unk70), name);
-    func_0045B040(arg0, name);
+    func_0045B040(writer, name);
     func_00447CA0(b->unk68, name);
-    func_0045B040(arg0, name);
+    func_0045B040(writer, name);
     u32 n = b->unk60->count;
-    GT4Model__BinStreamWriter__write8u(arg0, n);
+    GT4Model__BinStreamWriter__write8u(writer, n);
     if (n != 0) {
         do {
             Item *it = b->unk60->items[i];
@@ -57,23 +60,23 @@ extern "C" void func_0033A2A0(void *arg0, C *arg1, s32 arg2, s32 arg3) {
             Mdl *m = it->unk2880;
             VEnt *ve = (VEnt *)(*(char **)((char *)m + 8) + 0x38);
             u32 r0 = ve->fn((char *)m + ve->off);
-            func_0045B040(arg0, r3);
-            func_0045B040(arg0, r2);
-            GT4Model__BinStreamWriter__write8u(arg0, r0);
+            func_0045B040(writer, r3);
+            func_0045B040(writer, r2);
+            GT4Model__BinStreamWriter__write8u(writer, r0);
         } while (i < n);
     }
-    func_0045AFF0(arg0, arg2);
-    if (arg3 != 0) {
-        E *e = arg1->unk6C->unk80->unk4;
-        func_0033A150(arg0, e->unk80);
+    func_0045AFF0(writer, streamValue);
+    if (includeExtra != 0) {
+        E *e = session->unk6C->unk80->unk4;
+        func_0033A150(writer, e->unk80);
     }
     j = 0;
     if (n != 0) {
         do {
             Item *it = b->unk60->items[j];
             j++;
-            func_0033A1B0(arg0, it, b);
+            func_0033A1B0(writer, it, b);
         } while (j < n);
     }
-    func_0045B548(buf0, arg0);
+    func_0045B548(buf0, writer);
 }

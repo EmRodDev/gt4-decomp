@@ -1,3 +1,4 @@
+/* Sets a block of 16 fields to default values (8, 3, 0x10, 1, 2 and zeros). The settings' meaning is unknown. */
 #include "types.h"
 
 struct Obj_00471EB8 {
@@ -20,21 +21,21 @@ struct Obj_00471EB8 {
     s32 m38;
 };
 
-extern "C" void func_00471EB8(Obj_00471EB8 *arg0) {
-    arg0->m0 = 0;
-    arg0->m4 = 0;
-    arg0->m8 = 3;
-    arg0->mC = 8;
-    arg0->m10 = 0;
-    arg0->m14 = 0;
-    arg0->m18 = 0;
-    arg0->m1C = 1;
-    arg0->m1D = 2;
-    arg0->m20 = 0;
-    arg0->m24 = 0;
-    arg0->m28 = 0x10;
-    arg0->m2C = 0x10;
-    arg0->m30 = 0;
-    arg0->m34 = 0;
-    arg0->m38 = 0;
+extern "C" void func_00471EB8(Obj_00471EB8 *self) {
+    self->m0 = 0;
+    self->m4 = 0;
+    self->m8 = 3;
+    self->mC = 8;
+    self->m10 = 0;
+    self->m14 = 0;
+    self->m18 = 0;
+    self->m1C = 1;
+    self->m1D = 2;
+    self->m20 = 0;
+    self->m24 = 0;
+    self->m28 = 0x10;
+    self->m2C = 0x10;
+    self->m30 = 0;
+    self->m34 = 0;
+    self->m38 = 0;
 }

@@ -1,3 +1,4 @@
+/* Frees the three heap blocks held at +0x734 and zeroes the slots, then clears the field at +8. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -10,23 +11,23 @@ struct func_00470D60_arg0 {
     s32 unk8;
 };
 
-void func_00470D60(char *arg0) {
-    s32 *var_s0;
-    s32 temp_v0;
-    s32 var_s1;
+void func_00470D60(char *self) {
+    s32 *slot;
+    s32 block;
+    s32 remaining;
 
-    var_s0 = (s32 *)(arg0 + 0x734);
-    var_s1 = 2;
+    slot = (s32 *)(self + 0x734);
+    remaining = 2;
     do {
-        temp_v0 = *var_s0;
-        if (temp_v0 != 0) {
-            free(temp_v0);
+        block = *slot;
+        if (block != 0) {
+            free(block);
         }
-        var_s1 -= 1;
-        *var_s0 = 0;
-        var_s0 += 1;
-    } while (var_s1 >= 0);
-    ((struct func_00470D60_arg0 *)arg0)->unk8 = 0;
+        remaining -= 1;
+        *slot = 0;
+        slot += 1;
+    } while (remaining >= 0);
+    ((struct func_00470D60_arg0 *)self)->unk8 = 0;
 }
 
 }

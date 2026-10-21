@@ -1,3 +1,6 @@
+/* Constructor of the photo-mode camera manager (class from the source directory): runs the base constructor, installs vtable
+ * D_0067A250, constructs the embedded member at +0xE28, allocates two helper objects (0x200 and 0x1C0 bytes, stored at
+ * +0xC40 and +0xC44) and finishes with virtual slot 20 called with 0. */
 #include "types.h"
 
 extern char D_0067A250[];
@@ -19,15 +22,15 @@ static inline s32 make_other() {
     func_00384510((void *)p);
     return p;
 }
-extern "C" s32 func_00377C98(void *arg0) {
-    char *p2 = (char *)arg0 + 0xC40;
-    s32 s0;
-    func_003721D8(arg0);
-    *(char **)arg0 = D_0067A250;
-    func_0036FA88((char *)arg0 + 0xE28);
-    s0 = make_camera();
-    *(s32 *)p2 = s0;
-    s0 = make_other();
-    *(s32 *)((char *)arg0 + 0xC44) = s0;
-    return RacePhotoModeCameraManager__virtual_20(arg0, 0);
+extern "C" s32 func_00377C98(void *self) {
+    char *cameraSlot = (char *)self + 0xC40;
+    s32 created;
+    func_003721D8(self);
+    *(char **)self = D_0067A250;
+    func_0036FA88((char *)self + 0xE28);
+    created = make_camera();
+    *(s32 *)cameraSlot = created;
+    created = make_other();
+    *(s32 *)((char *)self + 0xC44) = created;
+    return RacePhotoModeCameraManager__virtual_20(self, 0);
 }

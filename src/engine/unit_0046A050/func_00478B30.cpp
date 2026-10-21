@@ -1,3 +1,6 @@
+/* Sets up and runs a short drawing sequence on the script engine's draw context (purpose unknown; inferred only from the call order):
+ * when no context object exists yet it creates one with colour 0x80ffffff, then switches draw modes, optionally installs
+ * drawData, and calls func_004A74B4(drawArg) between two RaceEntryCar__update calls (name as in the symbol table). */
 #include "types.h"
 
 struct Rep {
@@ -35,21 +38,21 @@ struct func_00478B30_v_s0 {
     s32 unk4;
 };
 
-extern "C" void func_00478B30(s32 *arg0, void *arg1, s32 arg2) {
+extern "C" void func_00478B30(s32 *self, void *drawData, s32 drawArg) {
     s32 buf0[4];
-    s32 v_s0;
-    if (((struct func_00478B30_arg0 *)arg0)->unk6E38 == 0) {
+    s32 drawContext;
+    if (((struct func_00478B30_arg0 *)self)->unk6E38 == 0) {
         buf0[0] = 0x80ffffff;
-        func_00473380(((struct func_00478B30_arg0 *)arg0)->unk6E14, func_0047E658((char *)arg0 + 0x6e18, buf0));
+        func_00473380(((struct func_00478B30_arg0 *)self)->unk6E14, func_0047E658((char *)self + 0x6e18, buf0));
     }
-    v_s0 = ((struct func_00478B30_arg0 *)arg0)->unk6E14;
+    drawContext = ((struct func_00478B30_arg0 *)self)->unk6E14;
     func_004A1638(0x2);
     func_004AB040(0x9);
-    ((struct func_00478B30_v_s0 *)v_s0)->unk4 = 0x1;
-    if (arg1 != 0) {
-        func_00473750(((struct func_00478B30_arg0 *)arg0)->unk6E14, arg1);
+    ((struct func_00478B30_v_s0 *)drawContext)->unk4 = 0x1;
+    if (drawData != 0) {
+        func_00473750(((struct func_00478B30_arg0 *)self)->unk6E14, drawData);
     }
     RaceEntryCar__update(0x2);
-    func_004A74B4(arg2);
+    func_004A74B4(drawArg);
     RaceEntryCar__update(0);
 }

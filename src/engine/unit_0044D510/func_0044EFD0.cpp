@@ -1,3 +1,5 @@
+/* Reads a three-component position from the source (func_00344798 / func_003447F8 / func_00344828, which func_003821F0 uses as x, y, z of
+ * a car) and passes it to func_0044EF18 on the target. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -7,11 +9,11 @@ f32 func_003447F8(s32, f32);                        /* extern */
 f32 func_00344828(s32, f32);                        /* extern */
 s32 func_0044EF18(s32, f32, f32, f32);          /* extern */
 
-void func_0044EFD0(s32 arg0, s32 arg1, f32 fparg0) {
-    f32 temp_f21;
-    f32 temp_f22;
+void func_0044EFD0(s32 target, s32 source, f32 offset) {
+    f32 y;
+    f32 x;
 
-    temp_f22 = func_00344798(arg1);
-    temp_f21 = func_003447F8(arg1, fparg0);
-    func_0044EF18(arg0, temp_f22, temp_f21, func_00344828(arg1, fparg0));
+    x = func_00344798(source);
+    y = func_003447F8(source, offset);
+    func_0044EF18(target, x, y, func_00344828(source, offset));
 }

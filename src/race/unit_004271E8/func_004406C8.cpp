@@ -1,3 +1,6 @@
+/* Slot setter: stores the owner pointer into slot number table->unk490 of a table whose slots are 0x178 bytes apart (inferred from the shift/add
+ * arithmetic), calls the shared slot initialiser, then converts byte triples of the source record through func_004452A8 into
+ * packed values kept in the slot. What the packed values mean (colours or indices) is unknown. */
 #include "types.h"
 
 struct Rep {
@@ -61,28 +64,28 @@ struct func_004406C8_arg2 {
     u8 unk10E;
 };
 
-extern "C" void func_004406C8(s32 *arg0, void *arg1, s32 arg2) {
-    char *v_s1;
-    s32 t1;
-    s32 t2;
-    s32 t3;
-    s32 t4;
-    s32 t5;
-    s32 t6;
-    v_s1 = (char *)arg0 + (((((((struct func_004406C8_arg0 *)arg0)->unk490 << 1) + ((struct func_004406C8_arg0 *)arg0)->unk490) << 4) - ((struct func_004406C8_arg0 *)arg0)->unk490) << 3);
-    v_s1 = (char *)v_s1 + 0x8;
-    ((struct func_004406C8_v_s1 *)v_s1)->unk58 = (s64)arg1;
-    func_00440030(arg0, arg2);
-    t1 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unkF8, ((struct func_004406C8_arg2 *)arg2)->unkFA, ((struct func_004406C8_arg2 *)arg2)->unkF9);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk150 = (s8)t1;
-    t2 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unk104, ((struct func_004406C8_arg2 *)arg2)->unk106, ((struct func_004406C8_arg2 *)arg2)->unk105);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk151 = (s8)t2;
-    t3 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unkFC, ((struct func_004406C8_arg2 *)arg2)->unkFE, ((struct func_004406C8_arg2 *)arg2)->unkFD);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk152 = (s8)t3;
-    t4 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unk108, ((struct func_004406C8_arg2 *)arg2)->unk10A, ((struct func_004406C8_arg2 *)arg2)->unk109);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk153 = (s8)t4;
-    t5 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unk100, ((struct func_004406C8_arg2 *)arg2)->unk102, ((struct func_004406C8_arg2 *)arg2)->unk101);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk154 = (s8)t5;
-    t6 = func_004452A8(v_s1, ((struct func_004406C8_arg2 *)arg2)->unk10C, ((struct func_004406C8_arg2 *)arg2)->unk10E, ((struct func_004406C8_arg2 *)arg2)->unk10D);
-    ((struct func_004406C8_v_s1 *)v_s1)->unk155 = (s8)t6;
+extern "C" void func_004406C8(s32 *table, void *owner, s32 source) {
+    char *slot;
+    s32 packed0;
+    s32 packed1;
+    s32 packed2;
+    s32 packed3;
+    s32 packed4;
+    s32 packed5;
+    slot = (char *)table + (((((((struct func_004406C8_arg0 *)table)->unk490 << 1) + ((struct func_004406C8_arg0 *)table)->unk490) << 4) - ((struct func_004406C8_arg0 *)table)->unk490) << 3);
+    slot = (char *)slot + 0x8;
+    ((struct func_004406C8_v_s1 *)slot)->unk58 = (s64)owner;
+    func_00440030(table, source);
+    packed0 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unkF8, ((struct func_004406C8_arg2 *)source)->unkFA, ((struct func_004406C8_arg2 *)source)->unkF9);
+    ((struct func_004406C8_v_s1 *)slot)->unk150 = (s8)packed0;
+    packed1 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unk104, ((struct func_004406C8_arg2 *)source)->unk106, ((struct func_004406C8_arg2 *)source)->unk105);
+    ((struct func_004406C8_v_s1 *)slot)->unk151 = (s8)packed1;
+    packed2 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unkFC, ((struct func_004406C8_arg2 *)source)->unkFE, ((struct func_004406C8_arg2 *)source)->unkFD);
+    ((struct func_004406C8_v_s1 *)slot)->unk152 = (s8)packed2;
+    packed3 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unk108, ((struct func_004406C8_arg2 *)source)->unk10A, ((struct func_004406C8_arg2 *)source)->unk109);
+    ((struct func_004406C8_v_s1 *)slot)->unk153 = (s8)packed3;
+    packed4 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unk100, ((struct func_004406C8_arg2 *)source)->unk102, ((struct func_004406C8_arg2 *)source)->unk101);
+    ((struct func_004406C8_v_s1 *)slot)->unk154 = (s8)packed4;
+    packed5 = func_004452A8(slot, ((struct func_004406C8_arg2 *)source)->unk10C, ((struct func_004406C8_arg2 *)source)->unk10E, ((struct func_004406C8_arg2 *)source)->unk10D);
+    ((struct func_004406C8_v_s1 *)slot)->unk155 = (s8)packed5;
 }

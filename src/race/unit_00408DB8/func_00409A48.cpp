@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Ground probe: asks the scene for the surface under (x, y, z) (func_00395910, which returns a plane and its id), then queries the hit
+ * record (func_00395760). Returns 0 when the hit is flagged as invalid; otherwise stores the plane, its id, the hit's value at
+ * +0x10 and the height at which the plane passes through (x, z), solved from nx*x + ny*y + nz*z + d = 0, and returns 1. */
 typedef int s32;
 typedef float f32;
 typedef unsigned char u8;
@@ -25,30 +28,30 @@ struct Out {
 extern "C" void func_00395760(s32, Hit *);
 extern "C" void func_00395910(s32, f32 *, s32 *, Plane *);
 
-extern "C" s32 func_00409A48(s32 a, Hit *h, Out *o, f32 x, f32 y, f32 z) {
-    s32 sp0;
-    f32 v[3];
-    Plane *pl = (Plane *)((char *)o + 8);
+extern "C" s32 func_00409A48(s32 scene, Hit *hit, Out *out, f32 x, f32 y, f32 z) {
+    s32 planeId;
+    f32 probePos[3];
+    Plane *pl = (Plane *)((char *)out + 8);
     f32 t;
-    v[0] = x;
-    v[1] = y;
-    v[2] = z;
-    sp0 = 0;
-    func_00395910(a, v, &sp0, pl);
-    h->id = sp0;
-    h->x = v[0];
-    h->y = v[1];
+    probePos[0] = x;
+    probePos[1] = y;
+    probePos[2] = z;
+    planeId = 0;
+    func_00395910(scene, probePos, &planeId, pl);
+    hit->id = planeId;
+    hit->x = probePos[0];
+    hit->y = probePos[1];
     t = 0.0f;
-    h->z = v[2];
-    func_00395760(a, h);
-    if (h->flag != 0) {
+    hit->z = probePos[2];
+    func_00395760(scene, hit);
+    if (hit->flag != 0) {
         return 0;
     }
     if (pl->ny != 0.0f) {
-        t = -(pl->nx * v[0] + pl->nz * v[2] + pl->d) / pl->ny;
+        t = -(pl->nx * probePos[0] + pl->nz * probePos[2] + pl->d) / pl->ny;
     }
-    o->t = t;
-    o->id = sp0;
-    o->u = h->f10;
+    out->t = t;
+    out->id = planeId;
+    out->u = hit->f10;
     return 1;
 }

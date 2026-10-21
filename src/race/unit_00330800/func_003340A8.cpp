@@ -1,3 +1,5 @@
+/* Converts an RGB image (3 bytes per pixel, w*h pixels) to 8-bit grey with the usual luma weights 0.299, 0.587, 0.114 (the hex floats),
+ * clamping at 255. */
 #include "types.h"
 
 struct func_003340A8_arg1 {
@@ -13,31 +15,31 @@ struct func_003340A8_arg2 {
     u8 *in;
 };
 
-extern "C" void func_003340A8(void *arg0, struct func_003340A8_arg1 *arg1, struct func_003340A8_arg2 *arg2) {
-    u32 n;
+extern "C" void func_003340A8(void *arg0, struct func_003340A8_arg1 *dst, struct func_003340A8_arg2 *src) {
+    u32 pixelCount;
     u32 i;
-    u8 *p;
-    u8 *o;
-    s32 v;
-    f32 sum;
+    u8 *rgb;
+    u8 *grey;
+    s32 level;
+    f32 luma;
 
     i = 0;
-    p = arg2->in;
-    n = (u32)(arg1->w * arg1->h);
-    o = arg1->out;
-    if (n != 0) {
+    rgb = src->in;
+    pixelCount = (u32)(dst->w * dst->h);
+    grey = dst->out;
+    if (pixelCount != 0) {
         do {
             i += 1;
-            sum = (f32)p[0] * 0x1.322D0Ep-2f;
-            sum = sum + (f32)p[1] * 0x1.2C8B42p-1f;
-            sum = sum + (f32)p[2] * 0x1.D2F1A8p-4f;
-            p += 3;
-            v = (s32)sum;
-            if (v >= 0x100) {
-                v = 0xFF;
+            luma = (f32)rgb[0] * 0x1.322D0Ep-2f;
+            luma = luma + (f32)rgb[1] * 0x1.2C8B42p-1f;
+            luma = luma + (f32)rgb[2] * 0x1.D2F1A8p-4f;
+            rgb += 3;
+            level = (s32)luma;
+            if (level >= 0x100) {
+                level = 0xFF;
             }
-            *o = (u8)v;
-            o += 1;
-        } while (i < n);
+            *grey = (u8)level;
+            grey += 1;
+        } while (i < pixelCount);
     }
 }

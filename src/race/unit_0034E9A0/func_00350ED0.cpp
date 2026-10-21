@@ -1,3 +1,5 @@
+/* Advances a damped spring by one step (same shape as func_00350D40, but with the step read from +0x54C): position +0x738 is pulled toward
+ * the 16-bit value at +0x5FE with stiffness 1000 and damping 50 (hex floats 0x1.F4p+9 and 0x1.9p+5); velocity is kept at +0x73C. */
 #include "types.h"
 
 struct func_00350ED0_arg0 {
@@ -10,16 +12,16 @@ struct func_00350ED0_arg0 {
     f32 unk73C;
 };
 
-void func_00350ED0(struct func_00350ED0_arg0 *arg0) {
-    f32 *p738 = &arg0->unk738;
-    f32 *p73C = &arg0->unk73C;
-    f32 temp_f1;
-    f32 temp_f3;
-    f32 temp_f1_2;
+void func_00350ED0(struct func_00350ED0_arg0 *self) {
+    f32 *position = &self->unk738;
+    f32 *velocity = &self->unk73C;
+    f32 oldVelocity;
+    f32 timeStep;
+    f32 newVelocity;
 
-    temp_f1 = *p73C;
-    temp_f3 = arg0->unk54C;
-    temp_f1_2 = temp_f1 + (((((f32) arg0->unk5FE - *p738) * 0x1.F4p+9f) - (temp_f1 * 0x1.9p+5f)) * temp_f3);
-    *p73C = temp_f1_2;
-    *p738 = *p738 + (temp_f1_2 * temp_f3);
+    oldVelocity = *velocity;
+    timeStep = self->unk54C;
+    newVelocity = oldVelocity + (((((f32) self->unk5FE - *position) * 0x1.F4p+9f) - (oldVelocity * 0x1.9p+5f)) * timeStep);
+    *velocity = newVelocity;
+    *position = *position + (newVelocity * timeStep);
 }

@@ -1,3 +1,7 @@
+/* Derives the car body's height, pitch and roll from the four wheel heights (inferred from the layout switch on the car type,
+ * the 0xEC wheel stride and the differences of front/rear and left/right heights fed to func_0057D118, which acts like an
+ * arctangent). Results go to st->f38 (height), f574 (pitch) and f578 (roll), then the body axes (forward, right, up) are rebuilt from the angles by func_0036C9F8.
+ * The case 0..3 layouts differ in how many wheels they read (purpose of each case inferred from the wheel counts only). */
 struct Info { unsigned char b0, b1; };
 struct Eng { char p0[0x18]; float f18, f1C, f20; char p1[4]; float f28, f2C; };
 struct Wheel { char p0[0x1C]; float f1C, f20, f24; char p1[0x34 - 0x28]; };
@@ -21,18 +25,18 @@ extern "C" float func_0057D118(float, float);
 extern "C" float func_0057D1F0(float);
 
 extern "C" void func_0035D350(Self *self) {
-    float sp0[8];
-    float sp20[4], sp30[4], sp40[4], sp50[4], sp60[4];
+    float wheelHeight[8];
+    float forwardAxis[4], rightAxis[4], upAxis[4], wheelOffset[4], axleRoll[4];
     St *st = &self->st;
     Eng *eng = self->eng;
     Info *info = func_00359510(eng);
     for (int i = 0; i < info->b1; i++)
-        sp0[i] = *(float *)((char *)self + 0x1F0 + i * 0xEC);
+        wheelHeight[i] = *(float *)((char *)self + 0x1F0 + i * 0xEC);
     st->f30 = st->f0;
     st->f34 = st->f4;
     switch (info->b0) {
     case 0: {
-        float a = sp0[0], b = sp0[1], c = sp0[2], d = sp0[3];
+        float a = wheelHeight[0], b = wheelHeight[1], c = wheelHeight[2], d = wheelHeight[3];
         float ac = c - a;
         float cd = c + d;
         float h = (a + b) - cd;
@@ -49,37 +53,37 @@ extern "C" void func_0035D350(Self *self) {
         break;
     }
     case 1: {
-        float a = sp0[0], b = sp0[1];
+        float a = wheelHeight[0], b = wheelHeight[1];
         Wheel *w = (Wheel *)((char *)self + 0x7B8);
         int n = 1;
         float f0 = func_0057D118(a - b, eng->f18);
         st->f574 = f0;
-        func_0036C9F8(sp20, sp30, sp40, f0, 0.0f, st->f570);
-        float *out = sp60;
+        func_0036C9F8(forwardAxis, rightAxis, upAxis, f0, 0.0f, st->f570);
+        float *out = axleRoll;
         do {
             n -= 1;
             float f6 = w->f1C;
             float f1 = -w->f24;
             float f4 = w->f20;
-            float d = f6 * sp20[0] + f1 * sp20[1] + f4 * sp20[2];
+            float d = f6 * forwardAxis[0] + f1 * forwardAxis[1] + f4 * forwardAxis[2];
             w++;
-            float x = f6 - d * sp20[0];
-            float y = f1 - d * sp20[1];
-            float z = f4 - d * sp20[2];
-            sp50[0] = x;
-            sp50[1] = y;
-            sp50[2] = z;
-            *out = func_0057D118(x * sp30[0] + y * sp30[1] + z * sp30[2], 1.0f);
+            float x = f6 - d * forwardAxis[0];
+            float y = f1 - d * forwardAxis[1];
+            float z = f4 - d * forwardAxis[2];
+            wheelOffset[0] = x;
+            wheelOffset[1] = y;
+            wheelOffset[2] = z;
+            *out = func_0057D118(x * rightAxis[0] + y * rightAxis[1] + z * rightAxis[2], 1.0f);
             out++;
         } while (n >= 0);
-        st->f578 = sp60[0] + (sp60[1] - sp60[0]) * eng->f20;
+        st->f578 = axleRoll[0] + (axleRoll[1] - axleRoll[0]) * eng->f20;
         st->f38 = a + (b - a) * eng->f20;
         break;
     }
     case 2: {
-        float b = sp0[1], c = sp0[2];
+        float b = wheelHeight[1], c = wheelHeight[2];
         float f12 = (b + c) * 0.5f;
-        float a = sp0[0];
+        float a = wheelHeight[0];
         float f20 = a + (f12 - a) * eng->f20;
         st->f574 = func_0057D118(a - f12, eng->f18);
         float r = func_0057D118(b - c, 2.0f * eng->f2C);
@@ -88,9 +92,9 @@ extern "C" void func_0035D350(Self *self) {
         break;
     }
     case 3: {
-        float a = sp0[0], b = sp0[1];
+        float a = wheelHeight[0], b = wheelHeight[1];
         float f20 = (a + b) * 0.5f;
-        float c = sp0[2];
+        float c = wheelHeight[2];
         float f20b = f20 + (c - f20) * eng->f20;
         st->f574 = func_0057D118(f20 - c, eng->f18);
         float r = func_0057D118(a - b, 2.0f * eng->f28);

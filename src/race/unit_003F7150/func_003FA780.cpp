@@ -1,3 +1,4 @@
+/* Returns 1 when the mode byte at +0x89 is 0..12, otherwise 0 (the compiler built a jump table, hence the long switch). */
 #include "types.h"
 
 struct Obj003FA780 {
@@ -5,8 +6,8 @@ struct Obj003FA780 {
     u8 unk89;
 };
 
-extern "C" s32 func_003FA780(struct Obj003FA780 *arg0) {
-    switch (arg0->unk89) {
+extern "C" s32 func_003FA780(struct Obj003FA780 *self) {
+    switch (self->unk89) {
         case 0: return 1;
         case 1: return 1;
         case 2: return 1;

@@ -1,3 +1,5 @@
+/* Relocation fix-up after a block was moved (inferred): the block's self pointer at +4 is replaced by its new address and the 32
+ * pointer words from +0x90 are shifted by the same difference. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -8,20 +10,20 @@ struct func_0045FD48_arg0 {
     void *unk4;
 };
 
-void func_0045FD48(char *arg0) {
-    s32 *var_v1;
-    s32 var_a1;
-    char *temp_v0;
+void func_0045FD48(char *self) {
+    s32 *word;
+    s32 remaining;
+    char *oldBase;
 
-    temp_v0 = (char *)(((struct func_0045FD48_arg0 *)arg0)->unk4);
-    var_v1 = (s32 *)(arg0 + 0x90);
-    ((struct func_0045FD48_arg0 *)arg0)->unk4 = arg0;
-    var_a1 = 0x1F;
+    oldBase = (char *)(((struct func_0045FD48_arg0 *)self)->unk4);
+    word = (s32 *)(self + 0x90);
+    ((struct func_0045FD48_arg0 *)self)->unk4 = self;
+    remaining = 0x1F;
     do {
-        var_a1 -= 1;
-        *var_v1 += arg0 - temp_v0;
-        var_v1 += 1;
-    } while (var_a1 >= 0);
+        remaining -= 1;
+        *word += self - oldBase;
+        word += 1;
+    } while (remaining >= 0);
 }
 
 }

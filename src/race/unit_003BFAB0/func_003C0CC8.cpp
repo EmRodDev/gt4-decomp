@@ -1,3 +1,6 @@
+/* Picks entry number 'index' from the table in the sub-object, prepares it with param (func_003B6A30), then combines its record
+ * (at entry+0x119C) with the shared record at self+0x928 through func_003BB958 and returns that result. With copyBack set the
+ * entry record is also copied over the shared one (func_003BB8C8). The record type is unknown (empty struct in the source). */
 
 typedef int s32;
 struct Obj003BB958
@@ -14,30 +17,30 @@ struct Ctx003C0CC8
   char pad0[0x60];
   struct Sub003C0CC8 *sub;
 };
-extern s32 func_003B6A30(s32 arg0, s32 arg1, s32 arg2);
+extern s32 func_003B6A30(s32 self, s32 index, s32 param);
 extern s32 func_003BB8C8(struct Obj003BB958 *dst, const struct Obj003BB958 *src);
-extern s32 func_003BB958(struct Obj003BB958 *arg0, struct Obj003BB958 *arg1);
-inline int inline_fn(s32 arg0)
+extern s32 func_003BB958(struct Obj003BB958 *self, struct Obj003BB958 *index);
+inline int inline_fn(s32 self)
 {
-  return arg0 != 0;
+  return self != 0;
 }
 
-extern s32 func_003C0CC8(struct Ctx003C0CC8 *arg0, s32 arg1, s32 arg2, s32 arg3)
+extern s32 func_003C0CC8(struct Ctx003C0CC8 *self, s32 index, s32 param, s32 copyBack)
 {
   struct Sub003C0CC8 *sub;
-  struct Obj003BB958 *temp_s0;
-  s32 temp_a0;
-  s32 temp_s1;
-  s32 temp_s3;
-  sub = arg0->sub;
-  temp_s0 = (struct Obj003BB958 *) (((char *) arg0) + 0x928);
-  temp_a0 = *((s32 *) (((char *) sub->tbl) + (arg1 * 4)));
-  func_003B6A30(temp_a0, arg2, 1);
-  temp_s1 = temp_a0 + 0x119C;
-  temp_s3 = func_003BB958((struct Obj003BB958 *) temp_s1, temp_s0);
-  if (inline_fn(arg3))
+  struct Obj003BB958 *sharedRecord;
+  s32 entry;
+  s32 entryRecord;
+  s32 result;
+  sub = self->sub;
+  sharedRecord = (struct Obj003BB958 *) (((char *) self) + 0x928);
+  entry = *((s32 *) (((char *) sub->tbl) + (index * 4)));
+  func_003B6A30(entry, param, 1);
+  entryRecord = entry + 0x119C;
+  result = func_003BB958((struct Obj003BB958 *) entryRecord, sharedRecord);
+  if (inline_fn(copyBack))
   {
-    func_003BB8C8(temp_s0, (const struct Obj003BB958 *) temp_s1);
+    func_003BB8C8(sharedRecord, (const struct Obj003BB958 *) entryRecord);
   }
-  return temp_s3;
+  return result;
 }

@@ -1,3 +1,5 @@
+/* Returns the field at +0x7C of a node picked as: the override pointer when set, otherwise the owner's default child; 0 when the
+ * owner or the node is missing. What the node is (and the field) is unknown. */
 #include "types.h"
 
 struct Leaf {
@@ -17,24 +19,24 @@ struct Obj {
 };
 
 extern "C" s32 func_004510B0(Obj *arg0) {
-    s32 var_v0;
-    Leaf *var_v1;
-    Leaf *temp_v0;
-    Inner *temp_a1;
+    s32 result;
+    Leaf *node;
+    Leaf *override;
+    Inner *owner;
 
-    temp_a1 = arg0->unk0;
-    var_v1 = 0;
-    if (temp_a1 != 0) {
-        temp_v0 = arg0->unk5BC;
-        if (temp_v0 != 0) {
-            var_v1 = temp_v0;
+    owner = arg0->unk0;
+    node = 0;
+    if (owner != 0) {
+        override = arg0->unk5BC;
+        if (override != 0) {
+            node = override;
         } else {
-            var_v1 = temp_a1->unk28;
+            node = owner->unk28;
         }
     }
-    var_v0 = 0;
-    if (var_v1 != 0) {
-        var_v0 = var_v1->unk7C;
+    result = 0;
+    if (node != 0) {
+        result = node->unk7C;
     }
-    return var_v0;
+    return result;
 }

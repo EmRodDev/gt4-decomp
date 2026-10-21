@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Car-versus-car interaction pass over every pair of cars in the race (inferred from the pairwise loop, the front/rear/width
+ * sums of the two cars' dimension records and the 'next' chain): finds overlapping pairs, applies the contact response to each side,
+ * accumulates a per-car total (clamped to 1.0, stored in 'sum') and finally measures how long the chain of 'next' links is from
+ * each car (stored in 'depth'). The callee names are unknown; mode 6 skips the push-apart step (purpose unknown). */
 struct Data { float front, rear, width; };
 struct Car { char pad0[0x10]; Data *data; char pad14[0x65-0x14]; signed char next; char pad66[0x7e - 0x66]; unsigned char depth; char pad7f[0x6a0-0x7f]; float sum; };
 struct Obj { char pad[0xf81a]; unsigned char mode; char pad2[0xf8a0-0xf81b]; int count; };

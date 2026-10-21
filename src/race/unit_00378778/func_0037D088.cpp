@@ -1,3 +1,6 @@
+/* Menu-style state update from one input record (purpose unknown; fields are unnamed). Reads four input bytes (offsets 0x19, 0x21,
+ * 0x22, 0x23): either follows the value returned by virtual slot 0xB8 when 'e' is set, or cycles 'a' through 5 states, toggles 'c'
+ * and tracks 'd' and 'b'. Returns 1 when anything changed, and then refreshes the object through func_0037CFC8. */
 typedef int s32;
 typedef short s16;
 typedef signed char s8;
@@ -38,10 +41,10 @@ static inline s32 get(Obj *self) {
 }
 extern "C" s32 func_0037D088(Obj *self, In *in) {
     s32 changed = 0;
-    s8 a2 = in->f19;
-    s8 nd = in->f23;
-    u8 a3 = in->f21;
-    s8 nb = in->f22;
+    s8 flag19 = in->f19;
+    s8 value23 = in->f23;
+    u8 flag21 = in->f21;
+    s8 value22 = in->f22;
     if (self->e >= 0) {
         s32 r = get(self);
         if (self->e != r) {
@@ -61,12 +64,12 @@ extern "C" s32 func_0037D088(Obj *self, In *in) {
             s32 h = 1;
             if (od != 0) {
                 h = 0;
-                if (nd != 0) {
-                    self->d = nd;
-                    if (nd == od)
+                if (value23 != 0) {
+                    self->d = value23;
+                    if (value23 == od)
                         self->d = 0;
                     h = 1;
-                } else if (a2 != 0 || a3 != 0) {
+                } else if (flag19 != 0 || flag21 != 0) {
                     self->d = 0;
                     h = 1;
                 }
@@ -75,14 +78,14 @@ extern "C" s32 func_0037D088(Obj *self, In *in) {
                 }
             } else {
                 r = 0;
-                if (nd != 0) {
-                    self->d = nd;
+                if (value23 != 0) {
+                    self->d = value23;
                     r = 1;
                     h = 0;
                 }
                 if (h) {
                     s32 t = self->a;
-                    if (a2 != 0) {
+                    if (flag19 != 0) {
                         t++;
                         r = 1;
                         h = 0;
@@ -90,7 +93,7 @@ extern "C" s32 func_0037D088(Obj *self, In *in) {
                             t = 0;
                         self->a = t;
                     }
-                    if (h && a3 != 0) {
+                    if (h && flag21 != 0) {
                         r = 1;
                         *(s64 *)((char *)self + 0x2C0) = (*(s64 *)((char *)self + 0x2C0) & ~(0xFFLL << 16)) | ((s64)(self->c ^ 1) << 16);
                     }
@@ -102,8 +105,8 @@ update:
                 }
             }
         }
-        if (nb != self->b) {
-            self->b = nb;
+        if (value22 != self->b) {
+            self->b = value22;
             changed = 1;
             func_0037CFC8(self);
         }

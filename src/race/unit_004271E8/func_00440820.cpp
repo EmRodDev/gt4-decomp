@@ -1,3 +1,6 @@
+/* Slot setter: stores the owner pointer into slot number table->unk490 of a table whose slots are 0x178 bytes apart (inferred from the shift/add
+ * arithmetic), calls the shared slot initialiser, then converts byte triples of the source record through func_004452A8 into
+ * packed values kept in the slot. What the packed values mean (colours or indices) is unknown. */
 #include "types.h"
 
 struct Rep {
@@ -51,22 +54,22 @@ struct func_00440820_arg2 {
     u8 unk132;
 };
 
-extern "C" void func_00440820(s32 *arg0, void *arg1, s32 arg2) {
-    char *v_s0;
-    s32 t1;
-    s32 t2;
-    s32 t3;
-    s32 t4;
-    v_s0 = (char *)arg0 + (((((((struct func_00440820_arg0 *)arg0)->unk490 << 1) + ((struct func_00440820_arg0 *)arg0)->unk490) << 4) - ((struct func_00440820_arg0 *)arg0)->unk490) << 3);
-    v_s0 = (char *)v_s0 + 0x8;
-    ((struct func_00440820_v_s0 *)v_s0)->unkE0 = (s64)arg1;
-    func_004400D0(arg0, arg2);
-    t1 = func_004452A8(v_s0, 0x1, ((struct func_00440820_arg2 *)arg2)->unk121, ((struct func_00440820_arg2 *)arg2)->unk11E);
-    ((struct func_00440820_v_s0 *)v_s0)->unk157 = (s8)t1;
-    t2 = func_004452A8(v_s0, 0x1, ((struct func_00440820_arg2 *)arg2)->unk127, ((struct func_00440820_arg2 *)arg2)->unk124);
-    ((struct func_00440820_v_s0 *)v_s0)->unk158 = (s8)t2;
-    t3 = func_004452A8(v_s0, 0x1, ((struct func_00440820_arg2 *)arg2)->unk12C, ((struct func_00440820_arg2 *)arg2)->unk129);
-    ((struct func_00440820_v_s0 *)v_s0)->unk159 = (s8)t3;
-    t4 = func_004452A8(v_s0, 0x1, ((struct func_00440820_arg2 *)arg2)->unk132, ((struct func_00440820_arg2 *)arg2)->unk12F);
-    ((struct func_00440820_v_s0 *)v_s0)->unk15A = (s8)t4;
+extern "C" void func_00440820(s32 *table, void *owner, s32 source) {
+    char *slot;
+    s32 packed0;
+    s32 packed1;
+    s32 packed2;
+    s32 packed3;
+    slot = (char *)table + (((((((struct func_00440820_arg0 *)table)->unk490 << 1) + ((struct func_00440820_arg0 *)table)->unk490) << 4) - ((struct func_00440820_arg0 *)table)->unk490) << 3);
+    slot = (char *)slot + 0x8;
+    ((struct func_00440820_v_s0 *)slot)->unkE0 = (s64)owner;
+    func_004400D0(table, source);
+    packed0 = func_004452A8(slot, 0x1, ((struct func_00440820_arg2 *)source)->unk121, ((struct func_00440820_arg2 *)source)->unk11E);
+    ((struct func_00440820_v_s0 *)slot)->unk157 = (s8)packed0;
+    packed1 = func_004452A8(slot, 0x1, ((struct func_00440820_arg2 *)source)->unk127, ((struct func_00440820_arg2 *)source)->unk124);
+    ((struct func_00440820_v_s0 *)slot)->unk158 = (s8)packed1;
+    packed2 = func_004452A8(slot, 0x1, ((struct func_00440820_arg2 *)source)->unk12C, ((struct func_00440820_arg2 *)source)->unk129);
+    ((struct func_00440820_v_s0 *)slot)->unk159 = (s8)packed2;
+    packed3 = func_004452A8(slot, 0x1, ((struct func_00440820_arg2 *)source)->unk132, ((struct func_00440820_arg2 *)source)->unk12F);
+    ((struct func_00440820_v_s0 *)slot)->unk15A = (s8)packed3;
 }

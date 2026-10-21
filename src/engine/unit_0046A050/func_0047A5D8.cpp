@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script engine glue (strobe::ActionInstance::doAction): builds a temporary string-keyed tree holding one entry, runs the action with it
+ * and tears the tree down again; a second path copies the source into a temporary vector when the two objects differ. Returns
+ * its first argument. Argument meanings are only partly known (inferred from the call to doAction). */
 typedef int s32;
 typedef unsigned short u16;
 typedef unsigned char u8;
@@ -24,7 +27,7 @@ extern "C" void *strobe__Any__setMember(void *, unsigned, unsigned, const char *
 extern "C" void *func_00481410(void *, void *);
 extern "C" void *func_00476790(void *, void *) throw();
 
-extern "C" s32 func_0047A5D8(s32 arg0, Obj *o, s32 arg2, void *arg3, s32 arg4, Obj *p, Ctx *c) {
+extern "C" s32 func_0047A5D8(s32 result, Obj *o, s32 actionArg, void *argValue, s32 extra4, Obj *p, Ctx *c) {
     Node *key = (Node *)o->f10;
     Tree t;
     Str tmp;
@@ -42,7 +45,7 @@ extern "C" s32 func_0047A5D8(s32 arg0, Obj *o, s32 arg2, void *arg3, s32 arg4, O
     t.head->c = t.head;
     t.head->d = t.head;
     *(Node *volatile *)&t.key = key;
-    func_0047A2A8(o, &t, *(volatile s32 *)&c->f164, arg4);
+    func_0047A2A8(o, &t, *(volatile s32 *)&c->f164, extra4);
     const char *text = D_006AD830;
     Str *ps = &tmp;
     Rep *g = (Rep *)D_00659E20;
@@ -51,13 +54,13 @@ extern "C" s32 func_0047A5D8(s32 arg0, Obj *o, s32 arg2, void *arg3, s32 arg4, O
     else { r = (char *)g + 0x10; g->ref++; }
     ps->p = r;
     strobe__Any__setMember(ps, 0, (unsigned)-1, text, func_0057F260(text));
-    func_00476790(func_00481410(&t, ps), arg3);
+    func_00476790(func_00481410(&t, ps), argValue);
     Rep *rep = (Rep *)(ps->p - 0x10);
     if (--rep->ref == 0) free(rep);
     s32 px = p->f10;
     s32 x = o->f1C;
     if (px == x) {
-        strobe__ActionInstance__doAction(arg0, arg2, o->f4, o->f8, p, &t, c);
+        strobe__ActionInstance__doAction(result, actionArg, o->f4, o->f8, p, &t, c);
         if (t.size != 0) {
             func_00606258(&t, t.head->b);
             t.head->c = t.head;
@@ -69,7 +72,7 @@ extern "C" s32 func_0047A5D8(s32 arg0, Obj *o, s32 arg2, void *arg3, s32 arg4, O
     } else {
         v.p = 0; v.b = 0; v.c = 0; v.d = 0;
         func_00485368(&v, x);
-        strobe__ActionInstance__doAction(arg0, arg2, o->f4, o->f8, &v, &t, c);
+        strobe__ActionInstance__doAction(result, actionArg, o->f4, o->f8, &v, &t, c);
         void *q = v.p;
         keep = q;
         if (q) free(q);
@@ -82,5 +85,5 @@ extern "C" s32 func_0047A5D8(s32 arg0, Obj *o, s32 arg2, void *arg3, s32 arg4, O
         }
         free(t.head);
     }
-    return arg0;
+    return result;
 }

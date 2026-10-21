@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Resets an object to its start state (same unit as the camera helpers above, so probably a camera; unconfirmed): clears or sets
+ * byte-wide flags packed into the 64-bit words at 0x168/0x260/0x268, sets the default values 100.0 and 60.0, copies one field
+ * from the source and zeroes six vector members through func_00385390. */
 typedef int s32;
 typedef float f32;
 typedef long long s64;
@@ -38,7 +41,7 @@ extern "C" void func_00385390(void *, float, float);
 
 #define B8(k) (0xFFLL << (k))
 
-extern "C" void func_00379CE0(Obj *self, Src *src, s32 arg2) {
+extern "C" void func_00379CE0(Obj *self, Src *src, s32 initArg) {
     func_00378CB8(self);
     s64 t0 = self->m260;
     s64 t1 = t0 & ~B8(32);
@@ -67,7 +70,7 @@ extern "C" void func_00379CE0(Obj *self, Src *src, s32 arg2) {
     u = u & ~B8(56);
     self->m260 = u;
     self->m188 = 60.0f;
-    func_0037BC20(self, arg2);
+    func_0037BC20(self, initArg);
     self->m168 = self->m168 & ~B8(24);
     self->mE8 = 1;
     self->m27C = 0;

@@ -1,3 +1,5 @@
+/* Relocation fix-up (inferred): adds delta to the stored pointer at +0 and to the table pointer 'base' when they are not null, then
+ * asks func_00485CA8 to fix up each of the 'count' 8-byte table entries by the same delta. */
 #include "types.h"
 
 struct Obj {
@@ -8,25 +10,25 @@ struct Obj {
 
 extern "C" void func_00485CA8(int *p, int base);
 
-extern "C" void func_00485CD8(Obj *arg0, s32 arg1)
+extern "C" void func_00485CD8(Obj *self, s32 delta)
 {
-    if (arg0->unk0 != 0) {
-        arg0->unk0 = arg0->unk0 + arg1;
+    if (self->unk0 != 0) {
+        self->unk0 = self->unk0 + delta;
     }
 
-    s32 *t = &arg0->base;
+    s32 *basePtr = &self->base;
 
-    if (*t != 0) {
-        *t = *t + arg1;
+    if (*basePtr != 0) {
+        *basePtr = *basePtr + delta;
     }
 
-    s32 s1 = 0;
+    s32 index = 0;
 
-    if (arg0->count > 0) {
+    if (self->count > 0) {
         do {
-            s32 off = s1 << 3;
-            s1 += 1;
-            func_00485CA8((int *)(arg0->base + off), arg1);
-        } while (s1 < arg0->count);
+            s32 byteOffset = index << 3;
+            index += 1;
+            func_00485CA8((int *)(self->base + byteOffset), delta);
+        } while (index < self->count);
     }
 }

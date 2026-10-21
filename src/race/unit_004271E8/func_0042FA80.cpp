@@ -1,8 +1,10 @@
+/* Constructor: runs the base constructor, installs vtable D_006879A0, initialises two embedded sub-objects (at 0xD8 and 0x598)
+ * and clears the state fields (unkD4 gets the constant 0x157529FF; several indices start at -1). The class name is unknown. */
 #include "types.h"
 
 extern char D_006879A0[];
-extern "C" s32 func_0043A3F8(s32 *arg0);
-extern "C" void *func_0043DC20(void *arg0);
+extern "C" s32 func_0043A3F8(s32 *self);
+extern "C" void *func_0043DC20(void *self);
 
 struct func_0042FA80_obj {
     void *vtbl;          /* 0x00 */
@@ -37,29 +39,29 @@ struct func_0042FA80_obj {
     s8 unkBB0;           /* 0xBB0 */
 };
 
-extern "C" void func_0042FA80(void *arg0) {
-    func_0043A3F8((s32 *)arg0);
-    ((struct func_0042FA80_obj *)arg0)->vtbl = D_006879A0;
-    func_0043DC20((char *)arg0 + 0xD8);
-    func_0043DC20((char *)arg0 + 0x598);
-    ((struct func_0042FA80_obj *)arg0)->unk4 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkD4 = 0x157529FF;
-    ((struct func_0042FA80_obj *)arg0)->unk8 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkC = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk10 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkB6C = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkB8C = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk14 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk34 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk54 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk74 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unk94 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkA68 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkA6C = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkBAC = -1;
-    ((struct func_0042FA80_obj *)arg0)->unkBB0 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkA58 = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkA5C = 0;
-    ((struct func_0042FA80_obj *)arg0)->unkA60 = -1;
-    ((struct func_0042FA80_obj *)arg0)->unkA64 = -1;
+extern "C" void func_0042FA80(void *self) {
+    func_0043A3F8((s32 *)self);
+    ((struct func_0042FA80_obj *)self)->vtbl = D_006879A0;
+    func_0043DC20((char *)self + 0xD8);
+    func_0043DC20((char *)self + 0x598);
+    ((struct func_0042FA80_obj *)self)->unk4 = 0;
+    ((struct func_0042FA80_obj *)self)->unkD4 = 0x157529FF;
+    ((struct func_0042FA80_obj *)self)->unk8 = 0;
+    ((struct func_0042FA80_obj *)self)->unkC = 0;
+    ((struct func_0042FA80_obj *)self)->unk10 = 0;
+    ((struct func_0042FA80_obj *)self)->unkB6C = 0;
+    ((struct func_0042FA80_obj *)self)->unkB8C = 0;
+    ((struct func_0042FA80_obj *)self)->unk14 = 0;
+    ((struct func_0042FA80_obj *)self)->unk34 = 0;
+    ((struct func_0042FA80_obj *)self)->unk54 = 0;
+    ((struct func_0042FA80_obj *)self)->unk74 = 0;
+    ((struct func_0042FA80_obj *)self)->unk94 = 0;
+    ((struct func_0042FA80_obj *)self)->unkA68 = 0;
+    ((struct func_0042FA80_obj *)self)->unkA6C = 0;
+    ((struct func_0042FA80_obj *)self)->unkBAC = -1;
+    ((struct func_0042FA80_obj *)self)->unkBB0 = 0;
+    ((struct func_0042FA80_obj *)self)->unkA58 = 0;
+    ((struct func_0042FA80_obj *)self)->unkA5C = 0;
+    ((struct func_0042FA80_obj *)self)->unkA60 = -1;
+    ((struct func_0042FA80_obj *)self)->unkA64 = -1;
 }

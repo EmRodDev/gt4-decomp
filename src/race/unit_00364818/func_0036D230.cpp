@@ -1,4 +1,6 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per wheel stores result = -(value looked up by the wheel's index in the owner's table at +0x90) * (a + b), then subtracts the 'extra'
+ * term for a positive sign and adds it for a negative one (sign 0 leaves the product alone). Meaning of the terms unknown. */
 struct List { unsigned char pad0, count; char pad2[0x12]; unsigned char ids[256]; };
 struct Owner { char pad[0x234]; char state[0x90]; float values[256]; };
 struct Entry { char pad[0x20]; float sign; char pad24[0x54]; float extra,a,b,result; char rest[0x64]; };

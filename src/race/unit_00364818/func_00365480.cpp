@@ -1,3 +1,6 @@
+/* Loads the seven tuning bytes stored at +0xF818 into floats (inferred from the scale factors): three values per group are scaled
+ * by 0.01, 10.0 and 0.01 (two groups), and the last one is a percentage (0 means 100) times 0.01. With enable == 0 the groups are
+ * zeroed and the final scale is 1.0. What the settings control is unknown. */
 #include "types.h"
 
 struct func_00365480_arg0 {
@@ -24,30 +27,30 @@ struct func_00365480_src {
     u8 unk2A;
 };
 
-extern "C" void func_00365480(struct func_00365480_arg0 *arg0, int arg1) {
+extern "C" void func_00365480(struct func_00365480_arg0 *self, int enable) {
     struct func_00365480_src *src;
-    int v;
+    int percent;
 
-    if (arg1 != 0) {
-        src = (struct func_00365480_src *)((char *)arg0 + 0xF818);
-        arg0->unk80 = (f32)src->unk25;
-        arg0->unk84 = (f32)src->unk26 * 0x1.4000000000000p+3f;
-        arg0->unk7C = (f32)src->unk24 * 0x1.47ae140000000p-7f;
-        arg0->unk8C = (f32)src->unk29;
-        arg0->unk90 = (f32)src->unk2A * 0x1.4000000000000p+3f;
-        arg0->unk88 = (f32)src->unk28 * 0x1.47ae140000000p-7f;
-        v = src->unk20;
-        if (v == 0) {
-            v = 100;
+    if (enable != 0) {
+        src = (struct func_00365480_src *)((char *)self + 0xF818);
+        self->unk80 = (f32)src->unk25;
+        self->unk84 = (f32)src->unk26 * 0x1.4000000000000p+3f;
+        self->unk7C = (f32)src->unk24 * 0x1.47ae140000000p-7f;
+        self->unk8C = (f32)src->unk29;
+        self->unk90 = (f32)src->unk2A * 0x1.4000000000000p+3f;
+        self->unk88 = (f32)src->unk28 * 0x1.47ae140000000p-7f;
+        percent = src->unk20;
+        if (percent == 0) {
+            percent = 100;
         }
-        arg0->unk94 = (f32)v * 0x1.47ae140000000p-7f;
+        self->unk94 = (f32)percent * 0x1.47ae140000000p-7f;
         return;
     }
-    arg0->unk94 = 0x1.0000000000000p+0f;
-    *(s32 *)&arg0->unk84 = 0;
-    *(s32 *)&arg0->unk7C = 0;
-    *(s32 *)&arg0->unk8C = 0;
-    *(s32 *)&arg0->unk90 = 0;
-    *(s32 *)&arg0->unk88 = 0;
-    *(s32 *)&arg0->unk80 = 0;
+    self->unk94 = 0x1.0000000000000p+0f;
+    *(s32 *)&self->unk84 = 0;
+    *(s32 *)&self->unk7C = 0;
+    *(s32 *)&self->unk8C = 0;
+    *(s32 *)&self->unk90 = 0;
+    *(s32 *)&self->unk88 = 0;
+    *(s32 *)&self->unk80 = 0;
 }

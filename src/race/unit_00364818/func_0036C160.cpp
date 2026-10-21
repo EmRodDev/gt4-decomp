@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Gear-shift decision for the car's drivetrain (inferred from the gear/rpm/ratio use and the automatic-transmission
+ * parameter): returns the gear to change to, or -1 for no change. It handles shift delay and lock-out timers, launch from neutral,
+ * up-shift when the road speed passes the rpm limit of the current ratio, and the three D_00622110.mode transmission modes; for
+ * automatic cars it uses the hold-off tables, for manual ones it checks the rpm window and that the driven wheels are not slipping. */
 typedef unsigned char u8; typedef signed char s8; typedef unsigned short u16; typedef short s16;
 struct State {u8 type,n,count; char p[0x65]; float ratios[16];};
 struct Owner {char p[0x200];u16 rpm;char q[0x32];State state;};

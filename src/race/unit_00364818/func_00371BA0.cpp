@@ -1,3 +1,5 @@
+/* Returns a value in hundredths read from a sub-object: the object is found through virtual slot 0xD8 (index kept at +0x9BC) and its
+ * virtual slot 0x110 gives an integer that is divided by 100. Defaults to 8.0 when there is no sub-object. Meaning unknown. */
 #include "types.h"
 
 struct VEntryD8 {
@@ -12,17 +14,17 @@ struct VEntry110 {
     s32 (*fn)(void *);
 };
 
-extern "C" f32 func_00371BA0(char *arg0) {
-    f32 temp_f20 = 8.0f;
+extern "C" f32 func_00371BA0(char *self) {
+    f32 result = 8.0f;
     void *obj;
-    VEntryD8 *e;
+    VEntryD8 *findSlot;
 
-    e = (VEntryD8 *)(*(char **)arg0 + 0xD8);
-    obj = e->fn(arg0 + e->delta, *(s32 *)(arg0 + 0x9BC));
+    findSlot = (VEntryD8 *)(*(char **)self + 0xD8);
+    obj = findSlot->fn(self + findSlot->delta, *(s32 *)(self + 0x9BC));
     if (obj != 0) {
-        VEntry110 *g = (VEntry110 *)(*(char **)obj + 0x110);
-        s32 v = g->fn((char *)obj + g->delta);
-        temp_f20 = (f32)v / 100.0f;
+        VEntry110 *valueSlot = (VEntry110 *)(*(char **)obj + 0x110);
+        s32 hundredths = valueSlot->fn((char *)obj + valueSlot->delta);
+        result = (f32)hundredths / 100.0f;
     }
-    return temp_f20;
+    return result;
 }

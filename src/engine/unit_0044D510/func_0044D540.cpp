@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Loads a sound resource from a stream (inferred from the engine/ sound neighbours and the magic numbers 'ENGN' and 'INST'): reads a
+ * 0x20-byte header into a 64-byte aligned stack buffer, checks the magic, allocates the destination (or uses the caller's buffer),
+ * reads the rest, relocates the payload after the header and registers the result in the device. Returns -1 and sets the status
+ * field on failure (2 = read error, 3 = buffer problem; inferred from the two failure paths). */
 typedef int s32;
 typedef unsigned int u32;
 
@@ -25,26 +29,26 @@ extern "C" void *func_005A47D4(void *, const void *, unsigned) throw();
 static inline s32 narrow(long x) { return x; }
 static inline void request(Req *r, s32 type, void *data, s32 n) { r->a = type; r->b = data; r->c = n; }
 
-extern "C" s32 func_0044D540(Obj *arg0, Ctx *arg1) {
+extern "C" s32 func_0044D540(Obj *idSource, Ctx *stream) {
     char raw[0x80];
     Req r1;
     Req r2;
     void *mem = 0;
-    Dev *dev = arg1->dev;
-    s32 id = narrow(arg1->f28);
-    u32 want = arg1->f34;
-    void *user = arg1->f30;
+    Dev *dev = stream->dev;
+    s32 id = narrow(stream->f28);
+    u32 want = stream->f34;
+    void *user = stream->f30;
     char *hdr;
     s32 status;
     u32 size;
     s32 fail;
-    if (arg0)
-        id = arg0->f10;
+    if (idSource)
+        id = idSource->f10;
     if (dev->f74 != 0) {
-        arg1->status = 2;
+        stream->status = 2;
         return -1;
     }
-    s32 rv = func_004AF7D0(arg1);
+    s32 rv = func_004AF7D0(stream);
     if (rv < 0)
         return rv;
     status = 0;
@@ -52,7 +56,7 @@ extern "C" s32 func_0044D540(Obj *arg0, Ctx *arg1) {
     r1.c = 0x20;
     r1.a = 1;
     r1.b = hdr;
-    if (func_004AFA20(arg1, &r1) == 0) {
+    if (func_004AFA20(stream, &r1) == 0) {
         goto fail2;
     }
     {
@@ -74,7 +78,7 @@ extern "C" s32 func_0044D540(Obj *arg0, Ctx *arg1) {
         r1.a = 1;
         r1.b = mem;
         r1.c = want - 0x20;
-        if (func_004AFA20(arg1, &r1) == 0) {
+        if (func_004AFA20(stream, &r1) == 0) {
             goto fail2;
         }
         func_005A47D4((char *)mem + 0x20, mem, size - 0x20);
@@ -82,18 +86,18 @@ extern "C" s32 func_0044D540(Obj *arg0, Ctx *arg1) {
         r2.a = 2;
         r2.b = (void *)id;
         r2.c = *(s32 *)((char *)mem + 0x10);
-        if (func_004AFA20(arg1, &r2) == 0) {
+        if (func_004AFA20(stream, &r2) == 0) {
             goto fail2;
         }
         dev->f94 = mem;
     } else {
         status = -1;
-        arg1->status = 2;
+        stream->status = 2;
     }
     }
 done:
     {
-        s32 r = func_004AF818(arg1);
+        s32 r = func_004AF818(stream);
         return status < 0 ? status : r;
     }
 fail3:
@@ -102,9 +106,9 @@ fail3:
 fail2:
     fail = 2;
 cleanup:
-    func_004AF818(arg1);
+    func_004AF818(stream);
     if (user == 0)
         free(mem);
-    arg1->status = fail;
+    stream->status = fail;
     return -1;
 }

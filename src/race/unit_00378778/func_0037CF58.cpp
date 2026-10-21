@@ -1,3 +1,5 @@
+/* Applies a setting record: calls func_0037BC20 with its first field, clears the byte at bits 16..23 of both 64-bit flag words (+0x168 and
+ * +0x268) and stores the record's byte at bits 24..31 of the second word. */
 #include "types.h"
 
 struct Obj0037CF58 {
@@ -15,12 +17,12 @@ struct Arg0037CF58 {
 extern "C" void func_0037BC20(struct Obj0037CF58 *arg0, s32 arg1);
 
 extern "C" void func_0037CF58(struct Obj0037CF58 *arg0, struct Arg0037CF58 *arg1) {
-    s64 temp;
-    s64 lo;
+    s64 clearByte2Mask;
+    s64 flagsLow;
 
     func_0037BC20(arg0, arg1->unk0);
-    lo = arg0->unk168;
-    temp = (((-1LL << 0x10) | 0xFF) << 0x10) | 0xFFFF;
-    arg0->unk168 = lo & temp;
-    arg0->unk268 = (arg0->unk268 & temp) | ((s64)arg1->unk4 << 0x18);
+    flagsLow = arg0->unk168;
+    clearByte2Mask = (((-1LL << 0x10) | 0xFF) << 0x10) | 0xFFFF;
+    arg0->unk168 = flagsLow & clearByte2Mask;
+    arg0->unk268 = (arg0->unk268 & clearByte2Mask) | ((s64)arg1->unk4 << 0x18);
 }

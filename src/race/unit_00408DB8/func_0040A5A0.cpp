@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Sorts a counted list of 24-byte entries by the float at +4 of each entry, ascending (insertion sort written as a swap-down). */
 typedef int s32;
 typedef float f32;
 typedef unsigned long long s64 __attribute__((aligned(4)));
@@ -15,17 +16,17 @@ struct List {
     E e[1];
 };
 
-extern "C" void func_0040A5A0(List *l) {
+extern "C" void func_0040A5A0(List *list) {
     s32 i, j;
-    for (i = 0; i < l->n; i++) {
-        E tmp = l->e[i];
+    for (i = 0; i < list->n; i++) {
+        E moving = list->e[i];
         for (j = 0; j < i; j++) {
-            if (l->e[j].key() > tmp.key()) {
-                E t = l->e[j];
-                l->e[j] = tmp;
-                tmp = t;
+            if (list->e[j].key() > moving.key()) {
+                E swapped = list->e[j];
+                list->e[j] = moving;
+                moving = swapped;
             }
         }
-        l->e[i] = tmp;
+        list->e[i] = moving;
     }
 }

@@ -1,3 +1,6 @@
+/* Script engine: calls a native function looked up by name (inferred from func_00606DD8 searching D_00624800 with the string). When found
+ * it runs it with the argument and returns; otherwise it prints an error naming the missing function (func_0057D9C0) and stores 1
+ * in result. */
 #include "types.h"
 
 struct String {
@@ -9,7 +12,7 @@ struct String {
     void terminate() const { rep()->data()[length()] = 0; }
 };
 
-extern "C" void *func_00606DD8(void *arg0, char *arg1, int arg2);
+extern "C" void *func_00606DD8(void *result, char *argument, int name);
 extern "C" s32 func_0057D9C0(const char *fmt, ...);
 extern char D_006ADC80[];
 extern char D_006ADCD0[];
@@ -28,14 +31,14 @@ static inline const char *c_str(const String &s) {
     return s.data();
 }
 
-extern "C" s32 *func_0047CA38(s32 *arg0, s32 *arg1, String *arg2) {
-    void *r = func_00606DD8((void *)c_str(*arg2), D_00624800, 1);
-    if (r) {
-        Callee *c = (Callee *)r;
-        c->fn(arg0, *arg1);
-        return arg0;
+extern "C" s32 *func_0047CA38(s32 *result, s32 *argument, String *name) {
+    void *entry = func_00606DD8((void *)c_str(*name), D_00624800, 1);
+    if (entry) {
+        Callee *callee = (Callee *)entry;
+        callee->fn(result, *argument);
+        return result;
     }
-    func_0057D9C0(D_006ADCD0, c_str(*arg2));
-    *arg0 = 1;
-    return arg0;
+    func_0057D9C0(D_006ADCD0, c_str(*name));
+    *result = 1;
+    return result;
 }

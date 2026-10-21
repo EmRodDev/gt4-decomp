@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Input handling for the LAN battle screen (class from the directory): when button 0x40 was just pressed it either sets flag 8 (modes
+ * 0 and 1, when fF380 is clear) or calls virtual slot 0x2B8 with (2, 0, 0); if exactly buttons 0xC0 are down it also calls
+ * func_00501BF0. The button meaning is unknown. */
 struct VE { short delta, index; void (*fn)(void *, int, float, float); };
 struct Self {
     char p0[0x64]; char *vt;
@@ -15,8 +18,8 @@ extern "C" void func_00337FB8(Self *self) {
         if (self->mode < 2) {
             if (self->fF380 == 0) self->flags |= 8;
         } else {
-            VE *e = (VE *)(self->vt + 0x2B8);
-            e->fn((char *)self + e->delta, 2, 0.0f, 0.0f);
+            VE *slot = (VE *)(self->vt + 0x2B8);
+            slot->fn((char *)self + slot->delta, 2, 0.0f, 0.0f);
         }
         if (RaceInput__getButtons((char *)self + 0xF184) == 0xC0)
             func_00501BF0(self->obj, 1);

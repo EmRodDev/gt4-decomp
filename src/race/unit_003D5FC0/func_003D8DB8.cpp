@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-frame update of the race monitor panel (names from RaceMonitor__setState / RaceMonitor__setCarGapState and the tooltip
+ * display it drives): reacts to race events, advances the animation counters by the elapsed 1/60 s ticks, then services the
+ * pending-work flag bytes in ca4/ca8 (each non-zero byte triggers one redraw/refresh routine) and plays the queued UI sound
+ * (id in f9c, 0x30 when f6c is set). Most fields are still unnamed: purpose unknown. */
 union Color { unsigned int word; unsigned char b[4]; };
 struct Group {
  char pad[0xc4]; int fC4; float fC8;
@@ -40,7 +44,7 @@ void func_00475488(void *,float);
 static inline float maxfloat(float a,float b) {
  float r; __asm__("max.s %0, %1, %2" : "=f"(r) : "f"(a), "f"(b)); return r;
 }
-extern "C" void func_003D8DB8(Obj *p,int arg1) {
+extern "C" void func_003D8DB8(Obj *p,int extraArg) {
  p->f9c=-1;
  p->f68=0;
  if (func_003D8B78()!=0) {
@@ -80,18 +84,18 @@ extern "C" void func_003D8DB8(Obj *p,int arg1) {
     break;
   }
   if(func_003D8C48(p)) {
-   func_003D9520(p,arg1);
+   func_003D9520(p,extraArg);
    switch(p->f28) {
     case 0:
-     func_003D9918(p,arg1);
-     func_003D9720(p,arg1);
+     func_003D9918(p,extraArg);
+     func_003D9720(p,extraArg);
      break;
     case 1:
-     func_003D95F0(p,arg1);
+     func_003D95F0(p,extraArg);
      break;
     case 2:
-     func_003D97A8(p,arg1);
-     func_003D9918(p,arg1);
+     func_003D97A8(p,extraArg);
+     func_003D9918(p,extraArg);
      break;
    }
   }

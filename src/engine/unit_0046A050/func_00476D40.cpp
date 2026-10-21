@@ -1,4 +1,7 @@
 /* compiler: ee-gcc2.96-nogcse */
+/* Script engine glue (strobe::Any): turns a source value into a freshly allocated map value in 'result' (type 7). A type 13 source is
+ * copied through func_0047A5D8; a type 15 source is expanded into 'count' entries keyed by a formatted index string; anything else
+ * only notifies the owner. The shape (separate string copy register, no hoisted refcount) is what the original compiler produced. */
 typedef int s32;
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -63,52 +66,52 @@ struct StrT {
 
 extern "C" void func_0047A5D8(s32 *, s32, s32, Val *, u32, s32, void *);
 
-extern "C" void func_00476D40(Val *arg0, Val *arg1, s32 arg2, u32 arg3, s32 arg4, Obj5 *arg5) {
+extern "C" void func_00476D40(Val *result, Val *source, s32 extra2, u32 count, s32 extra4, Obj5 *owner) {
     char buf[16];
     s32 tmp[4];
     StrT str;
     struct ByteTag { s8 value; } b1;
-    void *s5 = arg5->unk164;
+    void *scriptCtx = owner->unk164;
     s32 type = 7;
-    func_004768C0(arg0);
-    arg0->type = type;
-    s32 v_s1 = exception__structor_0(0x20);
-    Node *v_s0 = (Node *)(v_s1 + 4);
-    *(s32 *)v_s1 = 0;
+    func_004768C0(result);
+    result->type = type;
+    s32 mapObject = exception__structor_0(0x20);
+    Node *mapNode = (Node *)(mapObject + 4);
+    *(s32 *)mapObject = 0;
     b1.value = 0;
-    u8 *p_s0 = (u8 *)&b1;
-    v_s0->unk4 = 0;
-    s32 t1 = func_00575E60(0x10, 0x1c);
-    v_s0->unk8 = 0;
-    v_s0->unk4 = t1;
-    v_s0->unkC = *p_s0;
-    *(s32 *)t1 = 0;
-    *(s32 *)(v_s0->unk4 + 4) = 0;
-    *(s32 *)(v_s0->unk4 + 8) = v_s0->unk4;
-    *(s32 *)(v_s0->unk4 + 0xc) = v_s0->unk4;
-    v_s0->unk10 = 0;
-    Val *s2 = (Val *)(v_s1 + 0x18);
-    func_00476768(s2, arg1);
-    func_004767E8(s2);
-    if ((arg1->type ^ 13) == 0) {
-        v_s0->unk10 = func_0047A858(func_00477298(s2));
+    u8 *tagPtr = (u8 *)&b1;
+    mapNode->unk4 = 0;
+    s32 nodeHeader = func_00575E60(0x10, 0x1c);
+    mapNode->unk8 = 0;
+    mapNode->unk4 = nodeHeader;
+    mapNode->unkC = *tagPtr;
+    *(s32 *)nodeHeader = 0;
+    *(s32 *)(mapNode->unk4 + 4) = 0;
+    *(s32 *)(mapNode->unk4 + 8) = mapNode->unk4;
+    *(s32 *)(mapNode->unk4 + 0xc) = mapNode->unk4;
+    mapNode->unk10 = 0;
+    Val *valueSlot = (Val *)(mapObject + 0x18);
+    func_00476768(valueSlot, source);
+    func_004767E8(valueSlot);
+    if ((source->type ^ 13) == 0) {
+        mapNode->unk10 = func_0047A858(func_00477298(valueSlot));
     }
-    arg0->v = v_s1;
-    switch (arg1->type) {
+    result->v = mapObject;
+    switch (source->type) {
     case 13: {
         s32 *pt = tmp;
-        s32 value = func_00477298(arg1);
-        func_0047A5D8(pt, value, arg2, arg0, arg3, arg4, arg5);
+        s32 value = func_00477298(source);
+        func_0047A5D8(pt, value, extra2, result, count, extra4, owner);
         func_004768C0((Val *)pt);
         break;
     }
     case 15: {
         u32 i = 0;
-        if (arg3 != 0) {
+        if (count != 0) {
             StrT *pk = &str;
             do {
                 func_0057DA20(buf, D_006AD5B0, i);
-                void *m = (void *)(arg0->v + 4);
+                void *m = (void *)(result->v + 4);
                 StrT *ps = &str;
                 char *src = buf;
                 Rep *g = (Rep *)D_00659E20;
@@ -122,17 +125,17 @@ extern "C" void func_00476D40(Val *arg0, Val *arg1, s32 arg2, u32 arg3, s32 arg4
                 ps->p = r;
                 strobe__Any__setMember(ps, 0, (u32)-1, src, func_0057F260(src));
                 void *v = func_004812C8(m, (Str *)pk);
-                func_00476790(v, (void *)(((Obj3 *)s5)->unk8 - 8));
+                func_00476790(v, (void *)(((Obj3 *)scriptCtx)->unk8 - 8));
                 Rep *q = (Rep *)(pk->p - 0x10);
                 if (--q->ref == 0) free(q);
-                func_00480F78(s5);
+                func_00480F78(scriptCtx);
                 i++;
-            } while (i < arg3);
+            } while (i < count);
         }
         break;
     }
     default:
-        func_00480FA0(s5, arg3);
+        func_00480FA0(scriptCtx, count);
         break;
     }
 }

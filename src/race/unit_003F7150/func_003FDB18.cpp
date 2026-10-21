@@ -1,3 +1,5 @@
+/* Detects whether a position was crossed (inferred): returns 1 when one of the listed marker values lies strictly between the
+ * previous position (func_003FC5F8) and the current one at +0x34, provided the car moved less than 30 units; otherwise 0. */
 #include "types.h"
 
 struct Obj_003FDB18_s0 {
@@ -29,22 +31,22 @@ struct Obj_003FDB18_a1 {
 extern "C" f32 func_003FC5F8(struct Obj_003FDB18_a1 *arg0);
 
 extern "C" s32 func_003FDB18(struct Obj_003FDB18_arg0 *arg0, struct Obj_003FDB18_a1 *arg1) {
-    f32 t20 = arg1->unk34;
-    struct Obj_003FDB18_s0 *s0 = arg0->unk80->unk4->unkB0;
-    s32 n = s0->unk34;
-    f32 f1 = func_003FC5F8(arg1);
+    f32 currentPos = arg1->unk34;
+    struct Obj_003FDB18_s0 *markerTable = arg0->unk80->unk4->unkB0;
+    s32 markerCount = markerTable->unk34;
+    f32 previousPos = func_003FC5F8(arg1);
     s32 i;
 
-    if (t20 <= f1)
+    if (currentPos <= previousPos)
         return 0;
-    if (f1 + 0x1.Ep4f < t20)
+    if (previousPos + 0x1.Ep4f < currentPos)
         return 0;
 
     i = 0;
-    while (i < n) {
-        f32 v = s0->unk38[i];
+    while (i < markerCount) {
+        f32 marker = markerTable->unk38[i];
         i++;
-        if (f1 < v && v < t20)
+        if (previousPos < marker && marker < currentPos)
             return 1;
     }
     return 0;

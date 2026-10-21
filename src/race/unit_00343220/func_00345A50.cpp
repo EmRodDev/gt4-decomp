@@ -1,3 +1,6 @@
+/* For each wheel (count from the car info, byte at +1; wheel records 0xEC apart) stores the length of the 2D vector (unk28, unk2C)
+ * times 0.02, clamped to 1.0, into unk40. The length saturates at 50 units; what the vector is (slip or contact velocity) is not
+ * known - func_0035D6B0 writes the same two fields. */
 #include "types.h"
 
 struct func_00345A50_temp {
@@ -16,32 +19,32 @@ struct func_00345A50_elem {
 
 extern "C" void *func_00359538(void *);
 
-extern "C" void func_00345A50(void *arg0) {
-    s32 var_a1;
-    struct func_00345A50_temp *temp_v0;
-    struct func_00345A50_elem *var_a0;
-    f32 temp_f0;
-    f32 temp_f1;
-    f32 sum;
-    f32 len;
-    f32 var_f0;
+extern "C" void func_00345A50(void *self) {
+    s32 wheelIndex;
+    struct func_00345A50_temp *carInfo;
+    struct func_00345A50_elem *wheel;
+    f32 vecX;
+    f32 vecY;
+    f32 squaredLength;
+    f32 length;
+    f32 scaled;
 
-    temp_v0 = (struct func_00345A50_temp *)func_00359538(arg0);
-    var_a1 = 0;
-    if (temp_v0->unk1 != 0) {
-        var_a0 = (struct func_00345A50_elem *)((char *)arg0 + 0x164);
+    carInfo = (struct func_00345A50_temp *)func_00359538(self);
+    wheelIndex = 0;
+    if (carInfo->unk1 != 0) {
+        wheel = (struct func_00345A50_elem *)((char *)self + 0x164);
         do {
-            temp_f0 = var_a0->unk28;
-            temp_f1 = var_a0->unk2C;
-            sum = temp_f0 * temp_f0 + temp_f1 * temp_f1;
-            __asm__("sqrt.s %0, %1" : "=f"(len) : "f"(sum));
-            var_f0 = len * 0x1.47AE16p-6f;
-            if (var_f0 > 1.0f) {
-                var_f0 = 1.0f;
+            vecX = wheel->unk28;
+            vecY = wheel->unk2C;
+            squaredLength = vecX * vecX + vecY * vecY;
+            __asm__("sqrt.s %0, %1" : "=f"(length) : "f"(squaredLength));
+            scaled = length * 0x1.47AE16p-6f;
+            if (scaled > 1.0f) {
+                scaled = 1.0f;
             }
-            var_a0->unk40 = var_f0;
-            var_a1 += 1;
-            var_a0++;
-        } while (var_a1 < (s32)temp_v0->unk1);
+            wheel->unk40 = scaled;
+            wheelIndex += 1;
+            wheel++;
+        } while (wheelIndex < (s32)carInfo->unk1);
     }
 }

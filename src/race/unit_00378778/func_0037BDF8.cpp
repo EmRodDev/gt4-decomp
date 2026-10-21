@@ -1,3 +1,4 @@
+/* Calls virtual slot 10 of the object at (self->unk18C)->unk2880 and returns the field at +0x40 of what it returns. Class unknown. */
 #include "types.h"
 
 struct VEntry0037BDF8 {
@@ -26,10 +27,10 @@ struct Obj0037BDF8 {
     Mid0037BDF8 *unk18C;
 };
 
-extern "C" s32 func_0037BDF8(struct Obj0037BDF8 *arg0) {
-    ObjInner0037BDF8 *a1 = arg0->unk18C->unk2880;
-    VEntry0037BDF8 *e = &a1->vtbl[10];
-    struct Result0037BDF8 *r = (struct Result0037BDF8 *)e->fn((char *)a1 + e->delta);
+extern "C" s32 func_0037BDF8(struct Obj0037BDF8 *self) {
+    ObjInner0037BDF8 *model = self->unk18C->unk2880;
+    VEntry0037BDF8 *slot = &model->vtbl[10];
+    struct Result0037BDF8 *result = (struct Result0037BDF8 *)slot->fn((char *)model + slot->delta);
 
-    return r->unk40;
+    return result->unk40;
 }

@@ -1,3 +1,6 @@
+/* Builds a temporary 0x70-byte CameraBase-derived object (destroyed at the end through CameraBase::structor_1), fills it from a
+ * parameter id, a position and a float, and hands it to func_0044E660 together with the value at +0xE330 and its half. The
+ * directory name (BGM) does not look like what the code does; purpose unknown. */
 struct Vec3 { float x; float y; float z; };
 struct Y4 { char pad0[4]; void *p4; };
 struct X80 { char pad0[0x80]; Y4 *y80; };
@@ -5,17 +8,17 @@ struct Self { char pad0[0x6C]; X80 *x6c; char pad1[0xE330 - 0x70]; int e330; };
 
 extern char D_006883F8[];
 
-extern "C" void func_0044EEA8(void *arg0);
-extern "C" void func_0044F058(void *arg0, int arg1, float arg2, float arg3, float arg4, float arg5);
-extern "C" void func_0044E660(int arg0, void *arg1, void *arg2, int arg3, int arg4, int arg5);
-extern "C" void CameraBase__structor_1(void *arg0, int arg1);
+extern "C" void func_0044EEA8(void *self);
+extern "C" void func_0044F058(void *self, int firstArg, float paramId, float position, float lastArg, float arg5);
+extern "C" void func_0044E660(int self, void *firstArg, void *paramId, int position, int lastArg, int arg5);
+extern "C" void CameraBase__structor_1(void *self, int firstArg);
 
-extern "C" void func_0033E960(Self *arg0, int arg1, int arg2, Vec3 *arg3, int arg4, float fparg0) {
-    char buf[0x70];
-    int s3 = arg0->e330;
-    func_0044EEA8(buf);
-    func_0044F058(buf, arg2, arg3->x, arg3->y, arg3->z, fparg0);
-    func_0044E660(arg1, arg0->x6c->y80->p4, buf, arg4, s3 >> 1, s3);
-    *(int *)buf = (int)D_006883F8;
-    CameraBase__structor_1(buf, 0);
+extern "C" void func_0033E960(Self *self, int firstArg, int paramId, Vec3 *position, int lastArg, float value) {
+    char cameraTemp[0x70];
+    int e330Value = self->e330;
+    func_0044EEA8(cameraTemp);
+    func_0044F058(cameraTemp, paramId, position->x, position->y, position->z, value);
+    func_0044E660(firstArg, self->x6c->y80->p4, cameraTemp, lastArg, e330Value >> 1, e330Value);
+    *(int *)cameraTemp = (int)D_006883F8;
+    CameraBase__structor_1(cameraTemp, 0);
 }

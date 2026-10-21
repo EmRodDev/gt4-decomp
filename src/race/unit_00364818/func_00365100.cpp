@@ -1,3 +1,5 @@
+/* Looks up one signed byte setting of the car (at +0x96 plus an index taken from the car's table; 0 when the object is disabled) and
+ * reports the allowed range -100..100 through outMin/outMax (inferred from the constants). What the setting is is unknown. */
 #include "types.h"
 #define NULL 0
 #include "m2c_macros.h"
@@ -9,18 +11,18 @@ struct func_00365100_arg0 {
     u8 unk4;
 };
 
-extern "C" s8 func_00365100(struct func_00365100_arg0 *arg0, s32 arg1, s8 *arg2, s8 *arg3) {
-    V *temp_v0;
-    u8 var_a1;
-    if (arg0->unk4 != 0) {
+extern "C" s8 func_00365100(struct func_00365100_arg0 *self, s32 slot, s8 *outMin, s8 *outMax) {
+    V *info;
+    u8 entryIndex;
+    if (self->unk4 != 0) {
         return 0;
     }
-    temp_v0 = func_00359510(arg0->unk0 + 0x600);
-    var_a1 = 0;
-    if (arg1 < temp_v0->n) {
-        var_a1 = temp_v0->b[arg1];
+    info = func_00359510(self->unk0 + 0x600);
+    entryIndex = 0;
+    if (slot < info->n) {
+        entryIndex = info->b[slot];
     }
-    *arg2 = -0x64;
-    *arg3 = 0x64;
-    return M2C_FIELD((var_a1 + arg0->unk0), s8 *, 0x96);
+    *outMin = -0x64;
+    *outMax = 0x64;
+    return M2C_FIELD((entryIndex + self->unk0), s8 *, 0x96);
 }
