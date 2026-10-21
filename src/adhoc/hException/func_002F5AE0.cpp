@@ -1,4 +1,4 @@
-/* Script-engine registration for the class of directory hException (the name string set here is "MButtonActor", copied from the source as is): sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
+/* Script-engine registration for the class of directory hException (the name string set here is "Exception", copied from the source as is): sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
  * then registers 1 attribute (getter/setter), 2 registrations on a global symbol object
  * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
  * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
@@ -56,7 +56,7 @@ extern "C" void func_002F5AE0(Obj *cls) {
     Str name;
     {
         Str *namePtr = &name;
-        const char *literal = "MButtonActor";
+        const char *literal = "Exception";
         Rep *emptyRep = &D_00659FA8;
         char *chars;
         if (emptyRep->sel != 0) {
@@ -84,7 +84,7 @@ extern "C" void func_002F5AE0(Obj *cls) {
     func_002F36E0(cls, D_0083D2C8, Exception__global_0083D2C8);
     {
         Str *namePtr = &name;
-        const char *literal = "period";
+        const char *literal = "message";
         Rep *emptyRep = &D_00659FA8;
         char *chars;
         if (emptyRep->sel != 0) {

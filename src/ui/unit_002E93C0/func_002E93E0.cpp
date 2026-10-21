@@ -40,7 +40,7 @@ extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
 extern "C" void func_002E93E0(Obj *cls) {
     Str name;
     Str *namePtr = &name;
-    const char *literal = "MUpdateContextPS2";
+    const char *literal = "MDBox";
     Rep *emptyRep = &D_00659FA8;
     char *chars = (char *)(emptyRep + 1);
     if (emptyRep->sel != 0) {

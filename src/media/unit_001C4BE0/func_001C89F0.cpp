@@ -51,8 +51,8 @@ extern Disp D_006184D0;
 extern "C" void func_001056A0(void *);
 extern "C" void func_00106A68(void *, s32, s32, s32);
 extern "C" void func_001074D0(void *, s32, s32, s32, s32);
-extern "C" void func_00109BA8(void);
-extern "C" s32 func_00333560(void *, void *, s32, s32, s32, s32, f32, s32);
+extern "C" void func_00109BA8(Self *self);
+extern "C" void func_00333560(void *, void *, s32, s32, s32, s32, f32, s32);
 extern "C" s32 func_00333A00(void *, s32);
 extern "C" void func_003355F0(void *);
 extern "C" void func_003C7D60(void *, s32);
@@ -113,6 +113,6 @@ extern "C" void func_001C89F0(Self *job) {
             }
         }
     } else {
-        func_00109BA8();
+        func_00109BA8(job);
     }
 }

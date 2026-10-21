@@ -55,7 +55,7 @@ extern "C" void func_002CE8E0(Obj *arg0) {
     Str s;
     {
         Str *ps = &s;
-        const char *src = "MButtonActor";
+        const char *src = "MScriptWatcher";
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {
@@ -83,7 +83,7 @@ extern "C" void func_002CE8E0(Obj *arg0) {
     func_002F36E0(arg0, D_0083A0A8, MScriptWatcher__global_0083A0A8);
     {
         Str *ps = &s;
-        const char *src = "period";
+        const char *src = "count";
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {

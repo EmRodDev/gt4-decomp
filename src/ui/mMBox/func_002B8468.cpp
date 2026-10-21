@@ -45,7 +45,7 @@ extern "C" void func_00306780(EventObject *eventObj, void *tableData, void (*han
 extern "C" void func_002B8468(EventObject *eventObj) {
     StringWrapper moduleNameStr;
     StringWrapper *destPtr = &moduleNameStr;
-    const char *sourceStr = "MSceneViewFace";
+    const char *sourceStr = "MMBox";
     StringRep *defaultRep = &D_00659FA8;
     char *dataPtr = (char *)(defaultRep + 1);
     if (defaultRep->isStatic != 0) {

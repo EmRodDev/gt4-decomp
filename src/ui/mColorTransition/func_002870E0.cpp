@@ -55,7 +55,7 @@ extern "C" void func_002870E0(Obj *arg0) {
     Str s;
     {
         Str *ps = &s;
-        const char *src = "MButtonActor";
+        const char *src = "MColorTransition";
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {

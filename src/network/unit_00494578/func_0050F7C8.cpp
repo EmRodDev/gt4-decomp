@@ -13,7 +13,7 @@ extern "C" s32 func_0050F7C8(void) {
 
     temp_a0 = D_0064A55C;
     if (temp_a0->unk20(temp_a0) != 0) {
-        func_0057D9C0("failed to clear ProductCache\n");
+        func_0057D9C0("failed to clear PurchaseCache\n");
     }
     return 0;
 }

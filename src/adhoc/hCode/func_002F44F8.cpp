@@ -1,4 +1,4 @@
-/* Script-engine registration for the class of directory hCode (the name string set here is "MUpdateContextPS2", copied from the source as is): sets its name through setName, links it to its parent class hObject (class id from hObject__GetClassID),
+/* Script-engine registration for the class of directory hCode (the name string set here is "Code", copied from the source as is): sets its name through setName, links it to its parent class hObject (class id from hObject__GetClassID),
  * then registers nothing else
  * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
  * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
@@ -41,7 +41,7 @@ extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
 extern "C" void func_002F44F8(Obj *cls) {
     Str name;
     Str *namePtr = &name;
-    const char *literal = "MUpdateContextPS2";
+    const char *literal = "Code";
     Rep *emptyRep = &D_00659FA8;
     char *chars = (char *)(emptyRep + 1);
     if (emptyRep->sel != 0) {

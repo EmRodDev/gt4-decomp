@@ -42,7 +42,7 @@ extern "C" void func_002F3A30(EventObject *eventObj, s32 classId);
 extern "C" void func_002DCD08(EventObject *eventObj) {
     StringWrapper moduleNameStr;
     StringWrapper *destPtr = &moduleNameStr;
-    const char *moduleName = "MUpdateContextPS2";
+    const char *moduleName = "MSession";
     StringRep *defaultRep = &D_00659FA8;
     char *dataPtr = (char *)(defaultRep + 1);
     if (defaultRep->isStatic != 0) {
