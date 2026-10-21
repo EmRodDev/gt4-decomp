@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-frame pass over the car's wheels (count taken from the record at func_00359510): each wheel keeps a
+ * contact timer (set to 6 while f48 is non-zero, counted down otherwise); while it runs, three output values
+ * (+0xB4, +0xB8, +0xBC) are computed from table lookups (func_00359830) on speed and on a rotated pair
+ * (cos/sin of the wheel angle applied to f28/f2C), then combined with sqrt(x*x + y*y) and per-class slope terms.
+ * The wheel kind (+0x89) selects one of three classes (switch) that indexes the curve tables.
+ * The sum of the third output over class!=0 wheels (x4 when the course type is 0) is scaled and handed to
+ * func_003438C8 at the end. Purpose unknown in game terms (looks like a per-wheel ground/tyre response; inferred
+ * from the shape only). The sqrt is an inline sqrt.s asm helper and the offsets 0xEC/0x164 index the wheel array. */
 #include "types.h"
 
 struct Tab { s16 n; f32 *x; f32 *y; };
@@ -65,10 +73,10 @@ static inline f32 root(f32 x) { f32 r; __asm__("sqrt.s %0,%1" : "=f"(r) : "f"(x)
 
 extern "C" void func_00367148(Car *self) {
     s32 i;
-    f32 total = 0.0f;
-    Rec *rec = func_00359510(self->m10);
+    f32 classedTotal = 0.0f;
+    Rec *wheelRecord = func_00359510(self->m10);
 
-    for (i = 0; i < rec->n; i++) {
+    for (i = 0; i < wheelRecord->n; i++) {
         Wheel *w = wheelAt(self, i);
         if (w->f48 != 0.0f) w->timer = 6;
         else if (w->timer) w->timer--;
@@ -77,9 +85,9 @@ extern "C" void func_00367148(Car *self) {
             w->outB8 = 1.0f;
             w->outBC = 0.0f;
         } else {
-            s32 g = 0;
+            s32 kindClass = 0;
             s32 kind;
-            f32 speed, a, b, d, ang;
+            f32 speedAbs, rotatedAbsA, valueF38, rotatedB, angle;
             switch (w->kind) {
             case 2:
             case 3:
@@ -87,92 +95,92 @@ extern "C" void func_00367148(Car *self) {
             case 5:
             case 13:
             case 14:
-                g = 1;
+                kindClass = 1;
                 break;
             case 6:
             case 20:
             case 21:
             case 22:
-                g = 2;
+                kindClass = 2;
                 break;
             }
-            speed = wheelAt(self, i)->f34;
-            if (speed < 0.0f) speed = -speed;
-            ang = w->angle;
-            f32 t = func_0057D1F0(ang) * w->f2C;
-            a = t + func_0057D2B8(ang) * w->f28;
-            if (a < 0.0f) a = -a;
-            f32 ang2 = w->angle;
-            b = w->f38;
-            f32 t2 = func_0057D1F0(ang2) * w->f28;
-            d = t2 - func_0057D2B8(ang2) * w->f2C;
+            speedAbs = wheelAt(self, i)->f34;
+            if (speedAbs < 0.0f) speedAbs = -speedAbs;
+            angle = w->angle;
+            f32 scaleT = func_0057D1F0(angle) * w->f2C;
+            rotatedAbsA = scaleT + func_0057D2B8(angle) * w->f28;
+            if (rotatedAbsA < 0.0f) rotatedAbsA = -rotatedAbsA;
+            f32 angle2 = w->angle;
+            valueF38 = w->f38;
+            f32 rotatedProduct = func_0057D1F0(angle2) * w->f28;
+            rotatedB = rotatedProduct - func_0057D2B8(angle2) * w->f2C;
             f32 f20 = w->f20;
-            f32 lat = d - f20;
-            if (d < 0.0f) lat = -lat;
+            f32 deviationAbs = rotatedB - f20;
+            if (rotatedB < 0.0f) deviationAbs = -deviationAbs;
             kind = w->kind;
-            u8 k = kind;
-            if (k != 1 && k != 10 && k != 11 && k != 21) {
-                s32 flag = 0;
-                f32 x, y;
-                x = !D_006224B0.a[g].x ? speed : a;
-                x = func_00359830(&D_00843A20[g].x, x);
-                y = !D_006224B0.a[g].y ? b : lat;
-                y = func_00359830(&D_00843A20[g].y, y);
-                f32 va = root(y * y + x * x);
-                x = w->f40 - D_00843A20[g].threshold;
-                if (x > 0.0f) va += x * D_00843A20[g].slope;
-                if (va != 0.0f) va += D_00843A20[g].base;
-                if (w->outB4 == D_00843A20[g].base) {
-                    if (va != D_00843A20[g].base) flag = 1;
+            u8 kindByte = kind;
+            if (kindByte != 1 && kindByte != 10 && kindByte != 11 && kindByte != 21) {
+                s32 firstContactFlag = 0;
+                f32 curveX, curveY;
+                curveX = !D_006224B0.a[kindClass].x ? speedAbs : rotatedAbsA;
+                curveX = func_00359830(&D_00843A20[kindClass].x, curveX);
+                curveY = !D_006224B0.a[kindClass].y ? valueF38 : deviationAbs;
+                curveY = func_00359830(&D_00843A20[kindClass].y, curveY);
+                f32 outB4Value = root(curveY * curveY + curveX * curveX);
+                curveX = w->f40 - D_00843A20[kindClass].threshold;
+                if (curveX > 0.0f) outB4Value += curveX * D_00843A20[kindClass].slope;
+                if (outB4Value != 0.0f) outB4Value += D_00843A20[kindClass].base;
+                if (w->outB4 == D_00843A20[kindClass].base) {
+                    if (outB4Value != D_00843A20[kindClass].base) firstContactFlag = 1;
                 }
-                w->outB4 = va;
-                x = !D_006224B0.b[g].x ? speed : a;
-                x = func_00359830(&D_00843C30[g].x, x);
-                y = !D_006224B0.b[g].y ? b : lat;
-                y = func_00359830(&D_00843C30[g].y, y);
-                f32 vb = D_00843C30[g].base + root(y * y + x * x);
-                x = w->f40 - D_00843C30[g].threshold;
-                if (x > 0.0f) vb += x * D_00843C30[g].slope;
-                if (flag && (i & 1)) vb *= 0.75f;
-                w->outB8 = vb;
+                w->outB4 = outB4Value;
+                curveX = !D_006224B0.b[kindClass].x ? speedAbs : rotatedAbsA;
+                curveX = func_00359830(&D_00843C30[kindClass].x, curveX);
+                curveY = !D_006224B0.b[kindClass].y ? valueF38 : deviationAbs;
+                curveY = func_00359830(&D_00843C30[kindClass].y, curveY);
+                f32 outB8Value = D_00843C30[kindClass].base + root(curveY * curveY + curveX * curveX);
+                curveX = w->f40 - D_00843C30[kindClass].threshold;
+                if (curveX > 0.0f) outB8Value += curveX * D_00843C30[kindClass].slope;
+                if (firstContactFlag && (i & 1)) outB8Value *= 0.75f;
+                w->outB8 = outB8Value;
                 kind = w->kind;
             } else {
-                Special *sp = &D_00844050;
-                f32 r = w->f48 / 0x1.323ffep+11f - 0.25f;
-                if (r < 0.0f) r = 0.0f;
-                else if (r > 1.0f) r = 1.0f;
-                f32 t = r;
-                r = f20;
-                if (r < 0.0f) r = -r;
-                f32 s = (r - 0x1.638e36p+0f) * 0x1.26e97ap-3f;
-                if (s < 0.0f) s = 0.0f;
-                else if (s > 1.0f) s = 1.0f;
-                w->outB4 = s * t * sp->scale;
-                f32 out;
-                if (r <= sp->lo) {
-                    out = sp->loValue;
-                } else if (r >= sp->hi) {
-                    out = sp->hiValue;
+                Special *special = &D_00844050;
+                f32 ratio = w->f48 / 0x1.323ffep+11f - 0.25f;
+                if (ratio < 0.0f) ratio = 0.0f;
+                else if (ratio > 1.0f) ratio = 1.0f;
+                f32 scaleT = ratio;
+                ratio = f20;
+                if (ratio < 0.0f) ratio = -ratio;
+                f32 slipScale = (ratio - 0x1.638e36p+0f) * 0x1.26e97ap-3f;
+                if (slipScale < 0.0f) slipScale = 0.0f;
+                else if (slipScale > 1.0f) slipScale = 1.0f;
+                w->outB4 = slipScale * scaleT * special->scale;
+                f32 interp;
+                if (ratio <= special->lo) {
+                    interp = special->loValue;
+                } else if (ratio >= special->hi) {
+                    interp = special->hiValue;
                 } else {
-                    out = sp->loValue + ((r - sp->lo) * (sp->hiValue - sp->loValue)) / (sp->hi - sp->lo);
+                    interp = special->loValue + ((ratio - special->lo) * (special->hiValue - special->loValue)) / (special->hi - special->lo);
                 }
-                w->outB8 = out;
+                w->outB8 = interp;
             }
-            if (kind == 12) g = 1;
-            f32 x = !D_006224B0.c[g].x ? speed : a;
-            x = func_00359830(&D_00843E40[g].x, x);
-            f32 y = !D_006224B0.c[g].y ? b : lat;
-            y = func_00359830(&D_00843E40[g].y, y);
-            f32 vc = root(y * y + x * x);
-            x = w->f40 - D_00843E40[g].threshold;
-            if (x > 0.0f) vc += x * D_00843E40[g].slope;
-            if (w->kind == 8) vc = 0.0f;
-            if (vc != 0.0f) vc += D_00843E40[g].base;
-            if (vc > 1.0f) vc = 1.0f;
-            w->outBC = vc;
-            if (g) total += vc;
+            if (kind == 12) kindClass = 1;
+            f32 curveX = !D_006224B0.c[kindClass].x ? speedAbs : rotatedAbsA;
+            curveX = func_00359830(&D_00843E40[kindClass].x, curveX);
+            f32 curveY = !D_006224B0.c[kindClass].y ? valueF38 : deviationAbs;
+            curveY = func_00359830(&D_00843E40[kindClass].y, curveY);
+            f32 outBCValue = root(curveY * curveY + curveX * curveX);
+            curveX = w->f40 - D_00843E40[kindClass].threshold;
+            if (curveX > 0.0f) outBCValue += curveX * D_00843E40[kindClass].slope;
+            if (w->kind == 8) outBCValue = 0.0f;
+            if (outBCValue != 0.0f) outBCValue += D_00843E40[kindClass].base;
+            if (outBCValue > 1.0f) outBCValue = 1.0f;
+            w->outBC = outBCValue;
+            if (kindClass) classedTotal += outBCValue;
         }
     }
-    if (DynamicsConductor__getCourseType(self->m4) == 0) total *= 4.0f;
-    return func_003438C8(self->sub6DC, total * 0x1.0624dcp-11f * self->f54C);
+    if (DynamicsConductor__getCourseType(self->m4) == 0) classedTotal *= 4.0f;
+    return func_003438C8(self->sub6DC, classedTotal * 0x1.0624dcp-11f * self->f54C);
 }

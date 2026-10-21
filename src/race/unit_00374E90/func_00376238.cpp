@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Randomly (re)configures the target object stored in slot idx of self (stride 0x19C, current at +0x158, new at
+ * +0x13C). The kind is chosen with the float rng: below 0.3 -> 0, below 0.6 -> 5, else a random pick from the
+ * candidate list func_003FF688 returns for the context (inferred from the thresholds). The target is then
+ * initialised through virtual calls (vtable +0x140, +0x170, +0x150), may get a random value in [60,80) at +0x188, and
+ * a few random bit fields in the flag words +0x260/+0x268. Game meaning of the fields is purpose unknown.
+ * The virtual calls use the {delta,index,fn} entry form that gcc 2.96 needs for the thunk adjustment. */
 typedef unsigned long u64;
 struct Obj { char *vt; };
 struct Tgt { char *vt; char p4[0x184]; float f188; int i18C; char p190[0xD0]; u64 f260, f268; };
@@ -20,54 +26,54 @@ static inline int kind(Tgt *t) {
     return e->fn((char *)t+e->delta);
 }
 static inline float affine(float x, float a, float b) { return x*a+b; }
-extern "C" int func_00376238(Obj *self, int idx, int a2, char *ctx, void *rng, float time) {
-    int buf[26];
-    int old = -1;
-    Tgt *t=*(Tgt **)((char *)self+idx*0x19C+0x158);
-    if (get(self,idx)==t) {
-        if (t->i18C==*(int *)(ctx+0x10)) old=kind(t);
+extern "C" int func_00376238(Obj *self, int slotIndex, int a2, char *context, void *rng, float time) {
+    int candidates[26];
+    int previousKind = -1;
+    Tgt *target=*(Tgt **)((char *)self+slotIndex*0x19C+0x158);
+    if (get(self,slotIndex)==target) {
+        if (target->i18C==*(int *)(context+0x10)) previousKind=kind(target);
     }
-    int n=func_003FF688(*(int *)(ctx+0x10),buf,26);
-    float r=func_00578598(rng);
+    int candidateCount=func_003FF688(*(int *)(context+0x10),candidates,26);
+    float roll=func_00578598(rng);
     int choice=0;
-    if (!(r<0x1.333332p-2f)) {
+    if (!(roll<0x1.333332p-2f)) {
         choice=5;
-        if (!(r<0x1.333332p-1f) && n>0) {
-            int j=(int)(func_00578598(rng)*(float)n);
-            int max=n-1;
-            if (j<=0) j=0;
-            if (j>=max) j=max;
-            choice=buf[j];
+        if (!(roll<0x1.333332p-1f) && candidateCount>0) {
+            int pick=(int)(func_00578598(rng)*(float)candidateCount);
+            int lastIndex=candidateCount-1;
+            if (pick<=0) pick=0;
+            if (pick>=lastIndex) pick=lastIndex;
+            choice=candidates[pick];
         }
     }
-    InitEnt *init=(InitEnt *)(t->vt+0x140);
-    init->fn((char *)t+init->delta,ctx,choice);
-    VoidEnt *v=(VoidEnt *)(t->vt+0x170);
-    v->fn((char *)t+v->delta);
-    t->f268=(t->f268 & ~0xFFul)|1;
-    FloatEnt *f=(FloatEnt *)(t->vt+0x150);
-    f->fn((char *)t+f->delta,3,time);
-    if (kind(t)==old) func_0037BC48(t,old+1,1);
-    int k=kind(t);
-    if (k==0 || k==5) {
-        r=func_00578598(rng);
-        r=affine(r,20.0f,60.0f);
-        t->f260=(t->f260 & 0x00FFFFFFFFFFFFFFul)|0x100000000000000ul;
-        t->f188=r;
-        if (func_00578598(rng)<0.5f) t->f268=(t->f268 & ~0xFF00ul)|0x100ul;
+    InitEnt *initEntry=(InitEnt *)(target->vt+0x140);
+    initEntry->fn((char *)target+initEntry->delta,context,choice);
+    VoidEnt *resetEntry=(VoidEnt *)(target->vt+0x170);
+    resetEntry->fn((char *)target+resetEntry->delta);
+    target->f268=(target->f268 & ~0xFFul)|1;
+    FloatEnt *timeEntry=(FloatEnt *)(target->vt+0x150);
+    timeEntry->fn((char *)target+timeEntry->delta,3,time);
+    if (kind(target)==previousKind) func_0037BC48(target,previousKind+1,1);
+    int kindNow=kind(target);
+    if (kindNow==0 || kindNow==5) {
+        roll=func_00578598(rng);
+        roll=affine(roll,20.0f,60.0f);
+        target->f260=(target->f260 & 0x00FFFFFFFFFFFFFFul)|0x100000000000000ul;
+        target->f188=roll;
+        if (func_00578598(rng)<0.5f) target->f268=(target->f268 & ~0xFF00ul)|0x100ul;
     }
     if (func_00578598(rng)<0x1.999998p-2f) {
-        int flag=1;
-        switch (kind(t)) {
-        case 0: case 5: case 14 ... 17: flag=0; break;
+        int extraFlag=1;
+        switch (kind(target)) {
+        case 0: case 5: case 14 ... 17: extraFlag=0; break;
         default: break;
         }
-        func_00379FA8(t,time,flag);
+        func_00379FA8(target,time,extraFlag);
     }
     if (func_00578598(rng)<0x1.333332p-2f) {
-        int k=kind(t);
-        if (k==0 || k==5) t->f260=(t->f260 & 0xFFFF00FFFFFFFFFFul)|0x10000000000ul;
+        int kindNow=kind(target);
+        if (kindNow==0 || kindNow==5) target->f260=(target->f260 & 0xFFFF00FFFFFFFFFFul)|0x10000000000ul;
     }
-    *(Tgt **)((char *)self+idx*0x19C+0x13C)=t;
+    *(Tgt **)((char *)self+slotIndex*0x19C+0x13C)=target;
     return 1;
 }

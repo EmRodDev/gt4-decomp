@@ -1,3 +1,8 @@
+/* Free-moving camera step driven by a controller input (inferred: it reads move_x/move_y/turn, adds twice the turn
+ * to the heading, steps x/y by the input scaled by func_0036F6A0 and by two per-axis gains, and clamps the result
+ * to the rectangle from the owner's limits record, falling back to +-500 when that rectangle is empty).
+ * The final func_003FF0B8 call returns a result index (kept at +0xE8); when it is non-negative the position is
+ * copied back into the +0x28 vector. Meaning of unk1C/unk80 is purpose unknown. */
 typedef float f32;
 
 struct Limits {
@@ -64,22 +69,22 @@ extern "C" void func_00370960(Cam *self, Input *in)
     Limits *lim = self->owner->info->limits;
     f32 my;
     f32 mx;
-    f32 gx;
-    f32 gy;
+    f32 gainX;
+    f32 gainY;
     f32 min_x;
     f32 max_x;
     f32 min_y;
     f32 max_y;
-    f32 s;
+    f32 inputScale;
     f32 tmp[4];
-    int r;
+    int hitIndex;
 
     self->unk1C = func_003701B8(in, self->unk1C, func_0036FD98(self));
     self->angle = func_0036EAD8(self->angle + (in->turn + in->turn));
     my = in->move_y;
     mx = in->move_x;
-    gx = func_0036FF38(self, speed);
-    gy = func_0036FF78(self, speed);
+    gainX = func_0036FF38(self, speed);
+    gainY = func_0036FF78(self, speed);
     min_x = lim->min_x;
     max_x = lim->max_x;
     min_y = lim->min_y;
@@ -102,16 +107,16 @@ extern "C" void func_00370960(Cam *self, Input *in)
         int moving = 0;
         if (my != 0.0f || mx != 0.0f)
             moving = 1;
-        s = func_0036F6A0(self->unk44, moving, 1.0f);
+        inputScale = func_0036F6A0(self->unk44, moving, 1.0f);
     }
     {
         f32 *px = &self->x;
         f32 *py;
-        my *= s;
-        mx *= s;
-        *px += mx * gx;
+        my *= inputScale;
+        mx *= inputScale;
+        *px += mx * gainX;
         py = &self->y;
-        *py += my * gy;
+        *py += my * gainY;
         if (*px <= min_x)
             *px = min_x;
         if (max_x <= *px)
@@ -124,9 +129,9 @@ extern "C" void func_00370960(Cam *self, Input *in)
         func_005F5040(px, self->unk28);
         func_005F5040(px, tmp);
     }
-    r = func_003FF0B8(tmp, self->owner, self->unk80, func_0036FF78(self, 24.0f));
-    if (r >= 0)
+    hitIndex = func_003FF0B8(tmp, self->owner, self->unk80, func_0036FF78(self, 24.0f));
+    if (hitIndex >= 0)
         func_005F5040(tmp, self->unk28);
-    self->unkE8 = r;
+    self->unkE8 = hitIndex;
     func_005F5040(tmp, self->unkD8);
 }

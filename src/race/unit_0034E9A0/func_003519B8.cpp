@@ -1,4 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-step engine speed update (rpm at +0x4FC of the car's dynamics block). The constant 0x1.acee9cp-4 is 2*pi/60,
+ * so the engine limits (minRpm/maxRpm) are converted from rpm to rad/s before comparing (inferred from the value).
+ * mode 0: free-running, rpm integrates a rate (func_003554A0, or func_00355F80 for gear type 7) and is floored at the
+ * idle speed; mode 1: rpm follows func_00350E28 (wheel-driven, scaled by f518 for some gearboxes); modes 2/3: a gear
+ * change in progress, rpm is steered toward the target and handed back to mode 1 (or 0) when it is reached; in the
+ * branch with m==3/6 the wheel speeds are written back through the gear ratio table. The meaning of each mode number
+ * is inferred from this behaviour only. The result is clamped to [0, maxRpm+10]. */
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -88,76 +95,76 @@ extern "C" int func_003F1F88(Gear *g);
 extern "C" int func_003F1F98(Gear *g);
 
 extern "C" int func_003519B8(Car *self) {
-    Sub *s = &self->sub;
-    Eng *e = self->eng;
-    Gear *g = &e->gear;
-    Engine *en = &e->engine;
+    Sub *dyn = &self->sub;
+    Eng *eng = self->eng;
+    Gear *gear = &eng->gear;
+    Engine *engine = &eng->engine;
     float dt = self->sub.dt;
-    float v;
+    float targetRpm;
 
-    int mode = s->mode;
+    int mode = dyn->mode;
     if (mode == 0) {
-        v = (float)en->minRpm * 0x1.acee9cp-4f;
-        float rate;
-        if (g->type == 7) rate = func_00355F80(self);
-        else rate = func_003554A0(self, s->f494);
-        s->rpm += rate * g->fC8 * dt;
-        if (s->rpm < v) s->rpm = v;
+        targetRpm = (float)engine->minRpm * 0x1.acee9cp-4f;
+        float rpmRate;
+        if (gear->type == 7) rpmRate = func_00355F80(self);
+        else rpmRate = func_003554A0(self, dyn->f494);
+        dyn->rpm += rpmRate * gear->fC8 * dt;
+        if (dyn->rpm < targetRpm) dyn->rpm = targetRpm;
     } else {
-        v = func_00350E28(self);
-        if (s->mode == 1) {
-            if (func_003F1F98(g)) s->rpm = s->f518 * v;
-            else s->rpm = v;
-        } else if (s->mode == 2 || s->mode == 3) {
-            u8 m;
-            if (s->b466 == 1 || s->u467 != 0) m = 0;
-            else m = s->u442;
-            if ((m == 3 || m == 6) && s->f514 == 1.0f) {
-                float r = s->rpm;
-                int n = s->gearNo;
-                if (func_003F1F88(g)) {
-                    if (n >= 2) n = 1;
+        targetRpm = func_00350E28(self);
+        if (dyn->mode == 1) {
+            if (func_003F1F98(gear)) dyn->rpm = dyn->f518 * targetRpm;
+            else dyn->rpm = targetRpm;
+        } else if (dyn->mode == 2 || dyn->mode == 3) {
+            u8 driveState;
+            if (dyn->b466 == 1 || dyn->u467 != 0) driveState = 0;
+            else driveState = dyn->u442;
+            if ((driveState == 3 || driveState == 6) && dyn->f514 == 1.0f) {
+                float wheelRpmValue = dyn->rpm;
+                int gearIndex = dyn->gearNo;
+                if (func_003F1F88(gear)) {
+                    if (gearIndex >= 2) gearIndex = 1;
                 }
-                r /= g->ratio[n];
-                Selection *sel = func_00359510(e);
-                for (int i = 0; i < sel->count; i++) {
-                    int w = sel->ws.index[i];
-                    s->wheelRpm[i] = r;
-                    int k = 0;
-                    if (i < sel->count) k = *(sel->ws.kind + i);
-                    r *= g->scale[k];
-                    Wheel *wh = self->sub.wheel + w;
-                    wh->f20 = r;
-                    w = sel->ws.pair[w];
-                    if (w != 0x7F) {
-                        wh = self->sub.wheel + w;
-                        wh->f20 = r;
+                wheelRpmValue /= gear->ratio[gearIndex];
+                Selection *selection = func_00359510(eng);
+                for (int i = 0; i < selection->count; i++) {
+                    int wheelIndex = selection->ws.index[i];
+                    dyn->wheelRpm[i] = wheelRpmValue;
+                    int kindIndex = 0;
+                    if (i < selection->count) kindIndex = *(selection->ws.kind + i);
+                    wheelRpmValue *= gear->scale[kindIndex];
+                    Wheel *wheelRef = self->sub.wheel + wheelIndex;
+                    wheelRef->f20 = wheelRpmValue;
+                    wheelIndex = selection->ws.pair[wheelIndex];
+                    if (wheelIndex != 0x7F) {
+                        wheelRef = self->sub.wheel + wheelIndex;
+                        wheelRef->f20 = wheelRpmValue;
                     }
                 }
-                s->mode = 1;
+                dyn->mode = 1;
             } else {
-                float hi = s->f510;
-                float lo = s->f50C;
-                if ((lo <= hi && v <= s->rpm) || (hi <= lo && s->rpm <= v)) {
-                    s->mode = 1;
-                    s->u526 = 12;
-                    s->rpm = v;
+                float rangeHigh = dyn->f510;
+                float rangeLow = dyn->f50C;
+                if ((rangeLow <= rangeHigh && targetRpm <= dyn->rpm) || (rangeHigh <= rangeLow && dyn->rpm <= targetRpm)) {
+                    dyn->mode = 1;
+                    dyn->u526 = 12;
+                    dyn->rpm = targetRpm;
                 }
             }
-            if (s->mode == 3 && s->f510 <= (float)e->engine.minRpm * 0x1.acee9cp-4f)
-                s->mode = 0;
-            if (s->mode == 2 && s->f48C > 0.75f &&
-                (s->rpm < (float)(e->engine.minRpm + 500) * 0x1.acee9cp-4f ||
-                 (s->f53C < 0x1.638e36p+1f && s->f53C > -0x1.638e36p+1f)))
-                s->mode = 0;
+            if (dyn->mode == 3 && dyn->f510 <= (float)eng->engine.minRpm * 0x1.acee9cp-4f)
+                dyn->mode = 0;
+            if (dyn->mode == 2 && dyn->f48C > 0.75f &&
+                (dyn->rpm < (float)(eng->engine.minRpm + 500) * 0x1.acee9cp-4f ||
+                 (dyn->f53C < 0x1.638e36p+1f && dyn->f53C > -0x1.638e36p+1f)))
+                dyn->mode = 0;
         }
-        if (s->rpm < 0.0f) {
-            s->rpm = 0.0f;
+        if (dyn->rpm < 0.0f) {
+            dyn->rpm = 0.0f;
         } else {
-            float limit = (float)(e->engine.maxRpm + 10) * 0x1.acee9cp-4f;
-            if (limit <= s->rpm) s->rpm = limit;
+            float maxLimit = (float)(eng->engine.maxRpm + 10) * 0x1.acee9cp-4f;
+            if (maxLimit <= dyn->rpm) dyn->rpm = maxLimit;
         }
     }
-    if (s->mode != 3) func_0035A5F8(self, 0, 0);
+    if (dyn->mode != 3) func_0035A5F8(self, 0, 0);
     return func_00350F48(self);
 }

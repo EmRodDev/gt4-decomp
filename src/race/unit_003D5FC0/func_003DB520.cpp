@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Builds an on-screen element from game data: looks up the entry named D_006A3410 in the owner's handle, loads its
+ * instance (GT4MC FileGT4GameData), stores func_003D8C18(self) at +0x74 of it, then for slots 1..7 formats a name
+ * (D_006A3420 with the slot number) and calls func_003DA518 with a flag: slots 1-5 are on when the slot equals pace+1,
+ * slot 6 when +0x50 > 0, slot 7 when +0x54 > 0. Last it fetches a localised string (text table at 0x621C78 indexed by
+ * +0x58) and sets it as a member of the instance. The names behind the string constants are purpose unknown. The
+ * grab/construct/destroy helpers are the inlined refcounted-string handling the compiler needed to see. */
 typedef unsigned int u32;
 struct Rep { u32 len, cap, ref, selfish; };
 struct Str { char *p; };
@@ -29,35 +35,35 @@ static inline void destroy(Str *s) { Rep *r=(Rep *)s->p-1; if(--r->ref==0) free(
 extern "C" void func_003DB520(Owner *self) {
     union { Val v; Str s; } first;
     union { char buf[32]; Str s; } second;
-    Str *ps=&first.s;
+    Str *firstString=&first.s;
     int handle=*self->handle;
-    const char *name=D_006A3410;
-    ps->p=grab(&D_00659E20);
-    char *result=0;
-    strobe__Any__setMember(ps,0,-1,name,func_0057F260(name));
+    const char *lookupName=D_006A3410;
+    firstString->p=grab(&D_00659E20);
+    char *instance=0;
+    strobe__Any__setMember(firstString,0,-1,lookupName,func_0057F260(lookupName));
     Found *found=func_00480878(handle,&first.s);
     if(found) {
-        Entry *e=found->entry;
-        result=GT4MC__FileGT4GameData__loadInstance(e->fn,func_00608F30,0,(char *)found+e->delta,func_00607408,found);
+        Entry *entry=found->entry;
+        instance=GT4MC__FileGT4GameData__loadInstance(entry->fn,func_00608F30,0,(char *)found+entry->delta,func_00607408,found);
     }
     destroy(&first.s);
-    if(result) *(int *)(result+0x74)=func_003D8C18(self);
-    for(int i=1;i<8;i++) {
-        func_0057DA20(second.buf,D_006A3420,i);
-        int flag=0;
-        switch(i) {
-        case 1: case 2: case 3: case 4: case 5: flag=i==self->pace+1; break;
-        case 6: flag=self->p50>0; break;
-        case 7: flag=self->p54>0; break;
+    if(instance) *(int *)(instance+0x74)=func_003D8C18(self);
+    for(int slot=1;slot<8;slot++) {
+        func_0057DA20(second.buf,D_006A3420,slot);
+        int slotOn=0;
+        switch(slot) {
+        case 1: case 2: case 3: case 4: case 5: slotOn=slot==self->pace+1; break;
+        case 6: slotOn=self->p50>0; break;
+        case 7: slotOn=self->p54>0; break;
         }
-        func_003DA518(self->handle,result,second.buf,flag);
+        func_003DA518(self->handle,instance,second.buf,slotOn);
     }
-    const char *text=DisplayRText__getRTextStr(((int *)0x621C78)[self->p58]);
-    if(!text) text=D_006A3498;
+    const char *labelText=DisplayRText__getRTextStr(((int *)0x621C78)[self->p58]);
+    if(!labelText) labelText=D_006A3498;
     first.v.type=1;
-    func_00476AE8(&first.v,text);
+    func_00476AE8(&first.v,labelText);
     construct(&second.s,D_006A34A0);
-    func_004809D8(result,&second.s,&first.v);
+    func_004809D8(instance,&second.s,&first.v);
     destroy(&second.s);
     func_004768C0(&first.v);
 }

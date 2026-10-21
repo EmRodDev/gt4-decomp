@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Builds a rotation + translation for a view (apparently a camera, inferred from the 180/pi conversions and the
+ * func_004A7844/79xx matrix helpers) from a 32-byte table entry selected by the object's kind (virtual call at
+ * vtable +0xB8). The entry holds position (+0..+8), three angles (+0xC..+0x14) and a flags word (+0x1C): bit 2
+ * clear, or byte +0x265 set, adds offsets from func_00384B28/BC8. When kind==6 and byte +0x26B or +0x269 is set the
+ * entry is mirrored (two angles negated, +180 degrees on one). Results are mirrored into the object at +0x28..+0x54,
+ * +0x278 and through set_value. Exact game meaning of the fields is purpose unknown. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -33,92 +39,87 @@ static inline void set_value(char *p, float v) {
     s64 mask = ~(0xFFLL << 48);
     o->flags = (o->flags & mask) | bits;
 }
-extern "C" void func_0037B580(char *arg0) {
-    f32 sp0;
-    f32 temp_f20;
-    f32 temp_f21;
-    f32 temp_f29;
-    f32 temp_f30;
-    f32 temp_f31;
-    f32 var_f23;
-    f32 var_f24;
-    f32 var_f25;
-    f32 var_f26;
-    f32 var_f27;
-    f32 var_f28;
-    s64 temp_a2;
-    void *temp_s2;
-    s32 var_v1;
-    s64 temp_a1_2;
-    char *temp_a1;
-    void *temp_s0;
-    char *temp_s0_2;
-    void *temp_v0;
-    void *temp_v1;
-    void *temp_v1_2;
-    void *temp_v1_3;
+extern "C" void func_0037B580(char *self) {
+    f32 posZ;
+    f32 negPoseY;
+    f32 negPoseX;
+    f32 targetDegC;
+    f32 targetDegB;
+    f32 targetDegA;
+    f32 angle10;
+    f32 angle0C;
+    f32 angle14;
+    f32 posX;
+    f32 posY;
+    f32 extraYawDeg;
+    void *poseSource;
+    s32 mirrorRequested;
+    char *owner;
+    void *tableHolder;
+    char *entry;
+    void *sourceObj;
 
-    var_f28 = 0x0.0p+0f;
-    temp_v0 = M2C_FIELD(arg0, void **, 0x18C);
-    temp_a1 = M2C_FIELD(temp_v0, char **, 0x2880);
-    temp_s2 = M2C_FIELD(temp_v0, void **, 0x18);
-    PEntry *pe = (PEntry *)(M2C_FIELD(temp_a1, char **, 8) + 0x50);
-    temp_s0 = pe->fn(temp_a1 + pe->delta);
-    temp_s0_2 = M2C_FIELD(temp_s0, char **, 0x44) + (kind(arg0) << 5);
-    var_f26 = M2C_FIELD(temp_s0_2, f32 *, 0);
-    var_f27 = M2C_FIELD(temp_s0_2, f32 *, 4);
-    sp0 = M2C_FIELD(temp_s0_2, f32 *, 8);
-    var_f24 = M2C_FIELD(temp_s0_2, f32 *, 0xC);
-    var_f23 = M2C_FIELD(temp_s0_2, f32 *, 0x10);
-    var_f25 = M2C_FIELD(temp_s0_2, f32 *, 0x14);
-    temp_f31 = func_00344888(temp_s2, 0) * 0x1.ca5dc00000000p+5f;
-    temp_f30 = -func_00344858(temp_s2, 0) * 0x1.ca5dc00000000p+5f;
-    temp_f29 = -func_003448B8(temp_s2, 0) * 0x1.ca5dc00000000p+5f;
-    if (!(M2C_FIELD(temp_s0_2, s32 *, 0x1C) & 4) || (M2C_FIELD(arg0, u8 *, 0x265) != 0)) {
-        func_004A7988(func_00384B28(arg0 + 0x1B8) * 0x1.6666660000000p-1f);
-        func_004A79B0(func_00384B28(arg0 + 0x1C4) * 0x1.6666660000000p-1f);
-        var_f26 += 0x1.0000000000000p+1f * func_00384BC8(arg0 + 0x1D0);
-        var_f27 += 0x1.0000000000000p+1f * func_00384BC8(arg0 + 0x1DC);
+    extraYawDeg = 0x0.0p+0f;
+    sourceObj = M2C_FIELD(self, void **, 0x18C);
+    owner = M2C_FIELD(sourceObj, char **, 0x2880);
+    poseSource = M2C_FIELD(sourceObj, void **, 0x18);
+    PEntry *holderEntry = (PEntry *)(M2C_FIELD(owner, char **, 8) + 0x50);
+    tableHolder = holderEntry->fn(owner + holderEntry->delta);
+    entry = M2C_FIELD(tableHolder, char **, 0x44) + (kind(self) << 5);
+    posX = M2C_FIELD(entry, f32 *, 0);
+    posY = M2C_FIELD(entry, f32 *, 4);
+    posZ = M2C_FIELD(entry, f32 *, 8);
+    angle0C = M2C_FIELD(entry, f32 *, 0xC);
+    angle10 = M2C_FIELD(entry, f32 *, 0x10);
+    angle14 = M2C_FIELD(entry, f32 *, 0x14);
+    targetDegA = func_00344888(poseSource, 0) * 0x1.ca5dc00000000p+5f;
+    targetDegB = -func_00344858(poseSource, 0) * 0x1.ca5dc00000000p+5f;
+    targetDegC = -func_003448B8(poseSource, 0) * 0x1.ca5dc00000000p+5f;
+    if (!(M2C_FIELD(entry, s32 *, 0x1C) & 4) || (M2C_FIELD(self, u8 *, 0x265) != 0)) {
+        func_004A7988(func_00384B28(self + 0x1B8) * 0x1.6666660000000p-1f);
+        func_004A79B0(func_00384B28(self + 0x1C4) * 0x1.6666660000000p-1f);
+        posX += 0x1.0000000000000p+1f * func_00384BC8(self + 0x1D0);
+        posY += 0x1.0000000000000p+1f * func_00384BC8(self + 0x1DC);
     }
-    var_v1 = 0;
-    if ((M2C_FIELD(arg0, u8 *, 0x26B) != 0) || (M2C_FIELD(arg0, u8 *, 0x269) != 0)) {
-        var_v1 = 1;
+    mirrorRequested = 0;
+    if ((M2C_FIELD(self, u8 *, 0x26B) != 0) || (M2C_FIELD(self, u8 *, 0x269) != 0)) {
+        mirrorRequested = 1;
     }
-    if (var_v1 != 0) {
-        if (kind(arg0) == 6) {
-            var_f24 = -var_f24;
-            var_f25 = -var_f25;
-            var_f23 += 0x1.6800000000000p+7f;
-            var_f28 = 0x1.6800000000000p+7f;
+    if (mirrorRequested != 0) {
+        if (kind(self) == 6) {
+            angle0C = -angle0C;
+            angle14 = -angle14;
+            angle10 += 0x1.6800000000000p+7f;
+            extraYawDeg = 0x1.6800000000000p+7f;
         }
     }
-    func_004A79D8(var_f25);
-    func_004A7988(var_f24);
-    func_004A79B0(var_f23);
-    func_004A7844(var_f26, var_f27, sp0);
-    func_004A79D8(temp_f31);
-    func_004A7988(temp_f30);
-    func_004A79B0(temp_f29);
-    temp_f21 = -func_00344798(temp_s2, 0);
-    temp_f20 = -func_003447F8(temp_s2, 0);
-    func_004A7844(temp_f21, temp_f20, -func_00344828(temp_s2, 0));
-    M2C_FIELD(arg0, f32 *, 0x4C) = var_f23;
-    M2C_FIELD(arg0, f32 *, 0x50) = var_f24;
-    M2C_FIELD(arg0, f32 *, 0x54) = var_f25;
-    M2C_FIELD(arg0, f32 *, 0x40) = var_f26;
-    M2C_FIELD(arg0, f32 *, 0x44) = var_f27;
-    M2C_FIELD(arg0, f32 *, 0x48) = sp0;
-    M2C_FIELD(arg0, f32 *, 0x34) = temp_f29;
-    M2C_FIELD(arg0, f32 *, 0x38) = temp_f30;
-    M2C_FIELD(arg0, f32 *, 0x3C) = temp_f31;
-    M2C_FIELD(arg0, f32 *, 0x28) = (f32) -func_00344798(temp_s2, 0);
-    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) -func_003447F8(temp_s2, 0);
-    M2C_FIELD(arg0, f32 *, 0x30) = (f32) -func_00344828(temp_s2, 0);
-    float angle = M2C_FIELD(temp_s0_2, f32 *, 0x10) + var_f28;
-    M2C_FIELD(arg0, f32 *, 8) = 0x1.9000000000000p+6f;
-    M2C_FIELD(arg0, f32 *, 0x278) = angle;
-    set_value(arg0, (2.0f * func_0057D008(1.0f / M2C_FIELD(temp_s0_2, f32 *, 0x18))) / 0x1.1df468p-6f);
-    if (M2C_FIELD(arg0, u8 *, 0x267) != 0) {
-        set_value(arg0, M2C_FIELD(arg0, f32 *, 0x188));
+    func_004A79D8(angle14);
+    func_004A7988(angle0C);
+    func_004A79B0(angle10);
+    func_004A7844(posX, posY, posZ);
+    func_004A79D8(targetDegA);
+    func_004A7988(targetDegB);
+    func_004A79B0(targetDegC);
+    negPoseX = -func_00344798(poseSource, 0);
+    negPoseY = -func_003447F8(poseSource, 0);
+    func_004A7844(negPoseX, negPoseY, -func_00344828(poseSource, 0));
+    M2C_FIELD(self, f32 *, 0x4C) = angle10;
+    M2C_FIELD(self, f32 *, 0x50) = angle0C;
+    M2C_FIELD(self, f32 *, 0x54) = angle14;
+    M2C_FIELD(self, f32 *, 0x40) = posX;
+    M2C_FIELD(self, f32 *, 0x44) = posY;
+    M2C_FIELD(self, f32 *, 0x48) = posZ;
+    M2C_FIELD(self, f32 *, 0x34) = targetDegC;
+    M2C_FIELD(self, f32 *, 0x38) = targetDegB;
+    M2C_FIELD(self, f32 *, 0x3C) = targetDegA;
+    M2C_FIELD(self, f32 *, 0x28) = (f32) -func_00344798(poseSource, 0);
+    M2C_FIELD(self, f32 *, 0x2C) = (f32) -func_003447F8(poseSource, 0);
+    M2C_FIELD(self, f32 *, 0x30) = (f32) -func_00344828(poseSource, 0);
+    float angle = M2C_FIELD(entry, f32 *, 0x10) + extraYawDeg;
+    M2C_FIELD(self, f32 *, 8) = 0x1.9000000000000p+6f;
+    M2C_FIELD(self, f32 *, 0x278) = angle;
+    set_value(self, (2.0f * func_0057D008(1.0f / M2C_FIELD(entry, f32 *, 0x18))) / 0x1.1df468p-6f);
+    if (M2C_FIELD(self, u8 *, 0x267) != 0) {
+        set_value(self, M2C_FIELD(self, f32 *, 0x188));
     }
 }

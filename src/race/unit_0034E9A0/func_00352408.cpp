@@ -1,3 +1,11 @@
+/* Per-wheel force step: for each wheel the car has (count from func_00359510, stride 0xEC from self+0x164) it works out
+ * a steering/slip angle (func_0036CC40 on the wheel angle at +0, optionally advanced by +0x1C depending on
+ * func_003F7C80), a force magnitude from sin/cos of that angle and the wheel velocities (+0x28, +0x2C) or from
+ * func_00352218, looks the force up in two curves (item+0x6C and item+0xBC, func_00359830) and limits the vector
+ * (x, z) to the radius at +0x58 using an inline sqrt.s. Outputs: +0x68 and +0x6C (two components), +0x5C (curve value)
+ * and one entry of the force array at self+0x534. The sum over wheels flagged positive in the info record is averaged
+ * and stored at dyn+0x46C when D_00623E52 is set. The wheel angle is restored at the end. Which physical forces these
+ * are (tyre lateral/longitudinal, inferred from the shape only) is purpose unknown. */
 typedef unsigned char u8;
 #define F(p,o) (*(float *)((char *)(p)+(o)))
 struct Info { u8 pad0; u8 count; u8 pad2[0x1a]; u8 mode[0x20]; signed char signs[8]; signed char kind[8]; };
@@ -14,82 +22,82 @@ extern u8 D_00623E52;
 inline bool positive(Info *info,int i) { if(i >= info->count) return false; return info->signs[(unsigned long)i]>0; }
 extern "C" void func_00352408(u8 *self) {
  int i=0;
- u8 *s=self+0x104;
- int count=0;
- float total=0;
- u8 *data=*(u8 **)(self+0x10);
- Info *info=func_00359510(data);
+ u8 *dyn=self+0x104;
+ int positiveCount=0;
+ float positiveTotal=0;
+ u8 *engineData=*(u8 **)(self+0x10);
+ Info *info=func_00359510(engineData);
  if(info->count) {
   do {
-   u8 *w=self+0x164+i*0xec;
-   float *forces=(float *)(self+0x534+i*4);
-   u8 *item=func_00360F80(data,i,w[0x89]);
-   F(w,0x34)=0;
-   if(F(w,0x60)==0) { F(w,0x68)=0; F(w,0x6c)=0; }
+   u8 *wheel=self+0x164+i*0xec;
+   float *forceSlot=(float *)(self+0x534+i*4);
+   u8 *wheelItem=func_00360F80(engineData,i,wheel[0x89]);
+   F(wheel,0x34)=0;
+   if(F(wheel,0x60)==0) { F(wheel,0x68)=0; F(wheel,0x6c)=0; }
    else {
-    float speed=F(w,0x28);
-    float angle=F(w,0x30);
-    float old=F(w,0);
-    if(func_003F7C80()==1) F(w,0)=F(w,0)+F(w,0x1c);
-    else if(func_003F7C80()==2) F(w,0)=F(w,0x1c);
-    float a=F(w,0);
-    if(speed<0) a+=0x1.921fb4p+1f;
-    a = func_0036CC40(a,angle);
-    F(w,0x34)=a;
-    float sign;
-    float force;
-    if(item[0x1d9]) {
-     float theta=F(w,0);
-     float v=func_0057D1F0(theta)*F(w,0x2c);
-     force=(v+func_0057D2B8(theta)*F(w,0x28))*F(data,0xfcc);
-     sign=1;
-     if(force<0) { force=-force; sign=-1; }
-     if(item[0x1da]==0) { if(F(w,0x20)<0) sign=-sign; }
+    float velA=F(wheel,0x28);
+    float slipAngleInput=F(wheel,0x30);
+    float savedAngle=F(wheel,0);
+    if(func_003F7C80()==1) F(wheel,0)=F(wheel,0)+F(wheel,0x1c);
+    else if(func_003F7C80()==2) F(wheel,0)=F(wheel,0x1c);
+    float slipAngle=F(wheel,0);
+    if(velA<0) slipAngle+=0x1.921fb4p+1f;
+    slipAngle = func_0036CC40(slipAngle,slipAngleInput);
+    F(wheel,0x34)=slipAngle;
+    float forceSign;
+    float forceMagnitude;
+    if(wheelItem[0x1d9]) {
+     float wheelAngle=F(wheel,0);
+     float lateralPart=func_0057D1F0(wheelAngle)*F(wheel,0x2c);
+     forceMagnitude=(lateralPart+func_0057D2B8(wheelAngle)*F(wheel,0x28))*F(engineData,0xfcc);
+     forceSign=1;
+     if(forceMagnitude<0) { forceMagnitude=-forceMagnitude; forceSign=-1; }
+     if(wheelItem[0x1da]==0) { if(F(wheel,0x20)<0) forceSign=-forceSign; }
     } else {
-     force=func_00352218(a,&sign);
-     if(item[0x1da]==1) { if(F(w,0x20)<0) sign=-sign; }
+     forceMagnitude=func_00352218(slipAngle,&forceSign);
+     if(wheelItem[0x1da]==1) { if(F(wheel,0x20)<0) forceSign=-forceSign; }
     }
-    if(positive(info,i)) { total+=force; count++; }
-    float f=func_00359830(item+0x6c,force);
-    F(w,0x5c)=f;
-    float extra=0;
-    float x=sign*f;
+    if(positive(info,i)) { positiveTotal+=forceMagnitude; positiveCount++; }
+    float curveValue=func_00359830(wheelItem+0x6c,forceMagnitude);
+    F(wheel,0x5c)=curveValue;
+    float extraForce=0;
+    float outX=forceSign*curveValue;
     if(info->kind[i]==2) {
-     float delta=F(s,0x56c)-F(s,0x578);
-     int mode=*(u8 *)(i+(unsigned)info+0x1c);
-     float offset=F(w,4);
-     if(mode==0) delta-=offset;
-     else if((mode^1)==0) delta+=offset;
-     else delta-=offset;
-     delta/=D_00620764*0x1.1df468p-6f;
-     if(delta>1) delta=1;
-     else if(delta< -1) delta=-1;
-     extra=delta*-D_00620768;
+     float angleDelta=F(dyn,0x56c)-F(dyn,0x578);
+     int deltaMode=*(u8 *)(i+(unsigned)info+0x1c);
+     float angleOffset=F(wheel,4);
+     if(deltaMode==0) angleDelta-=angleOffset;
+     else if((deltaMode^1)==0) angleDelta+=angleOffset;
+     else angleDelta-=angleOffset;
+     angleDelta/=D_00620764*0x1.1df468p-6f;
+     if(angleDelta>1) angleDelta=1;
+     else if(angleDelta< -1) angleDelta=-1;
+     extraForce=angleDelta*-D_00620768;
     }
-    if(item[0x1d9]==0) { x*=F(w,0x60); extra*=F(w,0x60); }
-    if(item[0x1da]==1) {
-     float limit=F(w,0x58);
-     if(x>limit) x=limit;
-     else if(x< -limit) x=-limit;
-     F(w,0x68)=x*F(w,0x4c);
-     *forces=extra*F(w,0x4c);
-     F(w,0x6c)=0;
+    if(wheelItem[0x1d9]==0) { outX*=F(wheel,0x60); extraForce*=F(wheel,0x60); }
+    if(wheelItem[0x1da]==1) {
+     float radiusLimit=F(wheel,0x58);
+     if(outX>radiusLimit) outX=radiusLimit;
+     else if(outX< -radiusLimit) outX=-radiusLimit;
+     F(wheel,0x68)=outX*F(wheel,0x4c);
+     *forceSlot=extraForce*F(wheel,0x4c);
+     F(wheel,0x6c)=0;
     } else {
-     float z=func_00359830(item+0xbc,force);
-     if(item[0x1d9]==0) z*=F(w,0x60);
-     float sum=x*x+z*z;
-     float norm;
-     __asm__("sqrt.s %0, %1":"=f"(norm):"f"(sum));
-     float limit=F(w,0x58);
-     if(limit<norm) { float ratio=limit/norm; x*=ratio; z*=ratio; }
-     F(w,0x68)=x*F(w,0x4c);
-     *forces=extra*F(w,0x4c);
-     F(w,0x6c)=z*F(w,0x4c);
+     float outZ=func_00359830(wheelItem+0xbc,forceMagnitude);
+     if(wheelItem[0x1d9]==0) outZ*=F(wheel,0x60);
+     float radiusSquared=outX*outX+outZ*outZ;
+     float radius;
+     __asm__("sqrt.s %0, %1":"=f"(radius):"f"(radiusSquared));
+     float radiusLimit=F(wheel,0x58);
+     if(radiusLimit<radius) { float scaleFactor=radiusLimit/radius; outX*=scaleFactor; outZ*=scaleFactor; }
+     F(wheel,0x68)=outX*F(wheel,0x4c);
+     *forceSlot=extraForce*F(wheel,0x4c);
+     F(wheel,0x6c)=outZ*F(wheel,0x4c);
     }
-    F(w,0)=old;
+    F(wheel,0)=savedAngle;
    }
    i++;
   } while((unsigned)i<info->count);
  }
- if(D_00623E52) { if(count>=2) total/=count; F(s,0x46c)=total; }
+ if(D_00623E52) { if(positiveCount>=2) positiveTotal/=positiveCount; F(dyn,0x46c)=positiveTotal; }
 }

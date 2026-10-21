@@ -1,4 +1,11 @@
 /* compiler: ee-gcc2.96-nogcse */
+/* Per-step limiter for the value at q+0x494, which func_003519B8 passes on to func_003554A0 as the 0..1 input of the
+ * engine (probably the throttle command; inferred from that use and from the 0.75/0.9 thresholds there). A limit in km/h
+ * is taken from a byte table in the owner's data (+0xF818: entries 0x42/0x43 by mode, 0x4B and 0x4C when func_0035FC68 /
+ * func_00354E68 say so, 10 when f5C3 is set, or the value func_003F7880 supplies), converted with 0x1.1c71c6p-2 = 1/3.6
+ * to m/s (inferred from the constant) and mapped by func_003F76E8 to the largest allowed value, which then lowers
+ * +0x494. The last block, only with bit 2 of f4E5 set, uses a quadratic fade of f58C to blend toward a second cap.
+ * The modes in f466 and the meaning of the table entries are purpose unknown. Compiled with the nogcse variant. */
 typedef int s32;
 typedef float f32;
 typedef unsigned char u8;
@@ -56,19 +63,19 @@ extern "C" void func_003F79A0(Obj *self)
     func_003F71E8(self);
     q->f5F9 = 0;
     q->f5F8 = 0;
-    int k = q->f466;
-    if (k < 3) {
-        if (k <= 0) {
-            if (k == 0) {
+    int mode = q->f466;
+    if (mode < 3) {
+        if (mode <= 0) {
+            if (mode == 0) {
                 if (q->f467 == 0) {
                     func_003F77B8(self);
                 } else if (q->f4BA != 0) {
                     func_003F77B8(self);
                 } else {
                     func_003F7828(self);
-                    char *s0 = self->f10 + 0x1098;
-                    q->f5F9 = func_003F9CD0(s0);
-                    q->f5F8 = func_003F9470(s0);
+                    char *gameData = self->f10 + 0x1098;
+                    q->f5F9 = func_003F9CD0(gameData);
+                    q->f5F8 = func_003F9470(gameData);
                 }
             }
         } else {
@@ -77,39 +84,39 @@ extern "C" void func_003F79A0(Obj *self)
             q->f5F8 = 0;
         }
     }
-    char *s2 = self->f4 + 0xF818;
-    s32 s0;
-    int k2 = q->f466;
-    if (k2 != 2) {
-        s0 = (u8)s2[0x42];
+    char *settings = self->f4 + 0xF818;
+    s32 limitKmh;
+    int mode2 = q->f466;
+    if (mode2 != 2) {
+        limitKmh = (u8)settings[0x42];
     } else {
-        s0 = (u8)s2[0x43];
+        limitKmh = (u8)settings[0x43];
     }
     if (func_0035FC68(q) != 0) {
-        s32 v = (u8)s2[0x4B];
-        if (s0 == 0 || v < s0) s0 = v;
+        s32 tableLimit = (u8)settings[0x4B];
+        if (limitKmh == 0 || tableLimit < limitKmh) limitKmh = tableLimit;
     }
     if (func_00354E68(self) != 0) {
-        s32 v = (u8)s2[0x4C];
-        if (s0 == 0 || v < s0) s0 = v;
+        s32 tableLimit = (u8)settings[0x4C];
+        if (limitKmh == 0 || tableLimit < limitKmh) limitKmh = tableLimit;
     }
-    if (q->f5C3 != 0) s0 = 10;
+    if (q->f5C3 != 0) limitKmh = 10;
     s32 sp[4];
     sp[0] = 0;
-    if ((func_003F7880(self, sp) ^ 1) == 0) s0 = sp[0];
-    if (s0 != 0) {
-        f32 f = func_003F76E8(self, (f32)s0 * 0x1.1c71c6p-2f);
-        if (f < q->f494) q->f494 = f;
+    if ((func_003F7880(self, sp) ^ 1) == 0) limitKmh = sp[0];
+    if (limitKmh != 0) {
+        f32 throttleCap = func_003F76E8(self, (f32)limitKmh * 0x1.1c71c6p-2f);
+        if (throttleCap < q->f494) q->f494 = throttleCap;
     }
     if (q->f4E5 & 2) {
         if (q->f466 == 0 || q->f466 == 3) {
             if (q->f467 == 0) {
-                f32 f3 = func_003F76E8(self, q->f53C);
-                f32 f0 = curve(q->f58C, 1.5f, 0x1.333332p-3f);
-                if (f0 > 1.0f) f0 = 1.0f;
-                else if (f0 < 0.0f) f0 = 0.0f;
-                f3 = f3 * f0;
-                if (q->f488 < f3) q->f494 = f3;
+                f32 blendedCap = func_003F76E8(self, q->f53C);
+                f32 fade = curve(q->f58C, 1.5f, 0x1.333332p-3f);
+                if (fade > 1.0f) fade = 1.0f;
+                else if (fade < 0.0f) fade = 0.0f;
+                blendedCap = blendedCap * fade;
+                if (q->f488 < blendedCap) q->f494 = blendedCap;
             }
         }
     }

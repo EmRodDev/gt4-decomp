@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Renders one screen tile (arg5 = tile index into the table at +0x48, 16 bytes per entry) of a larger image: a
+ * parameter var_f24 = tile/tileCount * f120 (zero when +0x124 is clear) is fed to the camera object's virtual calls
+ * (+0x10, +0x50, +0x58, +0x68; far distance is the +0x68 result times 1000), the tile's offset inside the full
+ * frame (arg3/arg4 over width/height, centred on 0.5) goes into func_00332550 as the sub-window shift, the resulting
+ * projection matrix is combined (func_00489FD8) and stored at +0xE36C of the renderer, the scene is drawn through
+ * func_0033E368 with the flag at +0xE334 cleared, then the stored matrix is reset to identity.
+ * Inferred from the argument flow: a tiled or supersampled capture. Game meaning of the leftover fields is purpose
+ * unknown. */
 typedef int s32; typedef short s16; typedef float f32;
 #define M2C_FIELD(p,t,o) (*(t)((char *)(p)+(o)))
 struct VP { s16 delta,index; char *(*fn)(void *,int); };
@@ -32,61 +40,57 @@ static inline void copy(f32 *d,f32 *s) {
 }
 extern "C" void func_00334730(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     struct { f32 sp10,sp14,sp18,sp1C,sp20,sp24,sp28,sp2C,sp30,sp34,sp38,sp3C,sp40,sp44,sp48,sp4C; char sp50[64]; } sp;
-    f32 temp_f16;
-    f32 temp_f1;
-    f32 temp_f20;
-    f32 temp_f21;
-    f32 temp_f22;
-    f32 temp_f23;
-    f32 var_f24;
-    char *temp_s0;
+    f32 sourceWidth;
+    f32 sourceHeight;
+    f32 tileV;
+    f32 tileU;
+    f32 value58;
+    f32 value50;
+    f32 tileParam;
+    char *camera;
     char *temp_a2;
-    char *temp_s1;
-    char *temp_v0;
-    char *temp_v0_2;
-    char *temp_v0_3;
-    char *temp_v0_4;
+    char *tileEntry;
     char *temp_v0_5;
     char *temp_v0_6;
     char *temp_v0_7;
     char *temp_v0_8;
     char *temp_v1;
 
-    var_f24 = 0x0.0p+0f;
+    tileParam = 0x0.0p+0f;
     if (M2C_FIELD(arg0, s32 *, 0x124) != 0) {
-        var_f24 = ((f32) arg5 / (f32) M2C_FIELD(arg0, s32 *, 0x118)) * M2C_FIELD(arg0, f32 *, 0x120);
+        tileParam = ((f32) arg5 / (f32) M2C_FIELD(arg0, s32 *, 0x118)) * M2C_FIELD(arg0, f32 *, 0x120);
     }
     temp_a2 = M2C_FIELD(arg0, char **, 0);
-    temp_s1 = M2C_FIELD(arg0, char **, 0x48) + (arg5 * 0x10);
+    tileEntry = M2C_FIELD(arg0, char **, 0x48) + (arg5 * 0x10);
     temp_v1 = M2C_FIELD(temp_a2, char **, 0x64);
-    temp_f21=M2C_FIELD(temp_s1,f32 *,8);
-    temp_f21 += (f32)arg3;
+    tileU=M2C_FIELD(tileEntry,f32 *,8);
+    tileU += (f32)arg3;
     f32 width=(f32)M2C_FIELD(arg0,s32 *,0xC);
-    temp_f20=M2C_FIELD(temp_s1,f32 *,0xC);
-    temp_f20 += (f32)arg4;
+    tileV=M2C_FIELD(tileEntry,f32 *,0xC);
+    tileV += (f32)arg4;
     f32 height=(f32)M2C_FIELD(arg0,s32 *,0x10);
-    temp_f20 /= height;
-    temp_f20 -= 0.5f;
-    temp_f20 = -temp_f20;
-    temp_f21 /= width;
-    temp_f21 -= 0.5f;
-    VP *e = (VP *)(temp_v1 + 0xD0);
-    temp_s0 = e->fn(temp_a2 + e->delta, 0);
+    tileV /= height;
+    tileV -= 0.5f;
+    tileV = -tileV;
+    tileU /= width;
+    tileU -= 0.5f;
+    VP *cameraEntry = (VP *)(temp_v1 + 0xD0);
+    camera = cameraEntry->fn(temp_a2 + cameraEntry->delta, 0);
     func_004A7454();
-    VF1 *e10=(VF1 *)(M2C_FIELD(temp_s0,char **,0)+0x10);
-    e10->fn(temp_s0+e10->delta,var_f24);
+    VF1 *e10=(VF1 *)(M2C_FIELD(camera,char **,0)+0x10);
+    e10->fn(camera+e10->delta,tileParam);
     f32 *matrix=&sp.sp10;
     func_004A7550(matrix);
-    VF1 *e50=(VF1 *)(M2C_FIELD(temp_s0,char **,0)+0x50);
-    temp_f23=e50->fn(temp_s0+e50->delta,var_f24);
-    VF0 *e58=(VF0 *)(M2C_FIELD(temp_s0,char **,0)+0x58);
-    temp_f22=e58->fn(temp_s0+e58->delta);
-    VF0 *e68=(VF0 *)(M2C_FIELD(temp_s0,char **,0)+0x68);
-    f32 far=e68->fn(temp_s0+e68->delta)*1000.0f;
-    temp_f16 = (f32) M2C_FIELD(arg0, s32 *, 4);
-    temp_f1 = (f32) M2C_FIELD(arg0, s32 *, 8);
-    temp_f20 /= temp_f1;
-    func_00332550(temp_f23, temp_f22, far, M2C_FIELD(arg0, f32 *, 0x14), temp_f16 / temp_f1, M2C_FIELD(temp_s1, f32 *, 0), M2C_FIELD(temp_s1, f32 *, 4), temp_f21 / temp_f16, temp_f20);
+    VF1 *e50=(VF1 *)(M2C_FIELD(camera,char **,0)+0x50);
+    value50=e50->fn(camera+e50->delta,tileParam);
+    VF0 *e58=(VF0 *)(M2C_FIELD(camera,char **,0)+0x58);
+    value58=e58->fn(camera+e58->delta);
+    VF0 *e68=(VF0 *)(M2C_FIELD(camera,char **,0)+0x68);
+    f32 far=e68->fn(camera+e68->delta)*1000.0f;
+    sourceWidth = (f32) M2C_FIELD(arg0, s32 *, 4);
+    sourceHeight = (f32) M2C_FIELD(arg0, s32 *, 8);
+    tileV /= sourceHeight;
+    func_00332550(value50, value58, far, M2C_FIELD(arg0, f32 *, 0x14), sourceWidth / sourceHeight, M2C_FIELD(tileEntry, f32 *, 0), M2C_FIELD(tileEntry, f32 *, 4), tileU / sourceWidth, tileV);
     func_00489FD8(&sp.sp50, matrix);
     func_004A7774(&sp.sp50);
     func_004A7550(matrix);
@@ -95,7 +99,7 @@ extern "C" void func_00334730(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4
     copy((f32 *)temp_v0_6, matrix);
     func_00343170(M2C_FIELD(arg0, char **, 0), 0);
     M2C_FIELD(M2C_FIELD(arg0, char **, 0), s32 *, 0xE334) = 0;
-    func_0033E368(M2C_FIELD(arg0, char **, 0), arg1, arg2, 0, var_f24);
+    func_0033E368(M2C_FIELD(arg0, char **, 0), arg1, arg2, 0, tileParam);
     M2C_FIELD(M2C_FIELD(arg0, char **, 0), s32 *, 0xE334) = 1;
     func_00343170(M2C_FIELD(arg0, char **, 0), 1);
     func_00334C98(arg0, arg1);
