@@ -1,3 +1,5 @@
+/* Script setter set_stand: reads the integer argument (vtable slot 11, +0x58) and stores whether it is non-zero at +0xF8 of the object behind the
+ * handle (func_00192A58 fills it, func_00192A00 with 2 releases it). */
 #include "types.h"
 
 struct VEntry_58 { s16 delta; s16 index; s32 (*fn)(void *); };
@@ -7,14 +9,14 @@ static inline s32 vcall_58(char *o) {
     return e->fn(o + e->delta);
 }
 
-extern "C" void func_00192A58(void *arg0, void *arg1);
-extern "C" void func_00192A00(void *arg0, s32 arg1);
+extern "C" void func_00192A58(void *arg0, void *selfRef);
+extern "C" void func_00192A00(void *arg0, s32 selfRef);
 
-extern "C" void MPhotoMapWindow__set_stand(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 v_s1;
-    func_00192A58(buf0, arg1);
-    v_s1 = buf0[0];
-    *(s32 *)((char *)v_s1 + 0xF8) = vcall_58((char *)(*(s32 *)(char *)arg3)) != 0;
-    func_00192A00(buf0, 2);
+extern "C" void MPhotoMapWindow__set_stand(s32 *arg0, void *selfRef, s32 arg2, char **args) {
+    s32 handle[4];
+    s32 window;
+    func_00192A58(handle, selfRef);
+    window = handle[0];
+    *(s32 *)((char *)window + 0xF8) = vcall_58((char *)(*(s32 *)(char *)args)) != 0;
+    func_00192A00(handle, 2);
 }

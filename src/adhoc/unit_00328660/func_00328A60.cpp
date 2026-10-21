@@ -1,3 +1,4 @@
+/* Returns the product of the integer fields at +0x40 and +0x4C (two dimensions multiplied; meaning unknown). */
 #include "types.h"
 
 struct Obj {
@@ -7,6 +8,6 @@ struct Obj {
     s32 unk4C;
 };
 
-extern "C" s32 func_00328A60(Obj *arg0) {
-    return arg0->unk40 * arg0->unk4C;
+extern "C" s32 func_00328A60(Obj *self) {
+    return self->unk40 * self->unk4C;
 }

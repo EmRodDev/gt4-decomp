@@ -1,7 +1,9 @@
+/* Returns, through arg0, a counted copy of the string that func_0021B788(arg1 + 0xA0) points at: it copies the character pointer and bumps the reference count of the string rep
+ * that sits 0x10 bytes before it (or clones it through func_005C2560 when the rep is marked unshareable). This is the inlined basic_string copy constructor. */
 #include "types.h"
 #define NULL 0
 
-extern "C" s32 *func_0021B788(s32 arg0);
+extern "C" s32 *func_0021B788(s32 result);
 extern "C" char *func_005C2560(void *);
 
 struct func_0013A370_temp_a1 {
@@ -10,19 +12,19 @@ struct func_0013A370_temp_a1 {
     s32 unkC;
 };
 
-extern "C" s32 *func_0013A370(s32 *arg0, s32 arg1) {
-    s8 *temp_v0;
-    s8 *var_a2;
-    struct func_0013A370_temp_a1 *temp_a1;
+extern "C" s32 *func_0013A370(s32 *result, s32 owner) {
+    s8 *chars;
+    s8 *copy;
+    struct func_0013A370_temp_a1 *rep;
 
-    temp_v0 = (s8 *) *func_0021B788(arg1 + 0xA0);
-    temp_a1 = (struct func_0013A370_temp_a1 *) (temp_v0 - 0x10);
-    var_a2 = temp_v0;
-    if (temp_a1->unkC != 0) {
-        var_a2 = (s8 *) func_005C2560(temp_a1);
+    chars = (s8 *) *func_0021B788(owner + 0xA0);
+    rep = (struct func_0013A370_temp_a1 *) (chars - 0x10);
+    copy = chars;
+    if (rep->unkC != 0) {
+        copy = (s8 *) func_005C2560(rep);
     } else {
-        temp_a1->unk8 = (s32) (temp_a1->unk8 + 1);
+        rep->unk8 = (s32) (rep->unk8 + 1);
     }
-    *arg0 = (s32) var_a2;
-    return arg0;
+    *result = (s32) copy;
+    return result;
 }

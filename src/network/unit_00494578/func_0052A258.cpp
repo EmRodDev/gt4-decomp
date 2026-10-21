@@ -1,3 +1,4 @@
+/* Setter with error code: returns 2 when the object is missing, otherwise stores the value at +0x70 and returns 0. Same pattern as func_00541150. */
 #include "types.h"
 
 struct Obj {
@@ -5,13 +6,13 @@ struct Obj {
     s32 unk70;
 };
 
-extern "C" s32 func_0052A258(Obj *arg0, s32 arg1) {
-    s32 var_v0;
+extern "C" s32 func_0052A258(Obj *self, s32 value) {
+    s32 status;
 
-    var_v0 = 2;
-    if (arg0 != 0) {
-        arg0->unk70 = arg1;
-        var_v0 = 0;
+    status = 2;
+    if (self != 0) {
+        self->unk70 = value;
+        status = 0;
     }
-    return var_v0;
+    return status;
 }

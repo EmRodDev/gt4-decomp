@@ -1,3 +1,4 @@
+/* Stores the two given integers into the consecutive fields at +0x8F0 and +0x8F4 (purpose unknown). */
 #include "types.h"
 
 struct Obj {
@@ -6,7 +7,7 @@ struct Obj {
     s32 unk8F4;
 };
 
-extern "C" void func_001C7688(Obj *arg0, s32 arg1, s32 arg2) {
-    arg0->unk8F0 = arg1;
-    arg0->unk8F4 = arg2;
+extern "C" void func_001C7688(Obj *self, s32 first, s32 second) {
+    self->unk8F0 = first;
+    self->unk8F4 = second;
 }

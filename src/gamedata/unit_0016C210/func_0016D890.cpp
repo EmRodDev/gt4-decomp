@@ -1,3 +1,6 @@
+/* Checked downcast of a reference-counted handle to mGarage (inferred from the __tf type-info arguments: this is the shape of GCC 2.96's
+ * __dynamic_cast call). On success the new reference is added (func_003285A8) and the previous one released (func_003285F8,
+ * inferred from the increment-before-replace order) and 1 is returned; otherwise the destination is left untouched and 0 is returned. */
 struct Unk64 {
     short unk0;
     short pad2;
@@ -16,29 +19,29 @@ extern void *GT4MC__FileGT4GameData__loadInstance(int, void *, int, void *, void
 extern void func_003285A8(void *);
 extern void func_003285F8(void *);
 
-int func_0016D890(void **arg0, NodeB **arg1)
+int func_0016D890(void **dest, NodeB **source)
 {
-    NodeB *temp_v1;
-    void *var_s0;
-    int var_v0;
+    NodeB *node;
+    void *casted;
+    int succeeded;
 
-    var_s0 = 0;
-    temp_v1 = *arg1;
-    if (temp_v1 != 0) {
-        Unk64 *u = temp_v1->unk64;
-        var_s0 = GT4MC__FileGT4GameData__loadInstance(u->unk4, mGarage__tf, 0,
-                                (char *)temp_v1 + u->unk0,
-                                RefCounter__tf, temp_v1);
+    casted = 0;
+    node = *source;
+    if (node != 0) {
+        Unk64 *u = node->unk64;
+        casted = GT4MC__FileGT4GameData__loadInstance(u->unk4, mGarage__tf, 0,
+                                (char *)node + u->unk0,
+                                RefCounter__tf, node);
     }
-    if (var_s0 != 0) {
-        func_003285A8(var_s0);
-        if (*arg0 != 0) {
-            func_003285F8(*arg0);
+    if (casted != 0) {
+        func_003285A8(casted);
+        if (*dest != 0) {
+            func_003285F8(*dest);
         }
-        *arg0 = var_s0;
-        var_v0 = 1;
+        *dest = casted;
+        succeeded = 1;
     } else {
-        var_v0 = 0;
+        succeeded = 0;
     }
-    return var_v0;
+    return succeeded;
 }

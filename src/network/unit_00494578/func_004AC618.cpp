@@ -1,3 +1,4 @@
+/* If the field at +0x48 is set, passes it to func_004AC7E0 (release-shaped guard, inferred from the null check; purpose unknown). */
 #include "types.h"
 
 struct Obj {
@@ -5,11 +6,11 @@ struct Obj {
     s32 unk48;
 };
 
-extern "C" void func_004AC7E0(s32 arg0);
+extern "C" void func_004AC7E0(s32 self);
 
-extern "C" void func_004AC618(Obj *arg0) {
-    s32 temp_v0 = arg0->unk48;
-    if (temp_v0 != 0) {
-        func_004AC7E0(temp_v0);
+extern "C" void func_004AC618(Obj *self) {
+    s32 member = self->unk48;
+    if (member != 0) {
+        func_004AC7E0(member);
     }
 }

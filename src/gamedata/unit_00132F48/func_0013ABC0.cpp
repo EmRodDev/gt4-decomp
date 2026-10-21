@@ -1,3 +1,4 @@
+/* If the member at +0x2A4 exists, calls its virtual method in vtable slot 51 with the given integer (the function pointer is copied to a local first, as the original does). Not identified further. */
 #include "types.h"
 
 struct VEntry0013ABF8 {
@@ -16,12 +17,12 @@ struct Obj0013ABF8 {
     Sub0013ABF8 *unk2A4;
 };
 
-extern "C" void func_0013ABC0(struct Obj0013ABF8 *arg0, int arg1) {
-    Sub0013ABF8 *a2 = arg0->unk2A4;
+extern "C" void func_0013ABC0(struct Obj0013ABF8 *self, int value) {
+    Sub0013ABF8 *member = self->unk2A4;
 
-    if (a2 != 0) {
-        VEntry0013ABF8 *e = &a2->vtbl[51];
-        int (*fn)(void *, int) = e->fn;
-        fn((char *)a2 + e->delta, arg1);
+    if (member != 0) {
+        VEntry0013ABF8 *entry = &member->vtbl[51];
+        int (*fn)(void *, int) = entry->fn;
+        fn((char *)member + entry->delta, value);
     }
 }

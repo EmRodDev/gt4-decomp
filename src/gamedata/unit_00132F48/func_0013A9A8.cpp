@@ -1,3 +1,4 @@
+/* If the member at +0x2A4 exists, calls its virtual method in vtable slot 54 with the given integer. The class of the member and the method are not identified. */
 #include "types.h"
 
 struct VEntry0013A9A8 {
@@ -16,11 +17,11 @@ struct Obj0013A9A8 {
     Sub0013A9A8 *unk2A4;
 };
 
-extern "C" void func_0013A9A8(struct Obj0013A9A8 *arg0, int arg1) {
-    Sub0013A9A8 *a2 = arg0->unk2A4;
+extern "C" void func_0013A9A8(struct Obj0013A9A8 *self, int value) {
+    Sub0013A9A8 *member = self->unk2A4;
 
-    if (a2 != 0) {
-        VEntry0013A9A8 *e = &a2->vtbl[54];
-        e->fn((char *)a2 + e->delta, arg1);
+    if (member != 0) {
+        VEntry0013A9A8 *entry = &member->vtbl[54];
+        entry->fn((char *)member + entry->delta, value);
     }
 }

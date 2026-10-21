@@ -1,3 +1,4 @@
+/* Stores the integer at +0x2B4 (purpose unknown) and, if the member at +0x2A4 exists, forwards the same integer to its virtual method in vtable slot 60. */
 #include "types.h"
 
 struct VEntry0013ACC8 {
@@ -18,13 +19,13 @@ struct Obj0013ACC8 {
     int unk2B4;
 };
 
-extern "C" void func_0013ACC8(struct Obj0013ACC8 *arg0, int arg1) {
-    arg0->unk2B4 = arg1;
+extern "C" void func_0013ACC8(struct Obj0013ACC8 *self, int value) {
+    self->unk2B4 = value;
 
-    Sub0013ACC8 *a2 = arg0->unk2A4;
+    Sub0013ACC8 *member = self->unk2A4;
 
-    if (a2 != 0) {
-        VEntry0013ACC8 *e = &a2->vtbl[60];
-        e->fn((char *)a2 + e->delta, arg1);
+    if (member != 0) {
+        VEntry0013ACC8 *entry = &member->vtbl[60];
+        entry->fn((char *)member + entry->delta, value);
     }
 }

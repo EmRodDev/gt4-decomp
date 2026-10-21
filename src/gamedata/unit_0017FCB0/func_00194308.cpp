@@ -1,3 +1,6 @@
+/* Looks up an entry of the table D_00692380 (scale, width, height) by the index at +0x39DC4 of the global D_00622F4C, inverts the scale when the
+ * owner's flag at +0xF8 is set, applies it as x scale (second argument 1.0) through the face's target at vtable +0x4B0 / +0xC8, and then calls func_003C6FC0 with the
+ * entry's width and height and the scale. The table meaning is unknown. */
 #include "types.h"
 struct VEntry{short delta,index;void*fn;};
 struct Scale{float scale;s32 width,height;};

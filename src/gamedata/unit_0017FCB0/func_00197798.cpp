@@ -1,3 +1,4 @@
+/* Same as func_00192E20 (current RacePhotoMode instance or 0) but through the holder returned by func_00197788. Two copies exist in the original, one per translation unit. */
 struct Unk64 {
     short unk0;
     short pad2;
@@ -18,24 +19,24 @@ extern int GT4MC__FileGT4GameData__loadInstance(int, void *, int, void *, void *
 
 int func_00197798(void)
 {
-    Node **temp_v0;
-    Node *temp_v1;
-    int var_v1;
-    int var_v0;
+    Node **holder;
+    Node *node;
+    int result;
+    int casted;
 
-    temp_v0 = func_00197788();
-    var_v1 = 0;
-    if (temp_v0 != 0) {
-        temp_v1 = *temp_v0;
-        if (temp_v1 != 0) {
-            Unk64 *u = temp_v1->unk64;
-            var_v0 = GT4MC__FileGT4GameData__loadInstance(u->unk4, RacePhotoMode__tf, 0,
-                                    (char *)temp_v1 + u->unk0,
-                                    RacePS2Base__tf, temp_v1);
+    holder = func_00197788();
+    result = 0;
+    if (holder != 0) {
+        node = *holder;
+        if (node != 0) {
+            Unk64 *u = node->unk64;
+            casted = GT4MC__FileGT4GameData__loadInstance(u->unk4, RacePhotoMode__tf, 0,
+                                    (char *)node + u->unk0,
+                                    RacePS2Base__tf, node);
         } else {
-            var_v0 = 0;
+            casted = 0;
         }
-        var_v1 = var_v0;
+        result = casted;
     }
-    return var_v1;
+    return result;
 }

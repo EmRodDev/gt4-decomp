@@ -1,3 +1,5 @@
+/* Computes (index - 2) << shift + base, with base at +0x60 and shift at +0x70: the address or offset of an element in a table whose first two indexes are reserved
+ * (inferred from the - 2). */
 #include "types.h"
 
 struct Obj {
@@ -7,8 +9,8 @@ struct Obj {
     s32 unk70;
 };
 
-extern "C" s32 func_004CB8E8(Obj *arg0, s32 arg1) {
-    s32 shift = arg0->unk70;
-    arg1 = arg1 - 2;
-    return (arg1 << shift) + arg0->unk60;
+extern "C" s32 func_004CB8E8(Obj *self, s32 index) {
+    s32 shift = self->unk70;
+    index = index - 2;
+    return (index << shift) + self->unk60;
 }

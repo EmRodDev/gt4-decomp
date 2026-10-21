@@ -1,3 +1,4 @@
+/* Returns the field at +4 of element arg1 in the array of 0x70-byte elements pointed to by the field at +0x44. No bounds check. */
 #include "types.h"
 
 struct Elem {
@@ -11,6 +12,6 @@ struct Obj {
     Elem *unk44;
 };
 
-extern "C" s32 func_004EE678(struct Obj *arg0, s32 arg1) {
-    return arg0->unk44[arg1].unk4;
+extern "C" s32 func_004EE678(struct Obj *self, s32 index) {
+    return self->unk44[index].unk4;
 }

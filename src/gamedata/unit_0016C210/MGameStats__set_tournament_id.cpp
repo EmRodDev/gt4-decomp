@@ -1,3 +1,5 @@
+/* Script setter set_tournament_id: gets the MGameStats record of the running game (func_0016BF98 fills a 16-byte handle, released with mode 2 at the
+ * end), reads the script argument through vtable slot 11 (+0x58, an integer getter, inferred from its return type) and stores it as a byte (s8) at record+0x31. */
 #include "types.h"
 
 struct VEntry_16C {
@@ -14,18 +16,18 @@ struct Obj_16C {
 extern "C" void func_0016BF40(void *arg0, s32 arg1);
 extern "C" void func_0016BF98(void *arg0);
 
-extern "C" void MGameStats__set_tournament_id(void *, void *, s32, void **arg3) {
-    s32 buf[4];
-    s32 s1;
-    Obj_16C *obj;
-    VEntry_16C *e;
-    s8 r;
+extern "C" void MGameStats__set_tournament_id(void *, void *, s32, void **args) {
+    s32 handle[4];
+    s32 stats;
+    Obj_16C *value;
+    VEntry_16C *entry;
+    s8 number;
 
-    func_0016BF98((void *)buf);
-    s1 = buf[0];
-    obj = (Obj_16C *)*arg3;
-    e = &obj->vtbl[11];
-    r = (s8)e->fn((char *)obj + e->delta);
-    *(s8 *)((char *)s1 + 0x31) = r;
-    func_0016BF40((void *)buf, 2);
+    func_0016BF98((void *)handle);
+    stats = handle[0];
+    value = (Obj_16C *)*args;
+    entry = &value->vtbl[11];
+    number = (s8)entry->fn((char *)value + entry->delta);
+    *(s8 *)((char *)stats + 0x31) = number;
+    func_0016BF40((void *)handle, 2);
 }
