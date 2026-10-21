@@ -1,3 +1,4 @@
+/* Reset helper: clears +8, copies +0 to +0x1C and +0x20, and copies +4 to +0xC. Field purposes unknown. */
 #include "types.h"
 
 struct Obj {
@@ -10,12 +11,12 @@ struct Obj {
     s32 unk20;
 };
 
-extern "C" void func_006111D0(Obj *arg0) {
-    s32 temp_v1;
+extern "C" void func_006111D0(Obj *self) {
+    s32 start;
 
-    temp_v1 = arg0->unk0;
-    arg0->unk8 = 0;
-    arg0->unk1C = temp_v1;
-    arg0->unkC = arg0->unk4;
-    arg0->unk20 = temp_v1;
+    start = self->unk0;
+    self->unk8 = 0;
+    self->unk1C = start;
+    self->unkC = self->unk4;
+    self->unk20 = start;
 }

@@ -1,3 +1,5 @@
+/* Constructor shape: clears +0, +4 and +8 and stores the address of the static table D_00689650 at +0x28C
+ * (the 0x280 bytes between are not touched here). */
 #include "types.h"
 
 struct S_0060EAA0 {
@@ -10,9 +12,9 @@ struct S_0060EAA0 {
 
 extern "C" char D_00689650[];
 
-extern "C" void func_0060EAA0(struct S_0060EAA0 *arg0) {
-    arg0->unk0 = 0;
-    arg0->unk4 = 0;
-    arg0->unk28C = D_00689650;
-    arg0->unk8 = 0;
+extern "C" void func_0060EAA0(struct S_0060EAA0 *self) {
+    self->unk0 = 0;
+    self->unk4 = 0;
+    self->unk28C = D_00689650;
+    self->unk8 = 0;
 }

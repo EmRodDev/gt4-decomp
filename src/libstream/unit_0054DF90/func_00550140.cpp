@@ -1,3 +1,5 @@
+/* Adds delta to the counter at +0x34 between a func_005ADCE0 call and a func_005ADCC0 call on the handle at +0x38
+ * (inferred: lock / unlock bracket around the update). */
 extern "C" {
 #include "types.h"
 #define NULL 0
@@ -12,10 +14,10 @@ struct func_00550140_arg0 {
     s32 unk38;
 };
 
-void func_00550140(char *arg0, s32 arg1) {
-    func_005ADCE0(((struct func_00550140_arg0 *)arg0)->unk38);
-    ((struct func_00550140_arg0 *)arg0)->unk34 = (s32) (((struct func_00550140_arg0 *)arg0)->unk34 + arg1);
-    func_005ADCC0(((struct func_00550140_arg0 *)arg0)->unk38);
+void func_00550140(char *self, s32 delta) {
+    func_005ADCE0(((struct func_00550140_arg0 *)self)->unk38);
+    ((struct func_00550140_arg0 *)self)->unk34 = (s32) (((struct func_00550140_arg0 *)self)->unk34 + delta);
+    func_005ADCC0(((struct func_00550140_arg0 *)self)->unk38);
 }
 
 }

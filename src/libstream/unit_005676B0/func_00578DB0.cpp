@@ -1,3 +1,5 @@
+/* Deleting destructor shape: stores the class's vtable pointer (D_00689E80) at +0x18, runs the base-class destructor func_0057B310, and frees the
+ * object with func_005C1628 only when bit 0 of the flags argument is set (inferred from the generic ee-gcc 2.96 destructor pattern). */
 #include "types.h"
 
 struct Obj {
@@ -11,12 +13,12 @@ extern "C" void func_005760A8(void *, s32);
 extern "C" void func_0057B310(void *, s32);
 extern "C" void func_005C1628(void *);
 
-extern "C" void func_00578DB0(struct Obj *arg0, s32 arg1)
+extern "C" void func_00578DB0(struct Obj *self, s32 deleteFlag)
 {
-    arg0->unk18 = &D_00689E80;
-    func_005760A8(&arg0->unk1C, 2);
-    func_0057B310(arg0, 0);
-    if (arg1 & 1) {
-        return func_005C1628(arg0);
+    self->unk18 = &D_00689E80;
+    func_005760A8(&self->unk1C, 2);
+    func_0057B310(self, 0);
+    if (deleteFlag & 1) {
+        return func_005C1628(self);
     }
 }

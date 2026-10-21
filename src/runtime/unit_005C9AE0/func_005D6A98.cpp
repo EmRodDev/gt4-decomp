@@ -1,3 +1,6 @@
+/* Tree lower-bound search (std::map style red-black tree, inferred from the child links at +8 / +0xC and the node payload at +0x10):
+ * walks down from the root comparing the key stored in each node with the search key through func_005C2A50; nodes whose key is
+ * not smaller are remembered and the walk goes left, otherwise right. Writes the last remembered node (or the header node) to *outIter. */
 struct Node {
     char pad8[8];
     int unk8;
@@ -22,24 +25,24 @@ struct func_005D6A98_s0 {
     struct Node *unkC;
 };
 
-void **func_005D6A98(void **arg0, struct Mid *arg1, int arg2)
+void **func_005D6A98(void **outIter, struct Mid *tree, int key)
 {
-    struct Node *s1 = (struct Node *)arg1->unk4;
-    struct Node *s0 = ((struct func_005D6A98_s1 *)s1)->unk4;
+    struct Node *result = (struct Node *)tree->unk4;
+    struct Node *cursor = ((struct func_005D6A98_s1 *)result)->unk4;
 
-    if (s0 != 0) {
-        void *a0 = (char *)s0 + 0x10;
+    if (cursor != 0) {
+        void *nodeKey = (char *)cursor + 0x10;
         do {
-            if (func_005C2A50(a0, arg2, 0, -1) >= 0) {
-                s1 = s0;
-                s0 = ((struct func_005D6A98_s1 *)s1)->unk8;
+            if (func_005C2A50(nodeKey, key, 0, -1) >= 0) {
+                result = cursor;
+                cursor = ((struct func_005D6A98_s1 *)result)->unk8;
             } else {
-                s0 = ((struct func_005D6A98_s0 *)s0)->unkC;
+                cursor = ((struct func_005D6A98_s0 *)cursor)->unkC;
             }
-            a0 = (char *)s0 + 0x10;
-        } while (s0 != 0);
+            nodeKey = (char *)cursor + 0x10;
+        } while (cursor != 0);
     }
 
-    *arg0 = (void *)s1;
-    return arg0;
+    *outIter = (void *)result;
+    return outIter;
 }

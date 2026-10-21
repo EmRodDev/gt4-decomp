@@ -1,3 +1,5 @@
+/* Copies a 4x4 float matrix (16 floats) from src into the one embedded at +0xE36C of self. The element order follows the
+ * compiler's scheduling, not a transposition. */
 #include "types.h"
 
 struct func_005F3C98_arg0 {
@@ -37,22 +39,22 @@ struct func_005F3C98_arg1 {
     f32 unk3C;
 };
 
-void func_005F3C98(struct func_005F3C98_arg0 *arg0, struct func_005F3C98_arg1 *arg1) {
-    struct func_005F3C98_arg0 *d = (struct func_005F3C98_arg0 *)((char *)arg0 + 0xE36C);
-    d->unk0 = arg1->unk0;
-    d->unk10 = arg1->unk10;
-    d->unk20 = arg1->unk20;
-    d->unk30 = arg1->unk30;
-    d->unk4 = arg1->unk4;
-    d->unk14 = arg1->unk14;
-    d->unk24 = arg1->unk24;
-    d->unk34 = arg1->unk34;
-    d->unk8 = arg1->unk8;
-    d->unk18 = arg1->unk18;
-    d->unk28 = arg1->unk28;
-    d->unk38 = arg1->unk38;
-    d->unkC = arg1->unkC;
-    d->unk1C = arg1->unk1C;
-    d->unk2C = arg1->unk2C;
-    d->unk3C = arg1->unk3C;
+void func_005F3C98(struct func_005F3C98_arg0 *self, struct func_005F3C98_arg1 *src) {
+    struct func_005F3C98_arg0 *dst = (struct func_005F3C98_arg0 *)((char *)self + 0xE36C);
+    dst->unk0 = src->unk0;
+    dst->unk10 = src->unk10;
+    dst->unk20 = src->unk20;
+    dst->unk30 = src->unk30;
+    dst->unk4 = src->unk4;
+    dst->unk14 = src->unk14;
+    dst->unk24 = src->unk24;
+    dst->unk34 = src->unk34;
+    dst->unk8 = src->unk8;
+    dst->unk18 = src->unk18;
+    dst->unk28 = src->unk28;
+    dst->unk38 = src->unk38;
+    dst->unkC = src->unkC;
+    dst->unk1C = src->unk1C;
+    dst->unk2C = src->unk2C;
+    dst->unk3C = src->unk3C;
 }

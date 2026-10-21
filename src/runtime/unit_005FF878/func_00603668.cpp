@@ -1,3 +1,4 @@
+/* Returns the 16-bit field at +0x2C multiplied by 100. */
 #include "types.h"
 
 struct Obj00603668 {
@@ -5,6 +6,6 @@ struct Obj00603668 {
     s16 unk2C;
 };
 
-extern "C" s32 func_00603668(struct Obj00603668 *arg0) {
-    return arg0->unk2C * 0x64;
+extern "C" s32 func_00603668(struct Obj00603668 *self) {
+    return self->unk2C * 0x64;
 }

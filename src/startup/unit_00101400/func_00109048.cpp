@@ -1,3 +1,5 @@
+/* Sets up a timing record: +0x70 = value, +0x74 = 0, +0x78 / +0x7C / +0x84 / +0x88 = 15, and +0x80 = duration * 30
+ * (the factor 30 suggests a frame count at 30 per second, inferred). Field purposes unknown. */
 #include "types.h"
 
 struct Obj00109048 {
@@ -11,12 +13,12 @@ struct Obj00109048 {
     s32 unk88;
 };
 
-extern "C" void func_00109048(struct Obj00109048 *arg0, s32 arg1, f32 fparg0) {
-    arg0->unk70 = arg1;
-    arg0->unk74 = 0;
-    arg0->unk7C = 0xF;
-    arg0->unk78 = 0xF;
-    arg0->unk88 = 0xF;
-    arg0->unk84 = 0xF;
-    arg0->unk80 = (s32)(fparg0 * 30.0f);
+extern "C" void func_00109048(struct Obj00109048 *self, s32 value, f32 duration) {
+    self->unk70 = value;
+    self->unk74 = 0;
+    self->unk7C = 0xF;
+    self->unk78 = 0xF;
+    self->unk88 = 0xF;
+    self->unk84 = 0xF;
+    self->unk80 = (s32)(duration * 30.0f);
 }

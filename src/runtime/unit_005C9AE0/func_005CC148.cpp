@@ -1,3 +1,4 @@
+/* Stores value * 128 (truncated to an integer, a fixed-point conversion, inferred) at +0x80 of the object pointed to by +0x10. */
 #include "types.h"
 
 struct Obj2 {
@@ -10,6 +11,6 @@ struct Obj {
     struct Obj2 *unk10;
 };
 
-extern "C" void func_005CC148(struct Obj *arg0, f32 arg1) {
-    arg0->unk10->unk80 = (s32)(arg1 * 128.0f);
+extern "C" void func_005CC148(struct Obj *self, f32 value) {
+    self->unk10->unk80 = (s32)(value * 128.0f);
 }

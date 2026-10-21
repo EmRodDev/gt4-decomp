@@ -1,3 +1,4 @@
+/* Array accessor: returns the float at +0xC of element [index] in an array of 0x6C-byte elements starting at base. */
 #include "types.h"
 
 struct Elem005F56A8 {
@@ -5,7 +6,7 @@ struct Elem005F56A8 {
     f32 unkC;
 };
 
-extern "C" f32 func_005F56A8(char *arg0, s32 arg1) {
-    arg0 = arg0 + arg1 * 0x6C;
-    return ((struct Elem005F56A8 *)arg0)->unkC;
+extern "C" f32 func_005F56A8(char *base, s32 index) {
+    base = base + index * 0x6C;
+    return ((struct Elem005F56A8 *)base)->unkC;
 }

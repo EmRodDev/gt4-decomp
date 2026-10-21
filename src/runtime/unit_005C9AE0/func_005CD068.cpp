@@ -1,3 +1,4 @@
+/* Calls func_005A609C on the address 0x138C bytes into the object that the pointer at +0x10 refers to. */
 #include "types.h"
 
 struct S005CD068 {
@@ -7,6 +8,6 @@ struct S005CD068 {
 
 extern "C" void func_005A609C(s32 arg0);
 
-extern "C" void func_005CD068(struct S005CD068 *arg0) {
-    func_005A609C(arg0->unk10 + 0x138C);
+extern "C" void func_005CD068(struct S005CD068 *self) {
+    func_005A609C(self->unk10 + 0x138C);
 }
