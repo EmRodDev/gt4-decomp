@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Sets the object's name string (+0x2B8 gets the c_str of *name), looks up a handle by that name with func_00148080 and stores it into the handle field at +0x2A8 (retain new, release old), then, if the sub-object pointer at +0x2A4 is set, sets its flag +0x98 to 1 and drives it through virtual slots +0x1B0, +0x1C8 and +0x190 (the last with a temporary basic_string built from the handle's name and a flag that is true when the embedded value at +0xA4 is 2). The string is destroyed by hand because the inlined basic_string destructor is expanded here. */
 typedef int s32;
 typedef short s16;
 typedef unsigned int u32;
@@ -43,50 +44,50 @@ static inline const char *c_str(Str *s) {
     s->p[((Rep *)s->p - 1)->len] = 0;
     return s->p;
 }
-void func_0013A730(Obj *arg0, Str *arg1) {
-    union { void *h[4]; Str st; } tmp;
-    arg0->f2b8 = c_str(arg1);
-    void **ph = &arg0->h;
-    func_00148080(tmp.h, c_str(arg1));
-    if (ph != tmp.h) {
-        void *p = tmp.h[0];
-        if (p != 0) func_003285A8(p);
-        if (*ph != 0) func_003285F8(*ph);
-        *ph = p;
+void func_0013A730(Obj *self, Str *name) {
+    union { void *h[4]; Str st; } lookup;
+    self->f2b8 = c_str(name);
+    void **handleField = &self->h;
+    func_00148080(lookup.h, c_str(name));
+    if (handleField != lookup.h) {
+        void *found = lookup.h[0];
+        if (found != 0) func_003285A8(found);
+        if (*handleField != 0) func_003285F8(*handleField);
+        *handleField = found;
     }
-    func_0013BD68(tmp.h, 2);
-    M **pm = &arg0->m;
-    if (__builtin_expect((int)*pm, 0)) {
-        (*pm)->f98 = 1;
-        Sub *sub = &arg0->sub;
-        M *m = *pm;
-        VEnt *e = &m->vt->e1b0;
-        e->fn((char *)m + e->delta, 0);
-        const char *name = func_00145E30(*ph);
-        func_00153B50(*pm, sub);
-        func_0013BD50(tmp.h, ph);
-        M *m2 = *pm;
-        VEnt *e2 = &m2->vt->e1c8;
-        e2->fn((char *)m2 + e2->delta, tmp.h);
-        M *m3 = *pm;
-        Str *ps = &tmp.st;
-        VEnt *e3 = &m3->vt->e190;
-        char *self3 = (char *)m3 + e3->delta;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+    func_0013BD68(lookup.h, 2);
+    M **subObjField = &self->m;
+    if (__builtin_expect((int)*subObjField, 0)) {
+        (*subObjField)->f98 = 1;
+        Sub *embedded = &self->sub;
+        M *subObj = *subObjField;
+        VEnt *slot = &subObj->vt->e1b0;
+        slot->fn((char *)subObj + slot->delta, 0);
+        const char *name = func_00145E30(*handleField);
+        func_00153B50(*subObjField, embedded);
+        func_0013BD50(lookup.h, handleField);
+        M *subObj2 = *subObjField;
+        VEnt *slot2 = &subObj2->vt->e1c8;
+        slot2->fn((char *)subObj2 + slot2->delta, lookup.h);
+        M *subObj3 = *subObjField;
+        Str *nameStr = &lookup.st;
+        VEnt *slot3 = &subObj3->vt->e190;
+        char *slotThis3 = (char *)subObj3 + slot3->delta;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, name, func_0057F260(name));
-        e3->fn(self3, &tmp.st, ph, sub->f4 == 2);
-        Rep *q = (Rep *)tmp.st.p - 1;
-        if (--q->ref == 0) {
-            s32 size = q->cap + 0x10;
-            func_00326798(q, size, 4, func_005C11A8()->name);
+        nameStr->p = chars;
+        func_005C2630(nameStr, 0, -1, name, func_0057F260(name));
+        slot3->fn(slotThis3, &lookup.st, handleField, embedded->f4 == 2);
+        Rep *rep = (Rep *)lookup.st.p - 1;
+        if (--rep->ref == 0) {
+            s32 size = rep->cap + 0x10;
+            func_00326798(rep, size, 4, func_005C11A8()->name);
         }
     }
 }

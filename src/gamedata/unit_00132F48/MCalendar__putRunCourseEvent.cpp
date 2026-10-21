@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script method putRunCourseEvent: needs at least 4 arguments; reads the event name (args[0]), converts args[1] with func_0042EF68 and args[2] with func_00431C60 (string to number lookups), an optional args[3] (default 14, also via func_00431C60) and the integer last argument, then adds the event to the calendar record (func_0042F448 on the handle's +0x10 block). What each converted value stands for is not determined; the method name says it schedules a course run entry. */
 typedef int s32;
 typedef short s16;
 typedef unsigned char u8;
@@ -45,28 +46,28 @@ static inline s32 number(VO *o) {
     VEntI *e = &o->vt->e58;
     return e->fn((char *)o + e->delta);
 }
-void MCalendar__putRunCourseEvent(void *arg0, void *arg1, s32 arg2, VO **arg3) {
-    if (arg2 >= 4) {
-        union { Str st; HO *h[4]; } tmp;
-        text(&tmp.st, arg3[0]);
-        const char *name = c_str(&tmp.st);
-        release(&tmp.st);
-        text(&tmp.st, arg3[1]);
-        s32 a = func_0042EF68(c_str(&tmp.st));
-        release(&tmp.st);
-        text(&tmp.st, arg3[2]);
-        s32 b = func_00431C60(c_str(&tmp.st));
-        release(&tmp.st);
+void MCalendar__putRunCourseEvent(void *unused, void *object, s32 argCount, VO **args) {
+    if (argCount >= 4) {
+        union { Str st; HO *h[4]; } scratch;
+        text(&scratch.st, args[0]);
+        const char *name = c_str(&scratch.st);
+        release(&scratch.st);
+        text(&scratch.st, args[1]);
+        s32 a = func_0042EF68(c_str(&scratch.st));
+        release(&scratch.st);
+        text(&scratch.st, args[2]);
+        s32 b = func_00431C60(c_str(&scratch.st));
+        release(&scratch.st);
         s32 c = 14;
-        if (arg3[3]) {
-            text(&tmp.st, arg3[3]);
-            c = func_00431C60(c_str(&tmp.st));
-            release(&tmp.st);
+        if (args[3]) {
+            text(&scratch.st, args[3]);
+            c = func_00431C60(c_str(&scratch.st));
+            release(&scratch.st);
         }
-        s32 d = number(arg3[4]);
-        func_00132DB8(tmp.h, arg1);
-        func_0042F448(tmp.h[0]->f10, name, a, b, c, d);
-        func_00132D60(tmp.h, 2);
+        s32 d = number(args[4]);
+        func_00132DB8(scratch.h, object);
+        func_0042F448(scratch.h[0]->f10, name, a, b, c, d);
+        func_00132D60(scratch.h, 2);
     }
 }
 }

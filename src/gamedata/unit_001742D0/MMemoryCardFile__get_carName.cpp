@@ -1,3 +1,4 @@
+/* Script property getter on a memory-card file object: resolves the file handle arg1, asks its file object (+0x10 -> tab) to load the GT4 game-data instance (GT4MC::FileGT4GameData::loadInstance), and when that succeeds calls its virtual slot +0x90 to get a C string, wrapped into a script string and assigned (retain/release) into *out. Without an instance a fixed default string (D_00690D18) is returned instead. The car-name string is inferred from the accessor name; the exact slot meaning is not otherwise documented. */
 #include "types.h"
 
 struct Rep {
@@ -83,62 +84,62 @@ static inline void assign(s32 *dst, Handle *h)
     }
 }
 
-extern "C" void MMemoryCardFile__get_carName(s32 *arg0, void *arg1) {
-    Obj h0;
-    Handle tmp;
-    Str s1;
-    Str s2;
-    Inner *in;
-    Inner *a1;
+extern "C" void MMemoryCardFile__get_carName(s32 *out, void *fileHandle) {
+    Obj file;
+    Handle result;
+    Str nameText;
+    Str defaultText;
+    Inner *fileObject;
+    Inner *gameData;
 
-    func_00174148(&h0, arg1);
-    in = ((Outer *)h0.p)->in;
-    a1 = 0;
-    if (in != 0) {
-        a1 = GT4MC__FileGT4GameData__loadInstance(in->tab->fn, D_005D15A8, 0, (char *)in + in->tab->delta, D_005D1260, in);
+    func_00174148(&file, fileHandle);
+    fileObject = ((Outer *)file.p)->in;
+    gameData = 0;
+    if (fileObject != 0) {
+        gameData = GT4MC__FileGT4GameData__loadInstance(fileObject->tab->fn, D_005D15A8, 0, (char *)fileObject + fileObject->tab->delta, D_005D1260, fileObject);
     }
-    if (a1 != 0) {
-        Str *ps = &s1;
+    if (gameData != 0) {
+        Str *textPtr = &nameText;
         const char *name;
-        Vt *e = (Vt *)((char *)a1->tab + 0x90);
-        name = ((char *(*)(void *))e->fn)((char *)a1 + e->delta);
+        Vt *nameSlot = (Vt *)((char *)gameData->tab + 0x90);
+        name = ((char *(*)(void *))nameSlot->fn)((char *)gameData + nameSlot->delta);
         {
-            Rep *r = &D_00659FA8;
-            char *d;
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            char *chars;
+            if (emptyRep->sel != 0) {
+                chars = func_005C2560(emptyRep);
             } else {
-                d = (char *)(r + 1);
-                r->ref++;
+                chars = (char *)(emptyRep + 1);
+                emptyRep->ref++;
             }
-            *(s32 *)&ps->p = (s32)d;
+            *(s32 *)&textPtr->p = (s32)chars;
         }
-        func_005C2630(ps, 0, -1, name, func_0057F260(name));
-        Handle *ph = &tmp;
-        func_00314B20(ph, ps);
-        assign(arg0, ph);
-        func_00312318(ph, 2);
-        release(ps);
+        func_005C2630(textPtr, 0, -1, name, func_0057F260(name));
+        Handle *resultPtr = &result;
+        func_00314B20(resultPtr, textPtr);
+        assign(out, resultPtr);
+        func_00312318(resultPtr, 2);
+        release(textPtr);
     } else {
-        const char *lit = D_00690D18;
-        Str *ps = &s2;
+        const char *defaultLiteral = D_00690D18;
+        Str *textPtr = &defaultText;
         {
-            Rep *r = &D_00659FA8;
-            char *d;
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            char *chars;
+            if (emptyRep->sel != 0) {
+                chars = func_005C2560(emptyRep);
             } else {
-                d = (char *)(r + 1);
-                r->ref++;
+                chars = (char *)(emptyRep + 1);
+                emptyRep->ref++;
             }
-            ps->p = d;
+            textPtr->p = chars;
         }
-        func_005C2630(ps, 0, -1, lit, func_0057F260(lit));
-        Handle *ph = &tmp;
-        func_00314B20(ph, ps);
-        assign(arg0, ph);
-        func_00312318(ph, 2);
-        release(ps);
+        func_005C2630(textPtr, 0, -1, defaultLiteral, func_0057F260(defaultLiteral));
+        Handle *resultPtr = &result;
+        func_00314B20(resultPtr, textPtr);
+        assign(out, resultPtr);
+        func_00312318(resultPtr, 2);
+        release(textPtr);
     }
-    func_001740F0(&h0, 2);
+    func_001740F0(&file, 2);
 }

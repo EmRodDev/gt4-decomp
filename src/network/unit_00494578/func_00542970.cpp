@@ -1,3 +1,4 @@
+/* Releases the four sub-objects at +0xC, +0x10, +0x14 and +0x18 of the object when each is set (func_00538C68), then the object pointer itself. Cleanup/destroy helper; the type is not determined. buf0 is the compiler's saved copy of arg0. */
 #include "types.h"
 
 struct Rep {
@@ -26,22 +27,22 @@ struct func_00542970_arg0 {
     s32 unk18;
 };
 
-extern "C" void func_00542970(s32 *arg0) {
-    s32 buf0[4];
-    buf0[0] = (s32)arg0;
-    if (arg0 != 0) {
-        if (((struct func_00542970_arg0 *)arg0)->unkC != 0) {
-            func_00538C68((char *)arg0 + 0xc);
+extern "C" void func_00542970(s32 *object) {
+    s32 savedObject[4];
+    savedObject[0] = (s32)object;
+    if (object != 0) {
+        if (((struct func_00542970_arg0 *)object)->unkC != 0) {
+            func_00538C68((char *)object + 0xc);
         }
-        if (((struct func_00542970_arg0 *)arg0)->unk18 != 0) {
-            func_00538C68((char *)arg0 + 0x18);
+        if (((struct func_00542970_arg0 *)object)->unk18 != 0) {
+            func_00538C68((char *)object + 0x18);
         }
-        if (((struct func_00542970_arg0 *)arg0)->unk10 != 0) {
-            func_00538C68((char *)arg0 + 0x10);
+        if (((struct func_00542970_arg0 *)object)->unk10 != 0) {
+            func_00538C68((char *)object + 0x10);
         }
-        if (((struct func_00542970_arg0 *)arg0)->unk14 != 0) {
-            func_00538C68((char *)arg0 + 0x14);
+        if (((struct func_00542970_arg0 *)object)->unk14 != 0) {
+            func_00538C68((char *)object + 0x14);
         }
-        func_00538C68(buf0);
+        func_00538C68(savedObject);
     }
 }

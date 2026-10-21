@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-stl */
+/* Deleting destructor of the scene object that func_001C85E0 builds: restores the vtable pointer D_00660DE8 at +0x64, runs the shared teardown (func_001D3AD0 on the singleton, func_00436740 on the global block at +0x38CB0, func_00107AB8, func_004AB040), calls virtual slot +0x2C0 on the object at +0xA8, releases the members (two raw buffers at +0x1A8/+0x1B8, vectors, the Sub member), calls the release slot (+8 of the vtable, argument 3) on the objects at +0x6C of the +0xA8 object and at +0xA4, runs the base destructor func_00109AB8 and frees the object when bit 0 of flags is set. */
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
@@ -72,37 +73,37 @@ extern "C" void func_00109AB8(void *, s32);
 extern "C" void func_004AB040(s32);
 extern "C" void func_005C1628(void *) throw();
 
-extern "C" void func_001C8778(Obj *o, s32 flags) {
-    o->vtbl = D_00660DE8;
+extern "C" void func_001C8778(Obj *self, s32 flags) {
+    self->vtbl = D_00660DE8;
     func_001D3AD0(func_001D3A60());
     func_00436740((char *)D_00622F4C + 0x38CB0);
     func_00107AB8(1);
     func_004AB040(0x16);
     {
-        Item *it = (Item *)o->fA8;
+        Item *it = (Item *)self->fA8;
         VEntry *e = (VEntry *)(it->vtbl + 0x2C0);
         e->fn((char *)it + e->delta);
     }
     {
-        Item *it = (Item *)o->fA8;
+        Item *it = (Item *)self->fA8;
         char *c = it->f6C;
         if (c) {
             VEntry2 *e = (VEntry2 *)(*(char **)(c + 0x974) + 8);
             e->fn(c + e->delta, 3);
         }
     }
-    Sub *sp = &o->sub;
-    if (o->f1B8) free(o->f1B8);
-    if (o->f1A8) free(o->f1A8);
-    o->v178.~vector();
+    Sub *sp = &self->sub;
+    if (self->f1B8) free(self->f1B8);
+    if (self->f1A8) free(self->f1A8);
+    self->v178.~vector();
     sp->~Sub();
     {
-        char *c = o->fA4;
+        char *c = self->fA4;
         if (c) {
             VEntry2 *e = (VEntry2 *)(*(char **)(c + 0x64) + 8);
             e->fn(c + e->delta, 3);
         }
     }
-    func_00109AB8(o, 0);
-    if (flags & 1) func_005C1628(o);
+    func_00109AB8(self, 0);
+    if (flags & 1) func_005C1628(self);
 }

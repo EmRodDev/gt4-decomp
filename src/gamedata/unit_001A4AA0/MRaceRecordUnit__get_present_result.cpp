@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script property accessor MRaceRecordUnit present_result: with arguments (argCount > 0) it acts as the setter, converting the string in args[0] to a number with func_00431C60 and storing it in the bit field (style) of the record; the getter reads bits 8..11 of the first word; otherwise it acts as the getter and converts the stored value back to a name with func_00431C38, returning it as a new script string through *out (retain new, release old). The string/number table lookups are named only by position in the source; the semantics of the stored value are inferred from the accessor name. */
 typedef int s32;
 typedef unsigned int u32;
 typedef short s16;
@@ -52,22 +53,22 @@ static inline void release(Str *s) {
 
 struct Str2 { char *p; char pad[0x1C]; };
 
-extern "C" void MRaceRecordUnit__get_present_result(s32 *arg0, void *arg1, s32 arg2, VObj **arg3) {
+extern "C" void MRaceRecordUnit__get_present_result(s32 *out, void *object, s32 argCount, VObj **args) {
     s32 h[4];
     Str2 s1;
     Str s2;
     s32 hh[4];
-    if (arg2 > 0) {
-        func_001A4860(h, arg1);
+    if (argCount > 0) {
+        func_001A4860(h, object);
         Bits *dst = ((HO *)(*(void **)h))->f10;
-        vcall(&s1, arg3[0]);
+        vcall(&s1, args[0]);
         dst->style = func_00431C60(c_str((Str *)&s1));
         release((Str *)&s1);
         func_001A4808(h, 2);
     } else {
         s32 *phh = hh;
         Str *ps = &s2;
-        func_001A4860(phh, arg1);
+        func_001A4860(phh, object);
         HO *hp = *(HO **)phh;
         const char *name = func_00431C38((*(u32 *)hp->f10 >> 8) & 15);
         {
@@ -83,11 +84,11 @@ extern "C" void MRaceRecordUnit__get_present_result(s32 *arg0, void *arg1, s32 a
         }
         func_005C2630(ps, 0, -1, name, func_0057F260(name));
         func_00314B20(h, ps);
-        if (arg0 != h) {
+        if (out != h) {
             s32 nv = h[0];
             if (nv != 0) func_003285A8(nv);
-            if (*arg0 != 0) func_003285F8(*arg0);
-            *arg0 = nv;
+            if (*out != 0) func_003285F8(*out);
+            *out = nv;
         }
         func_00312318(h, 2);
         release(ps);

@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-stl */
+/* Fetches entry 'index' from the table built by Body (a container read through func_001D1038/001D1340): returns -1 on any failure, a bad flag (bit 2 of the 16-bit flags at +0x48 of the entry) or when the payload does not fit 'capacity'; otherwise it copies the payload (func_005A4724) into the buffer at self+0xBD0 and returns its length. If self+0x1DD8 is set it delegates to func_001C6A10 instead. The class names D_006xxxxx are the original's vtable symbols used as type names; the container type is not determined. */
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
@@ -75,25 +76,25 @@ struct G { char pad[0x39E28]; s32 f39E28; };
 extern G *D_00622F4C;
 struct Ctx { char pad[0xBD0]; char *fBD0; char pad2[0x1DD8 - 0xBD4]; s32 f1DD8; };
 
-extern "C" s32 func_001C65B8(Ctx *self, s32 idx, s32 max) {
-    if (self->f1DD8) return func_001C6A10(self, idx, max);
+extern "C" s32 func_001C65B8(Ctx *self, s32 index, s32 capacity) {
+    if (self->f1DD8) return func_001C6A10(self, index, capacity);
     Body body(D_00622F4C->f39E28);
-    char *table = (char *)&body + 0x10;
-    D_00661B70 a;
-    a.p50 = table;
-    if (__builtin_expect(func_001D1038(&a, &body, 0, 0), 0)) return -1;
-    s32 ret = -1;
-    if (idx < body.count) {
-        D_00661758 d;
-        if (func_001D1340(table, idx, d.data + 0x24)) {
-            if (!func_001CC528(&d, &body)) return -1;
-            unsigned flags = *(unsigned short *)(d.data + 0x48);
-            if ((flags >> 2) & 1) return -1;
-            if (__builtin_expect(func_001D0CC0(&d, &body, 0, 0), 0)) return -1;
-            ret = d.list2.end() - d.list2.begin();
-            if (ret < max) func_005A4724(self->fBD0, d.list2.begin(), ret);
-            else ret = -1;
+    char *entryTable = (char *)&body + 0x10;
+    D_00661B70 headerParser;
+    headerParser.p50 = entryTable;
+    if (__builtin_expect(func_001D1038(&headerParser, &body, 0, 0), 0)) return -1;
+    s32 length = -1;
+    if (index < body.count) {
+        D_00661758 entry;
+        if (func_001D1340(entryTable, index, entry.data + 0x24)) {
+            if (!func_001CC528(&entry, &body)) return -1;
+            unsigned entryFlags = *(unsigned short *)(entry.data + 0x48);
+            if ((entryFlags >> 2) & 1) return -1;
+            if (__builtin_expect(func_001D0CC0(&entry, &body, 0, 0), 0)) return -1;
+            length = entry.list2.end() - entry.list2.begin();
+            if (length < capacity) func_005A4724(self->fBD0, entry.list2.begin(), length);
+            else length = -1;
         }
     }
-    return ret;
+    return length;
 }

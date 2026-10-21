@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script method insertEntryMaxSpeed: with at least 4 script arguments it opens the course-record list of the unit (func_0015AAC0), reads the max-speed value from argument 0 (virtual slot +0x60, a float), the car/entry name from argument 1 (virtual slot +0x18, a string) and calls arguments 2 and 3 for their integer values (results unused here, as in the source), then builds a 0x28-byte request with the name and fixed flags, packs it into a 0x20-byte record (func_0044B258) and stores it with func_00433348 into the list. Sibling of insertEntry (func_00433260, integer key). Which slot is which game value is inferred from the method name only; the request layout is not determined. Note the name pointer is used after the temporary string was released, as in the original. */
 typedef int s32;
 typedef short s16;
 
@@ -93,36 +94,36 @@ static inline void release(Str *s) {
     }
 }
 
-extern "C" void MCourseRecordUnit__insertEntryMaxSpeed(void *arg0, void *arg1, s32 arg2, VObj **arg3) {
-    Hold list;
-    if (arg2 >= 4) {
-        float key;
+extern "C" void MCourseRecordUnit__insertEntryMaxSpeed(void *arg0, void *recordHandle, s32 argCount, VObj **args) {
+    Hold listHandle;
+    if (argCount >= 4) {
+        float maxSpeed;
         const char *name;
-        func_0015AAC0(&list, arg1);
-        key = vcall60(arg3[0]);
-        VObj *o = arg3[1];
-        VEntry18 *e = (VEntry18 *)(o->vtbl + 0x18);
-        Str t = e->fn((char *)o + e->delta);
-        Str *pt = &t;
-        In in;
-        B32 out;
-        name = c_str(&t);
-        release(&t);
-        vcall58(arg3[2]);
-        vcall58(arg3[3]);
-        in.f4 = func_004482C0(func_00447BB8(name));
-        in.f0 = 0;
-        in.f8 = 1;
-        in.f10 = 1;
-        in.f14 = 1;
-        in.f18 = 1;
-        in.f1C = 0;
-        in.f20 = 1;
-        in.f24 = 1;
-        in.f28 = name;
-        func_005A48D8(&out, 0, 0x20);
-        func_0044B258(&in, &out, 0x20);
-        func_00433348(list.p->p10, key, name, &out);
-        func_0015AA68(&list, 2);
+        func_0015AAC0(&listHandle, recordHandle);
+        maxSpeed = vcall60(args[0]);
+        VObj *argObject = args[1];
+        VEntry18 *nameSlot = (VEntry18 *)(argObject->vtbl + 0x18);
+        Str nameStr = nameSlot->fn((char *)argObject + nameSlot->delta);
+        Str *nameStrPtr = &nameStr;
+        In request;
+        B32 packed;
+        name = c_str(&nameStr);
+        release(&nameStr);
+        vcall58(args[2]);
+        vcall58(args[3]);
+        request.f4 = func_004482C0(func_00447BB8(name));
+        request.f0 = 0;
+        request.f8 = 1;
+        request.f10 = 1;
+        request.f14 = 1;
+        request.f18 = 1;
+        request.f1C = 0;
+        request.f20 = 1;
+        request.f24 = 1;
+        request.f28 = name;
+        func_005A48D8(&packed, 0, 0x20);
+        func_0044B258(&request, &packed, 0x20);
+        func_00433348(listHandle.p->p10, maxSpeed, name, &packed);
+        func_0015AA68(&listHandle, 2);
     }
 }

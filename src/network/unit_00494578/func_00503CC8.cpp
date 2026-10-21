@@ -1,3 +1,4 @@
+/* Detaches/cleans up item arg1 from owner arg0: if arg1 is non-null it calls func_00576788 (a lock-style begin, name inferred from the matching func_005767C0 at the end), releases the pair at +0xC/+0x10 through func_00529650, clears +0x14/+0x18, resets the sub-object at +0x40, runs three cleanup calls on the members at +0x38 and +0x1C, and finally removes arg1 from the three lists of the owner at +0x30, +0x3C and +0x48. All names are descriptive guesses from the call shapes; field purposes stay unknown. */
 #include "types.h"
 
 struct Rep {
@@ -34,26 +35,26 @@ struct func_00503CC8_arg1 {
     s32 unk18;
 };
 
-extern "C" void func_00503CC8(s32 *arg0, void *arg1) {
-    s32 buf0[4];
-    char *v_s1;
-    char *v_s3;
-    v_s1 = (char *)arg1 + 0x38;
-    v_s3 = (char *)arg1 + 0x1c;
-    if (arg1 != 0) {
-        buf0[0] = (s32)arg0;
+extern "C" void func_00503CC8(s32 *owner, void *item) {
+    s32 lockState[4];
+    char *member38;
+    char *member1C;
+    member38 = (char *)item + 0x38;
+    member1C = (char *)item + 0x1c;
+    if (item != 0) {
+        lockState[0] = (s32)owner;
         func_00576788();
-        func_00529650(((struct func_00503CC8_arg1 *)arg1)->unkC, ((struct func_00503CC8_arg1 *)arg1)->unk10);
-        ((struct func_00503CC8_arg1 *)arg1)->unk14 = 0;
-        ((struct func_00503CC8_arg1 *)arg1)->unk18 = 0;
-        func_00538C68((char *)arg1 + 0x40);
-        buf0[1] = (s32)v_s1;
-        func_00576100(v_s1);
-        func_0057B368(v_s3);
-        func_00576140(v_s1);
-        func_0057CC80((char *)arg0 + 0x3c, arg1);
-        func_0057CC80((char *)arg0 + 0x48, arg1);
-        func_0057CB00((char *)arg0 + 0x30, arg1);
-        func_005767C0(buf0[0]);
+        func_00529650(((struct func_00503CC8_arg1 *)item)->unkC, ((struct func_00503CC8_arg1 *)item)->unk10);
+        ((struct func_00503CC8_arg1 *)item)->unk14 = 0;
+        ((struct func_00503CC8_arg1 *)item)->unk18 = 0;
+        func_00538C68((char *)item + 0x40);
+        lockState[1] = (s32)member38;
+        func_00576100(member38);
+        func_0057B368(member1C);
+        func_00576140(member38);
+        func_0057CC80((char *)owner + 0x3c, item);
+        func_0057CC80((char *)owner + 0x48, item);
+        func_0057CB00((char *)owner + 0x30, item);
+        func_005767C0(lockState[0]);
     }
 }

@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-stl */
+/* Resets a script/engine node to its initial state and rebuilds its owner: zeroes the fields at +0x1C, +0x20, +0x2C and +0x16C, clears the Elem12 vector at +0x17C (erase(begin, end)) and the string at +0x168, resets the two Val pairs at +0x174 and +0x18C and the sub-block at +0x40, detaches the old owner (reset(0) with the shared-ownership list unlink), creates a new Owner2 (0xAC bytes) from the parent, parent->f30, this, flag and 0 and installs it, finally calls func_004756C0. 'owner' semantics are inferred from the intrusive prev/next ring in Self; the node's game role is not determined. */
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
@@ -91,7 +92,7 @@ struct Self {
     }
 };
 
-extern "C" void func_004751D0(Self *self, s32 flag)
+extern "C" void func_004751D0(Self *self, s32 ownerFlag)
 {
     self->f1C = 0;
     self->f20 = 0;
@@ -103,7 +104,7 @@ extern "C" void func_004751D0(Self *self, s32 flag)
     func_004768C0(&self->v18C);
     func_0047CFD8(self->sub, 0);
     self->reset(0);
-    Owner2 *p = new Owner2(self->parent, self->parent->f30, self, flag, 0);
-    self->reset(p);
+    Owner2 *newOwner = new Owner2(self->parent, self->parent->f30, self, ownerFlag, 0);
+    self->reset(newOwner);
     func_004756C0(self);
 }

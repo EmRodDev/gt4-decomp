@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script method getEntryCarCode(entry): returns a two-element script array built from the 0x68-byte entry record number args[0] (virtual slot +0x58 gives the integer): element 0 is the code string stored at +0xE0 of the record, element 1 the number at +0x48 of the record at +0xD8 (the car code and some per-entry value; what the second one means is not determined). Result is assigned into *out. */
 typedef int s32;
 struct Rep { s32 len,cap,ref,sel; };
 struct Str { char *p; char pad[12]; };
@@ -29,36 +30,36 @@ static inline void release(Str *s) {
     Rep *q=(Rep *)(s->p-16);
     if(--q->ref==0) { s32 size=q->cap+16; func_00326798(q,size,4,func_005C11A8()->name); }
 }
-extern "C" void MGame__getEntryCarCode(s32 *arg0,void *arg1,int arg2,Obj **arg3) {
-    s32 buf0[4]; s32 buf1[4]; Str str;
-    if(arg2>0) {
-        func_0015F3E0(buf0,arg1);
-        Obj *o=*arg3;
-        VEntry *e=(VEntry *)(o->vtbl+0x58);
-        char *data=*(char **)((char *)buf0[0]+0x10);
-        data+=e->fn((char *)o+e->delta)*0x68;
-        func_0015F388(buf0,2);
-        func_002EFC48(buf0,2);
-        char *rec=data+0xD8;
-        s32 *dst=HArray__operator_index(buf0,0);
-        char *p=data+0xE0;
-        Str *ps=&str;
-        Rep *r=&D_00659FA8;
-        char *d;
-        if(r->sel) d=func_005C2560(r);
-        else { d=(char *)(r+1); r->ref++; }
-        ps->p=d;
-        func_005C2630(ps,0,-1,p,func_0057F260(p));
-        p=(char *)buf1;
-        func_00314B20(p,ps);
-        assign(dst,(s32 *)p);
-        func_00312318(p,2);
-        release(ps);
-        dst=HArray__operator_index(buf0,1);
-        func_002FE278(p,*(s32 *)(rec+0x48));
-        assign(dst,(s32 *)p);
-        func_002FC870(p,2);
-        assign(arg0,buf0);
-        func_002ED5C0(buf0,2);
+extern "C" void MGame__getEntryCarCode(s32 *out,void *object,int argCount,Obj **args) {
+    s32 array[4]; s32 element[4]; Str codeStr;
+    if(argCount>0) {
+        func_0015F3E0(array,object);
+        Obj *entryArg=*args;
+        VEntry *indexSlot=(VEntry *)(entryArg->vtbl+0x58);
+        char *entryRecord=*(char **)((char *)array[0]+0x10);
+        entryRecord+=indexSlot->fn((char *)entryArg+indexSlot->delta)*0x68;
+        func_0015F388(array,2);
+        func_002EFC48(array,2);
+        char *entryHeader=entryRecord+0xD8;
+        s32 *slot=HArray__operator_index(array,0);
+        char *source=entryRecord+0xE0;
+        Str *codeStrPtr=&codeStr;
+        Rep *emptyRep=&D_00659FA8;
+        char *chars;
+        if(emptyRep->sel) chars=func_005C2560(emptyRep);
+        else { chars=(char *)(emptyRep+1); emptyRep->ref++; }
+        codeStrPtr->p=chars;
+        func_005C2630(codeStrPtr,0,-1,source,func_0057F260(source));
+        source=(char *)element;
+        func_00314B20(source,codeStrPtr);
+        assign(slot,(s32 *)source);
+        func_00312318(source,2);
+        release(codeStrPtr);
+        slot=HArray__operator_index(array,1);
+        func_002FE278(source,*(s32 *)(entryHeader+0x48));
+        assign(slot,(s32 *)source);
+        func_002FC870(source,2);
+        assign(out,array);
+        func_002ED5C0(array,2);
     }
 }

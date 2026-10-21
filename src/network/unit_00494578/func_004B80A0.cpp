@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Resets the idle one of two 0x41C-byte channel slots in o (index 1 - o+0x858, i.e. the slot that is not the current one) and the shared sequence fields, then calls func_004B59C0(o, 6) twice and finishes by the slot's state: 1 runs func_004B61A8, 2 runs it and falls back to state 1, 0 does nothing. What the channels carry is not determined; the double call is how the compiler had to see it (identical consecutive calls kept). */
 struct Slot {
     int m0;
     int m4;
@@ -30,30 +31,30 @@ struct T {
     short s6;
 };
 
-extern "C" void func_004B80A0(O *o) {
-    o->m10 = 0;
-    short *p14 = o->m14;
-    char *base = (char *)o + (1 - *(int *)((char *)o + 0x858)) * 0x41C;
-    *p14 = 0;
-    Slot *s = (Slot *)(base + 0x20);
-    T *t = (T *)(base + 0x238);
-    s->m4 = 0;
-    *s->m8 = 0;
-    s->m10 = 0;
-    s->m210 = 0;
-    s->m214 = 0;
-    t->s4 = 0;
-    t->s6 = 0;
-    t->c0 = 1;
-    s->m418 = 0;
-    func_004B59C0(o, 6);
-    func_004B59C0(o, 6);
-    switch (s->m0) {
+extern "C" void func_004B80A0(O *self) {
+    self->m10 = 0;
+    short *sharedCounter = self->m14;
+    char *idleSlotBase = (char *)self + (1 - *(int *)((char *)self + 0x858)) * 0x41C;
+    *sharedCounter = 0;
+    Slot *slot = (Slot *)(idleSlotBase + 0x20);
+    T *record = (T *)(idleSlotBase + 0x238);
+    slot->m4 = 0;
+    *slot->m8 = 0;
+    slot->m10 = 0;
+    slot->m210 = 0;
+    slot->m214 = 0;
+    record->s4 = 0;
+    record->s6 = 0;
+    record->c0 = 1;
+    slot->m418 = 0;
+    func_004B59C0(self, 6);
+    func_004B59C0(self, 6);
+    switch (slot->m0) {
     case 1:
-        return func_004B61A8(o);
+        return func_004B61A8(self);
     case 2:
-        func_004B61A8(o);
-        s->m0 = 1;
+        func_004B61A8(self);
+        slot->m0 = 1;
         break;
     case 0:
     default:

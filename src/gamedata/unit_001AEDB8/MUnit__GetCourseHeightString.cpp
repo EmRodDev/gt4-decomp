@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script method GetCourseHeightString(value): formats the float returned by virtual slot +0x60 of args[0] (a course height, from the method name), converted with the unit manager (func_00472C90) and rounded to tenths (value*10+0.5), with the unit text from func_004728D0 and format D_00693040 (func_00490A40) into a 0x80-byte buffer, and returns it as a new script string through *out. Sibling of GetCourseLengthString (hundredths, func_00472C28). */
 typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -26,17 +27,17 @@ extern "C" char *func_005C2560(Rep *);
 extern "C" void *func_005C2630(Str *, u32, u32, const char *, u32);
 extern char D_00693040[];
 
-extern "C" void MUnit__GetCourseHeightString(s32 *arg0, s32 arg1, Obj **arg2) {
-    char buf[0x80];
-    s32 h[8];
-    Str s;
-    if (arg1 > 0) {
-        Obj *o = *arg2;
-        VE *ve = (VE *)((char *)o->vt + 0x60);
-        f32 v = func_00472C90(PDISTD__UNIT_MANAGER, ve->fn((char *)o + ve->d));
-        func_00490A40(D_00624984, buf, D_00693040, (s32)(v * 10.0f + 0.5f), func_004728D0(PDISTD__UNIT_MANAGER));
-        Str *ps = &s;
-        char *pb = buf;
+extern "C" void MUnit__GetCourseHeightString(s32 *out, s32 argCount, Obj **args) {
+    char text[0x80];
+    s32 result[8];
+    Str textStr;
+    if (argCount > 0) {
+        Obj *o = *args;
+        VE *valueSlot = (VE *)((char *)o->vt + 0x60);
+        f32 heightValue = func_00472C90(PDISTD__UNIT_MANAGER, valueSlot->fn((char *)o + valueSlot->d));
+        func_00490A40(D_00624984, text, D_00693040, (s32)(heightValue * 10.0f + 0.5f), func_004728D0(PDISTD__UNIT_MANAGER));
+        Str *textStrPtr = &textStr;
+        char *textPtr = text;
         {
             Rep *r = &D_00659FA8;
             char *p;
@@ -46,20 +47,20 @@ extern "C" void MUnit__GetCourseHeightString(s32 *arg0, s32 arg1, Obj **arg2) {
                 p = (char *)(r + 1);
                 r->ref++;
             }
-            ps->p = p;
+            textStrPtr->p = p;
         }
-        func_005C2630(ps, 0, -1, pb, func_0057F260(pb));
-        s32 *ph = h;
-        func_00314B20(ph, ps);
-        if (arg0 != ph) {
-            s32 nv = *ph;
-            if (nv != 0) func_003285A8(nv);
-            if (*arg0 != 0) func_003285F8(*arg0);
-            *arg0 = nv;
+        func_005C2630(textStrPtr, 0, -1, textPtr, func_0057F260(textPtr));
+        s32 *resultPtr = result;
+        func_00314B20(resultPtr, textStrPtr);
+        if (out != resultPtr) {
+            s32 newHandle = *resultPtr;
+            if (newHandle != 0) func_003285A8(newHandle);
+            if (*out != 0) func_003285F8(*out);
+            *out = newHandle;
         }
-        func_00312318(ph, 2);
+        func_00312318(resultPtr, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
+            Rep *q = (Rep *)(textStrPtr->p - 0x10);
             if (--q->ref == 0) {
                 s32 size = q->cap + 0x10;
                 func_00326798(q, size, 4, func_005C11A8()->name);

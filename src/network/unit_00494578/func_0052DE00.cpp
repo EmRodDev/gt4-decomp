@@ -1,3 +1,4 @@
+/* Re-inserts the buffer chain of a queue object: after validating the object (returns 2 if any of its fields +8/+0x10/+0x14 is empty), the 0x18-byte header is saved, cleared and re-initialised through func_0052D448; the node list that the header used to hold (nodes of {len, next} followed by their data) is then walked and each node is pushed back with func_0052D5A8 as a one-element gather list. If the caller's cursor *arg1 points at a node that was moved, it is updated to the node's new address. The saved header is restored when the re-init fails. The names are descriptive of the pattern; the owning subsystem is not determined. */
 struct Node { int len; Node *next; };
 struct Hdr { char c[0x18]; };
 struct Obj { char pad0[8]; int f8; char padc[4]; int f10; int f14; };
@@ -12,33 +13,33 @@ extern "C" void func_0052D5A8(Obj *, void *, IOVec *) throw();
 extern "C" void *func_0052DD98(Obj *) throw();
 extern "C" void *func_005A48D8(void *, int, unsigned int);
 
-extern "C" int func_0052DE00(Obj *arg0, void **arg1) {
-    Hdr saved;
-    if (arg0 == 0 || arg0->f10 == 0 || arg0->f14 == 0 || arg0->f8 == 0) return 2;
-    saved = *(Hdr *)arg0;
-    func_005A48D8(arg0, 0, 0x18);
-    int r = func_0052D448(arg0, *(int *)(saved.c + 8));
-    Node *n = *(Node **)(saved.c + 0x14);
-    if (r != 0) {
-        *(Hdr *)arg0 = saved;
-        return r;
+extern "C" int func_0052DE00(Obj *queue, void **cursor) {
+    Hdr oldHeader;
+    if (queue == 0 || queue->f10 == 0 || queue->f14 == 0 || queue->f8 == 0) return 2;
+    oldHeader = *(Hdr *)queue;
+    func_005A48D8(queue, 0, 0x18);
+    int status = func_0052D448(queue, *(int *)(oldHeader.c + 8));
+    Node *node = *(Node **)(oldHeader.c + 0x14);
+    if (status != 0) {
+        *(Hdr *)queue = oldHeader;
+        return status;
     }
-    if (n != 0) {
+    if (node != 0) {
         do {
-            void *a1 = func_0052DD98(arg0);
-            IOVec iov;
-            int k = iov.count;
-            iov.v[k].p = n ? (char *)n + 8 : 0;
-            iov.v[k].len = n ? n->len : 0;
-            int t = iov.total;
-            if (n) t += n->len;
-            iov.total = t;
-            iov.count = iov.count + 1;
-            func_0052D5A8(arg0, a1, &iov);
-            if (arg1 != 0 && n == *arg1) *arg1 = func_0052DD98(arg0);
-            n = n->next;
-        } while (n != 0);
+            void *newNode = func_0052DD98(queue);
+            IOVec gather;
+            int slot = gather.count;
+            gather.v[slot].p = node ? (char *)node + 8 : 0;
+            gather.v[slot].len = node ? node->len : 0;
+            int total = gather.total;
+            if (node) total += node->len;
+            gather.total = total;
+            gather.count = gather.count + 1;
+            func_0052D5A8(queue, newNode, &gather);
+            if (cursor != 0 && node == *cursor) *cursor = func_0052DD98(queue);
+            node = node->next;
+        } while (node != 0);
     }
-    func_0052D4E0(&saved);
+    func_0052D4E0(&oldHeader);
     return 0;
 }

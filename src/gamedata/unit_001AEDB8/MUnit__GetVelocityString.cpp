@@ -1,3 +1,4 @@
+/* Script method GetVelocityString: when called with arguments (arg1 > 0) it asks the object in argument 0 for a float (virtual slot +0x60, a velocity - name-based inference), converts it with func_00472940 and the factor 0.2778 (1/3.6) when the unit manager PDISTD__UNIT_MANAGER is set, formats the value in tenths (value*10+0.5, with the unit text from func_00472680) using the format string D_00693040 and func_00490A40 into a 0x80-byte buffer and returns it as a new script string through *out. Which direction the 1/3.6 conversion goes (km/h to m/s or the reverse) was not checked. */
 #include "types.h"
 
 struct Rep {
@@ -63,53 +64,53 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void MUnit__GetVelocityString(void **arg0, s32 arg1, void **arg2) {
-    if (arg1 > 0) {
-        char buf[0x80];
-        Handle h;
+extern "C" void MUnit__GetVelocityString(void **out, s32 argCount, void **args) {
+    if (argCount > 0) {
+        char text[0x80];
+        Handle result;
         s32 spare[4];
-        Str s;
-        f32 vel;
-        s32 *g;
+        Str textStr;
+        f32 velocity;
+        s32 *unitManager;
 
-        vel = vcallf((VObjF *)*arg2);
-        g = &PDISTD__UNIT_MANAGER;
-        if (*g != 0) {
-            vel = func_00472940(g, vel * 0x1.1C71C6p-2f);
+        velocity = vcallf((VObjF *)*args);
+        unitManager = &PDISTD__UNIT_MANAGER;
+        if (*unitManager != 0) {
+            velocity = func_00472940(unitManager, velocity * 0x1.1C71C6p-2f);
         }
-        func_00490A40(D_00624984, buf, D_00693040,
-                      (s32)(vel * 10.0f + 0.5f), func_00472680(g));
+        func_00490A40(D_00624984, text, D_00693040,
+                      (s32)(velocity * 10.0f + 0.5f), func_00472680(unitManager));
         {
-            Rep *r = &D_00659FA8;
-            Str *ps;
-            char *bp;
-            char *d;
-            ps = &s;
-            bp = buf;
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            Str *textStrPtr;
+            char *textPtr;
+            char *chars;
+            textStrPtr = &textStr;
+            textPtr = text;
+            if (emptyRep->sel != 0) {
+                chars = func_005C2560(emptyRep);
             } else {
-                d = (char *)(r + 1);
-                r->ref++;
+                chars = (char *)(emptyRep + 1);
+                emptyRep->ref++;
             }
-            ps->p = d;
-            func_005C2630(ps, 0, -1, bp, func_0057F260(bp));
+            textStrPtr->p = chars;
+            func_005C2630(textStrPtr, 0, -1, textPtr, func_0057F260(textPtr));
             {
-                Handle *ph = &h;
-                func_00314B20(ph, ps);
-                if ((void *)arg0 != (void *)ph) {
-                    void *p = ph->p;
+                Handle *resultPtr = &result;
+                func_00314B20(resultPtr, textStrPtr);
+                if ((void *)out != (void *)resultPtr) {
+                    void *p = resultPtr->p;
                     if (p != 0) {
                         func_003285A8(p);
                     }
-                    if (*arg0 != 0) {
-                        func_003285F8(*arg0);
+                    if (*out != 0) {
+                        func_003285F8(*out);
                     }
-                    *arg0 = p;
+                    *out = p;
                 }
-                func_00312318(ph, 2);
+                func_00312318(resultPtr, 2);
             }
-            str_release(ps);
+            str_release(textStrPtr);
         }
     }
 }

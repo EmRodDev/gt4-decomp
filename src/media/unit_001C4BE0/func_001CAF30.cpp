@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-stl */
+/* Fills *vec with the encoded bytes of an image: sizes the output buffer to width*height*3/2 (YUV 4:2:0-sized, inferred from the 3/2 factor), builds a 0x900-byte encoder object (Big), feeds it the dimensions and, when p is given, a second vector holding p's data prefixed with a 4-byte checksum from func_00579F38, then shrinks vec to the size the encoder reports (or 0 on failure). The local vector uses the STL allocator so the original's inlined vector code is reproduced. */
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
@@ -81,31 +82,31 @@ struct Big {
     Big() { func_001C74B8(this); }
     ~Big() { func_001C74F8(this, 2); }
 };
-extern "C" void func_001CAF30(Vector *vec, Info *info, Obj *p, s32 val) {
-    s32 s6 = info->f10 * info->f18;
-    s32 s5 = info->f14 * info->f1C;
-    resize(vec, (s6 * s5 * 3) / 2, 0);
-    Dims d;
-    Span sp;
-    d.a = s6;
-    d.b = s5;
-    d.c = info->f4;
-    sp.n = vec->end - vec->begin;
-    sp.p = vec->begin;
-    Big big;
-    func_001C7648(&big, &d, &sp, p ? (void *)((char *)p + 0x144) : 0);
-    big.f8DC = val;
-    vector<char, PlainAlloc<char> > vv2;
-#define v2 (*(Vector *)&vv2)
-    if (p) {
-        Sub *sb = &p->sub;
-        resize(&v2, sb->finish - sb->start + 4, 0);
-        *(s32 *)v2.begin = func_00579F38(v2.begin + 4, sb->start, sb->finish - sb->start);
-        func_001C7688(&big, v2.begin, v2.end - v2.begin);
+extern "C" void func_001CAF30(Vector *output, Info *imageInfo, Obj *extra, s32 setting) {
+    s32 width = imageInfo->f10 * imageInfo->f18;
+    s32 height = imageInfo->f14 * imageInfo->f1C;
+    resize(output, (width * height * 3) / 2, 0);
+    Dims dims;
+    Span span;
+    dims.a = width;
+    dims.b = height;
+    dims.c = imageInfo->f4;
+    span.n = output->end - output->begin;
+    span.p = output->begin;
+    Big encoder;
+    func_001C7648(&encoder, &dims, &span, extra ? (void *)((char *)extra + 0x144) : 0);
+    encoder.f8DC = setting;
+    vector<char, PlainAlloc<char> > extraVec;
+#define v2 (*(Vector *)&extraVec)
+    if (extra) {
+        Sub *extraSource = &extra->sub;
+        resize(&v2, extraSource->finish - extraSource->start + 4, 0);
+        *(s32 *)v2.begin = func_00579F38(v2.begin + 4, extraSource->start, extraSource->finish - extraSource->start);
+        func_001C7688(&encoder, v2.begin, v2.end - v2.begin);
     }
-    if (func_0046C258(&big) != 0) {
-        resize(vec, func_0046F490(big.f85C), 0);
+    if (func_0046C258(&encoder) != 0) {
+        resize(output, func_0046F490(encoder.f85C), 0);
     } else {
-        resize(vec, 0, 0);
+        resize(output, 0, 0);
     }
 }

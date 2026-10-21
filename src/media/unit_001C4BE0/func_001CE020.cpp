@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-stl */
+/* Saves a game-data block with progress feedback: the local Loc object reports progress (steps 0.0, 0.5, 1.0 through a virtual call). It first runs func_001CE868 on the global state (D_00622F4C+0xBC30) with a counter+1, then asks the global object for its data size (vtable +0x10), copies the data (vtable +0x28) into a 0x40-aligned vector at +8, encrypts it with func_001D4D10 and writes it with func_001CCEC8 while a second progress object (Loc2, 0.5..1.0) tracks the write. Returns the write comparison (r == 0) or the early error. Reading it as save/encrypt is inferred from the call order (copy, encrypt, write). */
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
@@ -71,26 +72,26 @@ extern "C" Result func_001CE868(void *, void *, void *, s32, s32);
 extern "C" s32 func_001CCEC8(void *, void *, void *, s32, void *) throw();
 extern "C" void func_001D4D10(void *, float, s32, float, u32, s32);
 
-extern "C" s32 func_001CE020(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    Loc l(arg3);
-    l.step(0.0f);
-    char *g = D_00622F4C + 0xBC30;
-    l.step(0.5f);
-    s32 cnt = *(s32 *)(g + 0x81E0) + 1;
-    Result res = func_001CE868(arg0, arg1, g, cnt != 0 ? cnt : 1, 1);
-    if (status(&res)) return res.value;
-    Gv *gv = (Gv *)D_00622F4C;
-    VEntC *e3 = (VEntC *)(gv->vtbl + 0x10);
-    s32 size = e3->fn((char *)gv + e3->off);
-    vector<char, PlainAlloc40<char> > v((size_t)((size + 0x47) & ~0x3F));
-    Gv *gv2 = (Gv *)D_00622F4C;
-    VEntB *e4 = (VEntB *)(gv2->vtbl + 0x28);
-    char *data = v.begin();
-    e4->fn((char *)gv2 + e4->off, data + 8);
-    func_001D4D10(data, 0x1.161910p-3f, size, 0x1.4f49cep-1f, 0, 0);
-    Loc2 o(&l, 0.5f, 1.0f);
-    s32 r = func_001CCEC8(arg0, arg1, v.begin(), v.size(), &o);
-    *(s32 *)(g + 0x81E0) = cnt;
-    l.step(1.0f);
-    return r == 0;
+extern "C" s32 func_001CE020(void *context, void *channel, s32 arg2, s32 progressId) {
+    Loc progress(progressId);
+    progress.step(0.0f);
+    char *state = D_00622F4C + 0xBC30;
+    progress.step(0.5f);
+    s32 cnt = *(s32 *)(state + 0x81E0) + 1;
+    Result prepared = func_001CE868(context, channel, state, cnt != 0 ? cnt : 1, 1);
+    if (status(&prepared)) return prepared.value;
+    Gv *globalObj = (Gv *)D_00622F4C;
+    VEntC *sizeSlot = (VEntC *)(globalObj->vtbl + 0x10);
+    s32 dataSize = sizeSlot->fn((char *)globalObj + sizeSlot->off);
+    vector<char, PlainAlloc40<char> > blob((size_t)((dataSize + 0x47) & ~0x3F));
+    Gv *globalObj2 = (Gv *)D_00622F4C;
+    VEntB *copySlot = (VEntB *)(globalObj2->vtbl + 0x28);
+    char *blobData = blob.begin();
+    copySlot->fn((char *)globalObj2 + copySlot->off, blobData + 8);
+    func_001D4D10(blobData, 0x1.161910p-3f, dataSize, 0x1.4f49cep-1f, 0, 0);
+    Loc2 writeProgress(&progress, 0.5f, 1.0f);
+    s32 writeResult = func_001CCEC8(context, channel, blob.begin(), blob.size(), &writeProgress);
+    *(s32 *)(state + 0x81E0) = cnt;
+    progress.step(1.0f);
+    return writeResult == 0;
 }

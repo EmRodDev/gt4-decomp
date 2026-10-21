@@ -1,3 +1,4 @@
+/* Script property accessor MOption LAN_style: with arguments (argCount > 0) it acts as the setter, converting the string in args[0] to a number with func_00438CF8 and storing it in the option block at +0x1344; otherwise it acts as the getter and converts the stored value back to a name with func_00438CB8, returning it as a new script string through *out (retain new, release old). The string/number table lookups are named only by position in the source; the semantics of the stored value are inferred from the accessor name. */
 #include "types.h"
 
 struct Rep {
@@ -74,26 +75,26 @@ static inline void vcall18(Str *ret, VObj *o) {
     e->fn(ret, (char *)o + e->delta);
 }
 
-extern "C" void MOption__get_LAN_style(void **arg0, void *arg1, s32 arg2, VObj **arg3) {
-    HStr h;
-    if (arg2 > 0) {
+extern "C" void MOption__get_LAN_style(void **out, void *object, s32 argCount, VObj **args) {
+    HStr optionHandle;
+    if (argCount > 0) {
         Str t;
         HObj *hp;
-        func_0017FB28(&h, arg1);
-        hp = h.p;
-        vcall18(&t, arg3[0]);
+        func_0017FB28(&optionHandle, object);
+        hp = optionHandle.p;
+        vcall18(&t, args[0]);
         const char *n = c_str(&t);
         func_00438CF8(hp->f10 + 0x1344, n);
         str_release(&t);
-        func_0017FAD0(&h, 2);
+        func_0017FAD0(&optionHandle, 2);
         return;
     }
     {
-        Str res;
+        Str result;
         Str s;
-        func_0017FB28(&h, arg1);
+        func_0017FB28(&optionHandle, object);
         Str *ps = &s;
-        const char *src = func_00438CB8(h.p->f10 + 0x1344);
+        const char *src = func_00438CB8(optionHandle.p->f10 + 0x1344);
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {
@@ -104,20 +105,20 @@ extern "C" void MOption__get_LAN_style(void **arg0, void *arg1, s32 arg2, VObj *
         }
         ps->p = d;
         func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        Str *pr = &res;
+        Str *pr = &result;
         func_00314B20(pr, ps);
-        if ((void *)arg0 != (void *)pr) {
+        if ((void *)out != (void *)pr) {
             void *p = pr->p;
             if (p != 0) {
                 func_003285A8(p);
             }
-            if (*arg0 != 0) {
-                func_003285F8(*arg0);
+            if (*out != 0) {
+                func_003285F8(*out);
             }
-            *arg0 = p;
+            *out = p;
         }
         func_00312318(pr, 2);
         str_release(ps);
-        func_0017FAD0(&h, 2);
+        func_0017FAD0(&optionHandle, 2);
     }
 }

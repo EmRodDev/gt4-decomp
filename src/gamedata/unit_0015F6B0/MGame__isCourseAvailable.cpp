@@ -1,3 +1,4 @@
+/* Script method isCourseAvailable(name): resolves the course name in args[0] to an index (func_00447C78; nothing is returned when it is -1), asks the course table in the game data at +0x36550 (func_0042EAE8) whether that course is available and returns the answer as a script number through *out. Sibling of isCarAvailable. 'Available' is taken from the method name. */
 #include "types.h"
 
 struct Rep {
@@ -65,38 +66,38 @@ static inline const char *c_str(Str *t) {
     return t->p;
 }
 
-extern "C" void MGame__isCourseAvailable(void **arg0, void *arg1, s32 arg2, void **arg3) {
-    if (arg2 > 0) {
-        union StrOrHandle u;
+extern "C" void MGame__isCourseAvailable(void **out, void *object, s32 argCount, void **args) {
+    if (argCount > 0) {
+        union StrOrHandle scratch;
         Handle h;
-        Handle *pc;
+        Handle *gameHandle;
 
         {
-            Obj *o = *(Obj **)arg3;
+            Obj *o = *(Obj **)args;
             VEntry *e;
             e = (VEntry *)(o->vtbl + 0x18);
-            e->fn(&u.s, (char *)o + e->delta);
+            e->fn(&scratch.s, (char *)o + e->delta);
         }
-        s32 idx = func_00447C78((s32)c_str(&u.s));
-        str_release(&u.s);
-        if (idx != -1) {
-            pc = &h;
-            func_0015F3E0(pc, arg1);
-            Obj *x = *(Obj **)((char *)pc->p + 0x10);
-            int res = func_0042EAE8((char *)x + 0x36550, (void *)idx);
-            func_002FE278(&u.res, (void *)res);
-            if ((void *)arg0 != (void *)&u.res) {
-                void *p = u.res.p;
+        s32 courseIndex = func_00447C78((s32)c_str(&scratch.s));
+        str_release(&scratch.s);
+        if (courseIndex != -1) {
+            gameHandle = &h;
+            func_0015F3E0(gameHandle, object);
+            Obj *gameData = *(Obj **)((char *)gameHandle->p + 0x10);
+            int answer = func_0042EAE8((char *)gameData + 0x36550, (void *)courseIndex);
+            func_002FE278(&scratch.res, (void *)answer);
+            if ((void *)out != (void *)&scratch.res) {
+                void *p = scratch.res.p;
                 if (p != 0) {
                     func_003285A8(p);
                 }
-                if (*arg0 != 0) {
-                    func_003285F8(*arg0);
+                if (*out != 0) {
+                    func_003285F8(*out);
                 }
-                *arg0 = p;
+                *out = p;
             }
-            func_002FC870(&u.res, 2);
-            func_0015F388(pc, 2);
+            func_002FC870(&scratch.res, 2);
+            func_0015F388(gameHandle, 2);
         }
     }
 }

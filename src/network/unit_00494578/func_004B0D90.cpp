@@ -1,3 +1,4 @@
+/* Releases the resource block attached to arg1 (field +0xC): after func_004ADDC0, if the block exists and the owner's state (the object at +4, field +0x74) equals 1 and the block has a pending count, func_00550E60 is called with the remaining 0x40 - count; then func_00550E90 closes it and the block and its sub-allocation (+0xC) are returned to the two pools D_0084D5C0 / D_0084D5E0 (func_00575C30). Always returns 0. Which subsystem owns it is not determined. */
 #include "types.h"
 
 struct Rep {
@@ -36,20 +37,20 @@ struct func_004B0D90_v_s0 {
     s32 unkC;
 };
 
-extern "C" s32 func_004B0D90(s32 *arg0, struct func_004B0D90_arg1 *arg1) {
-    s32 v_s0;
+extern "C" s32 func_004B0D90(s32 *owner, struct func_004B0D90_arg1 *connection) {
+    s32 block;
     func_004ADDC0();
-    v_s0 = arg1->unkC;
-    if (v_s0 != 0) {
-        if (*(s32 *)((char *)(arg1->unk4) + 0x74) == 0x1) {
-            if (((struct func_004B0D90_v_s0 *)v_s0)->unk8 != 0) {
-                func_00550E60(*(s32 *)(char *)v_s0, ((struct func_004B0D90_v_s0 *)v_s0)->unkC, (0x40 - ((struct func_004B0D90_v_s0 *)v_s0)->unk8));
+    block = connection->unkC;
+    if (block != 0) {
+        if (*(s32 *)((char *)(connection->unk4) + 0x74) == 0x1) {
+            if (((struct func_004B0D90_v_s0 *)block)->unk8 != 0) {
+                func_00550E60(*(s32 *)(char *)block, ((struct func_004B0D90_v_s0 *)block)->unkC, (0x40 - ((struct func_004B0D90_v_s0 *)block)->unk8));
             }
         }
-        func_00550E90(*(s32 *)(char *)v_s0);
-        func_00575C30(&D_0084D5E0, ((struct func_004B0D90_v_s0 *)v_s0)->unkC);
-        func_00575C30(&D_0084D5C0, v_s0);
-        arg1->unkC = 0;
+        func_00550E90(*(s32 *)(char *)block);
+        func_00575C30(&D_0084D5E0, ((struct func_004B0D90_v_s0 *)block)->unkC);
+        func_00575C30(&D_0084D5C0, block);
+        connection->unkC = 0;
     }
     return 0;
 }

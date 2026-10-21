@@ -1,3 +1,4 @@
+/* Same name lookup as func_00329858/func_00329A88, but instead of reading or writing a value it passes 'target' to func_003069F8 together with the symbol id and returns 1 when a variable handle came back, 0 otherwise (inferred: probably a 'bind/query by name' variant). Purpose of target unknown. */
 #include "types.h"
 
 struct Rep {
@@ -43,20 +44,20 @@ extern "C" void func_002ED5C0(Handle16 *arg0, s32 arg1);
 extern "C" void func_003069F8(void *obj, void *h, s32 *val);
 extern "C" void func_003041B8(Handle16 *arg0, s32 arg1);
 
-extern "C" s32 func_0032A570(void *arg0, const char *arg1) {
+extern "C" s32 func_0032A570(void *target, const char *name) {
     union {
         Str s;
         Tmp tmp;
     } u;
-    Handle16 h1;
-    Handle16 h2;
-    s32 val;
-    Str s2;
-    bool miss;
+    Handle16 variableHandle;
+    Handle16 moduleHandle;
+    s32 symbolId;
+    Str nameCopy;
+    bool unknownName;
 
     {
         Str *ps = &u.s;
-        const char *src = arg1;
+        const char *src = name;
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {
@@ -67,7 +68,7 @@ extern "C" s32 func_0032A570(void *arg0, const char *arg1) {
         }
         ps->p = d;
         func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        miss = !func_003166F8(&u.s);
+        unknownName = !func_003166F8(&u.s);
         {
             Rep *q = (Rep *)(u.s.p - 0x10);
             if (--q->ref == 0) {
@@ -76,23 +77,23 @@ extern "C" s32 func_0032A570(void *arg0, const char *arg1) {
             }
         }
     }
-    if (miss) {
+    if (unknownName) {
         return 0;
     }
     {
-        Handle16 *ph1;
-        Handle16 *ph2;
-        void *obj;
+        Handle16 *variable;
+        Handle16 *moduleRef;
+        void *module;
         func_002ECDE0(&u.tmp);
-        ph1 = &h1;
-        func_002EFBF0(ph1);
-        ph2 = &h2;
-        func_002EC3A0(ph2, u.tmp.field0);
-        obj = ph2->p;
+        variable = &variableHandle;
+        func_002EFBF0(variable);
+        moduleRef = &moduleHandle;
+        func_002EC3A0(moduleRef, u.tmp.field0);
+        module = moduleRef->p;
         {
-            Str *ps = &s2;
-            s32 *pv = &val;
-            const char *src = arg1;
+            Str *ps = &nameCopy;
+            s32 *pv = &symbolId;
+            const char *src = name;
             Rep *r = &D_00659FA8;
             char *d;
             if (r->sel != 0) {
@@ -104,7 +105,7 @@ extern "C" s32 func_0032A570(void *arg0, const char *arg1) {
             ps->p = d;
             func_005C2630(ps, 0, -1, src, func_0057F260(src));
             *pv = HSymID__GetID(ps);
-            func_003069F8(obj, arg0, pv);
+            func_003069F8(module, target, pv);
             {
                 Rep *q = (Rep *)(ps->p - 0x10);
                 if (--q->ref == 0) {
@@ -113,13 +114,13 @@ extern "C" s32 func_0032A570(void *arg0, const char *arg1) {
                 }
             }
         }
-        func_003041B8(ph2, 2);
-        if (ph1->p != 0) {
-            func_002ED5C0(ph1, 2);
+        func_003041B8(moduleRef, 2);
+        if (variable->p != 0) {
+            func_002ED5C0(variable, 2);
             func_002EA590(&u.tmp, 2);
             return 1;
         }
-        func_002ED5C0(ph1, 2);
+        func_002ED5C0(variable, 2);
         func_002EA590(&u.tmp, 2);
         return 0;
     }

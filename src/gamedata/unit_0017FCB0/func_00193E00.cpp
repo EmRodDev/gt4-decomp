@@ -1,3 +1,4 @@
+/* Builds a result object from two float arguments and a fixed string (D_00692238): two 16-byte values are created from f1 and f2 (func_002F9360), combined with a handle (func_002EFBF0 default-constructed, then func_002EEEB0) and passed with arg0/arg2 to func_0023A538; the object it returns is handed to func_00250CE0 together with arg1 and then destroyed. What the objects are is unknown; the string temporary is destroyed inline (expanded basic_string destructor). */
 #include "types.h"
 
 struct Rep {
@@ -38,56 +39,56 @@ extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" char *func_005C2560(void *);
 extern "C" void *func_005C2630(void *, u32, u32, const char *, u32);
 
-extern "C" void func_00193E00(void *arg0, void *arg1, void *arg2, float f1, float f2) {
-    struct { void *p; char pad[0xC]; } h;
-    Obj16 res;
-    Obj16 a;
-    Obj16 b;
-    Str s;
-    const char *src;
-    Obj16 *pr;
-    func_002EFBF0(&h);
-    pr = &res;
+extern "C" void func_00193E00(void *arg0, void *arg1, void *arg2, float firstFloat, float secondFloat) {
+    struct { void *p; char pad[0xC]; } handle;
+    Obj16 result;
+    Obj16 valueA;
+    Obj16 valueB;
+    Str text;
+    const char *literal;
+    Obj16 *resultPtr;
+    func_002EFBF0(&handle);
+    resultPtr = &result;
     {
-        Obj16 *pa = &a;
-        void *hp = h.p;
-        func_002F9360(pa, f1);
-        func_002EEEB0(pr, hp, pa);
-        func_00309378(pr, 2);
-        func_002F7B68(pa, 2);
+        Obj16 *valueAPtr = &valueA;
+        void *handleRaw = handle.p;
+        func_002F9360(valueAPtr, firstFloat);
+        func_002EEEB0(resultPtr, handleRaw, valueAPtr);
+        func_00309378(resultPtr, 2);
+        func_002F7B68(valueAPtr, 2);
     }
     {
-        Obj16 *pb = &b;
-        void *hp = h.p;
-        func_002F9360(pb, f2);
-        func_002EEEB0(pr, hp, pb);
-        func_00309378(pr, 2);
-        func_002F7B68(pb, 2);
+        Obj16 *valueBPtr = &valueB;
+        void *handleRaw = handle.p;
+        func_002F9360(valueBPtr, secondFloat);
+        func_002EEEB0(resultPtr, handleRaw, valueBPtr);
+        func_00309378(resultPtr, 2);
+        func_002F7B68(valueBPtr, 2);
     }
     {
-        Str *ps = &s;
-        src = D_00692238;
+        Str *textPtr = &text;
+        literal = D_00692238;
         {
-            Rep *r = &D_00659FA8;
-            char *d = (char *)(r + 1);
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            char *chars = (char *)(emptyRep + 1);
+            if (emptyRep->sel != 0) {
+                chars = func_005C2560(emptyRep);
             } else {
-                r->ref++;
+                emptyRep->ref++;
             }
-            ps->p = d;
+            textPtr->p = chars;
         }
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_0023A538(pr, arg2, arg0, ps, &h);
-        func_00250CE0(arg1, pr);
-        func_00239F08(pr, 2);
+        func_005C2630(textPtr, 0, -1, literal, func_0057F260(literal));
+        func_0023A538(resultPtr, arg2, arg0, textPtr, &handle);
+        func_00250CE0(arg1, resultPtr);
+        func_00239F08(resultPtr, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
-            if (--q->ref == 0) {
-                s32 size = q->cap + 0x10;
-                func_00326798(q, size, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(textPtr->p - 0x10);
+            if (--rep->ref == 0) {
+                s32 size = rep->cap + 0x10;
+                func_00326798(rep, size, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002ED5C0(&h, 2);
+    func_002ED5C0(&handle, 2);
 }

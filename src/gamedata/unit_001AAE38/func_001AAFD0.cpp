@@ -1,3 +1,4 @@
+/* Per-frame update of a pair of sub-objects embedded in the owner: a 'face' state machine at +0x1E9C and a resource list at +0xBC. If the face is idle and the list has an entry it starts the face on that entry with a random flip flag (func_00579398(1.0f) < 0.5), an extra value and a low/high float pair read from the global block at D_00622F4C+0x38CB0 (low clamped to 3..60); if the list is empty but its +8 field is set it asks the face to do func_001C73C8 instead. It then always steps the face (func_001C7438) and, when that reports finished, calls func_001C7178 on the list. The game meaning of face/resource is not determined (the names are descriptive only). */
 #include "types.h"
 
 extern "C" s32 func_001C72B8(void *);
@@ -12,9 +13,9 @@ extern "C" s32 func_001C7328(void *);
 extern "C" void func_001C7178(void *);
 extern s32 D_00622F4C;
 
-extern "C" void func_001AAFD0(void *arg0) {
-    char *face = (char *)arg0 + 0x1E9C;
-    char *resource = (char *)arg0 + 0xBC;
+extern "C" void func_001AAFD0(void *owner) {
+    char *face = (char *)owner + 0x1E9C;
+    char *resource = (char *)owner + 0xBC;
     if (func_001C72B8(face)) {
         if (func_001C70A8(resource)) {
             void *entry = func_001C71B8(resource);

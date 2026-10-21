@@ -1,3 +1,4 @@
+/* Calls virtual slot +0x2C0 on the global object D_00618840, then runs func_00387EF0 on it with its field +0xCC8 and 0, and, between the lock begin/end pair on D_00821D18 (func_00576100 / func_00576140, inferred from their pairing), sets arg0's fields +0xA4 = 0 and +0xA8 = 1. Meaning of the two flags unknown. */
 #include "types.h"
 
 struct VEntry {
@@ -23,16 +24,16 @@ extern "C" void func_00387EF0(Obj *arg0, s32 arg1, s32 arg2);
 extern "C" void func_00576100(Obj *arg0);
 extern "C" void func_00576140(Obj *arg0);
 
-extern "C" void func_0012B888(Obj *arg0) {
-    Obj **pg = (Obj **)&D_00618840;
-    Obj *o = *pg;
-    VEntry *e = (VEntry *)((char *)o->vt + 0x2C0);
-    e->fn((char *)o + e->delta);
+extern "C" void func_0012B888(Obj *target) {
+    Obj **globalPtr = (Obj **)&D_00618840;
+    Obj *globalObj = *globalPtr;
+    VEntry *slot = (VEntry *)((char *)globalObj->vt + 0x2C0);
+    slot->fn((char *)globalObj + slot->delta);
 
-    Obj *g = *pg;
-    func_00387EF0(g, g->unkCC8, 0);
+    Obj *globalObj2 = *globalPtr;
+    func_00387EF0(globalObj2, globalObj2->unkCC8, 0);
     func_00576100((Obj *)&D_00821D18);
-    arg0->unkA4 = 0;
-    arg0->unkA8 = 1;
+    target->unkA4 = 0;
+    target->unkA8 = 1;
     func_00576140((Obj *)&D_00821D18);
 }

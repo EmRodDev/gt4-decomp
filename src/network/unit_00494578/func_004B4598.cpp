@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Clears the whole state of the two-slot channel object: counters at +0x10/+0x1C/+0x858/+0x85C/+0x860, the idle second slot (subs[1]) and the record at +0x654, marks that record with byte 1, calls func_004B59C0(o, 6) twice and finally func_004B8270(o). Field names are descriptive; what the channels are is not determined. */
 typedef int s32;
 typedef unsigned char u8;
 struct Sub {
@@ -15,26 +16,26 @@ struct Obj {
 };
 extern "C" void *func_004B59C0(void *, s32);
 extern "C" void func_004B8270(void *);
-extern "C" void func_004B4598(Obj *o) {
-    Sub *v = &o->subs[1];
-    o->f10 = 0;
-    *o->f14 = 0;
-    o->f1C = 0;
-    o->f858 = 0;
-    o->f85C = 0;
-    o->f860 = 0;
-    v->f0 = 0;
-    v->f4 = 0;
-    *v->f8 = 0;
-    v->s10 = 0;
-    v->f210 = 0;
-    v->f214 = 0;
-    W *w = (W *)((char *)o + 0x654);
-    w->b = 1;
-    w->s6 = 0;
-    w->s4 = 0;
-    v->f418 = 0;
-    func_004B59C0(o, 6);
-    func_004B59C0(o, 6);
-    func_004B8270(o);
+extern "C" void func_004B4598(Obj *self) {
+    Sub *slot1 = &self->subs[1];
+    self->f10 = 0;
+    *self->f14 = 0;
+    self->f1C = 0;
+    self->f858 = 0;
+    self->f85C = 0;
+    self->f860 = 0;
+    slot1->f0 = 0;
+    slot1->f4 = 0;
+    *slot1->f8 = 0;
+    slot1->s10 = 0;
+    slot1->f210 = 0;
+    slot1->f214 = 0;
+    W *record = (W *)((char *)self + 0x654);
+    record->b = 1;
+    record->s6 = 0;
+    record->s4 = 0;
+    slot1->f418 = 0;
+    func_004B59C0(self, 6);
+    func_004B59C0(self, 6);
+    func_004B8270(self);
 }

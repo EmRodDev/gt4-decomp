@@ -1,3 +1,4 @@
+/* Script property accessor MOption default_language: with arguments (argCount > 0) it acts as the setter, converting the string in args[0] to a number with func_004398C0 and storing it in the default_language field of the option block; otherwise it acts as the getter and converts the stored value back to a name with func_004398B0, returning it as a new script string through *out (retain new, release old). The string/number table lookups are named only by position in the source; the semantics of the stored value are inferred from the accessor name. */
 #include "types.h"
 
 struct Rep {
@@ -61,7 +62,7 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, VObj_18 **arg3) {
+extern "C" void MOption__get_default_language(s32 *out, void *object, s32 argCount, VObj_18 **args) {
     Handle buf0;
     Str s1;
     s32 buf2[4];
@@ -72,11 +73,11 @@ extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, V
     s32 *p_s1;
     s32 newVal;
     s32 oldVal;
-    if (arg2 > 0) {
-        func_0017FB28(&buf0, arg1);
+    if (argCount > 0) {
+        func_0017FB28(&buf0, object);
         Str *t = &s1;
         Inner *owner = buf0.p;
-        vcall_18_ret(t, *arg3);
+        vcall_18_ret(t, *args);
         c = 0;
         {
             s32 len = ((Rep *)t->p - 1)->len;
@@ -91,7 +92,7 @@ extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, V
         str_release(t);
         func_0017FAD0(&buf0, 0x2);
     } else {
-        func_0017FB28(&buf0, arg1);
+        func_0017FB28(&buf0, object);
         p_s3 = &s3;
         v_s0 = func_004398B0((s32)buf0.p->p10->default_language);
         {
@@ -108,16 +109,16 @@ extern "C" void MOption__get_default_language(s32 *arg0, void *arg1, s32 arg2, V
         func_005C2630(p_s3, 0, -0x1, v_s0, func_0057F260(v_s0));
         p_s1 = buf2;
         func_00314B20(p_s1, p_s3);
-        if (arg0 != p_s1) {
+        if (out != p_s1) {
             newVal = *p_s1;
             if (newVal != 0) {
                 func_003285A8(newVal);
             }
-            oldVal = *arg0;
+            oldVal = *out;
             if (oldVal != 0) {
                 func_003285F8(oldVal);
             }
-            *arg0 = newVal;
+            *out = newVal;
         }
         func_00312318(p_s1, 0x2);
         str_release(p_s3);

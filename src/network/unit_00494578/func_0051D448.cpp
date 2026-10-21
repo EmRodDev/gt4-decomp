@@ -1,3 +1,4 @@
+/* Advances a two-slot state machine on object o: asks the callback at D_0064B4B0+0x60 (with the handle at o->m80+0x1C) for a count; if it is zero the call returns 0 without change. Otherwise it runs func_0053A860 on three fields (+0x20, +0x28, +0x34) of each of the two entries in o->arr, then depending on func_00520230(o->m0) goes to func_0051DDE8 (state 3) or func_0051DE30 (state 4) and stores that state in o->m8 on success. The error value of the failing call is returned. State meanings are not determined. */
 struct V { char pad[0x60]; int (*f60)(void *, int *); };
 struct Sub {
     char pad[0x1C];
@@ -20,40 +21,40 @@ extern "C" int func_0051DE30(O *);
 extern "C" int func_00520230(int);
 extern "C" void func_0053A860(void *);
 
-extern "C" int func_0051D448(O *o) {
-    int sp0 = 0;
-    int r = D_0064B4B0->f60(o->m80->m1C, &sp0);
-    if (r == 0) {
-        unsigned int i = 0;
-        if (sp0 != 0) {
-            N **pp = &o->arr[0];
+extern "C" int func_0051D448(O *self) {
+    int count = 0;
+    int status = D_0064B4B0->f60(self->m80->m1C, &count);
+    if (status == 0) {
+        unsigned int index = 0;
+        if (count != 0) {
+            N **entryPtr = &self->arr[0];
             do {
-                N *p = *pp;
-                pp++;
-                if (p != 0) {
-                    func_0053A860((char *)p + 0x20);
-                    func_0053A860((char *)p + 0x28);
-                    func_0053A860((char *)p + 0x34);
+                N *entry = *entryPtr;
+                entryPtr++;
+                if (entry != 0) {
+                    func_0053A860((char *)entry + 0x20);
+                    func_0053A860((char *)entry + 0x28);
+                    func_0053A860((char *)entry + 0x34);
                 }
-                i++;
-            } while (i < 2);
-            if (func_00520230(o->m0) != 0) {
-                r = func_0051DDE8(o->m80);
-                if (r == 0) {
-                    o->m8 = 3;
+                index++;
+            } while (index < 2);
+            if (func_00520230(self->m0) != 0) {
+                status = func_0051DDE8(self->m80);
+                if (status == 0) {
+                    self->m8 = 3;
                     goto z;
                 }
             } else {
-                r = func_0051DE30(o);
-                if (r == 0) {
-                    o->m8 = 4;
+                status = func_0051DE30(self);
+                if (status == 0) {
+                    self->m8 = 4;
                     goto z;
                 }
             }
         } else {
         z:
-            r = 0;
+            status = 0;
         }
     }
-    return r;
+    return status;
 }

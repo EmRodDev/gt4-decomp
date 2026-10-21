@@ -1,3 +1,4 @@
+/* Script property accessor: when n > 0 it works as the setter and copies the string value held by handle arg3 into the text buffer (record +4) reached through the object handle at +0x10; otherwise it works as the getter and returns, through the handle *out, a new string built from that same buffer. Registered with the script engine as get_course_code / set_course_code at one shared address (config/adhoc_methods.txt). The record layout beyond the text buffer is not determined. */
 #include "types.h"
 
 struct Rep {
@@ -77,31 +78,31 @@ static inline const char *c_str(Str *t) {
     return t->p;
 }
 
-extern "C" void MGame__get_course_code(void **arg0, void *arg1, s32 n, void *arg3) {
-    OHandle h0;
+extern "C" void MGame__get_course_code(void **out, void *gameObject, s32 n, void *newValue) {
+    OHandle record;
     Handle tmp;
-    Handle h;
-    Str s;
+    Handle result;
+    Str text;
     if (n > 0) {
-        func_0015F3E0(&h0, arg1);
+        func_0015F3E0(&record, gameObject);
         {
             Handle *pt = &tmp;
-            func_00312370(pt, arg3);
+            func_00312370(pt, newValue);
             {
-                char *dst = h0.p->in->text;
+                char *dst = record.p->in->text;
                 func_0043A200(dst, c_str(func_00314920(pt->p)));
             }
             func_00312318(pt, 2);
         }
-        func_0015F388(&h0, 2);
+        func_0015F388(&record, 2);
     } else {
-        func_0015F3E0(&h0, arg1);
+        func_0015F3E0(&record, gameObject);
         {
             Str *ps;
             const char *src;
             char *d;
-            ps = &s;
-            src = h0.p->in->text;
+            ps = &text;
+            src = record.p->in->text;
             if (D_00659FA8.sel != 0) {
                 d = func_005C2560(&D_00659FA8);
             } else {
@@ -111,22 +112,22 @@ extern "C" void MGame__get_course_code(void **arg0, void *arg1, s32 n, void *arg
             ps->p = d;
             func_005C2630(ps, 0, -1, src, func_0057F260(src));
             {
-                Handle *ph = &h;
+                Handle *ph = &result;
                 func_00314B20(ph, ps);
-                if ((void *)arg0 != (void *)ph) {
+                if ((void *)out != (void *)ph) {
                     void *p = ph->p;
                     if (p != 0) {
                         func_003285A8(p);
                     }
-                    if (*arg0 != 0) {
-                        func_003285F8(*arg0);
+                    if (*out != 0) {
+                        func_003285F8(*out);
                     }
-                    *arg0 = p;
+                    *out = p;
                 }
                 func_00312318(ph, 2);
             }
             str_release(ps);
         }
-        func_0015F388(&h0, 2);
+        func_0015F388(&record, 2);
     }
 }

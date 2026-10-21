@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Builds a render/encode job from a camera-like object and returns a result string (or the constant D_006925F8 when self->p is null). It fills a 0x40-byte local descriptor with defaults (a1c..a24 = 1,1,3,1.0f), copies the settings block of the object returned by func_00197788(slot) or, when that is null, the one at self->p, runs the func_00331xxx setup calls on it, then calls func_001CAF30 to produce a byte vector and formats it with func_001CAD08. Both temporary buffers are freed at the end. The exact meaning (looks like a screenshot/thumbnail encoder, inferred from the vector sizing in func_001CAF30) is a guess. */
 typedef int s32;
 
 struct Cam {
@@ -80,54 +81,54 @@ static inline void copy(Loc *d, Src *s) {
     d->a24 = s->a24;
 }
 
-extern "C" const char *func_0019B3A0(Obj *arg0, s32 arg1) {
-    Loc loc;
-    Vec v;
-    Tmp t;
-    Cam *cam;
-    Src *s;
-    Src *a1;
-    s32 g;
-    const char *r;
-    if (arg0->p == 0) {
+extern "C" const char *func_0019B3A0(Obj *self, s32 slot) {
+    Loc job;
+    Vec buffer;
+    Tmp scratch;
+    Cam *camera;
+    Src *settings;
+    Src *unused;
+    s32 globalValue;
+    const char *result;
+    if (self->p == 0) {
         return D_006925F8;
     }
-    loc.a4 = 0;
-    loc.a8 = 0;
-    loc.aC = 0;
-    loc.a10 = 0;
-    loc.a14 = 0;
-    loc.a18 = 1;
-    loc.a1c = 1;
-    loc.a20 = 3;
-    loc.a24 = 1.0f;
-    cam = func_00197788(arg1);
-    if (cam != 0) {
-        s = (Src *)((char *)cam + 0x1C);
-        func_00335558(cam);
-        copy(&loc, s);
+    job.a4 = 0;
+    job.a8 = 0;
+    job.aC = 0;
+    job.a10 = 0;
+    job.a14 = 0;
+    job.a18 = 1;
+    job.a1c = 1;
+    job.a20 = 3;
+    job.a24 = 1.0f;
+    camera = func_00197788(slot);
+    if (camera != 0) {
+        settings = (Src *)((char *)camera + 0x1C);
+        func_00335558(camera);
+        copy(&job, settings);
     } else {
-        s = arg0->p;
-        copy(&loc, s);
+        settings = self->p;
+        copy(&job, settings);
     }
-    func_00331608(&loc);
-    if (cam != 0 && cam->f18 != 0) {
-        func_00331B40(&loc);
-        func_00331930(&loc, 0, 0);
+    func_00331608(&job);
+    if (camera != 0 && camera->f18 != 0) {
+        func_00331B40(&job);
+        func_00331930(&job, 0, 0);
     }
     if (func_00333550() == 0) {
-        func_001CAB90(&loc);
+        func_001CAB90(&job);
     }
-    g = func_00197808(D_00622F4C->f);
-    v.b = 0;
-    v.e = 0;
-    v.c = 0;
-    func_001CAF30(&v, &loc, cam, g);
-    r = func_001CAD08(D_00692600, D_00692608, 10000, v.b, v.e - v.b);
-    if (v.b != 0) {
-        free(v.b);
+    globalValue = func_00197808(D_00622F4C->f);
+    buffer.b = 0;
+    buffer.e = 0;
+    buffer.c = 0;
+    func_001CAF30(&buffer, &job, camera, globalValue);
+    result = func_001CAD08(D_00692600, D_00692608, 10000, buffer.b, buffer.e - buffer.b);
+    if (buffer.b != 0) {
+        free(buffer.b);
     }
-    t.x = loc.a4;
-    if (t.x != 0) free(t.x);
-    return r;
+    scratch.x = job.a4;
+    if (scratch.x != 0) free(scratch.x);
+    return result;
 }

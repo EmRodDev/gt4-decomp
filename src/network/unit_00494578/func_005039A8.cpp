@@ -1,3 +1,4 @@
+/* Deleting destructor of an object that holds an array of 32 sub-objects of 0x48 bytes at +0x54 (destroyed back to front with func_005037F0; the odd 'arg0 != -0x54' test is the compiler's null check on the array address), three list heads at +0x30, +0x3C and +0x48 reset like in func_004AD240 and a base part destroyed by func_00574DA8; when bit 0 of the flags is set the object is freed (func_005C1628). Shape inferred from the compiler idiom; the element type is not determined. */
 #include "types.h"
 
 struct func_005039A8_obj {
@@ -12,34 +13,34 @@ extern "C" void func_0057CA38(void *, s32);
 extern "C" void func_00574DA8(void *, s32);
 extern "C" void func_005C1628(void *);
 
-extern "C" void func_005039A8(void *arg0, s32 arg1) {
-    char *temp_s0;
-    char *temp_s1;
-    struct func_005039A8_obj *o1;
-    struct func_005039A8_obj *o2;
-    struct func_005039A8_obj *o3;
+extern "C" void func_005039A8(void *self, s32 deleteFlags) {
+    char *elementEnd;
+    char *arrayStart;
+    struct func_005039A8_obj *list48;
+    struct func_005039A8_obj *list3C;
+    struct func_005039A8_obj *list30;
 
-    if ((char *)arg0 != (char *)-0x54) {
-        temp_s0 = (char *)arg0 + 0x954;
-        temp_s1 = (char *)arg0 + 0x54;
-        if (temp_s1 != temp_s0) {
+    if ((char *)self != (char *)-0x54) {
+        elementEnd = (char *)self + 0x954;
+        arrayStart = (char *)self + 0x54;
+        if (arrayStart != elementEnd) {
             do {
-                func_005037F0(temp_s0 - 0x48, 2);
-                temp_s0 -= 0x48;
-            } while (temp_s1 != temp_s0);
+                func_005037F0(elementEnd - 0x48, 2);
+                elementEnd -= 0x48;
+            } while (arrayStart != elementEnd);
         }
     }
-    o1 = (struct func_005039A8_obj *)((char *)arg0 + 0x48);
-    o1->unk8 = (s32)D_006897A0;
-    func_0057CA38(o1, 0);
-    o2 = (struct func_005039A8_obj *)((char *)arg0 + 0x3C);
-    o2->unk8 = (s32)D_006897A0;
-    func_0057CA38(o2, 0);
-    o3 = (struct func_005039A8_obj *)((char *)arg0 + 0x30);
-    o3->unk8 = (s32)D_006897A0;
-    func_0057CA38(o3, 0);
-    func_00574DA8(arg0, 2);
-    if ((arg1 & 0x1) != 0) {
-        return func_005C1628(arg0);
+    list48 = (struct func_005039A8_obj *)((char *)self + 0x48);
+    list48->unk8 = (s32)D_006897A0;
+    func_0057CA38(list48, 0);
+    list3C = (struct func_005039A8_obj *)((char *)self + 0x3C);
+    list3C->unk8 = (s32)D_006897A0;
+    func_0057CA38(list3C, 0);
+    list30 = (struct func_005039A8_obj *)((char *)self + 0x30);
+    list30->unk8 = (s32)D_006897A0;
+    func_0057CA38(list30, 0);
+    func_00574DA8(self, 2);
+    if ((deleteFlags & 0x1) != 0) {
+        return func_005C1628(self);
     }
 }

@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script method putRunRaceEvent: reads the event name (args[0]), the string args[1] (converted by func_00431C60), an optional args[2] (default 14, converted by func_00431CB8) and the integer args[3], then adds the event to the calendar record with func_0042F270. Value meanings are not determined; siblings differ only in the final call (License func_0042F2E0, Mission func_0042F350). */
 typedef int s32;
 typedef short s16;
 typedef unsigned char u8;
@@ -46,26 +47,26 @@ static inline s32 number(VO *o) {
     VEntI *e = &o->vt->e58;
     return e->fn((char *)o + e->delta);
 }
-void MCalendar__putRunRaceEvent(void *arg0, void *arg1, s32 arg2, VO **arg3) {
-    if (arg2 >= 4) {
-        union { Str st; HO *h[4]; } tmp;
-        text(&tmp.st, arg3[0]);
-        const char *name = c_str(&tmp.st);
-        release(&tmp.st);
-        text(&tmp.st, arg3[1]);
-        const char *color = c_str(&tmp.st);
-        release(&tmp.st);
+void MCalendar__putRunRaceEvent(void *unused, void *object, s32 argCount, VO **args) {
+    if (argCount >= 4) {
+        union { Str st; HO *h[4]; } scratch;
+        text(&scratch.st, args[0]);
+        const char *name = c_str(&scratch.st);
+        release(&scratch.st);
+        text(&scratch.st, args[1]);
+        const char *color = c_str(&scratch.st);
+        release(&scratch.st);
         s32 b = func_00431C60(color);
         s32 c = 14;
-        if (arg3[2]) {
-            text(&tmp.st, arg3[2]);
-            c = func_00431CB8(c_str(&tmp.st));
-            release(&tmp.st);
+        if (args[2]) {
+            text(&scratch.st, args[2]);
+            c = func_00431CB8(c_str(&scratch.st));
+            release(&scratch.st);
         }
-        s32 d = number(arg3[3]);
-        func_00132DB8(tmp.h, arg1);
-        func_0042F270(tmp.h[0]->f10, name, b, c, d);
-        func_00132D60(tmp.h, 2);
+        s32 d = number(args[3]);
+        func_00132DB8(scratch.h, object);
+        func_0042F270(scratch.h[0]->f10, name, b, c, d);
+        func_00132D60(scratch.h, 2);
     }
 }
 }

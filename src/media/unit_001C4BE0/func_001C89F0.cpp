@@ -1,4 +1,5 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Two-phase update of an on-screen job, run once per frame while game->f1E634 is set (otherwise it only calls func_00109BA8): phase 1 (self+0x218 == 0) sets the display up (func_00106A68, both buffers of D_006184D0 are cleared and flipped), copies the viewport values of the game config into the sub-object (aspect ratio inverted when below 1.0) and starts it (func_00333560); phase 2 keeps calling func_00333A00 with a frame counter at +0x21C until it returns 0, then restores the display, clears f1E634 and shuts the sub-object (func_003355F0). What the job renders is not determined. */
 typedef int s32;
 typedef float f32;
 
@@ -59,56 +60,56 @@ extern "C" void func_004A2980(s32);
 extern "C" void func_004A3078(s32);
 extern "C" void func_004A3230(s32);
 
-extern "C" void func_001C89F0(Self *self) {
-    if (self->game->f1E634 != 0) {
-        if (self->f218 == 0) {
+extern "C" void func_001C89F0(Self *job) {
+    if (job->game->f1E634 != 0) {
+        if (job->f218 == 0) {
             func_00106A68(&D_006184D0, 2, 0x100, 0x180);
             func_004A3078(0);
             func_004A2980(-1);
-            Tbl *t = &D_006184D0.t;
-            func_001056A0(&t->items[t->cur]);
+            Tbl *displayTable = &D_006184D0.t;
+            func_001056A0(&displayTable->items[displayTable->cur]);
             func_004A3230(1);
-            func_001056A0(&t->items[1 - t->cur]);
+            func_001056A0(&displayTable->items[1 - displayTable->cur]);
             func_004A3230(1);
-            self->f218 = 1;
-            Game *g = self->game;
-            Cfg *c = &g->cfg;
-            f32 asp = c->f10;
-            s32 lt = 1;
-            if (!(asp < 1.0f)) lt = 0;
-            Sub *sub = &self->sub;
-            s32 ia = c->f0, ib = c->f4, ic = c->f8, id = c->fC;
-            f32 f12;
-            if (lt) f12 = 1.0f / asp;
-            else f12 = asp;
-            func_00333560(sub, g, ia, ib, ic, id, f12, lt);
-            s32 val = c->f14;
-            sub->f124 = 0;
-            sub->f118 = val;
-            sub->f128 = self->game->f1E668;
-            sub->f134 = self->game->f1E674;
-            sub->f130 = self->game->f1E670;
-            sub->f138 = self->game->f1E678;
-            sub->f13C = self->game->f1E67C;
-            sub->f12C = self->game->f1E66C;
-            func_003C7D60(self->game, 1);
-            self->f21C = 0;
+            job->f218 = 1;
+            Game *game = job->game;
+            Cfg *config = &game->cfg;
+            f32 aspect = config->f10;
+            s32 aspectBelowOne = 1;
+            if (!(aspect < 1.0f)) aspectBelowOne = 0;
+            Sub *subObject = &job->sub;
+            s32 cfg0 = config->f0, cfg4 = config->f4, cfg8 = config->f8, cfgC = config->fC;
+            f32 scale;
+            if (aspectBelowOne) scale = 1.0f / aspect;
+            else scale = aspect;
+            func_00333560(subObject, game, cfg0, cfg4, cfg8, cfgC, scale, aspectBelowOne);
+            s32 cfg14 = config->f14;
+            subObject->f124 = 0;
+            subObject->f118 = cfg14;
+            subObject->f128 = job->game->f1E668;
+            subObject->f134 = job->game->f1E674;
+            subObject->f130 = job->game->f1E670;
+            subObject->f138 = job->game->f1E678;
+            subObject->f13C = job->game->f1E67C;
+            subObject->f12C = job->game->f1E66C;
+            func_003C7D60(job->game, 1);
+            job->f21C = 0;
         
         } else {
-            Sub *sub = &self->sub;
-            if (func_00333A00(sub, self->f21C++) != 0) return;
+            Sub *subObject = &job->sub;
+            if (func_00333A00(subObject, job->f21C++) != 0) return;
             {
                 func_001074D0(&D_006184D0, 1, 2, 0x280, 0x1C0);
-                Tbl *t = &D_006184D0.t;
-                t->items[t->cur].f30 = 0;
-                t->items[1 - t->cur].f30 = 0;
-                self->game->f1E650 = (char *)self + 0xC8;
-                Game *g = self->game;
-                g->f1E634 = 0;
-                (void)g->f1E634;
-                func_003C7D60(self->game, 0);
-                func_003355F0(sub);
-                self->f218 = 0;
+                Tbl *displayTable = &D_006184D0.t;
+                displayTable->items[displayTable->cur].f30 = 0;
+                displayTable->items[1 - displayTable->cur].f30 = 0;
+                job->game->f1E650 = (char *)job + 0xC8;
+                Game *game = job->game;
+                game->f1E634 = 0;
+                (void)game->f1E634;
+                func_003C7D60(job->game, 0);
+                func_003355F0(subObject);
+                job->f218 = 0;
             }
         }
     } else {

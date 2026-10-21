@@ -1,3 +1,4 @@
+/* Rebuilds the per-node flag array self->flags (one byte per node of the list owned by self). For each node it calls virtual slot +0xA8 of *source with the node and its index wrapped in two ref-counted handles and stores whether the returned handle is non-null. What the flag means is unknown. The Handle temporaries mimic the original's ref-counted values, which is why the loop body is heavy. */
 #include "types.h"
 
 extern "C" void func_0030BB18(void *arg0);
@@ -57,41 +58,41 @@ extern "C" void func_002FC870(struct Handle16 *arg0, s32 arg1);
 extern "C" void func_002FE2E0(struct Handle16 *arg0);
 extern "C" s32 func_002FE250(void *arg0);
 
-extern "C" void func_002D8100(struct Self *self, struct VObj **arg1) {
-    if (*arg1 != 0) {
-        s32 n = func_00206880(self);
-        if (n > 0) {
-            void *old = self->flags;
+extern "C" void func_002D8100(struct Self *self, struct VObj **source) {
+    if (*source != 0) {
+        s32 count = func_00206880(self);
+        if (count > 0) {
+            void *oldFlags = self->flags;
             s32 i;
-            s32 idx;
-            void *node;
-            if (old != 0) {
+            s32 index;
+            void *listNode;
+            if (oldFlags != 0) {
                 self->flags = 0;
-                free(old);
+                free(oldFlags);
             }
-            self->flags = malloc(n);
-            for (i = 0; i < n; i++) {
+            self->flags = malloc(count);
+            for (i = 0; i < count; i++) {
                 self->flags[i] = 0;
             }
-            for (idx = 0, node = func_00206868(self); node != 0; node = func_0025C300(node), idx++) {
-                Handle hs[2];
-                Handle16 h;
-                void *tmp;
-                tmp = node;
-                func_00309348(&h, &tmp);
-                hs[0] = *(Handle *)&h;
-                func_00309378(&h, 2);
-                func_002FE278(&h, idx);
-                hs[1] = *(Handle *)&h;
-                func_002FC870(&h, 2);
-                func_002FE2E0(&h);
+            for (index = 0, listNode = func_00206868(self); listNode != 0; listNode = func_0025C300(listNode), index++) {
+                Handle args[2];
+                Handle16 result;
+                void *nodeRef;
+                nodeRef = listNode;
+                func_00309348(&result, &nodeRef);
+                args[0] = *(Handle *)&result;
+                func_00309378(&result, 2);
+                func_002FE278(&result, index);
+                args[1] = *(Handle *)&result;
+                func_002FC870(&result, 2);
+                func_002FE2E0(&result);
                 {
-                    struct VObj *o = *arg1;
-                    struct VEntry *e = (struct VEntry *)((char *)o->vtbl + 0xA8);
-                    e->fn((char *)o + e->delta, &h, 2, hs);
+                    struct VObj *object = *source;
+                    struct VEntry *slot = (struct VEntry *)((char *)object->vtbl + 0xA8);
+                    slot->fn((char *)object + slot->delta, &result, 2, args);
                 }
-                self->flags[idx] = func_002FE250(((Handle *)&h)->get()) != 0;
-                func_002FC870(&h, 2);
+                self->flags[index] = func_002FE250(((Handle *)&result)->get()) != 0;
+                func_002FC870(&result, 2);
             }
         }
     }

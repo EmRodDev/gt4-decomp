@@ -1,3 +1,4 @@
+/* Encrypts a block in place (counterpart of func_001D4E60): the payload starts at +8, its checksum func_00572C90 xor 'key' goes into k4, a fresh random-looking word from func_00579358 into k0, two key schedules (0x9D0-byte state) are derived from them and the payload is processed by func_005D2680; the header words are then mixed with func_001D4CA8 (parameters f0, f1) and an optional extra pass is applied when 'extraPass' is non-zero. Sizes are rounded to a 0x40 multiple. 'Encrypts' and 'random' are inferred from the structure; the algorithm is not identified. */
 #include "types.h"
 extern "C" void func_001D4BC8(void *, u32, void *, int, int);
 extern "C" void func_001D4CA8(void *, u32, void *, u32, float);
@@ -9,23 +10,23 @@ extern "C" void func_005D2680(void *, u32, void *, void *);
 
 struct H { u32 k0; u32 k4; };
 
-extern "C" void func_001D4D10(H *arg0, int arg1, u32 arg2, int arg3, float f0, float f1) {
-    char sp[0x9D0];
-    char sp9D0[0x10];
-    u32 s6 = (arg1 + 0x47) & ~0x3F;
-    u32 s2 = s6 - 8;
-    void *s1 = (char *)arg0 + 8;
-    u32 s7 = s6 - 4;
-    arg0->k4 = func_00572C90(s1, s2) ^ arg2;
-    u32 v = func_00579358();
-    arg0->k0 = v;
-    func_00579420(sp, arg0->k4 + v);
-    func_005792E8(sp9D0, arg0->k4 ^ arg0->k0);
-    func_005D2680(s1, s2, sp, sp9D0);
-    func_001D4CA8(((char *)arg0 + 4), s7, ((char *)arg0 + 4), 4, f0);
-    if (arg3 != 0) {
-        func_00579420(sp, arg0->k0 ^ arg2);
-        func_001D4BC8(((char *)arg0 + 4), s7, sp, 0, 0);
+extern "C" void func_001D4D10(H *block, int payloadSize, u32 key, int extraPass, float mixParamA, float mixParamB) {
+    char keyState[0x9D0];
+    char keyState2[0x10];
+    u32 roundedSize = (payloadSize + 0x47) & ~0x3F;
+    u32 processedSize = roundedSize - 8;
+    void *payload = (char *)block + 8;
+    u32 mixedSize = roundedSize - 4;
+    block->k4 = func_00572C90(payload, processedSize) ^ key;
+    u32 nonce = func_00579358();
+    block->k0 = nonce;
+    func_00579420(keyState, block->k4 + nonce);
+    func_005792E8(keyState2, block->k4 ^ block->k0);
+    func_005D2680(payload, processedSize, keyState, keyState2);
+    func_001D4CA8(((char *)block + 4), mixedSize, ((char *)block + 4), 4, mixParamA);
+    if (extraPass != 0) {
+        func_00579420(keyState, block->k0 ^ key);
+        func_001D4BC8(((char *)block + 4), mixedSize, keyState, 0, 0);
     }
-    func_001D4CA8(arg0, s6, arg0, 4, f1);
+    func_001D4CA8(block, roundedSize, block, 4, mixParamB);
 }
