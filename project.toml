@@ -38,6 +38,15 @@ dir = "~/.local/share/gt4/compilers/ee-gcc2.9-991111"
 command = "{dir}/bin/ee-gcc -c -O2 -G0 -fno-exceptions -Iinclude"
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.9-991111.tar.xz"
 
+# The SDK's compiler with the game's assembler: ee-gcc 2.9 leaves some delay slots to the assembler
+# (.set reorder); its own as never fills them, the 2.96 ee-as moves the previous instruction in.
+# Retail libcdvd / kprintf code was assembled that way (00581CB8, 005AF4C8).
+[compilers."ee-gcc2.9-as296"]
+dir = "~/.local/share/gt4/compilers/ee-gcc2.9-991111"
+command = 'bash {tools}/cc_as.sh "$HOME/.local/share/gt4/ee-gcc2.96/bin/ee-as -G0 -O2 -mabi=eabi" "{dir}/bin/ee-gcc -O2 -G0 -fno-exceptions -Iinclude"'
+archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.9-991111.tar.xz"
+needs = { "ee-gcc2.96" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz" }
+
 # The project's compiler without strict aliasing: how the game's expat was built (THIRD_PARTY.md,
 # tools/libmatch.py). Same archive as the main compiler, unpacked a second time under this name.
 [compilers."ee-gcc2.96-no-strict-aliasing"]

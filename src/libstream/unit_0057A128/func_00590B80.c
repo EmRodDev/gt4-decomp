@@ -1,0 +1,68 @@
+/* compiler: ee-gcc2.9-991111 */
+struct Client {
+    void *buf;
+    int f4;
+    int sema;
+    int fC, f10;
+    int size;
+    void *gp;
+    void (*func)(void *);
+    void *arg;
+    int result;
+    int done_sema;
+    int status;
+};
+struct Request {
+    char pad[0x1C];
+    struct Client *client;
+    unsigned int cmd;
+    int ret;
+    int size;
+};
+extern void func_00590B60(void *);
+extern void func_005ADCD0(int);
+
+static inline void *SetGP(void *gp)
+{
+    void *old;
+    __asm__ volatile("move %0, $28" : "=r"(old) : : "memory");
+    __asm__ volatile("move $28, %0" : : "r"(gp) : "memory");
+    return old;
+}
+
+/* _request_end */
+void func_00590B80(struct Request *req)
+{
+    struct Client *cl, *c;
+    void *old;
+
+    switch (req->cmd) {
+    case 0x8000001A:
+        cl = req->client;
+        if (cl->func != 0) {
+            old = SetGP(cl->gp);
+            cl->func(cl->arg);
+            SetGP(old);
+        }
+        func_005ADCD0(cl->done_sema);
+        break;
+    case 0x80000019:
+        cl = req->client;
+        cl->result = req->ret;
+        cl->size = req->size;
+        func_005ADCD0(cl->done_sema);
+        break;
+    case 0x8000001C:
+        break;
+    case 0x8000001D:
+        cl = req->client;
+        cl->status = req->ret;
+        func_005ADCD0(cl->done_sema);
+        break;
+    }
+    c = req->client;
+    if (c->sema >= 0)
+        func_005ADCD0(c->sema);
+    func_00590B60(c->buf);
+    c->buf = 0;
+}

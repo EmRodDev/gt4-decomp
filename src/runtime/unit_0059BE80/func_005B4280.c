@@ -1,0 +1,71 @@
+/* compiler: ee-gcc2.9-991111 */
+typedef unsigned int u32;
+struct Sema { int a; int max; int init; int d; int e; const char *opt; };
+struct Blk { int sema; int *res; int n8; char path[0x400]; char path2[0x400]; char data[0x400]; int size; };
+extern struct Blk D_008882C0;
+extern int D_0065833C;
+extern char D_008899C0[];
+extern char D_00888F00[];
+extern char D_006D2778[];
+extern int func_005ADCA0(struct Sema *);
+extern void func_005ADCB0(int);
+extern int func_005ADCE0(int);
+extern u32 func_005B2258(int, int, int, int, int, int, int, int, int, int);
+extern int func_005B27C8(int);
+extern void func_005B27F8(void);
+extern void func_005B28F0(void);
+
+extern void func_005B0F78(void *, int);
+
+int func_005B4280(const unsigned char *path, const unsigned char *path2, const unsigned char *data, int size)
+{
+    struct Blk *b = &D_008882C0;
+    int i;
+    int sema;
+    int res;
+    int ok;
+    struct Sema sp;
+    func_005B27C8(14);
+    if (D_0065833C == 0)
+        func_005B28F0();
+    for (i = 0; i < 0x400; i++) {
+        if ((b->path[i] = path[i]) == 0)
+            break;
+    }
+    if (i == 0x400) {
+        b->path[0x3FF] = 0;
+
+    }
+    if (path2 == 0) b->path2[0]=0;
+    else {
+        for (i=0; i<0x400; i++) {
+            if ((b->path2[i]=path2[i]) == 0) break;
+        }
+        if(i==0x400) b->path2[0x3ff]=0;
+    }
+    if(size>0x400) {func_005B27F8(); return -7;}
+    for(i=0;i<size;i++) b->data[i]=data[i];
+    b->size=size;
+    sp.max = 1;
+    sp.init = 0;
+    sp.opt = D_006D2778;
+    sema = func_005ADCA0(&sp);
+    b->res = &res;
+    b->sema = sema;
+    b->n8 = 4;
+    func_005B0F78(&D_008882C0,0xC10);
+    if ((int)func_005B2258((int)D_008899C0, 14, 0, (int)&D_008882C0, 0xC10, (int)D_00888F00, 4, 0, 0, 0) < 0) {
+        func_005ADCB0(sema);
+        func_005B27F8();
+        return -0xB;
+    }
+    ok = *(int *)((u32)D_00888F00 | 0x20000000);
+    func_005B27F8();
+    if (ok == 0) {
+        func_005ADCB0(sema);
+        return -0xB;
+    }
+    func_005ADCE0(sema);
+    func_005ADCB0(sema);
+    return res;
+}
