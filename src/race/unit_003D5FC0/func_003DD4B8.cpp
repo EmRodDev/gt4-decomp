@@ -27,7 +27,7 @@ extern "C" void func_003DD4B8(Obj *arg0, s32 arg1) {
 
     arg0->unk8 = arg1;
     if (arg0->unk0 == 0 && arg0->unk4 == 0) {
-        StrobeHandler__readFile(&local1, "racemonitor.strb", 1);
+        StrobeHandler__readFile(&local1, "pitmenu.strb", 1);
         arg0->unk0 = local1.unk10;
         func_00473CC0(arg0->unk0);
         func_003EBE80(arg0->unk0);

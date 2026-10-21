@@ -33,7 +33,7 @@ extern "C" void MSystem__GetVideoSystem(s32 *arg0) {
     Str *ps = &s;
     s32 newVal;
     s32 oldVal;
-    const char *src = "r0001";
+    const char *src = "NTSC";
     Rep *r = &D_00659FA8;
     char *d;
     if (r->sel != 0) {

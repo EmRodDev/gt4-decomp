@@ -88,7 +88,7 @@ extern "C" void mSceneViewFace__virtual_66(Obj *self, s32 arg1) {
     pv = ret;
     {
         Str *ps = &s;
-        const char *src = "onLoad";
+        const char *src = "onUnload";
         Rep *r = &D_00659FA8;
         char *d;
         if (r->sel != 0) {

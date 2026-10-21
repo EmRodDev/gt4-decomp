@@ -12,6 +12,6 @@ extern "C" void func_00192EA8(s32 arg0, const char *arg1);
 extern "C" void func_001957B0(void *arg0, void *arg1) {
     struct Buf buf;
     func_00192A58(&buf, arg1);
-    func_00192EA8(buf.val, "car");
+    func_00192EA8(buf.val, "camera");
     func_00192A00(&buf, 2);
 }

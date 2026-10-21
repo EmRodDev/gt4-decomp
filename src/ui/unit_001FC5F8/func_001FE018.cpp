@@ -32,7 +32,7 @@ extern "C" void func_001FE018(S *self) {
                     if (self->fA8 != 0) {
                         func_0054F5E0(0, -1ULL >> 1);
                     } else {
-                        double d = 33366.05431059392;
+                        double d = 33366.054310593925;
                         double m1 = (double)s1 * d;
                         double m2 = (double)(s1 + 5) * d;
                         func_0054F5E0((long long)m1, (long long)m2);

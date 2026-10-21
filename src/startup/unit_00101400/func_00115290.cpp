@@ -26,7 +26,7 @@ extern "C" void func_00115290(void *arg0) {
     func_00387EF0(arg0, 2, 1);
     func_0012BFC0(arg0);
     func_0012BFD0(1);
-    func_0010FE40("quick-mt");
+    func_0010FE40("quick-license");
     func_0012BFC0(0);
 
     void *vtbl = ((struct func_00115290_arg0 *)arg0)->unk64;

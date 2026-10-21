@@ -29,7 +29,7 @@ extern "C" void func_001141C8(void *arg0) {
     func_00387EF0(arg0, 4, 1);
     func_0012BFC0(arg0);
     func_0012BFD0(1);
-    func_0010FE40("quick-mt");
+    func_0010FE40("quick-event");
     func_0012BFC0(0);
 
     void *vtbl = ((struct func_001141C8_arg0 *)arg0)->unk64;

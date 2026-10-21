@@ -61,7 +61,7 @@ extern "C" void MCarGarage__getCatWidth(void **arg0, void *arg1) {
     if (n == -1) {
         n = func_00445DF0(func_00441248(o));
     }
-    char buf[64] = "0";
+    char buf[64] = "-";
     s32 spare[4];
     if (n != 0) {
         func_0057DA20(buf, "%d", n);

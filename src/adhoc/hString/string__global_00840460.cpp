@@ -17,6 +17,7 @@ struct Str {
 
 extern Rep D_00659FA8;
 
+extern char D_0069E140[];
 extern "C" char *func_005C2560(Rep *r);
 extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
@@ -33,7 +34,7 @@ extern "C" void string__global_00840460(s32 *arg0) {
     Str *ps = &s;
     s32 newVal;
     s32 oldVal;
-    const char *src = "r0001";
+    const char *src = D_0069E140;
     Rep *r = &D_00659FA8;
     char *d;
     if (r->sel != 0) {

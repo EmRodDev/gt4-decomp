@@ -26,7 +26,7 @@ extern "C" void func_004F3740(Obj *arg0, s32 arg1) {
     }
     local.a = var_s0;
     local.b = arg0;
-    if (func_004F0C38(var_s0, "SessionBeginCallback") != 0) {
+    if (func_004F0C38(var_s0, "AccountUpdatePasswordCallback") != 0) {
         func_004F0B08(local.a, local.b);
         return;
     }

@@ -8,5 +8,5 @@ struct Obj {
 extern "C" s32 func_003A1E10(const char *arg0);
 
 extern "C" void func_003ECAA0(struct Obj *arg0) {
-    arg0->unk10 = func_003A1E10("gear_base");
+    arg0->unk10 = func_003A1E10("rev_bar");
 }
