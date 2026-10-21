@@ -1,0 +1,41 @@
+/* compiler: ee-gcc2.9-991111 */
+extern void func_005B0750(const char *, ...);
+void func_00571DD8(char *p) {
+    func_005B0750("-----------------------\n");
+    func_005B0750("attach_ifc       : \"%s\"\n", p);
+    func_005B0750("attach_dev       : \"%s\"\n", p + 0x100);
+    func_005B0750("dhcp_host_name   : \"%s\"\n", p + 0x200);
+    func_005B0750("address          : \"%s\"\n", p + 0x300);
+    func_005B0750("netmask          : \"%s\"\n", p + 0x400);
+    func_005B0750("gateway          : \"%s\"\n", p + 0x500);
+    func_005B0750("dns1_address     : \"%s\"\n", p + 0x600);
+    func_005B0750("dns2_address     : \"%s\"\n", p + 0x700);
+    func_005B0750("phone_numbers1   : \"%s\"\n", p + 0x800);
+    func_005B0750("phone_numbers2   : \"%s\"\n", p + 0x900);
+    func_005B0750("phone_numbers3   : \"%s\"\n", p + 0xA00);
+    func_005B0750("auth_name        : \"%s\"\n", p + 0xB00);
+    func_005B0750("auth_key         : \"%s\"\n", p + 0xC00);
+    func_005B0750("peer_name        : \"%s\"\n", p + 0xD00);
+    func_005B0750("vendor           : \"%s\"\n", p + 0xE00);
+    func_005B0750("product          : \"%s\"\n", p + 0xF00);
+    func_005B0750("chat_additional  : \"%s\"\n", p + 0x1000);
+    func_005B0750("outside_number   : \"%s\"\n", p + 0x1100);
+    func_005B0750("outside_delay    : \"%s\"\n", p + 0x1200);
+    func_005B0750("ifc_type         : \"%d\"\n", *(int *)(p + 0x1300));
+    func_005B0750("mtu              : \"%d\"\n", *(int *)(p + 0x1304));
+    func_005B0750("ifc_idle_timeout : \"%d\"\n", *(int *)(p + 0x1308));
+    func_005B0750("dev_type         : \"%d\"\n", *(int *)(p + 0x130C));
+    func_005B0750("phy_config       : \"%d\"\n", *(int *)(p + 0x1310));
+    func_005B0750("dialing_type     : \"%d\"\n", *(int *)(p + 0x1314));
+    func_005B0750("dev_idle_timeout : \"%d\"\n", *(int *)(p + 0x1318));
+    func_005B0750("dhcp             : \"%d\"\n", *(unsigned char *)(p + 0x1320));
+    func_005B0750("dns1_nego        : \"%d\"\n", *(unsigned char *)(p + 0x1321));
+    func_005B0750("dns2_nego        : \"%d\"\n", *(unsigned char *)(p + 0x1322));
+    func_005B0750("f_auth           : \"%d\"\n", *(unsigned char *)(p + 0x1323));
+    func_005B0750("auth             : \"%d\"\n", *(unsigned char *)(p + 0x1324));
+    func_005B0750("pppoe            : \"%d\"\n", *(unsigned char *)(p + 0x1325));
+    func_005B0750("prc_nego         : \"%d\"\n", *(unsigned char *)(p + 0x1326));
+    func_005B0750("acc_nego         : \"%d\"\n", *(unsigned char *)(p + 0x1327));
+    func_005B0750("accm_nego        : \"%d\"\n", *(unsigned char *)(p + 0x1328));
+    func_005B0750("-----------------------\n");
+}
