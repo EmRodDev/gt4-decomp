@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mModelFace.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 typedef int s32;
 typedef unsigned int u32;
 struct Vec { float x,y,z; };

@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mRenderContext.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 inline void *operator new(unsigned int, void *p) { return p; }
 struct Alloc {};
 struct IV { int unused, a,b,c; IV(const Alloc &a0=Alloc()) { a=0;b=0;c=0; } };

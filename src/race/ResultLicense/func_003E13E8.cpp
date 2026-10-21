@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for ResultLicense.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 struct Buf { int a,b,w,h,x,y,dx,dy; char pad20[8]; int tex; char pad[0x10]; };
 struct Globals { Buf views[2]; int cur; char pad[0x7c]; Buf other; };
 extern Globals D_0061850C,D_00618588;

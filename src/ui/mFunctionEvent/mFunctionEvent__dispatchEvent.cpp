@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mFunctionEvent.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 typedef int s32;
 typedef short s16;
 

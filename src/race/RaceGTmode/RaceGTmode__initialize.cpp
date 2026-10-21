@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for RaceGTmode.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 typedef int s32;
 typedef unsigned int u32;
 struct Z { void *a; void *b; void *f8; };

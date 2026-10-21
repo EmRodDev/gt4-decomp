@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mOptionMenu.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 typedef int s32;
 struct Rep { s32 len,cap,ref,sel; };
 struct Str { char *p; char pad[12]; };
