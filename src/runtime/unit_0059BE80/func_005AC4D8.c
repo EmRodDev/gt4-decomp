@@ -20,7 +20,6 @@
 #define _multiply func_005AC960
 #define _pow5mult func_005ACB70
 #define _s2b func_005AC6B8
-#define dpmul D_0057F8B8
 #define memcpy D_005A4724
 
 /****************************************************************

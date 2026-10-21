@@ -76,7 +76,6 @@
 #define bzero func_005A30D8
 #define copysign func_005A26C8
 #define ctime func_00578B30
-#define dpmul D_0057F8B8
 #define dptofp D_00577AF0
 #define eofread func_005A5AD0
 #define errno D_006D62F8

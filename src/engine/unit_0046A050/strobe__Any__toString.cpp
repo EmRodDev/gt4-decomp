@@ -10,7 +10,7 @@ struct func_004772A8_Any {
 extern "C" void func_00476AE8(func_004772A8_Any *self, const char *s);
 extern "C" void func_00476A98(func_004772A8_Any *self, const char *s);
 extern "C" int func_0057DA20(char *buf, const char *fmt, ...);
-extern "C" double func_0057FB50(float f);
+extern "C" double fptodp(float f);
 
 extern "C" char *strobe__Any__toString(func_004772A8_Any *self) {
     switch (self->type) {
@@ -34,7 +34,7 @@ extern "C" char *strobe__Any__toString(func_004772A8_Any *self) {
             func_0057DA20(buf, "%d", i);
         } else {
             const char *fmt = "%f";
-            double d = func_0057FB50(f);
+            double d = fptodp(f);
             func_0057DA20(buf, fmt, d);
         }
         func_00476A98(self, buf);

@@ -19,7 +19,7 @@ extern "C" void *HOutput__operator_dec(void *);
 extern "C" s32 func_00328A60(void *) throw();
 extern "C" s32 func_00328A70(void *) throw();
 extern "C" void ADHOC__Pool__dump(void *, void *) throw();
-extern "C" double func_0057FB50(f32);
+extern "C" double fptodp(f32);
 extern char D_0069EE48[];
 extern char D_0069ED58[];
 extern char D_0069EE60[];
@@ -49,6 +49,6 @@ extern "C" void ADHOC__PoolAllocator__dump(Obj *self, void *out) {
         } while (i < n);
     }
     const char *fmt = D_0069EE60;
-    double ratio = func_0057FB50((f32)b / (f32)a * 100.0f);
+    double ratio = fptodp((f32)b / (f32)a * 100.0f);
     HOutput__printf(out, fmt, n, b, a, ratio);
 }

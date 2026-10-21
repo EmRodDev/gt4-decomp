@@ -14,7 +14,7 @@ typedef union {
 #define INSERT_WORDS(d,ix0,ix1) do { ieee_double_shape_type iw_u; iw_u.parts.msw = (ix0); iw_u.parts.lsw = (ix1); (d) = iw_u.value; } while (0)
 
 
-double func_0057F8B8(double,double);
+double dpmul(double,double);
 
 static const double
 two54 =  1.80143985094819840000e+16; 

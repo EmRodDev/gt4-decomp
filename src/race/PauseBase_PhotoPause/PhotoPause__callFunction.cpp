@@ -16,7 +16,7 @@ extern "C" int func_00374120(Camera *);
 extern "C" int func_00374130(Camera *);
 extern "C" int func_003740A8(Camera *);
 extern "C" void func_004857C8(const char *);
-extern "C" double func_0057FB50(float);
+extern "C" double fptodp(float);
 extern "C" void func_0057DA20(char *,const char *,...);
 static inline int equal(Str *s,const char *t) { return func_005FBDD0(s,t,0,func_0057F260(t))==0; }
 static inline float absf(float x) { float r; __asm__("abs.s %0, %1" : "=f"(r) : "f"(x)); return r; }
@@ -29,7 +29,7 @@ extern "C" Value *PhotoPause__callFunction(Value *ret,Photo *self,Str *name,int 
   func_0057DA20(buf,"f = %dmm",(int)(get(func_003C3FA0(self),15)*1000.0f+0.5f));
   func_003C4078(ret,buf);
  } else if(equal(name,"GETIRIS")) {
-  func_0057DA20(buf,"F %.1f",func_0057FB50(get(func_003C3FA0(self),11)+0.05f));
+  func_0057DA20(buf,"F %.1f",fptodp(get(func_003C3FA0(self),11)+0.05f));
   func_003C4078(ret,buf);
  } else if(equal(name,"GETSHUTTER")) {
   func_0057DA20(buf,"1/%d''",(int)(1.0f/get(func_003C3FA0(self),12)+0.5f));
@@ -37,7 +37,7 @@ extern "C" Value *PhotoPause__callFunction(Value *ret,Photo *self,Str *name,int 
  } else if(equal(name,"GETEXPOSURE")) {
   float f=get(func_003C3FA0(self),16);
   float magnitude=absf(f);
-  func_0057DA20(buf,"%c%.1f EV",f<0.0f?'-':'+',func_0057FB50(0.05f+magnitude));
+  func_0057DA20(buf,"%c%.1f EV",f<0.0f?'-':'+',fptodp(0.05f+magnitude));
   func_003C4078(ret,buf);
  } else if(equal(name,"GETCURCAM")) {
   func_0057DA20(buf,"%d",func_00374128(func_003C3FA0(self))+1);

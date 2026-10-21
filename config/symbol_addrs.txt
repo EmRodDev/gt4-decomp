@@ -9024,3 +9024,13 @@ HSymbol__OP_MOD = 0x0083F5C8; // type:data gthd
 HSymbol__OP_NOT = 0x0083F5E8; // type:data gthd
 DRIVERSUPPORT_NAME__parameter_ = 0x00846468; // type:data gthd
 // ---- end of GT HD globals ----
+// Soft-float runtime routines gcc emits calls to for double arithmetic (libgcc's dp-bit code)
+dpadd = 0x0057F578; // type:func
+dpsub = 0x0057FA38; // type:func
+dpmul = 0x0057F8B8; // type:func
+dpcmp = 0x0057F6F8; // type:func
+dpdiv = 0x0057F768; // type:func
+__floatdisf = 0x0057F480; // type:func
+dptoli = 0x0057FA98; // type:func
+fptodp = 0x0057FB50; // type:func
+litodp = 0x0057FB88; // type:func

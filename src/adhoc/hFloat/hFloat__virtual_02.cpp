@@ -15,7 +15,7 @@ extern "C" String *func_005C2630(String *str, u32 pos, u32 n1, const char *s, u3
 extern "C" u32 func_0057F260(const char *s);
 struct Obj { char pad[0x10]; float value; };
 extern char D_0069D850[];
-extern "C" double func_0057FB50(float f); /* fptodp: the float -> double vararg promotion */
+extern "C" double fptodp(float f); /* fptodp: the float -> double vararg promotion */
 extern "C" int func_0057DA20(char *buf, const char *fmt, ...);
 
 static inline char *grab(StringRep *r) {
@@ -46,7 +46,7 @@ static inline void construct(String *str, const char *s) {
 extern "C" String *hFloat__virtual_02(String *ret, Obj *obj) {
     char buf[0x20];
     const char *fmt = D_0069D850;
-    double d = func_0057FB50(obj->value);
+    double d = fptodp(obj->value);
     func_0057DA20(buf, fmt, d);
     construct(ret, buf);
     return ret;
