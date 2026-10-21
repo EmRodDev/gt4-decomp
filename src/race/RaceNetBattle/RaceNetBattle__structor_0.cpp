@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for RaceNetBattle.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 struct Obj {
     char pad0[0x58];
     void *f58;

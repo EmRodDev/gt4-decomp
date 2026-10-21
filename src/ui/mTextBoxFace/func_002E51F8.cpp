@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mTextBoxFace.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;

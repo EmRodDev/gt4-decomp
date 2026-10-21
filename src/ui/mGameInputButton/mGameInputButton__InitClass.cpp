@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Class registration and method binding for mGameInputButton.
+ * Registers the UI module name, base class inheritance, and virtual method handlers.
+ */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;

@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mListBox.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 #include "types.h"
 struct Item {
     char pad0[0xC];

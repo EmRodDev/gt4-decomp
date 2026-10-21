@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for mTextBoxFace.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 typedef unsigned int u32;
 struct Rep { u32 len, res, ref, selfish; };
 struct Heap { const char *name; };

@@ -1,3 +1,8 @@
+/* compiler: ee-gcc2.96-no-strict-aliasing */
+/**
+ * Implementation and interface bindings for RaceDisplay.
+ * Handles component initialization, virtual method dispatch, and subsystem updates.
+ */
 #include "types.h"
 
 struct VEntry0 { s16 delta; s16 index; void (*fn)(void *self); };
