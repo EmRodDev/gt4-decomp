@@ -394,7 +394,7 @@ def judge(addr, src, obj=None, sources=None):
     # Inline assembly beyond single instructions (and raw words) is not decompiled code: such a
     # source is refused before it is compiled, so no tool or agent can keep it as a match.
     import asm_policy
-    bad = asm_policy.violations(open(src, encoding="utf-8", errors="replace").read())
+    bad = asm_policy.violations(open(src, encoding="utf-8", errors="replace").read(), addr)
     if bad:
         if obj:
             os.remove(obj)
