@@ -1,4 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Spawns one spark of a ParticleManager::SparkParticle effect from a request (position, base angle, size, direction, two values a and b).
+ * The launch speed is (b - a) times a random factor in [0.5, 0.95); sparks slower than 2 are not created. The direction is the request's
+ * direction turned by the base angle plus a random +-15 degrees, normalised in its two components with the rsqrt helper, and then tilted by a
+ * random angle between about -85 and -75 degrees (sign flipped for a negative speed); the velocity is that direction times the speed plus
+ * 0.85 of inheritedVelocity (the vehicle's own motion, inferred). Position gets +-0.1 jitter, spin a random +-10 / +-4 / +-10, and one of
+ * 8 appearance records (0x74 bytes each) is picked at random. The do-while runs once. The angle and 0.85 readings come from decoding the
+ * hex float literals; the meaning of a and b is purpose unknown. */
 struct V3 { float x,y,z,pad; };
 struct P3 { float x,y,z; };
 struct V4 { float x,y,z,w; };
@@ -10,45 +17,45 @@ extern "C" void func_0040AED0(void *, V3 *, V3 *, V3 *, V4 *, float, T *);
 extern "C" float pglmRandom();
 extern "C" float func_0057D1F0(float);
 extern "C" float func_0057D2B8(float) throw();
-static inline float rsqrt(float n, float v) { float r=v; __asm__("rsqrt.s %0, %1, %0" : "+f"(r) : "f"(n)); return r; }
-extern "C" void func_003C2160(Manager *m, Input *p, V3 *v) {
+static inline float rsqrt(float typeIndex, float inheritedVelocity) { float r=inheritedVelocity; __asm__("rsqrt.s %0, %1, %0" : "+f"(r) : "f"(typeIndex)); return r; }
+extern "C" void func_003C2160(Manager *manager, Input *request, V3 *inheritedVelocity) {
  V3 velocity, position, rotation;
- float sign;
- float speed=(p->b-p->a)*(pglmRandom()*0x1.ccccccp-2f+0.5f);
- sign=speed;
- float angle, sn, cs, y, x, tilt, ts;
+ float speedSign;
+ float speed=(request->b-request->a)*(pglmRandom()*0x1.ccccccp-2f+0.5f);
+ speedSign=speed;
+ float angle, sinAngle, cosAngle, y, x, tilt, sinTilt;
  if(speed<0.0f) speed=-speed;
  if(speed<2.0f) return;
- int count=0;
+ int spawned=0;
  do {
-  void *s=func_003C2710(m);
-  if(!s) return;
-  angle=p->angle+pglmRandom()*0x1.0c1512p-1f+-0x1.0c1512p-2f;
-  sn=func_0057D1F0(angle);
-  cs=func_0057D2B8(angle);
-  x=p->dir.x*cs+p->dir.z*sn;
-  y=p->dir.y;
+  void *particle=func_003C2710(manager);
+  if(!particle) return;
+  angle=request->angle+pglmRandom()*0x1.0c1512p-1f+-0x1.0c1512p-2f;
+  sinAngle=func_0057D1F0(angle);
+  cosAngle=func_0057D2B8(angle);
+  x=request->dir.x*cosAngle+request->dir.z*sinAngle;
+  y=request->dir.y;
   float d=x*x+y*y;
-  float k=rsqrt(1.0f,d);
-  x=x*k;
-  y=y*k;
+  float invLength=rsqrt(1.0f,d);
+  x=x*invLength;
+  y=y*invLength;
   tilt=pglmRandom()*0x1.657160p-3f+-0x1.7bc884p+0f;
-  if(sign<0.0f) tilt=-tilt;
-  count++;
-  ts=func_0057D1F0(tilt);
-  float tc=func_0057D2B8(tilt);
-  float t=ts*x-tc*y;
-  velocity.x=t*cs*speed+v->x*0x1.b33332p-1f;
-  velocity.y=(tc*x+ts*y)*speed+v->y*0x1.b33332p-1f;
-  velocity.z=t*sn*speed+v->z*0x1.b33332p-1f;
-  position.x=p->pos.x+(pglmRandom()-0.5f)*0x1.999998p-3f;
-  position.y=p->pos.y+(pglmRandom()-0.5f)*0x1.999998p-3f;
-  position.z=p->pos.z+(pglmRandom()-0.5f)*0x1.999998p-3f;
+  if(speedSign<0.0f) tilt=-tilt;
+  spawned++;
+  sinTilt=func_0057D1F0(tilt);
+  float cosTilt=func_0057D2B8(tilt);
+  float t=sinTilt*x-cosTilt*y;
+  velocity.x=t*cosAngle*speed+inheritedVelocity->x*0x1.b33332p-1f;
+  velocity.y=(cosTilt*x+sinTilt*y)*speed+inheritedVelocity->y*0x1.b33332p-1f;
+  velocity.z=t*sinAngle*speed+inheritedVelocity->z*0x1.b33332p-1f;
+  position.x=request->pos.x+(pglmRandom()-0.5f)*0x1.999998p-3f;
+  position.y=request->pos.y+(pglmRandom()-0.5f)*0x1.999998p-3f;
+  position.z=request->pos.z+(pglmRandom()-0.5f)*0x1.999998p-3f;
   rotation.x=(pglmRandom()-0.5f)*20.0f;
   rotation.y=(pglmRandom()-0.5f)*8.0f;
   rotation.z=(pglmRandom()-0.5f)*20.0f;
-  int n=(int)(pglmRandom()*8.0f);
-  if(n>=8)n=7;
-  func_0040AED0(s,&position,&velocity,&rotation,&p->dir,p->size,&m->table[n]);
- } while(count<=0);
+  int typeIndex=(int)(pglmRandom()*8.0f);
+  if(typeIndex>=8)typeIndex=7;
+  func_0040AED0(particle,&position,&velocity,&rotation,&request->dir,request->size,&manager->table[typeIndex]);
+ } while(spawned<=0);
 }

@@ -1,3 +1,7 @@
+/* Despite its symbol name (PropNameSearcher::structor_0, which looks like a mislabel by the symbol tooling) the body sets up a motion key
+ * with 00427820 and MotionSetPlayer::set from 003CC8E8 and Pitmen::getMotion, then for each of six slots (0xAA4 bytes apart, id at +0x38C4 of
+ * the slot) looks up the slot's id with 00429640 and stores the found value at slot +0x4360. The Pitmen call suggests pit-crew motions
+ * (inferred); the temporary object is a tiny class with a virtual method and an int, kept as the compiler needs it. */
 class ResultBase {
 public:
     virtual void v1();
@@ -28,22 +32,22 @@ struct Owner {
     Slot slots[6];
 };
 
-extern "C" void func_00427820(Key *k);
-extern "C" void GT4_Motion__MotionSetPlayer__set(Key *k, int a, int b);
-extern "C" int func_003CC8E8(Owner *o);
-extern "C" int Pitmen__getMotion(Owner *o);
-extern "C" int func_00429640(Key *k, int id, PropNameSearcher__vtable *out);
+extern "C" void func_00427820(Key *key);
+extern "C" void GT4_Motion__MotionSetPlayer__set(Key *key, int motionSet, int b);
+extern "C" int func_003CC8E8(Owner *owner);
+extern "C" int Pitmen__getMotion(Owner *owner);
+extern "C" int func_00429640(Key *key, int id, PropNameSearcher__vtable *out);
 
-extern "C" void PropNameSearcher__structor_0(Owner *o)
+extern "C" void PropNameSearcher__structor_0(Owner *owner)
 {
-    Key k;
-    func_00427820(&k);
-    int a = func_003CC8E8(o);
-    GT4_Motion__MotionSetPlayer__set(&k, a, Pitmen__getMotion(o));
-    Slot *sl = (Slot *)o;
-    for (int i = 0; i < 6; i++, sl = (Slot *)((char *)sl + 0xAA4)) {
-        PropNameSearcher__vtable r;
-        func_00429640(&k, sl->id, &r);
-        sl->result = r.value;
+    Key key;
+    func_00427820(&key);
+    int motionSet = func_003CC8E8(owner);
+    GT4_Motion__MotionSetPlayer__set(&key, motionSet, Pitmen__getMotion(owner));
+    Slot *slot = (Slot *)owner;
+    for (int i = 0; i < 6; i++, slot = (Slot *)((char *)slot + 0xAA4)) {
+        PropNameSearcher__vtable lookup;
+        func_00429640(&key, slot->id, &lookup);
+        slot->result = lookup.value;
     }
 }

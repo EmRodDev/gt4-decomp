@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-frame update of a license test race. The license display at +0x10368 is hidden (virtual_16 with 0) when the organization's field +0xDC
+ * is set. While the flag at +0x24EE0 is set, the display is switched to replay type 2 and, until the handled flag at +0x24EE4 is 1, the
+ * code asks the object returned by the virtual at vtable +0xD0 whether it is busy (+0x158): if not, it applies the organization to it
+ * (+0xB0) and returns for this frame; if so it runs the two virtual methods at +0x178 and +0x180 and marks the flag handled. Otherwise the base
+ * RacePS2Base::updateRace runs, followed by 003BC6E0 with one 1/60 s step. Which replay or result phase the flags stand for is purpose unknown. */
 typedef int s32;
 typedef short s16;
 typedef float f32;
@@ -14,15 +19,15 @@ struct Obj { char *vt; };
 
 struct Self {
     char pad0[0x64];
-    char *unk64;
+    char *vtable;
     char pad68[4];
-    Org *unk6C;
+    Org *organization;
     s32 unk70;
     char pad74[0xD44 - 0x74];
     s32 unkD44;
     char padD48[0x24EE0 - 0xD48];
-    s32 unk24EE0;
-    s32 unk24EE4;
+    s32 pendingFlag;
+    s32 handledFlag;
 };
 
 extern "C" void RacePS2Base__updateRace(void *);
@@ -31,27 +36,27 @@ extern "C" void func_003BC6E0(void *, f32);
 extern "C" void RaceLicenseDisplay__setDisplayTypeInReplay(void *, s32);
 
 extern "C" void RaceLicense__updateRace(Self *self) {
-    char *c = (char *)self + 0x10368;
-    if (self->unk6C->unkDC != 0) {
-        RaceDisplay__virtual_16(c, 0);
+    char *display = (char *)self + 0x10368;
+    if (self->organization->unkDC != 0) {
+        RaceDisplay__virtual_16(display, 0);
     }
-    if (self->unk24EE0 != 0) {
-        RaceDisplay__virtual_16(c, self->unk24EE4 != 0);
-        RaceLicenseDisplay__setDisplayTypeInReplay(c, 2);
-        if (self->unk24EE4 == 0) {
-            VEntO *v0 = (VEntO *)(self->unk64 + 0xD0);
-            Obj *o = v0->fn((char *)self + v0->off, 0);
-            VEntI *v1 = (VEntI *)(o->vt + 0x158);
-            if (v1->fn((char *)o + v1->off) == 0) {
-                VEntB *v2 = (VEntB *)(o->vt + 0xB0);
-                v2->fn((char *)o + v2->off, self->unk6C, self->unk70, self->unkD44 == 0);
+    if (self->pendingFlag != 0) {
+        RaceDisplay__virtual_16(display, self->handledFlag != 0);
+        RaceLicenseDisplay__setDisplayTypeInReplay(display, 2);
+        if (self->handledFlag == 0) {
+            VEntO *getEntry = (VEntO *)(self->vtable + 0xD0);
+            Obj *target = getEntry->fn((char *)self + getEntry->off, 0);
+            VEntI *queryEntry = (VEntI *)(target->vt + 0x158);
+            if (queryEntry->fn((char *)target + queryEntry->off) == 0) {
+                VEntB *applyEntry = (VEntB *)(target->vt + 0xB0);
+                applyEntry->fn((char *)target + applyEntry->off, self->organization, self->unk70, self->unkD44 == 0);
                 return;
             }
-            VEntV *v3 = (VEntV *)(self->unk64 + 0x178);
-            v3->fn((char *)self + v3->off);
-            VEntV *v4 = (VEntV *)(self->unk64 + 0x180);
-            v4->fn((char *)self + v4->off);
-            self->unk24EE4 = 1;
+            VEntV *firstCall = (VEntV *)(self->vtable + 0x178);
+            firstCall->fn((char *)self + firstCall->off);
+            VEntV *secondCall = (VEntV *)(self->vtable + 0x180);
+            secondCall->fn((char *)self + secondCall->off);
+            self->handledFlag = 1;
         }
     }
     RacePS2Base__updateRace(self);

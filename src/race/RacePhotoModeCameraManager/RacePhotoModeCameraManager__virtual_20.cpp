@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Resets the photo-mode camera manager (virtual slot 20): runs DevelopCamera::virtual_20, initialises the three embedded blocks
+ * (+0x9C0, +0xC80, CameraControl at +0xDD0 with 0 and 1), calls virtual +0x58 on both camera objects (+0xC40, +0xC44), makes the first one
+ * the active camera (field +0x13C; the name is inferred from the assignment), runs 0036FAE8 on the block at +0xE28 and clears +0xF30 / +0xF34.
+ * When a source object is given, its int at +0x80 goes to the virtuals +0x140 (first camera) and +0x138 (second camera), to 0036FAE8, and
+ * the source feeds 003FBAB0 on the block at +0xD00. What the source object is is purpose unknown. */
 typedef int s32;
 typedef short s16;
 
@@ -14,11 +19,11 @@ struct Other { char pad[0x80]; s32 i80; };
 struct Cam {
     char *vt;
     char pad4[0x138];
-    Obj *x13C;
+    Obj *activeCamera;
     char pad140[0x9C0 - 0x140];
     char b9C0[0xC40 - 0x9C0];
-    Obj *oC40;
-    Obj *oC44;
+    Obj *firstCamera;
+    Obj *secondCamera;
     char padC48[0xC80 - 0xC48];
     char bC80[0xD00 - 0xC80];
     char bD00[0xDD0 - 0xD00];
@@ -34,31 +39,31 @@ extern "C" void CameraSys__CameraControl__init(void *, s32, s32);
 extern "C" void func_0036FAE8(void *, s32, s32) throw();
 extern "C" void func_003FBAB0(void *, void *, s32, s32);
 
-extern "C" void RacePhotoModeCameraManager__virtual_20(Cam *self, Other *arg) {
-    char *s3 = self->bE28;
+extern "C" void RacePhotoModeCameraManager__virtual_20(Cam *self, Other *source) {
+    char *blockE28 = self->bE28;
     DevelopCamera__virtual_20(self);
     func_003FB430(self->b9C0);
-    Obj *o1 = self->oC40;
-    VEntry *e1 = (VEntry *)((char *)o1->vt + 0x58);
-    ((void (*)(void *))e1->fn)((char *)o1 + e1->delta);
-    Obj *o2 = self->oC44;
-    VEntry *e2 = (VEntry *)((char *)o2->vt + 0x58);
-    ((void (*)(void *))e2->fn)((char *)o2 + e2->delta);
-    self->x13C = self->oC40;
+    Obj *firstCamera = self->firstCamera;
+    VEntry *firstEntry = (VEntry *)((char *)firstCamera->vt + 0x58);
+    ((void (*)(void *))firstEntry->fn)((char *)firstCamera + firstEntry->delta);
+    Obj *secondCamera = self->secondCamera;
+    VEntry *secondEntry = (VEntry *)((char *)secondCamera->vt + 0x58);
+    ((void (*)(void *))secondEntry->fn)((char *)secondCamera + secondEntry->delta);
+    self->activeCamera = self->firstCamera;
     func_003FB430(self->bC80);
     CameraSys__CameraControl__init(self->bDD0, 0, 1);
-    func_0036FAE8(s3, 0, 0);
+    func_0036FAE8(blockE28, 0, 0);
     self->iF30 = 0;
     self->iF34 = 0;
-    if (arg != 0) {
-        Obj *a = self->oC40;
-        s32 v = arg->i80;
-        VEntry *e3 = (VEntry *)((char *)a->vt + 0x140);
-        e3->fn((char *)a + e3->delta, v);
-        Obj *b = self->oC44;
-        VEntry *e4 = (VEntry *)((char *)b->vt + 0x138);
-        e4->fn((char *)b + e4->delta, v);
-        func_0036FAE8(s3, v, *((Info *)arg)->p60->p8);
-        func_003FBAB0(self->bD00, arg, 0, 0);
+    if (source != 0) {
+        Obj *cameraA = self->firstCamera;
+        s32 sourceValue80 = source->i80;
+        VEntry *e3 = (VEntry *)((char *)cameraA->vt + 0x140);
+        e3->fn((char *)cameraA + e3->delta, sourceValue80);
+        Obj *cameraB = self->secondCamera;
+        VEntry *e4 = (VEntry *)((char *)cameraB->vt + 0x138);
+        e4->fn((char *)cameraB + e4->delta, sourceValue80);
+        func_0036FAE8(blockE28, sourceValue80, *((Info *)source)->p60->p8);
+        func_003FBAB0(self->bD00, source, 0, 0);
     }
 }

@@ -1,3 +1,7 @@
+/* Deferred update of a RaceDisplay element driven by a flags word: when byte 1 is set it is cleared and 003A1638 (with the value at +0x24)
+ * and 0039D218 (with the signed byte at +0x2E) are run; when byte 2 is also set it is cleared too and the virtual refresh() (the last vtable
+ * slot, hence the 52 filler slots in the declaration) and 0039CFD8 follow. Reading the bytes as "update pending" and "refresh pending" is inferred
+ * from the clear-then-act pattern; what the element is is purpose unknown. */
 struct ObjBase {
     virtual ~ObjBase();
     virtual void slot1();
@@ -67,19 +71,19 @@ struct Obj : ObjBase {
     } flags;
 };
 
-extern "C" void func_003A1638(Obj *o, int arg);
-extern "C" void func_0039D218(Obj *o, int mode);
-extern "C" void func_0039CFD8(Obj *o);
+extern "C" void func_003A1638(Obj *display, int arg);
+extern "C" void func_0039D218(Obj *display, int mode);
+extern "C" void func_0039CFD8(Obj *display);
 
-extern "C" void func_0039EC40(Obj *o) {
-    if (o->flags.bytes[1] == 0)
+extern "C" void func_0039EC40(Obj *display) {
+    if (display->flags.bytes[1] == 0)
         return;
-    o->flags.word &= 0xFFFF00FF;
-    func_003A1638(o, o->arg24);
-    func_0039D218(o, o->mode2E);
-    if (o->flags.bytes[2]) {
-        o->flags.word &= 0xFF00FFFF;
-        o->refresh();
-        func_0039CFD8(o);
+    display->flags.word &= 0xFFFF00FF;
+    func_003A1638(display, display->arg24);
+    func_0039D218(display, display->mode2E);
+    if (display->flags.bytes[2]) {
+        display->flags.word &= 0xFF00FFFF;
+        display->refresh();
+        func_0039CFD8(display);
     }
 }

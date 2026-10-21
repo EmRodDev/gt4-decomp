@@ -1,3 +1,6 @@
+/* Adds delta to the four pointer-like fields at +0x10, +0x14, +0x18 and +0x1C when they are nonzero (a rebase after the data moved or was
+ * loaded at a new address; inferred from the add-if-nonzero pattern), then calls 003E6CE0 with the pointer at +0x14 and delta once for each of
+ * the count (u16 at +8) entries. The loop passes the same pointer every time, as in the original. What the data is is purpose unknown. */
 #include "types.h"
 
 struct Obj {
@@ -10,46 +13,46 @@ struct Obj {
     s32 f1C;
 };
 
-extern "C" void func_003E6CE0(int *arg0, int arg1);
+extern "C" void func_003E6CE0(int *self, int delta);
 
-extern "C" void func_003E6D00(Obj *arg0, s32 arg1)
+extern "C" void func_003E6D00(Obj *self, s32 delta)
 {
-    s32 s2 = arg1;
+    s32 deltaCopy = delta;
 
     {
-        s32 *h = (s32 *)((char *)arg0 + 0x14);
+        s32 *h = (s32 *)((char *)self + 0x14);
         if (*h != 0) {
-            *h = *h + s2;
+            *h = *h + deltaCopy;
         }
     }
 
     {
-        s32 *h = (s32 *)((char *)arg0 + 0x18);
+        s32 *h = (s32 *)((char *)self + 0x18);
         if (*h != 0) {
-            *h = *h + s2;
+            *h = *h + deltaCopy;
         }
     }
 
     {
-        s32 *h = (s32 *)((char *)arg0 + 0x1C);
+        s32 *h = (s32 *)((char *)self + 0x1C);
         if (*h != 0) {
-            *h = *h + s2;
+            *h = *h + deltaCopy;
         }
     }
 
     {
-        s32 *h = (s32 *)((char *)arg0 + 0x10);
+        s32 *h = (s32 *)((char *)self + 0x10);
         if (*h != 0) {
-            *h = *h + s2;
+            *h = *h + deltaCopy;
         }
     }
 
-    s32 s1 = 0;
+    s32 iteration = 0;
 
-    if (arg0->count != 0) {
+    if (self->count != 0) {
         do {
-            s1 += 1;
-            func_003E6CE0((int *)arg0->ptr14, s2);
-        } while (s1 < (s32)arg0->count);
+            iteration += 1;
+            func_003E6CE0((int *)self->ptr14, deltaCopy);
+        } while (iteration < (s32)self->count);
     }
 }

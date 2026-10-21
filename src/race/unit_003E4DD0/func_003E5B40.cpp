@@ -1,3 +1,5 @@
+/* Query over course runway data, twin of 003E5AB8 with the test function 003E7038 instead of 003E6E90: on a hit, GT4Course::RunwayData::traverse
+ * walks the entries from index 0 to count-1 (u16 at +0x4C). What the test checks geometrically is purpose unknown. */
 #include "types.h"
 
 struct Rep {
@@ -24,14 +26,14 @@ struct func_003E5B40_arg0 {
     u16 unk4C;
 };
 
-extern "C" void func_003E5B40(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 buf1[4];
-    char *v_s0;
-    s32 *p_s1;
-    v_s0 = (char *)arg0 + 0x20;
-    p_s1 = buf1;
-    if (func_003E7038(v_s0, buf0, p_s1, arg2, arg3) != 0) {
-        GT4Course__RunwayData__traverse(arg0, arg1, v_s0, buf0, p_s1, 0, ((struct func_003E5B40_arg0 *)arg0)->unk4C - 0x1, 0);
+extern "C" void func_003E5B40(s32 *runway, void *context, s32 queryValue, char **queryRef) {
+    s32 resultA[4];
+    s32 resultB[4];
+    char *part20;
+    s32 *resultBPtr;
+    part20 = (char *)runway + 0x20;
+    resultBPtr = resultB;
+    if (func_003E7038(part20, resultA, resultBPtr, queryValue, queryRef) != 0) {
+        GT4Course__RunwayData__traverse(runway, context, part20, resultA, resultBPtr, 0, ((struct func_003E5B40_arg0 *)runway)->unk4C - 0x1, 0);
     }
 }

@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Initialises an arcade race. Five setup helpers (0038B7C0, 0038B8D8, 0038BAB0, 0038B990, 0038BA90) are first called with null/zero
+ * arguments, RaceSinglePlayer::initialize runs, and then the race type at +0xCC8 decides: types 2 and 3 repeat the null calls; the others
+ * give the helpers their real blocks (+0x22C38, +0x22738, +0x22708, +0x22C70, the pointer at +0xE408 and the value at +0xE410), after
+ * storing 1 in the first block's field +0x34 for type 1. Finally RaceDisplay::virtual_06 is called on the display at +0xE440 with 1 and
+ * the display is pointed at the block at +0x22708. What each block is is purpose unknown. */
 typedef int s32;
 typedef unsigned int u32;
 
@@ -37,27 +42,27 @@ extern "C" void RaceDisplay__virtual_06(void *, s32);
 extern "C" void RaceSinglePlayer__initialize(Obj *, s32);
 extern "C" void func_003DF970(void *, void *);
 
-extern "C" void RaceArcade__initialize(Obj *self, s32 arg1) {
+extern "C" void RaceArcade__initialize(Obj *self, s32 initArg) {
     func_0038B7C0(self, 0);
     func_0038B8D8(self, 0);
     func_0038BAB0(self, 0);
     func_0038B990(self, 0);
     func_0038BA90(self, 0);
-    Disp *d = (Disp *)((char *)self + 0xE440);
-    RaceSinglePlayer__initialize(self, arg1);
+    Disp *display = (Disp *)((char *)self + 0xE440);
+    RaceSinglePlayer__initialize(self, initArg);
     {
-        s32 t = self->type;
-        Pause *o = (Pause *)((char *)self + 0x22C38);
-        s32 a3 = 0;
-        if ((u32)(t - 2) < 2) {
+        s32 raceType = self->type;
+        Pause *pauseBlock = (Pause *)((char *)self + 0x22C38);
+        s32 flagValue = 0;
+        if ((u32)(raceType - 2) < 2) {
             func_0038B7C0(self, 0);
             func_0038B8D8(self, 0);
             func_0038BAB0(self, 0);
             func_0038B990(self, 0);
             func_0038BA90(self, 0);
         } else {
-            if (t == 1 || t == 3) a3 = 1;
-            o->f34 = a3;
+            if (raceType == 1 || raceType == 3) flagValue = 1;
+            pauseBlock->f34 = flagValue;
             func_0038B7C0(self, (char *)self + 0x22C38);
             func_0038B8D8(self, (char *)self + 0x22738);
             func_003DF970((char *)self + 0x22738, (char *)self + 0x22708);
@@ -67,6 +72,6 @@ extern "C" void RaceArcade__initialize(Obj *self, s32 arg1) {
             func_0038BA90(self, self->vE410);
         }
     }
-    RaceDisplay__virtual_06(d, 1);
-    d->f8 = (char *)self + 0x22708;
+    RaceDisplay__virtual_06(display, 1);
+    display->f8 = (char *)self + 0x22708;
 }

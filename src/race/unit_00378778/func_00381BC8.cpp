@@ -1,3 +1,6 @@
+/* Predicate with the shape of a virtual method (its second parameter is unused; inferred): returns whether the signed byte at
+ * owner->(+0x14) + byteOffset + 0x164 is zero. Five functions of this unit have the identical body (00380D80, 00381BC8, 00382C40,
+ * 00384340, 0037F4C8: probably one per class that overrides the same slot, inferred); which flag the byte is is purpose unknown. */
 typedef int s32;
 typedef signed char s8;
 
@@ -6,8 +9,8 @@ struct Obj2 {
     char *unk14;
 };
 
-extern "C" s32 func_00381BC8(s32 arg0, s32 arg1, struct Obj2 *arg2) {
-    char *p = arg2->unk14 + arg0;
-    s8 b = *(s8 *)(p + 0x164);
-    return b == 0;
+extern "C" s32 func_00381BC8(s32 byteOffset, s32 unusedArg, struct Obj2 *owner) {
+    char *flagAddress = owner->unk14 + byteOffset;
+    s8 flagByte = *(s8 *)(flagAddress + 0x164);
+    return flagByte == 0;
 }

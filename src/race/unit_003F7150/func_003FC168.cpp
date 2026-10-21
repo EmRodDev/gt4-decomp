@@ -1,51 +1,57 @@
-struct Ent { float a, b, c; int pad; unsigned d; };
-struct Obj { char p0[4]; void *o4; char p1[0x70]; Ent e[3]; };
+/* Per-frame (1/60 s) update of one of three small timer-driven state entries at +0x78 (0x14 bytes each), selected by idx. State "active" is
+ * byte 1 of the flags. Inactive: chargeTime grows, clamped to 0..30; while conditionHeld stays true holdTimer counts up, and past triggerHold
+ * the entry becomes active for durationStart, with a chance (curve at +0xB4 sampled at chargeTime/30, times curveScale, compared with
+ * a draw from func_00578598 on the pointer at +4, which 0040AA48 uses as a random-number threshold; inferred) of instead setting byte 0 and a longer durationHit and resetting chargeTime. Active: remaining counts
+ * down and the entry ends when holdTimer passes releaseHold or remaining < 0. The field names are inferred from the arithmetic; what the
+ * entries model in game terms is purpose unknown. */
+struct Ent { float chargeTime, holdTimer, remaining; int pad; unsigned flags; };
+struct Obj { char p0[4]; void *o4; char p1[0x70]; Ent entry[3]; };
 extern "C" float func_0036F778(void *, float);
 extern "C" float func_00578598(void *);
 
-extern "C" void func_003FC168(Obj *o, int idx, int arg2, float f0, float f1, float f2, float f3, float f4)
+extern "C" void func_003FC168(Obj *self, int idx, int conditionHeld, float curveScale, float triggerHold, float releaseHold, float durationHit, float durationStart)
 {
-    Ent *e = (Ent *)((char *)o + idx * 0x14 + 0x78);
-    float dt = 0.016666666f;
-    unsigned t = e->d & ~0xFFu;
-    e->d = t;
-    if (((unsigned char *)&e->d)[1] != 0) {
-        e->c = e->c - dt;
-        if (arg2 != 0) {
-            e->b = 0.0f;
+    Ent *entry = (Ent *)((char *)self + idx * 0x14 + 0x78);
+    float timeStep = 0.016666666f;
+    unsigned flagsNoByte0 = entry->flags & ~0xFFu;
+    entry->flags = flagsNoByte0;
+    if (((unsigned char *)&entry->flags)[1] != 0) {
+        entry->remaining = entry->remaining - timeStep;
+        if (conditionHeld != 0) {
+            entry->holdTimer = 0.0f;
         } else {
-            float v = e->b + dt;
-            e->b = v;
-            if (f2 < v) {
-                e->b = 0.0f;
-                e->d = t & 0xFFFF00FFu;
+            float updated = entry->holdTimer + timeStep;
+            entry->holdTimer = updated;
+            if (releaseHold < updated) {
+                entry->holdTimer = 0.0f;
+                entry->flags = flagsNoByte0 & 0xFFFF00FFu;
             }
         }
-        if (e->c < 0.0f) {
-            e->b = 0.0f;
-            e->d = e->d & 0xFFFF00FFu;
+        if (entry->remaining < 0.0f) {
+            entry->holdTimer = 0.0f;
+            entry->flags = entry->flags & 0xFFFF00FFu;
         }
     } else {
-        float v = e->a + dt;
-        e->a = v;
-        if (v <= 0.0f) e->a = 0.0f;
-        if (e->a >= 30.0f) e->a = 30.0f;
-        if (arg2 != 0) {
-            float w = e->b + dt;
-            e->b = w;
-            if (f1 < w) {
-                e->c = f4;
-                e->b = 0.0f;
-                e->d = (e->d & 0xFFFF00FFu) | 0x100;
-                float r = func_0036F778((char *)o + 0xB4, e->a / 30.0f) * f0;
-                if (func_00578598(o->o4) < r) {
-                    e->c = f3;
-                    e->a = 0.0f;
-                    e->d = (e->d & ~0xFFu) | 1;
+        float updated = entry->chargeTime + timeStep;
+        entry->chargeTime = updated;
+        if (updated <= 0.0f) entry->chargeTime = 0.0f;
+        if (entry->chargeTime >= 30.0f) entry->chargeTime = 30.0f;
+        if (conditionHeld != 0) {
+            float updatedHold = entry->holdTimer + timeStep;
+            entry->holdTimer = updatedHold;
+            if (triggerHold < updatedHold) {
+                entry->remaining = durationStart;
+                entry->holdTimer = 0.0f;
+                entry->flags = (entry->flags & 0xFFFF00FFu) | 0x100;
+                float chance = func_0036F778((char *)self + 0xB4, entry->chargeTime / 30.0f) * curveScale;
+                if (func_00578598(self->o4) < chance) {
+                    entry->remaining = durationHit;
+                    entry->chargeTime = 0.0f;
+                    entry->flags = (entry->flags & ~0xFFu) | 1;
                 }
             }
         } else {
-            e->b = 0.0f;
+            entry->holdTimer = 0.0f;
         }
     }
 }

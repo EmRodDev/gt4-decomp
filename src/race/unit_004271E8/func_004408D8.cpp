@@ -1,3 +1,6 @@
+/* Setter for id 27 of the 00440B50 dispatcher (which switches on the high 32 bits of a 64-bit parameter; three 0x178-byte slots from +8,
+ * current slot index at +0x490): stores the 64-bit key, which arrives in a pointer-typed argument, at +0xF8 of the current slot, lets
+ * 00440170 fill the slot, then copies the byte at row+0x13F to +0x167 of the slot. What id 27 stands for is purpose unknown. */
 #include "types.h"
 
 struct Rep {
@@ -33,11 +36,11 @@ struct func_004408D8_arg2 {
     u8 unk13F;
 };
 
-extern "C" void func_004408D8(s32 *arg0, void *arg1, s32 arg2) {
-    char *v_s0;
-    v_s0 = (char *)arg0 + (((((((struct func_004408D8_arg0 *)arg0)->unk490 << 1) + ((struct func_004408D8_arg0 *)arg0)->unk490) << 4) - ((struct func_004408D8_arg0 *)arg0)->unk490) << 3);
-    v_s0 = (char *)v_s0 + 0x8;
-    ((struct func_004408D8_v_s0 *)v_s0)->unkF8 = (s64)arg1;
-    func_00440170(arg0, arg2);
-    ((struct func_004408D8_v_s0 *)v_s0)->unk167 = (s8)*(u8 *)((char *)arg2 + 0x13f);
+extern "C" void func_004408D8(s32 *state, void *key, s32 row) {
+    char *slot;
+    slot = (char *)state + (((((((struct func_004408D8_arg0 *)state)->unk490 << 1) + ((struct func_004408D8_arg0 *)state)->unk490) << 4) - ((struct func_004408D8_arg0 *)state)->unk490) << 3);
+    slot = (char *)slot + 0x8;
+    ((struct func_004408D8_v_s0 *)slot)->unkF8 = (s64)key;
+    func_00440170(state, row);
+    ((struct func_004408D8_v_s0 *)slot)->unk167 = (s8)*(u8 *)((char *)row + 0x13f);
 }

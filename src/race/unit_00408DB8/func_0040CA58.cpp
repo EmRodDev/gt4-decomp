@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Automatic-transmission style shift decision (inferred): rpm is an integer truncation of a float at +0x738 (func_00350F30), currentGear the
+ * byte at +0x624. Gear 0 and the top gear (count at owner state +2) get an upshift threshold of 99999 and gears below 2 a downshift threshold
+ * of -100000, which only makes sense as "no such shift exists" sentinels (inferred from those values). The function only ever writes 1 (or the
+ * gear 1) into the outputs, never 0, so the caller must clear them first. input1/input2 are two float queries (func_00344698 / 003446A0),
+ * probably throttle and brake (inferred from how they gate the thresholds: more downshift room when input2 is nonzero); outFlag3's exact
+ * meaning (downshift past one gear while braking) is a guess. The only caller is the driver-support code in 00412018. */
 typedef int s32;
 typedef unsigned char u8;
 struct St { char p[2]; u8 count; };
@@ -17,37 +23,37 @@ extern "C" s32 func_0036BEE0(S *, s32);
 extern "C" s32 func_0036BF28(S *, s32);
 extern "C" s32 func_0036BF68(S *, float);
 
-extern "C" void func_0040CA58(S *self, s32 *a1, s32 *a2, s32 *a3, s32 *a4) {
+extern "C" void func_0040CA58(S *self, s32 *outShiftUp, s32 *outShiftDown, s32 *outFlag3, s32 *outTargetGear) {
     St *st = &self->owner->state;
-    s32 s4 = func_00350F30(self);
-    s32 s6 = st->count;
-    s32 c = self->f624;
+    s32 rpm = func_00350F30(self);
+    s32 gearCount = st->count;
+    s32 currentGear = self->f624;
     func_00343BE0(self);
-    float f20 = func_00344698(self);
-    float f21 = func_003446A0(self);
-    float *fp = (float *)((char *)self + 0x14);
-    float x = fp[10] < fp[9] ? fp[10] : fp[9];
-    s32 s3 = func_0036BF68(self, x);
-    if (a4) *a4 = s3;
-    s32 s2;
-    if (c == 0 || c == s6) s2 = 99999;
-    else s2 = func_0036BEE0(self, c);
-    s32 v1 = (s32)0xFFFE7961;
-    if (c >= 2) v1 = func_0036BF28(self, c);
-    if (c == 1) {
-        if (s2 - 1000 < s4)
-            if (f20 > 0.2f) *a1 = c;
-    } else if (s2 - 300 < s4 && f20 > 0.7f) {
-        *a1 = 1;
+    float input1 = func_00344698(self);
+    float input2 = func_003446A0(self);
+    float *floats14 = (float *)((char *)self + 0x14);
+    float lowerOfTwo = floats14[10] < floats14[9] ? floats14[10] : floats14[9];
+    s32 targetGear = func_0036BF68(self, lowerOfTwo);
+    if (outTargetGear) *outTargetGear = targetGear;
+    s32 upshiftRpm;
+    if (currentGear == 0 || currentGear == gearCount) upshiftRpm = 99999;
+    else upshiftRpm = func_0036BEE0(self, currentGear);
+    s32 downshiftRpm = (s32)0xFFFE7961;
+    if (currentGear >= 2) downshiftRpm = func_0036BF28(self, currentGear);
+    if (currentGear == 1) {
+        if (upshiftRpm - 1000 < rpm)
+            if (input1 > 0.2f) *outShiftUp = currentGear;
+    } else if (upshiftRpm - 300 < rpm && input1 > 0.7f) {
+        *outShiftUp = 1;
     }
-    if (c == s3) {
-        if (s4 < v1 - 1000) *a2 = 1;
-    } else if (f20 > 0) {
-        if (s4 < v1) *a2 = 1;
-    } else if (f21 == 0) {
-        if (s4 < v1 + 500) *a2 = 1;
+    if (currentGear == targetGear) {
+        if (rpm < downshiftRpm - 1000) *outShiftDown = 1;
+    } else if (input1 > 0) {
+        if (rpm < downshiftRpm) *outShiftDown = 1;
+    } else if (input2 == 0) {
+        if (rpm < downshiftRpm + 500) *outShiftDown = 1;
     } else {
-        if (s4 < v1 + 1000) *a2 = 1;
-        if (s3 > 0 && s3 < c) *a3 = 1;
+        if (rpm < downshiftRpm + 1000) *outShiftDown = 1;
+        if (targetGear > 0 && targetGear < currentGear) *outFlag3 = 1;
     }
 }

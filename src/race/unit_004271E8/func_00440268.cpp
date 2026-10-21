@@ -1,3 +1,7 @@
+/* Setter for category 2 of the 00440B50 dispatcher (that file declares the state as three 0x178-byte slots from +8 plus the current slot
+ * index at +0x490). Stores a 64-bit key, which arrives in a pointer-typed argument, at +0x28 of the current slot, lets 0043FE58 fill the slot
+ * from the SPEC_DATABASE row table, then derives two signed bytes at +0x12F/+0x130 with 004452A8 from bytes 3/6 and 7/0xA of row.
+ * The slot address is computed as index * 47 * 8, a multiply the compiler spells out in shifts. What category 2 stands for is purpose unknown. */
 #include "types.h"
 
 struct Rep {
@@ -40,16 +44,16 @@ struct func_00440268_arg2 {
     u8 unkA;
 };
 
-extern "C" void func_00440268(s32 *arg0, void *arg1, s32 arg2) {
-    char *v_s0;
-    s32 t1;
-    s32 t2;
-    v_s0 = (char *)arg0 + (((((((struct func_00440268_arg0 *)arg0)->unk490 << 1) + ((struct func_00440268_arg0 *)arg0)->unk490) << 4) - ((struct func_00440268_arg0 *)arg0)->unk490) << 3);
-    v_s0 = (char *)v_s0 + 0x8;
-    ((struct func_00440268_v_s0 *)v_s0)->unk28 = (s64)arg1;
-    func_0043FE58(arg0, arg2);
-    t1 = func_004452A8(v_s0, 0x1, ((struct func_00440268_arg2 *)arg2)->unk6, ((struct func_00440268_arg2 *)arg2)->unk3);
-    ((struct func_00440268_v_s0 *)v_s0)->unk12F = (s8)t1;
-    t2 = func_004452A8(v_s0, 0x1, ((struct func_00440268_arg2 *)arg2)->unkA, ((struct func_00440268_arg2 *)arg2)->unk7);
-    ((struct func_00440268_v_s0 *)v_s0)->unk130 = (s8)t2;
+extern "C" void func_00440268(s32 *state, void *key, s32 row) {
+    char *slot;
+    s32 resultA;
+    s32 resultB;
+    slot = (char *)state + (((((((struct func_00440268_arg0 *)state)->unk490 << 1) + ((struct func_00440268_arg0 *)state)->unk490) << 4) - ((struct func_00440268_arg0 *)state)->unk490) << 3);
+    slot = (char *)slot + 0x8;
+    ((struct func_00440268_v_s0 *)slot)->unk28 = (s64)key;
+    func_0043FE58(state, row);
+    resultA = func_004452A8(slot, 0x1, ((struct func_00440268_arg2 *)row)->unk6, ((struct func_00440268_arg2 *)row)->unk3);
+    ((struct func_00440268_v_s0 *)slot)->unk12F = (s8)resultA;
+    resultB = func_004452A8(slot, 0x1, ((struct func_00440268_arg2 *)row)->unkA, ((struct func_00440268_arg2 *)row)->unk7);
+    ((struct func_00440268_v_s0 *)slot)->unk130 = (s8)resultB;
 }

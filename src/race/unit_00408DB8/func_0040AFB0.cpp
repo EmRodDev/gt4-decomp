@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Advances one rigid body by timeStep and reports whether it is still above a plane. Read from the arithmetic (all inferred): body +0x08/0C/10
+ * are three Euler angles wrapped into [0, 2 pi) at the end, +0x14..0x1C the position, +0x20..0x28 the linear velocity, +0x2C..0x34 the
+ * angular velocity, and +0x4C points to a property block (+0x04 mass, which gives the 9.81 gravity force; +0x10 the inverse mass applied to
+ * the force; +0x18/0x1C/0x20 the principal inertias used in the Euler equations omega' = (torque + (Iy - Iz) wy wz) / Ix; +0x24/0x28 drag
+ * factors on the body-frame velocity; +0x2C/0x30 angular drag). The rotation matrix comes from 0040AD10 and the Euler angle rates from
+ * sin/cos of two of the angles (update skipped when the second sin/cos output is 0, the gimbal case). The angular velocity is also damped by
+ * 0.9985 per step. Return value: 0 when the plane (normal at +0x38/0x3C/0x40, offset +0x44) is crossed by the position, else 1. What the body
+ * represents (a loose part or prop is the likely case) is purpose unknown. */
 typedef float f32;
 typedef int s32;
 #define M2C_FIELD(p,t,o) (*(t)((char *)(p)+(o)))
@@ -7,91 +15,91 @@ extern "C" void func_0040AE20(float (*)[4], const float *,float *) throw();
 extern "C" void func_0040AE78(float (*)[4], const float *,float *) throw();
 extern "C" void func_0057D8A0(float,float *,float *);
 extern "C"
-s32 func_0040AFB0(void *arg0, f32 fparg0) {
-    struct StackFrame { float force[4]; float torque[4]; float m[4][4]; float local[4]; float scaled[4]; float sp80,sp84,sp88,sp8C; } sp_;
-    f32 temp_f0;
-    f32 temp_f1;
-    f32 temp_f20;
-    f32 temp_f22;
-    f32 temp_f21;
-    f32 temp_f24;
-    f32 temp_f25;
-    f32 temp_f26;
-    f32 var_f0;
-    f32 var_f0_2;
-    f32 var_f1;
+s32 func_0040AFB0(void *body, f32 timeStep) {
+    struct StackFrame { float force[4]; float torque[4]; float m[4][4]; float local[4]; float scaled[4]; float trigAFirst,trigASecond,trigCFirst,trigCSecond; } frame;
+    f32 wrappedAngle;
+    f32 eulerRateY;
+    f32 inertiaX;
+    f32 inertiaZ;
+    f32 inertiaY;
+    f32 angularVelX;
+    f32 angularVelY;
+    f32 angularVelZ;
+    f32 angleAt0C;
+    f32 angleAt10;
+    f32 angleAt8;
     s32 var_v0;
-    void *temp_v0;
-    void *temp_v0_2;
-    void *temp_v0_3;
-    void *temp_v1;
+    void *properties;
+    void *properties2;
+    void *properties3;
+    void *properties4;
 
-    temp_v0 = M2C_FIELD(arg0, void **, 0x4C);
-    temp_f24 = M2C_FIELD(arg0, f32 *, 0x2C);
-    temp_f20 = M2C_FIELD(temp_v0, f32 *, 0x18);
-    temp_f21 = M2C_FIELD(temp_v0, f32 *, 0x1C);
-    temp_f22 = M2C_FIELD(temp_v0, f32 *, 0x20);
-    temp_f26 = M2C_FIELD(arg0, f32 *, 0x34);
-    temp_f25 = M2C_FIELD(arg0, f32 *, 0x30);
-    func_0040AD10(sp_.m, M2C_FIELD(arg0, f32 *, 8), M2C_FIELD(arg0, f32 *, 0xC), M2C_FIELD(arg0, f32 *, 0x10));
-    func_0040AE78(sp_.m, (float *)((char *)arg0 + 0x20), &sp_.local[0]);
-    temp_v0_2 = M2C_FIELD(arg0, void **, 0x4C);
-    sp_.scaled[0] = M2C_FIELD(temp_v0_2, f32 *, 0x28) * sp_.local[0];
-    sp_.scaled[1] = M2C_FIELD(temp_v0_2, f32 *, 0x24) * sp_.local[1];
-    sp_.scaled[2] = M2C_FIELD(temp_v0_2, f32 *, 0x28) * sp_.local[2];
-    func_0040AE20(sp_.m, &sp_.scaled[0], sp_.force);
-    temp_v0_3 = M2C_FIELD(arg0, void **, 0x4C);
-    sp_.force[1] += -M2C_FIELD(temp_v0_3, f32 *, 4) * 0x1.39eb840000000p+3f;
-    sp_.torque[0] = M2C_FIELD(temp_v0_3, f32 *, 0x2C) * temp_f24;
-    sp_.torque[1] = 0x0.0p+0f;
-    sp_.torque[2] = M2C_FIELD(temp_v0_3, f32 *, 0x30) * temp_f26;
-    func_0057D8A0(M2C_FIELD(arg0, f32 *, 8), &sp_.sp80, &sp_.sp84);
-    func_0057D8A0(M2C_FIELD(arg0, f32 *, 0x10), &sp_.sp88, &sp_.sp8C);
-    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) (M2C_FIELD(arg0, f32 *, 0x2C) + (((sp_.torque[0] + ((temp_f21 - temp_f22) * temp_f25 * temp_f26)) * fparg0) / temp_f20));
-    M2C_FIELD(arg0, f32 *, 0x30) = (f32) (M2C_FIELD(arg0, f32 *, 0x30) + (((sp_.torque[1] + ((temp_f22 - temp_f20) * temp_f26 * temp_f24)) * fparg0) / temp_f21));
-    M2C_FIELD(arg0, f32 *, 0x34) = (f32) (M2C_FIELD(arg0, f32 *, 0x34) + (((sp_.torque[2] + ((temp_f20 - temp_f21) * temp_f24 * temp_f25)) * fparg0) / temp_f22));
-    if (sp_.sp84 != 0x0.0p+0f) {
-        temp_f1 = ((temp_f24 * sp_.sp88) - (temp_f25 * sp_.sp8C)) / sp_.sp84;
-        M2C_FIELD(arg0, f32 *, 8) = (f32) (M2C_FIELD(arg0, f32 *, 8) + (-((temp_f24 * sp_.sp8C) + (temp_f25 * sp_.sp88)) * fparg0));
-        M2C_FIELD(arg0, f32 *, 0xC) = (f32) (M2C_FIELD(arg0, f32 *, 0xC) + (temp_f1 * fparg0));
-        M2C_FIELD(arg0, f32 *, 0x10) = (f32) (M2C_FIELD(arg0, f32 *, 0x10) + (-((temp_f1 * sp_.sp80) + temp_f26) * fparg0));
+    properties = M2C_FIELD(body, void **, 0x4C);
+    angularVelX = M2C_FIELD(body, f32 *, 0x2C);
+    inertiaX = M2C_FIELD(properties, f32 *, 0x18);
+    inertiaY = M2C_FIELD(properties, f32 *, 0x1C);
+    inertiaZ = M2C_FIELD(properties, f32 *, 0x20);
+    angularVelZ = M2C_FIELD(body, f32 *, 0x34);
+    angularVelY = M2C_FIELD(body, f32 *, 0x30);
+    func_0040AD10(frame.m, M2C_FIELD(body, f32 *, 8), M2C_FIELD(body, f32 *, 0xC), M2C_FIELD(body, f32 *, 0x10));
+    func_0040AE78(frame.m, (float *)((char *)body + 0x20), &frame.local[0]);
+    properties2 = M2C_FIELD(body, void **, 0x4C);
+    frame.scaled[0] = M2C_FIELD(properties2, f32 *, 0x28) * frame.local[0];
+    frame.scaled[1] = M2C_FIELD(properties2, f32 *, 0x24) * frame.local[1];
+    frame.scaled[2] = M2C_FIELD(properties2, f32 *, 0x28) * frame.local[2];
+    func_0040AE20(frame.m, &frame.scaled[0], frame.force);
+    properties3 = M2C_FIELD(body, void **, 0x4C);
+    frame.force[1] += -M2C_FIELD(properties3, f32 *, 4) * 0x1.39eb840000000p+3f;
+    frame.torque[0] = M2C_FIELD(properties3, f32 *, 0x2C) * angularVelX;
+    frame.torque[1] = 0x0.0p+0f;
+    frame.torque[2] = M2C_FIELD(properties3, f32 *, 0x30) * angularVelZ;
+    func_0057D8A0(M2C_FIELD(body, f32 *, 8), &frame.trigAFirst, &frame.trigASecond);
+    func_0057D8A0(M2C_FIELD(body, f32 *, 0x10), &frame.trigCFirst, &frame.trigCSecond);
+    M2C_FIELD(body, f32 *, 0x2C) = (f32) (M2C_FIELD(body, f32 *, 0x2C) + (((frame.torque[0] + ((inertiaY - inertiaZ) * angularVelY * angularVelZ)) * timeStep) / inertiaX));
+    M2C_FIELD(body, f32 *, 0x30) = (f32) (M2C_FIELD(body, f32 *, 0x30) + (((frame.torque[1] + ((inertiaZ - inertiaX) * angularVelZ * angularVelX)) * timeStep) / inertiaY));
+    M2C_FIELD(body, f32 *, 0x34) = (f32) (M2C_FIELD(body, f32 *, 0x34) + (((frame.torque[2] + ((inertiaX - inertiaY) * angularVelX * angularVelY)) * timeStep) / inertiaZ));
+    if (frame.trigASecond != 0x0.0p+0f) {
+        eulerRateY = ((angularVelX * frame.trigCFirst) - (angularVelY * frame.trigCSecond)) / frame.trigASecond;
+        M2C_FIELD(body, f32 *, 8) = (f32) (M2C_FIELD(body, f32 *, 8) + (-((angularVelX * frame.trigCSecond) + (angularVelY * frame.trigCFirst)) * timeStep));
+        M2C_FIELD(body, f32 *, 0xC) = (f32) (M2C_FIELD(body, f32 *, 0xC) + (eulerRateY * timeStep));
+        M2C_FIELD(body, f32 *, 0x10) = (f32) (M2C_FIELD(body, f32 *, 0x10) + (-((eulerRateY * frame.trigAFirst) + angularVelZ) * timeStep));
     }
-    var_f1 = M2C_FIELD(arg0, f32 *, 8);
-    if (var_f1 < 0x0.0p+0f) {
-        temp_f0 = var_f1 + 0x1.921fb40000000p+2f;
-        M2C_FIELD(arg0, f32 *, 8) = temp_f0;
-        var_f1 = temp_f0;
+    angleAt8 = M2C_FIELD(body, f32 *, 8);
+    if (angleAt8 < 0x0.0p+0f) {
+        wrappedAngle = angleAt8 + 0x1.921fb40000000p+2f;
+        M2C_FIELD(body, f32 *, 8) = wrappedAngle;
+        angleAt8 = wrappedAngle;
     }
-    if (var_f1 >= 0x1.921fb40000000p+2f) {
-        M2C_FIELD(arg0, f32 *, 8) = (f32) (var_f1 - 0x1.921fb40000000p+2f);
+    if (angleAt8 >= 0x1.921fb40000000p+2f) {
+        M2C_FIELD(body, f32 *, 8) = (f32) (angleAt8 - 0x1.921fb40000000p+2f);
     }
-    var_f0 = M2C_FIELD(arg0, f32 *, 0xC);
-    if (var_f0 < 0x0.0p+0f) {
-        var_f0 += 0x1.921fb40000000p+2f;
-        M2C_FIELD(arg0, f32 *, 0xC) = var_f0;
+    angleAt0C = M2C_FIELD(body, f32 *, 0xC);
+    if (angleAt0C < 0x0.0p+0f) {
+        angleAt0C += 0x1.921fb40000000p+2f;
+        M2C_FIELD(body, f32 *, 0xC) = angleAt0C;
     }
-    if (var_f0 >= 0x1.921fb40000000p+2f) {
-        M2C_FIELD(arg0, f32 *, 0xC) = (f32) (var_f0 - 0x1.921fb40000000p+2f);
+    if (angleAt0C >= 0x1.921fb40000000p+2f) {
+        M2C_FIELD(body, f32 *, 0xC) = (f32) (angleAt0C - 0x1.921fb40000000p+2f);
     }
-    var_f0_2 = M2C_FIELD(arg0, f32 *, 0x10);
-    if (var_f0_2 < 0x0.0p+0f) {
-        var_f0_2 += 0x1.921fb40000000p+2f;
-        M2C_FIELD(arg0, f32 *, 0x10) = var_f0_2;
+    angleAt10 = M2C_FIELD(body, f32 *, 0x10);
+    if (angleAt10 < 0x0.0p+0f) {
+        angleAt10 += 0x1.921fb40000000p+2f;
+        M2C_FIELD(body, f32 *, 0x10) = angleAt10;
     }
-    if (var_f0_2 >= 0x1.921fb40000000p+2f) {
-        M2C_FIELD(arg0, f32 *, 0x10) = (f32) (var_f0_2 - 0x1.921fb40000000p+2f);
+    if (angleAt10 >= 0x1.921fb40000000p+2f) {
+        M2C_FIELD(body, f32 *, 0x10) = (f32) (angleAt10 - 0x1.921fb40000000p+2f);
     }
-    M2C_FIELD(arg0, f32 *, 0x14) = (f32) (M2C_FIELD(arg0, f32 *, 0x14) + (M2C_FIELD(arg0, f32 *, 0x20) * fparg0));
-    M2C_FIELD(arg0, f32 *, 0x18) = (f32) (M2C_FIELD(arg0, f32 *, 0x18) + (M2C_FIELD(arg0, f32 *, 0x24) * fparg0));
-    M2C_FIELD(arg0, f32 *, 0x1C) = (f32) (M2C_FIELD(arg0, f32 *, 0x1C) + (M2C_FIELD(arg0, f32 *, 0x28) * fparg0));
-    M2C_FIELD(arg0, f32 *, 0x20) = (f32) (M2C_FIELD(arg0, f32 *, 0x20) + (sp_.force[0] * M2C_FIELD(M2C_FIELD(arg0, void **, 0x4C), f32 *, 0x10) * fparg0));
-    temp_v1 = M2C_FIELD(arg0, void **, 0x4C);
-    M2C_FIELD(arg0, f32 *, 0x24) = (f32) (M2C_FIELD(arg0, f32 *, 0x24) + (sp_.force[1] * M2C_FIELD(temp_v1, f32 *, 0x10) * fparg0));
-    M2C_FIELD(arg0, f32 *, 0x28) = (f32) (M2C_FIELD(arg0, f32 *, 0x28) + (sp_.force[2] * M2C_FIELD(temp_v1, f32 *, 0x10) * fparg0));
-    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) (M2C_FIELD(arg0, f32 *, 0x2C) * 0x1.ff7cec0000000p-1f);
-    M2C_FIELD(arg0, f32 *, 0x30) = (f32) (M2C_FIELD(arg0, f32 *, 0x30) * 0x1.ff7cec0000000p-1f);
-    M2C_FIELD(arg0, f32 *, 0x34) = (f32) (M2C_FIELD(arg0, f32 *, 0x34) * 0x1.ff7cec0000000p-1f);
-    if (((M2C_FIELD(arg0, f32 *, 0x38) * M2C_FIELD(arg0, f32 *, 0x14)) + (M2C_FIELD(arg0, f32 *, 0x3C) * M2C_FIELD(arg0, f32 *, 0x18)) + (M2C_FIELD(arg0, f32 *, 0x40) * M2C_FIELD(arg0, f32 *, 0x1C)) + M2C_FIELD(arg0, f32 *, 0x44)) < 0x0.0p+0f) {
+    M2C_FIELD(body, f32 *, 0x14) = (f32) (M2C_FIELD(body, f32 *, 0x14) + (M2C_FIELD(body, f32 *, 0x20) * timeStep));
+    M2C_FIELD(body, f32 *, 0x18) = (f32) (M2C_FIELD(body, f32 *, 0x18) + (M2C_FIELD(body, f32 *, 0x24) * timeStep));
+    M2C_FIELD(body, f32 *, 0x1C) = (f32) (M2C_FIELD(body, f32 *, 0x1C) + (M2C_FIELD(body, f32 *, 0x28) * timeStep));
+    M2C_FIELD(body, f32 *, 0x20) = (f32) (M2C_FIELD(body, f32 *, 0x20) + (frame.force[0] * M2C_FIELD(M2C_FIELD(body, void **, 0x4C), f32 *, 0x10) * timeStep));
+    properties4 = M2C_FIELD(body, void **, 0x4C);
+    M2C_FIELD(body, f32 *, 0x24) = (f32) (M2C_FIELD(body, f32 *, 0x24) + (frame.force[1] * M2C_FIELD(properties4, f32 *, 0x10) * timeStep));
+    M2C_FIELD(body, f32 *, 0x28) = (f32) (M2C_FIELD(body, f32 *, 0x28) + (frame.force[2] * M2C_FIELD(properties4, f32 *, 0x10) * timeStep));
+    M2C_FIELD(body, f32 *, 0x2C) = (f32) (M2C_FIELD(body, f32 *, 0x2C) * 0x1.ff7cec0000000p-1f);
+    M2C_FIELD(body, f32 *, 0x30) = (f32) (M2C_FIELD(body, f32 *, 0x30) * 0x1.ff7cec0000000p-1f);
+    M2C_FIELD(body, f32 *, 0x34) = (f32) (M2C_FIELD(body, f32 *, 0x34) * 0x1.ff7cec0000000p-1f);
+    if (((M2C_FIELD(body, f32 *, 0x38) * M2C_FIELD(body, f32 *, 0x14)) + (M2C_FIELD(body, f32 *, 0x3C) * M2C_FIELD(body, f32 *, 0x18)) + (M2C_FIELD(body, f32 *, 0x40) * M2C_FIELD(body, f32 *, 0x1C)) + M2C_FIELD(body, f32 *, 0x44)) < 0x0.0p+0f) {
         return 0;
     }
     return 1;

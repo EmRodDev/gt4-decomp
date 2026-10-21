@@ -1,3 +1,8 @@
+/* Draws one object into a context: 0045B4D8 and 0045B548 bracket the work with the same 16-byte buffer (saving and restoring some state of
+ * the context, inferred from the begin/end pairing), a virtual call through the owner's table entry at +0xD0 supplies a part for 00339FE0,
+ * every item of the list at block+0x60 goes through 00339F38 (the do-while is the compiler's form of a guarded loop), and the two optional
+ * parts at +0x35E8 and +0x3238 are drawn only when drawFlagA / drawFlagB are nonzero. floatParam is passed through unchanged; what the
+ * calls draw is purpose unknown. */
 #include "types.h"
 
 struct VEnt { s16 off; s16 pad; void *(*fn)(void *, s32); };
@@ -19,24 +24,24 @@ extern "C" void func_003E5408(void *, void *);
 extern "C" void func_003C2990(void *, void *);
 extern "C" void func_0045B548(void *, void *);
 
-extern "C" void func_0033A018(void *arg0, A *arg1, s32 arg2, s32 arg3, s32 arg4, f32 fp) {
-    s32 buf0[4];
-    u32 i = 0;
-    func_0045B4D8(buf0, arg0, D_0069F2F8);
-    VEnt *ve = (VEnt *)(arg1->unk64 + 0xD0);
-    B *b = arg1->unk6C;
-    func_00339FE0(arg0, ve->fn((char *)arg1 + ve->off, 0), fp);
-    if (b->unk60->count != 0) {
+extern "C" void func_0033A018(void *context, A *owner, s32 param2, s32 drawFlagA, s32 drawFlagB, f32 floatParam) {
+    s32 savedState[4];
+    u32 itemIndex = 0;
+    func_0045B4D8(savedState, context, D_0069F2F8);
+    VEnt *vcallEntry = (VEnt *)(owner->unk64 + 0xD0);
+    B *block = owner->unk6C;
+    func_00339FE0(context, vcallEntry->fn((char *)owner + vcallEntry->off, 0), floatParam);
+    if (block->unk60->count != 0) {
         do {
-            func_00339F38(arg0, b->unk60->items[i], fp, arg1, arg2);
-            i++;
-        } while (i < b->unk60->count);
+            func_00339F38(context, block->unk60->items[itemIndex], floatParam, owner, param2);
+            itemIndex++;
+        } while (itemIndex < block->unk60->count);
     }
-    if (arg3 != 0) {
-        func_003E5408((char *)arg1 + 0x35E8, arg0);
+    if (drawFlagA != 0) {
+        func_003E5408((char *)owner + 0x35E8, context);
     }
-    if (arg4 != 0) {
-        func_003C2990((char *)arg1 + 0x3238, arg0);
+    if (drawFlagB != 0) {
+        func_003C2990((char *)owner + 0x3238, context);
     }
-    func_0045B548(buf0, arg0);
+    func_0045B548(savedState, context);
 }

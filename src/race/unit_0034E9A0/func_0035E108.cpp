@@ -1,4 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Builds a packed 0x80-byte record from a larger source record: clears the destination (005A48D8 with 0, 0x80), copies about 45 single bytes
+ * and one halfword from fixed source offsets into fixed destination offsets (the two layouts are not in the same order, hence the long
+ * list), and fills three small arrays with accessor results (bytes at +0x4F and halfwords at +0x56 from 00447778 / 004477D0 for indices
+ * 1..5; halfwords at +0x60 from 00447828 for indices 0..5). Defaults: +0x31 becomes 4 when byte 0x6B is set and byte 0x72 is zero; +0x4B = 0x32,
+ * +0x4C = 0x50, +0x21 = max(source byte 0x89, -1). Its caller 0034D418 (DynamicsConductorBattle2P) passes the destination at +0xF818 of the
+ * conductor and the block that lies behind the field at +0x70 of its own argument, so the source is likely a per-driver or per-car setup row
+ * (inferred); the accessors sit next to the RaceSpec getters in the address space. The meaning of each byte is purpose unknown. */
 typedef unsigned char u8; typedef signed char s8; typedef short s16; typedef unsigned short u16; typedef int s32;
 struct Obj0 {
     u8 f0;
@@ -140,97 +147,97 @@ extern "C" u8 func_00447828(void *, unsigned int);
 extern "C" void *func_005A48D8(void *, int, unsigned int);
 static inline int subOne(Obj1 *p) { return p->f3E - 1; }
 static inline int read14(Obj1 *p) { return p->f14; }
-extern "C" void func_0035E108(Obj0 *arg0, Obj1 *arg1) {
-    s16 *var_s2_2;
-    s16 *var_s4;
-    s32 temp_a1;
-    s32 temp_a1_2;
-    s32 var_s3;
+extern "C" void func_0035E108(Obj0 *packed, Obj1 *source) {
+    s16 *halfwordsAt60;
+    s16 *halfwordsAt56;
+    s32 indexCopy;
+    s32 indexCopy2;
+    s32 index;
     s32 var_s3_2;
-    s8 *var_s2;
-    s32 temp_a0_2;
-    u8 temp_a0;
-    u8 temp_v1;
+    s8 *bytesAt4F;
+    s32 rawValue89;
+    u8 byte6B;
+    u8 byte72;
 
-    func_005A48D8(arg0, 0, 0x80);
-    arg0->f1 = (u8) arg1->f43;
-    arg0->f2 = (u8) arg1->f44;
-    arg0->f3 = 0;
-    arg0->f38 = (u16) arg1->f18;
-    arg0->f4 = (u8) arg1->f4B;
-    arg0->f5 = (u8) arg1->f4C;
-    arg0->f6 = (u8) arg1->f4D;
-    arg0->f7 = (u8) arg1->f4E;
-    arg0->f8 = (u8) arg1->f4F;
-    arg0->f9 = (u8) arg1->f50;
-    arg0->fA = (u8) arg1->f51;
-    arg0->fB = (u8) arg1->f52;
-    arg0->fC = (u8) arg1->f5F;
-    arg0->fD = (u8) arg1->f60;
-    arg0->fE = (u8) arg1->f61;
-    arg0->fF = (u8) arg1->f62;
-    arg0->f10 = (u8) arg1->f5B;
-    arg0->f11 = (u8) arg1->f5C;
-    arg0->f12 = (u8) arg1->f5D;
-    arg0->f13 = (u8) arg1->f5E;
-    arg0->f14 = (u8) arg1->f57;
-    arg0->f15 = (u8) arg1->f58;
-    arg0->f16 = (u8) arg1->f59;
-    arg0->f17 = (u8) arg1->f5A;
-    arg0->f18 = (u8) arg1->f53;
-    arg0->f19 = (u8) arg1->f54;
-    arg0->f1A = (u8) arg1->f55;
-    arg0->f1B = (u8) arg1->f56;
-    arg0->f20 = (u8) arg1->f63;
-    arg0->f22 = (u8) arg1->f64;
-    arg0->f24 = (u8) arg1->f65;
-    arg0->f25 = (u8) arg1->f66;
-    arg0->f26 = (u8) arg1->f67;
-    arg0->f28 = (u8) arg1->f68;
-    arg0->f29 = (u8) arg1->f69;
-    arg0->f2A = (u8) arg1->f6A;
-    temp_a0 = arg1->f6B;
-    arg0->f2C = temp_a0;
-    arg0->f2D = (u8) arg1->f6C;
-    arg0->f2E = (u8) arg1->f6D;
-    arg0->f2F = (u8) arg1->f6E;
-    arg0->f30 = (u8) arg1->f6F;
-    arg0->f33 = (u8) arg1->f70;
-    arg0->f34 = (u8) arg1->f71;
-    temp_v1 = arg1->f72;
-    arg0->f31 = temp_v1;
-    arg0->f32 = (u8) arg1->f73;
-    if ((temp_a0 != 0) && (temp_v1 == 0)) {
-        arg0->f31 = 4U;
+    func_005A48D8(packed, 0, 0x80);
+    packed->f1 = (u8) source->f43;
+    packed->f2 = (u8) source->f44;
+    packed->f3 = 0;
+    packed->f38 = (u16) source->f18;
+    packed->f4 = (u8) source->f4B;
+    packed->f5 = (u8) source->f4C;
+    packed->f6 = (u8) source->f4D;
+    packed->f7 = (u8) source->f4E;
+    packed->f8 = (u8) source->f4F;
+    packed->f9 = (u8) source->f50;
+    packed->fA = (u8) source->f51;
+    packed->fB = (u8) source->f52;
+    packed->fC = (u8) source->f5F;
+    packed->fD = (u8) source->f60;
+    packed->fE = (u8) source->f61;
+    packed->fF = (u8) source->f62;
+    packed->f10 = (u8) source->f5B;
+    packed->f11 = (u8) source->f5C;
+    packed->f12 = (u8) source->f5D;
+    packed->f13 = (u8) source->f5E;
+    packed->f14 = (u8) source->f57;
+    packed->f15 = (u8) source->f58;
+    packed->f16 = (u8) source->f59;
+    packed->f17 = (u8) source->f5A;
+    packed->f18 = (u8) source->f53;
+    packed->f19 = (u8) source->f54;
+    packed->f1A = (u8) source->f55;
+    packed->f1B = (u8) source->f56;
+    packed->f20 = (u8) source->f63;
+    packed->f22 = (u8) source->f64;
+    packed->f24 = (u8) source->f65;
+    packed->f25 = (u8) source->f66;
+    packed->f26 = (u8) source->f67;
+    packed->f28 = (u8) source->f68;
+    packed->f29 = (u8) source->f69;
+    packed->f2A = (u8) source->f6A;
+    byte6B = source->f6B;
+    packed->f2C = byte6B;
+    packed->f2D = (u8) source->f6C;
+    packed->f2E = (u8) source->f6D;
+    packed->f2F = (u8) source->f6E;
+    packed->f30 = (u8) source->f6F;
+    packed->f33 = (u8) source->f70;
+    packed->f34 = (u8) source->f71;
+    byte72 = source->f72;
+    packed->f31 = byte72;
+    packed->f32 = (u8) source->f73;
+    if ((byte6B != 0) && (byte72 == 0)) {
+        packed->f31 = 4U;
     }
-    var_s3 = 1;
-    var_s4 = (s16 *)((char *)arg0 + 0x56);
-    arg0->f49 = (u8) arg1->f8A;
-    var_s2 = (s8 *)((char *)arg0 + 0x4F);
-    arg0->f48 = (u8) arg1->f8B;
-    arg0->f4A = (u8) arg1->f88;
-    arg0->f4B = 0x32;
-    arg0->f0 = (u8) arg1->f85;
-    arg0->f44 = (u8) arg1->f87;
-    arg0->f46 = (u8) arg1->f75;
-    arg0->f40 = subOne(arg1);
-    arg0->f4E = (u8) arg1->f42;
-    arg0->f54 = read14(arg1);
-    for (; var_s3 < 6; var_s3++) {
-        *var_s2++ = func_00447778(arg1, var_s3);
-        *var_s4++ = func_004477D0(arg1, var_s3);
+    index = 1;
+    halfwordsAt56 = (s16 *)((char *)packed + 0x56);
+    packed->f49 = (u8) source->f8A;
+    bytesAt4F = (s8 *)((char *)packed + 0x4F);
+    packed->f48 = (u8) source->f8B;
+    packed->f4A = (u8) source->f88;
+    packed->f4B = 0x32;
+    packed->f0 = (u8) source->f85;
+    packed->f44 = (u8) source->f87;
+    packed->f46 = (u8) source->f75;
+    packed->f40 = subOne(source);
+    packed->f4E = (u8) source->f42;
+    packed->f54 = read14(source);
+    for (; index < 6; index++) {
+        *bytesAt4F++ = func_00447778(source, index);
+        *halfwordsAt56++ = func_004477D0(source, index);
     }
-    var_s3 = 0;
-    var_s2_2 = (s16 *)((char *)arg0 + 0x60);
+    index = 0;
+    halfwordsAt60 = (s16 *)((char *)packed + 0x60);
     do {
-        temp_a1_2 = var_s3;
-        var_s3 += 1;
-        *var_s2_2 = func_00447828(arg1, temp_a1_2);
-        var_s2_2++;
-    } while (var_s3 < 6);
-    arg0->f41 = (u8) arg1->f86;
-    temp_a0_2 = arg1->f89;
-    arg0->f4C = 0x50;
-    s32 limited = (temp_a0_2 >= -1) ? temp_a0_2 : -1;
-    arg0->f21 = limited;
+        indexCopy2 = index;
+        index += 1;
+        *halfwordsAt60 = func_00447828(source, indexCopy2);
+        halfwordsAt60++;
+    } while (index < 6);
+    packed->f41 = (u8) source->f86;
+    rawValue89 = source->f89;
+    packed->f4C = 0x50;
+    s32 clampedValue89 = (rawValue89 >= -1) ? rawValue89 : -1;
+    packed->f21 = clampedValue89;
 }

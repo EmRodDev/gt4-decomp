@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Builds the drivetrain model (GearSet) of a car from its parameter block, then derives the shift points. In order: the layout kind and
+ * driven axle come from 0034BC98; each of the two differentials gets a type (0034AAD8 per axle byte) corrected by what the layout allows,
+ * and the per-differential values (x14, x1C, x24) are scaled by type (9.8 factors suggest gravity-unit inputs, 0.01 factors percentages;
+ * inferred). Gear ratios are the car's gear table in thousandths times the final drive (the value at +0x150 in thousandths, 4000 when below
+ * 500; the role is inferred from the multiplication), with the reverse ratio negated, gear count capped at 9, and one of four adjustment modes
+ * (+0x154) rescaling all, the upper or the middle gears. Mass, inverse mass and damping-like terms are read from the block (units of 0.001 and
+ * 0.01), and the shift rpm for each gear is computed from the ratio between neighbouring gears (the rpm and 60/2pi conversion constants are in
+ * hex float form). The two-element arrays (x90..xCC) are one per differential. The meaning of most x?? values is purpose unknown. */
 typedef signed char s8;
 typedef unsigned char u8;
 typedef short s16;
@@ -99,190 +107,190 @@ int func_003F1F98(GearSet *);
 void func_00367D90(GearSet *);
 }
 
-extern "C" void func_0034ACA8(CarParam *a, GearSet *b, Engine *c, int d) {
-    f32 w[2];
-    int flags[2];
-    DiffMap *m;
+extern "C" void func_0034ACA8(CarParam *carParams, GearSet *drivetrain, Engine *engine, int variant) {
+    f32 value174[2];
+    int diffFlags[2];
+    DiffMap *diffMap;
     int i;
     int v;
-    f32 scale;
-    f32 f;
-    f32 reverse;
+    f32 finalDriveRatio;
+    f32 overrideFactor;
+    f32 reverseRatio;
 
-    func_0034BC98(a, &b->kind, &b->f3, &b->value, &b->weight);
+    func_0034BC98(carParams, &drivetrain->kind, &drivetrain->f3, &drivetrain->value, &drivetrain->weight);
     for (unsigned int s = 0; s < 2; s++) {
-        b->diff[s] = func_0034AAD8(a->x168[s]);
+        drivetrain->diff[s] = func_0034AAD8(carParams->x168[s]);
     }
-    func_0034AC48(b->kind, flags);
+    func_0034AC48(drivetrain->kind, diffFlags);
     for (int j = 0; j < 2; j++) {
-        if (flags[j]) {
-            if (b->diff[j] == 0)
-                b->diff[j] = 2;
+        if (diffFlags[j]) {
+            if (drivetrain->diff[j] == 0)
+                drivetrain->diff[j] = 2;
         } else {
-            if (b->diff[j] != 0)
-                b->diff[j] = 0;
+            if (drivetrain->diff[j] != 0)
+                drivetrain->diff[j] = 0;
         }
     }
 
-    m = func_003594E8(func_003594E0(a));
-    for (unsigned int t = 0; t < m->n; t++) {
-        if (m->type[t] == 1) {
-            int idx = m->get(t);
-            if (b->diff[idx] != 0)
-                b->diff[idx] = 1;
+    diffMap = func_003594E8(func_003594E0(carParams));
+    for (unsigned int t = 0; t < diffMap->n; t++) {
+        if (diffMap->type[t] == 1) {
+            int idx = diffMap->get(t);
+            if (drivetrain->diff[idx] != 0)
+                drivetrain->diff[idx] = 1;
         }
     }
 
     for (unsigned int s = 0; s < 2; s++) {
-        switch (b->diff[s]) {
+        switch (drivetrain->diff[s]) {
         case 0:
         case 1:
         case 2:
-            b->x14[s] = 0.0f;
-            b->x1C[s] = 0.0f;
-            b->x24[s] = 0.0f;
+            drivetrain->x14[s] = 0.0f;
+            drivetrain->x1C[s] = 0.0f;
+            drivetrain->x24[s] = 0.0f;
             break;
         case 3:
         case 4:
-            b->x14[s] = a->x16A[s] * 9.8f;
-            b->x1C[s] = a->x16C[s] * 0.01f;
-            b->x24[s] = a->x16E[s] * 0.01f;
+            drivetrain->x14[s] = carParams->x16A[s] * 9.8f;
+            drivetrain->x1C[s] = carParams->x16C[s] * 0.01f;
+            drivetrain->x24[s] = carParams->x16E[s] * 0.01f;
             break;
         case 5: {
-            f32 t = a->x16A[s];
-            b->x14[s] = t * t;
-            b->x1C[s] = a->x16C[s] * 0.1f * 9.8f;
-            b->x24[s] = 0.0f;
+            f32 t = carParams->x16A[s];
+            drivetrain->x14[s] = t * t;
+            drivetrain->x1C[s] = carParams->x16C[s] * 0.1f * 9.8f;
+            drivetrain->x24[s] = 0.0f;
             break;
         }
         case 6:
-            b->x14[s] = a->x16A[s] * 9.8f;
-            b->x1C[s] = a->x16C[s] * 0.01f;
-            b->x24[s] = a->x16E[s] * 0.01f;
+            drivetrain->x14[s] = carParams->x16A[s] * 9.8f;
+            drivetrain->x1C[s] = carParams->x16C[s] * 0.01f;
+            drivetrain->x24[s] = carParams->x16E[s] * 0.01f;
             break;
         case 7:
-            b->x14[s] = a->x16A[s] * 0.01f;
-            b->x1C[s] = a->x16C[s] * 0.01f;
-            b->x24[s] = a->x16E[s] * 0.01f;
+            drivetrain->x14[s] = carParams->x16A[s] * 0.01f;
+            drivetrain->x1C[s] = carParams->x16C[s] * 0.01f;
+            drivetrain->x24[s] = carParams->x16E[s] * 0.01f;
             break;
         }
     }
 
-    func_0034ABC8(a, d);
-    b->n = a->x155;
-    b->x12 = a->x158;
-    switch (a->x158) {
+    func_0034ABC8(carParams, variant);
+    drivetrain->n = carParams->x155;
+    drivetrain->x12 = carParams->x158;
+    switch (carParams->x158) {
     case 5:
-        b->x12 = 2;
+        drivetrain->x12 = 2;
         break;
     case 6:
-        b->x12 = 0;
+        drivetrain->x12 = 0;
         break;
     }
-    if (b->n >= 10) {
-        b->n = 9;
-    } else if (b->x12 == 3 && b->n != 1) {
-        b->n = 1;
-    } else if (a->x158 == 1 && b->n < 2) {
-        b->x12 = 0;
+    if (drivetrain->n >= 10) {
+        drivetrain->n = 9;
+    } else if (drivetrain->x12 == 3 && drivetrain->n != 1) {
+        drivetrain->n = 1;
+    } else if (carParams->x158 == 1 && drivetrain->n < 2) {
+        drivetrain->x12 = 0;
     }
 
-    v = a->x150;
+    v = carParams->x150;
     v = v >= 500 ? v : 4000;
-    scale = v * 0.001f;
-    for (i = 0; i <= b->n; i++) {
-        int x = a->gear[i];
+    finalDriveRatio = v * 0.001f;
+    for (i = 0; i <= drivetrain->n; i++) {
+        int x = carParams->gear[i];
         if (x < 100) {
             if (i >= 2) {
-                b->n = i - 1;
+                drivetrain->n = i - 1;
                 break;
             }
             x = i == 1 ? 4000 : 3500;
         }
-        b->ratio[i] = x * 0.001f * scale;
+        drivetrain->ratio[i] = x * 0.001f * finalDriveRatio;
     }
-    reverse = -b->ratio[0];
-    b->ratio[0] = reverse;
+    reverseRatio = -drivetrain->ratio[0];
+    drivetrain->ratio[0] = reverseRatio;
 
-    if (a->x154 != 0 && a->x154 != 4 && a->x152 >= 500) {
-        f = a->x152 * 0.001f;
-        switch (a->x154) {
+    if (carParams->x154 != 0 && carParams->x154 != 4 && carParams->x152 >= 500) {
+        overrideFactor = carParams->x152 * 0.001f;
+        switch (carParams->x154) {
         case 1:
-            for (i = 0; i <= b->n; i++)
-                b->ratio[i] *= f;
+            for (i = 0; i <= drivetrain->n; i++)
+                drivetrain->ratio[i] *= overrideFactor;
             break;
         case 2:
-            f /= scale;
-            b->ratio[0] = reverse * f;
-            for (i = 5; i <= b->n; i++)
-                b->ratio[i] *= f;
+            overrideFactor /= finalDriveRatio;
+            drivetrain->ratio[0] = reverseRatio * overrideFactor;
+            for (i = 5; i <= drivetrain->n; i++)
+                drivetrain->ratio[i] *= overrideFactor;
             break;
         case 3:
-            f /= scale;
-            b->ratio[0] = reverse * f;
+            overrideFactor /= finalDriveRatio;
+            drivetrain->ratio[0] = reverseRatio * overrideFactor;
             for (i = 3; i < 5; i++)
-                b->ratio[i] *= f;
+                drivetrain->ratio[i] *= overrideFactor;
             break;
         }
     }
-    for (i = b->n + 1; i < 10; i++) {
+    for (i = drivetrain->n + 1; i < 10; i++) {
     }
 
     for (int j = 0; j < 2; j++) {
-        func_0034BA30(a, j, &b->x90[j], &b->xA0[j], &b->xA8[j]);
-        if (b->x90[j] != 0.0f)
-            b->x98[j] = 1.0f / b->x90[j];
+        func_0034BA30(carParams, j, &drivetrain->x90[j], &drivetrain->xA0[j], &drivetrain->xA8[j]);
+        if (drivetrain->x90[j] != 0.0f)
+            drivetrain->x98[j] = 1.0f / drivetrain->x90[j];
     }
-    b->f1 = 0;
-    if (b->kind == 5 && b->x90[0] != b->x90[1])
-        b->f1 = 1;
-    if (a->x154 == 4)
-        b->f1 = 1;
+    drivetrain->f1 = 0;
+    if (drivetrain->kind == 5 && drivetrain->x90[0] != drivetrain->x90[1])
+        drivetrain->f1 = 1;
+    if (carParams->x154 == 4)
+        drivetrain->f1 = 1;
 
     for (int j = 0; j < 2; j++)
-        w[j] = a->x174[j] * 0.01f;
+        value174[j] = carParams->x174[j] * 0.01f;
     for (int j = 0; j < 2; j++) {
-        if (w[j] != 0.0f) {
-            b->xB4[j] = b->x90[j] / w[j];
-            b->xCC[j] = w[j] * b->x98[j] * b->x98[j];
+        if (value174[j] != 0.0f) {
+            drivetrain->xB4[j] = drivetrain->x90[j] / value174[j];
+            drivetrain->xCC[j] = value174[j] * drivetrain->x98[j] * drivetrain->x98[j];
         }
     }
-    b->mass = a->xB8 * 0.001f;
-    if (a->xB8 != 0)
-        b->xC8 = 1.0f / b->mass;
+    drivetrain->mass = carParams->xB8 * 0.001f;
+    if (carParams->xB8 != 0)
+        drivetrain->xC8 = 1.0f / drivetrain->mass;
     for (int j = 0; j < 2; j++) {
-        f32 k = a->x164[j] * 0.01f;
-        if (b->f1 && j != b->f3)
-            k *= b->x90[b->f3] / b->x90[j];
-        k = k * scale + 2.0f * w[j];
-        b->xBC[j] = k;
+        f32 k = carParams->x164[j] * 0.01f;
+        if (drivetrain->f1 && j != drivetrain->f3)
+            k *= drivetrain->x90[drivetrain->f3] / drivetrain->x90[j];
+        k = k * finalDriveRatio + 2.0f * value174[j];
+        drivetrain->xBC[j] = k;
     }
-    b->xC4 = 1.0f / (b->xBC[0] + b->xBC[1]);
-    b->x2C = a->x160 * 10;
-    b->rpm[0] = a->xBE * 100;
-    b->xB0 = a->x162 * 9.8f;
-    for (i = 0; i <= b->n; i++)
-        b->x68[i] = b->ratio[i] / b->x90[b->f3];
+    drivetrain->xC4 = 1.0f / (drivetrain->xBC[0] + drivetrain->xBC[1]);
+    drivetrain->x2C = carParams->x160 * 10;
+    drivetrain->rpm[0] = carParams->xBE * 100;
+    drivetrain->xB0 = carParams->x162 * 9.8f;
+    for (i = 0; i <= drivetrain->n; i++)
+        drivetrain->x68[i] = drivetrain->ratio[i] / drivetrain->x90[drivetrain->f3];
 
-    if (func_003F1F98(b)) {
-        b->x2C = c->xCE;
-    } else if (b->x2C - 100 < c->xCE) {
-        b->x2C = c->xCE + 100;
+    if (func_003F1F98(drivetrain)) {
+        drivetrain->x2C = engine->xCE;
+    } else if (drivetrain->x2C - 100 < engine->xCE) {
+        drivetrain->x2C = engine->xCE + 100;
     }
-    for (i = 1; i < b->n; i++) {
-        int x = (int)(b->rpm[0] * 0x1.acee9cp-4f * b->ratio[i + 1] / b->ratio[i] * 60.0f / 0x1.921fb4p+2f);
+    for (i = 1; i < drivetrain->n; i++) {
+        int x = (int)(drivetrain->rpm[0] * 0x1.acee9cp-4f * drivetrain->ratio[i + 1] / drivetrain->ratio[i] * 60.0f / 0x1.921fb4p+2f);
         if (D_00620CD8.x112 && i == 1)
-            x = (b->x2C + x) / 2;
-        x -= (int)(b->x68[i + 1] * 0x1.638e36p+1f * 60.0f / 0x1.921fb4p+2f);
-        if (x < b->x2C + 500)
-            x = b->x2C + 500;
-        b->rpm[i] = x;
+            x = (drivetrain->x2C + x) / 2;
+        x -= (int)(drivetrain->x68[i + 1] * 0x1.638e36p+1f * 60.0f / 0x1.921fb4p+2f);
+        if (x < drivetrain->x2C + 500)
+            x = drivetrain->x2C + 500;
+        drivetrain->rpm[i] = x;
     }
-    if (func_003F1F98(b)) {
-        for (i = 2; i <= b->n; i++)
-            b->ratio[i] /= b->ratio[1];
+    if (func_003F1F98(drivetrain)) {
+        for (i = 2; i <= drivetrain->n; i++)
+            drivetrain->ratio[i] /= drivetrain->ratio[1];
     }
-    func_00367D90(b);
-    if (a->x1 == 5)
-        b->x13 = 4;
+    func_00367D90(drivetrain);
+    if (carParams->x1 == 5)
+        drivetrain->x13 = 4;
 }

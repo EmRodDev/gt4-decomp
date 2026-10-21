@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Rewrites the tires of the entry car before a free run (named changeEntryCarTire). The course type from the race spec decides the tire
+ * code: type 2 forces 0xB, type 3 forces 0xC, anything else keeps the car's own pair. The pair is read from two bytes (+0x160/+0x161) when
+ * the flag at +0x165 says they were set, else from 004462E0/00446320. If the pair changed, or the flag was set, the flag is cleared and
+ * the new codes are looked up in database categories 0x19 and 0x1A and applied with 004468F8, all inside a begin/end session pair
+ * (00449D58 / 00449D78). Calling the two values front and rear tire is inferred from the function name and the two categories; the do-while
+ * runs exactly once (one entry car). */
 typedef int s32;
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -6,7 +12,7 @@ typedef long long s64;
 struct Info { u32 n; s32 pad; s32 *tbl; };
 struct Mid { char pad[0x60]; Info *info; };
 struct Obj { char pad0[0x6C]; Mid *mid; };
-struct Car { char pad[0x160]; u8 a; u8 b; char pad2[3]; char flag; };
+struct Car { char pad[0x160]; u8 frontTire; u8 rearTire; char pad2[3]; char overrideFlag; };
 struct Spec;
 extern "C" {
 s64 func_004454C0(s64 *);
@@ -22,48 +28,48 @@ s64 func_0044A048(void *, s64, s32);
 struct Mid2 { char pad[0x60]; Info *info; char pad2[4]; void *spec; };
 struct Obj2 { char pad0[0x6C]; struct M3 *m; };
 struct M3 { char pad[0x60]; Info *info; void *spec; };
-static inline void change(Car *c, void *sp, s32 x, s32 y) {
-    if (func_00449E10(sp, func_004454C0((s64 *)c))) {
-        s64 r = func_0044A048(sp, 0x19, x);
-        if (r != -1) func_004468F8(c, r);
-        r = func_0044A048(sp, 0x1A, y);
-        if (r != -1) func_004468F8(c, r);
+static inline void change(Car *entryCar, void *session, s32 newFront, s32 newRear) {
+    if (func_00449E10(session, func_004454C0((s64 *)entryCar))) {
+        s64 r = func_0044A048(session, 0x19, newFront);
+        if (r != -1) func_004468F8(entryCar, r);
+        r = func_0044A048(session, 0x1A, newRear);
+        if (r != -1) func_004468F8(entryCar, r);
     }
 }
 void RaceFreeRun__changeEntryCarTire(Obj *self) {
-    char sp[0x20];
-    s32 w = -1;
+    char session[0x20];
+    s32 forcedTire = -1;
     s32 i;
     Mid *mid = self->mid;
-    s32 t = SPEC_DATABASE__RaceSpec__getCourseType(*(void **)((char *)mid + 0x70));
-    switch (t) {
-    case 2: w = 0xB; break;
-    case 3: w = 0xC; break;
+    s32 courseType = SPEC_DATABASE__RaceSpec__getCourseType(*(void **)((char *)mid + 0x70));
+    switch (courseType) {
+    case 2: forcedTire = 0xB; break;
+    case 3: forcedTire = 0xC; break;
     }
-    func_00449D58(sp);
+    func_00449D58(session);
     i = 0;
     do {
-        Car *c = (Car *)(mid->info->tbl[i] + 0x20);
-        s32 a, b, x, y;
-        if (c->flag) {
-            a = c->a;
-            b = c->b;
+        Car *entryCar = (Car *)(mid->info->tbl[i] + 0x20);
+        s32 frontTire, rearTire, newFront, newRear;
+        if (entryCar->overrideFlag) {
+            frontTire = entryCar->frontTire;
+            rearTire = entryCar->rearTire;
         } else {
-            a = func_004462E0(c);
-            b = func_00446320(c);
+            frontTire = func_004462E0(entryCar);
+            rearTire = func_00446320(entryCar);
         }
-        if (w == -1) {
-            x = a;
-            y = b;
+        if (forcedTire == -1) {
+            newFront = frontTire;
+            newRear = rearTire;
         } else {
-            x = y = w;
+            newFront = newRear = forcedTire;
         }
-        if (a != x || b != y || c->flag) {
-            c->flag = 0;
-            change(c, sp, x, y);
+        if (frontTire != newFront || rearTire != newRear || entryCar->overrideFlag) {
+            entryCar->overrideFlag = 0;
+            change(entryCar, session, newFront, newRear);
         }
         i++;
     } while (i <= 0);
-    func_00449D78(sp, 2);
+    func_00449D78(session, 2);
 }
 }

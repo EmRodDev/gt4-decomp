@@ -1,4 +1,8 @@
-struct Info { char pad[2]; unsigned char kind; };
+/* Fills the active variant of a NormalCarGeometry and selects it. The sub-object at +0x10 is built from sourceA with 0038CFD8 or, when that is
+ * null, from sourceB with 0038D088. The kind byte reported by 0038DC18 then decides which block the `implementation` pointer at +0x1C refers to:
+ * kind 10 uses the block at +0x0C, kind 15 initialises the block at +0x04 (0038C108) and uses it, anything else uses +0x10. The three block
+ * layouts are separate geometry implementations (inferred from the field names); what kinds 10 and 15 mean is purpose unknown. */
+struct Info { char pad[2]; unsigned char geometryKind; };
 struct Obj {
     char pad0[4];
     char special[8];
@@ -14,25 +18,25 @@ extern "C" void func_0038D088(void *, void *, int);
 extern "C" Info *func_0038DC18(Obj *);
 extern "C" void func_0038C108(void *, int);
 
-extern "C" void func_0038DC30(Obj *arg0, void *arg1, void *arg2, int arg3) {
-    if (arg1 != 0) {
-        func_0038CFD8(&arg0->implementation10, arg1, arg3);
-    } else if (arg2 != 0) {
-        func_0038D088(&arg0->implementation10, arg2, arg3);
+extern "C" void func_0038DC30(Obj *geometry, void *sourceA, void *sourceB, int param) {
+    if (sourceA != 0) {
+        func_0038CFD8(&geometry->implementation10, sourceA, param);
+    } else if (sourceB != 0) {
+        func_0038D088(&geometry->implementation10, sourceB, param);
     }
-    unsigned char kind = func_0038DC18(arg0)->kind;
-    switch(kind) {
+    unsigned char geometryKind = func_0038DC18(geometry)->geometryKind;
+    switch(geometryKind) {
     case 10:
-        arg0->implementation = &arg0->implementation0C;
+        geometry->implementation = &geometry->implementation0C;
         break;
     case 15: {
-        void *special = arg0->special;
-        func_0038C108(special, arg3);
-        arg0->implementation = special;
+        void *special = geometry->special;
+        func_0038C108(special, param);
+        geometry->implementation = special;
         break;
     }
     default:
-        arg0->implementation = &arg0->implementation10;
+        geometry->implementation = &geometry->implementation10;
         break;
     }
 }

@@ -1,4 +1,15 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-car (re)initialisation for the start or restart of a race, called from DynamicsConductor::initialize for entry `index`. In order: choose
+ * the grid stage (start 0..2 from the section-set offset when a start distance is given), load default car settings (003433E8) or the given
+ * settings block (0035DCA8), copy the entry's body kind from the race entry list, build the driver-assist flag byte at state +0x4E5 from the
+ * entry's three assist settings (forced off in some game types and by data checks) and two option bytes of D_00620CD8, run the setup
+ * routine 00361908 on the car data (temporarily swapping two data records in game type 2), and reset the physics block. The start position
+ * comes from one of three sources chosen by mode: the course query 0034C5E0 (modes 1..5, with `distance` wrapped by the course length into a
+ * lap count and an offset, and the lane found through 0046B108), the table at conductor+0xDA50 via 0046BEC0 (modes 6 and 7), or the
+ * coordinates given (modes 0 and 8 additionally shift them by the car's length along the heading). Placement is then done by 003630C0, and a
+ * long list of state fields (lap +0x4AC, section +0x4AE, flags, penalties, timers such as 120/180/300 for some modes) is reset. A start
+ * speed (speed * 0x1.1c71c6p-2, i.e. km/h to m/s) is applied through 00363868 and the result of 00361908 is returned. The meaning of mode
+ * values and of most state fields (named by offset) is inferred from this use only; the mode numbers are not named anywhere. */
 typedef unsigned char u8;
 typedef signed char s8;
 typedef int I128 __attribute__((mode(TI)));

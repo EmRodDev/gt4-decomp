@@ -1,4 +1,11 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Per-frame update of the photo-mode pause (PauseBase/PhotoPause). Does nothing while disabled. Otherwise: the wait counter at +0x19C is
+ * consumed one call at a time, then a pending flag sends signal 0x2EE1 to the race root (RaceBase::setSignal). While the frame number at
+ * +0x198 is >= 0, each call steps 00333E50 on the block at +0x20; when that reports the end, both buffer pairs in D_0061850C are cleared,
+ * 001074D0 is called with 640x448, the frame becomes -1 and a 2-call wait with the signal pending is armed. The next call with frame < 0 runs the
+ * heavy path: flip the double buffers, set the root's field +0xE34C to 1, make a 448x352 buffer and a copy, aim the camera (aspect 1.3333, values
+ * from its virtuals, one sqrt through inline asm), render with 0033E368 and 0033E6E0, run a long fixed chain of graphics helpers (callees
+ * unnamed) and flip back. Reading it as "take the photo" is inferred from the class; the helper meanings are purpose unknown. */
 struct Buffer { int x[12]; int flag; int rest[2]; };
 struct Pair { Buffer b[2]; int cur; Buffer *current() { return &b[cur]; } Buffer *other() { return &b[1-cur]; } void flip(){cur=1-cur;} };
 struct Globals { Pair a,b; };
@@ -51,35 +58,35 @@ extern "C" void func_003C5430(Self *self) {
   float f;
   D_0061850C.a.flip(); D_0061850C.b.flip();
   func_003C3F98(self)->c=1;
-  Buffer *old=D_0061850C.a.current();
-  Buffer buf,copy;
-  func_001052E0(&buf,0,448,352);
-  func_00105378(&copy,D_0061850C.b.current());
-  func_00105460(&copy,448,352);
-  Camera *cam=func_003C3FA0(self);
-  func_00374118(cam,func_00330998((char*)self+0x18c));
-  cam->v25(1.3333332538604736328125f,1.0f);
+  Buffer *previousBuffer=D_0061850C.a.current();
+  Buffer captureBuffer,copyBuffer;
+  func_001052E0(&captureBuffer,0,448,352);
+  func_00105378(&copyBuffer,D_0061850C.b.current());
+  func_00105460(&copyBuffer,448,352);
+  Camera *camera=func_003C3FA0(self);
+  func_00374118(camera,func_00330998((char*)self+0x18c));
+  camera->v25(1.3333332538604736328125f,1.0f);
   func_003C58C0(self);
   func_003C3F98(self)->b=0;
-  func_0033E368(func_003C3F98(self),&buf,&copy,-1,0.0f);
+  func_0033E368(func_003C3F98(self),&captureBuffer,&copyBuffer,-1,0.0f);
   func_003C3F98(self)->b=1;
   func_003C3F98(self)->a=0;
-  func_003308E8((char*)self+0x18c,&copy,224,176);
-  int flag=cam->v18()>0.5f;
-  f=cam->v13();
-  float x=1.0f/cam->v14()+1.0f;
+  func_003308E8((char*)self+0x18c,&copyBuffer,224,176);
+  int flag=camera->v18()>0.5f;
+  f=camera->v13();
+  float x=1.0f/camera->v14()+1.0f;
   __asm__("sqrt.s %0,%1":"=f"(x):"f"(x));
   f*=x; f*=1000.0f;
-  float g=cam->v11();
-  float h=cam->v10(0.0f);
-  func_0033E6E0(func_003C3F98(self),&buf,&copy,&buf,f,g,h);
-  func_001056A0(&buf); func_00105708(&copy);
+  float g=camera->v11();
+  float h=camera->v10(0.0f);
+  func_0033E6E0(func_003C3F98(self),&captureBuffer,&copyBuffer,&captureBuffer,f,g,h);
+  func_001056A0(&captureBuffer); func_00105708(&copyBuffer);
   func_004AB040(5); func_003C4F38(self); func_004A3078(0);
-  func_001056A0(old); func_004A3230(1); func_004AB040(6); func_004AB040(4);
+  func_001056A0(previousBuffer); func_004A3230(1); func_004AB040(6); func_004AB040(4);
   func_004A29A8(0); func_004A4550(3,1); func_004A4550(2,1);
-  func_003C5AB8(self,&buf,flag); func_003C4EF8(self); func_001079C8(0,0);
+  func_003C5AB8(self,&captureBuffer,flag); func_003C4EF8(self); func_001079C8(0,0);
   D_0061850C.a.flip(); D_0061850C.b.flip();
   func_003C3F98(self)->c=0;
-  func_00105280(&copy,2); func_00105280(&buf,2);
+  func_00105280(&copyBuffer,2); func_00105280(&captureBuffer,2);
  }
 }

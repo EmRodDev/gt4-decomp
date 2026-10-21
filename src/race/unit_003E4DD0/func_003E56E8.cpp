@@ -1,3 +1,7 @@
+/* Reads one record from a GT4Model BinStreamReader into record: a byte, three bytes turned into angles (byte * pi / 128, i.e. 0..2 pi in
+ * 256 steps, inferred from the constant), three floats, then zero-fills the rest and sets the float at +0x38 to 1.0 before calling 003E29C8 on
+ * the finished record. What kind of model element this is, and what each field means, is purpose unknown. The two do-while loops are the
+ * compiler's form of the two 3-word clears at +0x1C and +0x28. */
 #include "types.h"
 
 struct func_003E56E8_arg0 {
@@ -25,35 +29,35 @@ extern "C" u8 GT4Model__BinStreamReader__read8u(s32);
 extern "C" f32 GT4Model__BinStreamReader__readFloat(s32);
 extern "C" void func_003E29C8(char *);
 
-extern "C" void func_003E56E8(struct func_003E56E8_arg0 *arg0, s32 arg1) {
-    char *p0;
-    char *p1;
-    s32 n;
+extern "C" void func_003E56E8(struct func_003E56E8_arg0 *record, s32 stream) {
+    char *clearA;
+    char *clearB;
+    s32 count;
 
-    arg0->unk44 = GT4Model__BinStreamReader__read8u(arg1);
-    arg0->unk4 = (f32)(s32)GT4Model__BinStreamReader__read8u(arg1) * 0x1.921FB4p1f * 0x1.0p-7f;
-    arg0->unk8 = (f32)(s32)GT4Model__BinStreamReader__read8u(arg1) * 0x1.921FB4p1f * 0x1.0p-7f;
-    arg0->unkC = (f32)(s32)GT4Model__BinStreamReader__read8u(arg1) * 0x1.921FB4p1f * 0x1.0p-7f;
-    arg0->unk10 = GT4Model__BinStreamReader__readFloat(arg1);
-    arg0->unk14 = GT4Model__BinStreamReader__readFloat(arg1);
-    arg0->unk18 = GT4Model__BinStreamReader__readFloat(arg1);
-    p1 = (char *)arg0 + 0x28;
-    p0 = (char *)arg0 + 0x1C;
-    n = 2;
+    record->unk44 = GT4Model__BinStreamReader__read8u(stream);
+    record->unk4 = (f32)(s32)GT4Model__BinStreamReader__read8u(stream) * 0x1.921FB4p1f * 0x1.0p-7f;
+    record->unk8 = (f32)(s32)GT4Model__BinStreamReader__read8u(stream) * 0x1.921FB4p1f * 0x1.0p-7f;
+    record->unkC = (f32)(s32)GT4Model__BinStreamReader__read8u(stream) * 0x1.921FB4p1f * 0x1.0p-7f;
+    record->unk10 = GT4Model__BinStreamReader__readFloat(stream);
+    record->unk14 = GT4Model__BinStreamReader__readFloat(stream);
+    record->unk18 = GT4Model__BinStreamReader__readFloat(stream);
+    clearB = (char *)record + 0x28;
+    clearA = (char *)record + 0x1C;
+    count = 2;
     do {
-        n = n - 1;
-        *(s32 *)p0 = 0;
-        *(s32 *)p1 = 0;
-        p1 += 4;
-        p0 += 4;
-    } while (n >= 0);
-    arg0->unk34 = 0;
-    arg0->unk38 = 0x1.0p0f;
-    arg0->unk3C = 0;
-    arg0->unk40 = 0;
-    arg0->unk45 = 0;
-    arg0->unk4C = 0;
-    arg0->unk50 = 0;
-    arg0->unk54 = 0;
-    func_003E29C8((char *)arg0);
+        count = count - 1;
+        *(s32 *)clearA = 0;
+        *(s32 *)clearB = 0;
+        clearB += 4;
+        clearA += 4;
+    } while (count >= 0);
+    record->unk34 = 0;
+    record->unk38 = 0x1.0p0f;
+    record->unk3C = 0;
+    record->unk40 = 0;
+    record->unk45 = 0;
+    record->unk4C = 0;
+    record->unk50 = 0;
+    record->unk54 = 0;
+    func_003E29C8((char *)record);
 }

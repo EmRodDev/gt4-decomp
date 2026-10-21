@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Replays the stored speed events of a race into the display: a RaceDisplaySpeedEvent is built on the stack, and for as many entries as the info
+ * block counts for the event's type (the type comes from the event's virtual at vtable slot 1; the counts are the bytes at info+0x8FC onward),
+ * the event id is set and 003A3248 fills the event for entry i; when it reports success the resulting value is handed to 003A12A0 on the display.
+ * The reading of the counts as one list per event type is inferred from the indexing; what an event stands for is purpose unknown. */
 typedef int s32;
 typedef float f32;
 typedef short s16;
@@ -37,13 +41,13 @@ extern "C" void RaceDisplaySpeedEvent__structor_0(Event *);
 extern "C" int func_003A3248(Event *, Info *, int);
 extern "C" void func_003A12A0(void *, f32);
 
-extern "C" void func_003A0600(void *self, Info *info, int arg2) {
-    Event ev;
-    RaceDisplaySpeedEvent__structor_0(&ev);
-    for (int i = 0; i < info->sub.count(vcall1(ev.vtbl, &ev)); i++) {
-        ev.id = arg2;
-        if (func_003A3248(&ev, info, i) != 0) {
-            func_003A12A0(self, ev.value);
+extern "C" void func_003A0600(void *self, Info *raceInfo, int eventId) {
+    Event event;
+    RaceDisplaySpeedEvent__structor_0(&event);
+    for (int i = 0; i < raceInfo->sub.count(vcall1(event.vtbl, &event)); i++) {
+        event.id = eventId;
+        if (func_003A3248(&event, raceInfo, i) != 0) {
+            func_003A12A0(self, event.value);
         }
     }
 }
