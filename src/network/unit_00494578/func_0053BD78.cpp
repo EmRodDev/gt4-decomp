@@ -44,15 +44,9 @@ extern "C" int func_0053BD78(Conn *self, int *done) {
         Ctx *c = self->ctx;
         char *p;
         if (c->headerDone == 0) {
-            p = func_005A6DC8(c->buf, "
-
-
-
-");
+            p = func_005A6DC8(c->buf, "\r\n\r\n");
             if (p == 0) {
-                p = func_005A6DC8(self->ctx->buf, "
-
-");
+                p = func_005A6DC8(self->ctx->buf, "\n\n");
                 if (p == 0) return 0xD6DC;
             }
             *p = 0;

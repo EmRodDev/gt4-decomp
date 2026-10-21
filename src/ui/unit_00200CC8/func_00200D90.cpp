@@ -44,7 +44,7 @@ extern "C" void func_00306780(Obj *cls, void *symbol, void (*function)(void));
 extern "C" void func_00200D90(Obj *cls) {
     Str name;
     Str *namePtr = &name;
-    const char *literal = "MSceneViewFace";
+    const char *literal = "MBox";
     Rep *emptyRep = &D_00659FA8;
     char *chars = (char *)(emptyRep + 1);
     if (emptyRep->sel != 0) {

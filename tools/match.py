@@ -386,6 +386,91 @@ def link_problem(addr, src, sources=None):
     return None
 
 
+def section_bytes(d, name):
+    """(bytes of section `name`, {offsets its relocations patch}) of an ELF32 object; (b"", set())
+    when it has none."""
+    shoff, = struct.unpack_from("<I", d, 32)
+    shentsize, shnum, shstrndx = struct.unpack_from("<HHH", d, 46)
+    secs = [struct.unpack_from("<10I", d, shoff + i * shentsize) for i in range(shnum)]
+    base = secs[shstrndx][4]
+    names = [d[base + s[0]:d.index(b"\0", base + s[0])].decode() for s in secs]
+    if name not in names:
+        return b"", set()
+    k = names.index(name)
+    patched = set()
+    for s in secs:
+        if s[1] == 9 and s[7] == k:  # SHT_REL for that section
+            patched |= {struct.unpack_from("<I", d, s[4] + r * 8)[0] for r in range(s[5] // 8)}
+    return d[secs[k][4]:secs[k][4] + secs[k][5]], patched
+
+
+_image = None
+
+# bytes a load reads, by opcode: lb lh lw lbu lhu lwc1 ldc1 ld lq lqc2 (addiu & co. only take the address)
+LOAD_WIDTH = {0x20: 1, 0x21: 2, 0x23: 4, 0x24: 1, 0x25: 2, 0x31: 4, 0x35: 8, 0x37: 8, 0x1E: 16, 0x36: 16}
+
+
+def own_constants_problem(d, srelocs, foff, mine, target):
+    """The first constant of the object's own .rodata that does not hold the original's bytes, as a
+    sentence; None when every one checked does. The judge compares instructions, and a %hi/%lo pair
+    reading the object's own constants is only an opcode and registers to it, so a draft whose code
+    matches can still carry another string or number (a readability pass of October 2026 put
+    wrong strings into 47 sources that way; only the full build saw it). Each pair gives
+    the constant's offset in this .rodata (its own immediates) and its address in the original
+    (the original's immediates), and the bytes compared are those the code reads: a string up to its
+    NUL, a load's width, or up to the next constant read, trailing zeros (alignment) dropped, for an
+    address taken. Jump tables (relocated words) are skipped."""
+    global _image
+    rodata, patched = section_bytes(d, ".rodata")
+    if not rodata:
+        return None
+    sext = lambda v: (v & 0xFFFF) - 0x10000 if v & 0x8000 else v & 0xFFFF
+    reads, hi = {}, None
+    for off in sorted(srelocs):
+        i = (off - foff) // 4
+        if not 0 <= i < min(len(mine), len(target)) or not isinstance(srelocs[off], tuple):
+            continue
+        rtype, sym = srelocs[off][0], srelocs[off][1]
+        if sym != ".rodata":
+            continue
+        if rtype == R_MIPS_HI16:
+            hi = (mine[i] & 0xFFFF, target[i] & 0xFFFF)
+        elif rtype == R_MIPS_LO16 and hi:
+            ours = ((hi[0] << 16) + sext(mine[i])) & 0xFFFFFFFF
+            orig = ((hi[1] << 16) + sext(target[i])) & 0xFFFFFFFF
+            reads.setdefault(ours, []).append((orig, LOAD_WIDTH.get(mine[i] >> 26)))
+    if not reads:
+        return None
+    if _image is None:
+        _image = project.load_image()[1]
+
+    def original(at, n):
+        for a, b in _image:
+            if a <= at and at + n <= a + len(b):
+                return b[at - a:at - a + n]
+        return None
+    starts = sorted(reads)
+    for k, start in enumerate(starts):
+        end = starts[k + 1] if k + 1 < len(starts) else len(rodata)
+        if start >= len(rodata) or any(start <= p < end for p in patched):
+            continue
+        for at, width in reads[start]:
+            chunk = rodata[start:end]
+            if width:
+                n = width
+            elif chunk[:1].isalpha() and b"\0" in chunk and chunk.split(b"\0")[0].isascii():
+                n = chunk.index(b"\0") + 1  # a string, its NUL included
+            else:
+                n = len(chunk.rstrip(b"\0"))
+            ours, theirs = rodata[start:start + n], original(at, n)
+            if n and theirs is not None and ours != theirs:
+                show = lambda b: (repr(b.split(b"\0")[0].decode()) if b[:1].isalpha() and b.split(b"\0")[0].isascii()
+                                  else b[:16].hex(" "))
+                return (f"constant at .rodata+{start:#x} holds {show(ours)}, the original reads {show(theirs)} "
+                        f"at {at:#x}")
+    return None
+
+
 def judge(addr, src, obj=None, sources=None):
     """The judge's verdict on src as the function at addr: (True, report) on MATCH, else (False,
     report), the report being what `match.py check` prints. obj: an object already compiled from
@@ -414,6 +499,7 @@ def judge(addr, src, obj=None, sources=None):
     text_addr, text = load_text()
     target = trim_padding(words_at(text_addr, text, addr, function_span(addr)))
     obj = obj or compile_c(src)
+    obj_bytes = open(obj, "rb").read()
     blob, srelocs, funcs = read_object(obj, want_symbols=True)
     os.remove(obj)
     if not funcs:
@@ -479,6 +565,10 @@ def judge(addr, src, obj=None, sources=None):
     problem = link_problem(addr, src, sources)
     if problem:
         return False, f"{fname}: DIFFERS AFTER LINKING (matches alone): {problem}"
+    data = own_constants_problem(obj_bytes, srelocs, foff, mine, target)
+    if data:
+        return False, (f"{fname}: DIFFERS IN ITS CONSTANTS (the code matches): {data}. Put the original's "
+                       "string or value in the source")
     out = [f"{fname}: MATCH ({len(target)} instructions)"]
     if unresolved:
         names = sorted({srelocs[o][1] for o in unresolved})
