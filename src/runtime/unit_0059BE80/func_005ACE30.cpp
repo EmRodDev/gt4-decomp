@@ -27,7 +27,6 @@
 #define _s2b func_005AC6B8
 #define _snprintf_r func_005A5998
 #define _vfprintf_r func_005A7648
-#define dpmul D_0057F8B8
 #define eofread func_005A5AD0
 #define fabsf func_005A2E20
 #define finite func_005A2E48
