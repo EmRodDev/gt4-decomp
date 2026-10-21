@@ -58,3 +58,31 @@ Everything else in the draft (E8/E12 parameter structs, 0.025f/0.05f smoothing o
 slots in the params block) is [inferred] from reading that disassembly for the draft; it is not
 validated by a match. The "turbo0..turbo3" reading of the four groups and any cockpit-camera
 restriction are NOT established.
+
+## The per-view parameter table behind the turbo blow-off level (v1.01 mapping)
+Source of the lead: a modder (mat-garcia, Spec II build SCUS_974.36 with its own addresses) found that the
+blow-off (BOV) level is `table[row][3] * 0.01 * <float in the car object>`, and that the table rows for the
+exterior views hold 0 in slot 3, which closes the `0.001 <= level` gate. His addresses are not v1.01 ones;
+the same structure was located in v1.01 (SCUS_973.28 + CORE.GT4) by shape. [confirmed] = read in the v1.01
+disassembly or data; [inferred] = our reading.
+
+| what | Spec II (his build) | v1.01 | status |
+|---|---|---|---|
+| static table, 5 rows x 24 shorts (48 bytes per row) | 0x00663800 | **0x00622330** | [confirmed] unique match of the row pattern |
+| float table filled at run time (row*24+slot floats) | 0x0073F6E8 | **0x00845A10** (`D_00845A10`) | [confirmed] |
+| getter `float f(row, slot)` | 0x002B2AF8 | **0x003F3A68** (`func_003F3A68`, matched) | [confirmed] |
+| setter `void f(row, slot, float)` | 0x002B2B20 | **0x003F3A90** (`func_003F3A90`, matched) | [confirmed] |
+| loader: 5 rows x 24 slots, `short * 0.01f` into the float table | 0x002B2B48 loop | **0x003F3AB8** (176 bytes, matched as `SetupBrakeHeatParameters`) | [confirmed] |
+| caller that builds `level[band]` on its stack (0x2B0..0x2C8($sp)) | 0x0027E420 | **0x003B5E80** (2,944 bytes, unmatched) | [confirmed] shape: slot 3 and 5 come from the getter and are multiplied by a float in the car object |
+| float in the car object ("how far the valve is open") | +0x524 | **+0x504** | [confirmed] `lwc1 $f1, 0x504($s4)` right after the slot-3 getter call at 0x003B65FC |
+
+Values of slot 3 in v1.01 (the short, before `* 0.01`): row 0 = 1200, rows 1..3 = 0, row 4 = 400
+[confirmed], the same pattern his build shows. Slot 5: row 0 = 400, rows 1..3 = 30, 150, 0 [confirmed].
+Which view uses which row is not established here (row index `s3` in 0x003B5E80 comes from
+`func_003FA910`) [unknown].
+
+Names do not agree: GT HD (medium confidence) calls the loader `SetupBrakeHeatParameters` and 0x003B5E80
+`pglMatrixMode`, but the loader fills a table read by a sound-level calculation, and 0x003B5E80 is a large
+per-frame function that computes the levels, so at least the second name looks wrong [inferred]. The table
+may be a general per-view parameter table that more than one system reads; slot 3 may feed other turbo
+sounds besides the blow-off [unknown].
