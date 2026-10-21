@@ -1,3 +1,5 @@
+/* Returns one of two float fields (+0xC0 or +0xC4) depending on whether the integer field at +0xB0 is zero.
+ * What the selector or the two values mean is unknown. */
 #include "types.h"
 
 struct Obj {
@@ -8,9 +10,9 @@ struct Obj {
     f32 unkC4;
 };
 
-extern "C" f32 func_002B1FE0(struct Obj *arg0) {
-    if (arg0->unkB0 == 0) {
-        return arg0->unkC0;
+extern "C" f32 func_002B1FE0(struct Obj *obj) {
+    if (obj->unkB0 == 0) {
+        return obj->unkC0;
     }
-    return arg0->unkC4;
+    return obj->unkC4;
 }

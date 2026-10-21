@@ -1,25 +1,27 @@
+/* Zeroes the four floats at +0x1D14 of the object while holding the global lock D_0082E550 (func_005769F0 / func_00576A28 are lock and unlock, inferred from the mutex comment in the source).
+ * The temporary zero array and the self-assignment guard are the compiler expansion of a Vec4 assignment from a zero vector. */
 extern char D_0082E550[]; /* mutex */
-extern "C" void func_005769F0(int arg0);
-extern "C" void func_00576A28(int arg0);
+extern "C" void func_005769F0(int obj);
+extern "C" void func_00576A28(int obj);
 
-extern "C" void func_00230C88(void *arg0)
+extern "C" void func_00230C88(void *obj)
 {
-    float zero[4];
-    float *p;
-    float z;
+    float zeroVec[4];
+    float *vec;
+    float zeroValue;
 
     func_005769F0((int)D_0082E550);
-    z = 0.0f;
-    p = (float *)((char *)arg0 + 0x1D14);
-    zero[0] = z;
-    zero[1] = z;
-    zero[2] = z;
-    zero[3] = z;
-    if (p != zero) {
-        p[0] = z;
-        p[1] = z;
-        p[2] = z;
-        p[3] = z;
+    zeroValue = 0.0f;
+    vec = (float *)((char *)obj + 0x1D14);
+    zeroVec[0] = zeroValue;
+    zeroVec[1] = zeroValue;
+    zeroVec[2] = zeroValue;
+    zeroVec[3] = zeroValue;
+    if (vec != zeroVec) {
+        vec[0] = zeroValue;
+        vec[1] = zeroValue;
+        vec[2] = zeroValue;
+        vec[3] = zeroValue;
     }
     func_00576A28((int)D_0082E550);
 }

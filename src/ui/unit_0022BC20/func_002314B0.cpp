@@ -1,3 +1,4 @@
+/* Copy-assignment into the Vec4 stored at +0x710 of the object: copies x, y, z, w from the source unless the source is that very member. */
 #include "types.h"
 
 struct Vec4 {
@@ -12,13 +13,13 @@ struct Struct_002314B0 {
     Vec4 unk710;
 };
 
-extern "C" void func_002314B0(struct Struct_002314B0 *arg0, Vec4 *arg1) {
-    Vec4 *p = &arg0->unk710;
+extern "C" void func_002314B0(struct Struct_002314B0 *obj, Vec4 *src) {
+    Vec4 *dst = &obj->unk710;
 
-    if (p != arg1) {
-        p->x = arg1->x;
-        p->y = arg1->y;
-        p->z = arg1->z;
-        p->w = arg1->w;
+    if (dst != src) {
+        dst->x = src->x;
+        dst->y = src->y;
+        dst->z = src->z;
+        dst->w = src->w;
     }
 }

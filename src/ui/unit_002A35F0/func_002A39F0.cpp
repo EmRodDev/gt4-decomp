@@ -1,3 +1,5 @@
+/* Stores two signed bytes at +0xEC and +0xED of the object and then calls func_002A38A0 on it (an update/refresh step, inferred from the call after the stores).
+ * Sibling func_002A3A30 does the same for +0xEE and +0xEF. */
 #include "types.h"
 
 struct Struct_002A39F0 {
@@ -6,10 +8,10 @@ struct Struct_002A39F0 {
     s8 unkED;
 };
 
-extern "C" void func_002A38A0(Struct_002A39F0 *arg0);
+extern "C" void func_002A38A0(Struct_002A39F0 *obj);
 
-extern "C" void func_002A39F0(Struct_002A39F0 *arg0, s8 arg1, s8 arg2) {
-    arg0->unkEC = arg1;
-    arg0->unkED = arg2;
-    func_002A38A0(arg0);
+extern "C" void func_002A39F0(Struct_002A39F0 *obj, s8 first, s8 second) {
+    obj->unkEC = first;
+    obj->unkED = second;
+    func_002A38A0(obj);
 }

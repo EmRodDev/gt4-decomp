@@ -1,3 +1,5 @@
+/* Calls virtual method slot 54 on the object referenced at +0x8 of this one. The vtable entry carries a this-adjustment (delta), as in multiple-inheritance thunks, so this is shifted by it before the call.
+ * Which method slot 54 is is not known. */
 #include "types.h"
 
 struct VEntry_0020E640 {
@@ -16,9 +18,9 @@ struct Obj_0020E640 {
     Inner_0020E640 *unk8;
 };
 
-extern "C" void func_0020E640(struct Obj_0020E640 *arg0) {
-    Inner_0020E640 *a1 = arg0->unk8;
-    VEntry_0020E640 *e = &a1->vtbl[54];
+extern "C" void func_0020E640(struct Obj_0020E640 *obj) {
+    Inner_0020E640 *target = obj->unk8;
+    VEntry_0020E640 *entry = &target->vtbl[54];
 
-    e->fn((char *)a1 + e->delta);
+    entry->fn((char *)target + entry->delta);
 }

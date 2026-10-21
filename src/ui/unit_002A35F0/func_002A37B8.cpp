@@ -1,3 +1,4 @@
+/* Copies the value at +0xBC of the object into a one-element buffer and passes it to func_002106E0 together with the first argument, which is returned unchanged. */
 #include "types.h"
 
 struct Obj002A37B8 {
@@ -5,12 +6,12 @@ struct Obj002A37B8 {
     s32 unkBC;
 };
 
-extern "C" void func_002106E0(s32 arg0, s32 *arg1);
+extern "C" void func_002106E0(s32 target, s32 *obj);
 
-extern "C" s32 func_002A37B8(s32 arg0, struct Obj002A37B8 *arg1) {
-    s32 buf[1];
+extern "C" s32 func_002A37B8(s32 target, struct Obj002A37B8 *obj) {
+    s32 valueBuf[1];
 
-    buf[0] = arg1->unkBC;
-    func_002106E0(arg0, buf);
-    return arg0;
+    valueBuf[0] = obj->unkBC;
+    func_002106E0(target, valueBuf);
+    return target;
 }

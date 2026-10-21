@@ -1,3 +1,5 @@
+/* Stores the argument clamped to [min, max] into the field at +0xE4; min is the float at +0xC8 and max the one at +0xCC (roles inferred from the clamp).
+ * Same clamp as func_00239020 (+0xC4) and func_00238FF0 (+0xE8). */
 #include "types.h"
 
 struct Obj {
@@ -8,15 +10,15 @@ struct Obj {
     f32 unkE4;
 };
 
-extern "C" void func_00238FC0(Obj *arg0, f32 fparg0) {
-    f32 v = fparg0;
-    f32 lo = arg0->unkC8;
-    if (v < lo) {
-        v = lo;
+extern "C" void func_00238FC0(Obj *bar, f32 requested) {
+    f32 clamped = requested;
+    f32 minValue = bar->unkC8;
+    if (clamped < minValue) {
+        clamped = minValue;
     }
-    f32 hi = arg0->unkCC;
-    if (hi < v) {
-        v = hi;
+    f32 maxValue = bar->unkCC;
+    if (maxValue < clamped) {
+        clamped = maxValue;
     }
-    arg0->unkE4 = v;
+    bar->unkE4 = clamped;
 }

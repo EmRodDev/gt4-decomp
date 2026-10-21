@@ -1,3 +1,5 @@
+/* Teardown/release sequence: runs func_0023F890, func_00460B70, then func_002C3B60 on the handle at +0x10 together with the second argument.
+ * Companion of func_0023F890 in the same unit; what the callees do is unknown. */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -11,8 +13,8 @@ struct func_0023F848_arg0 {
     s32 unk10;
 };
 
-void func_0023F848(void *arg0, s32 arg1) {
+void func_0023F848(void *obj, s32 value) {
     func_0023F890();
     func_00460B70();
-    func_002C3B60(((struct func_0023F848_arg0 *)arg0)->unk10, arg1);
+    func_002C3B60(((struct func_0023F848_arg0 *)obj)->unk10, value);
 }

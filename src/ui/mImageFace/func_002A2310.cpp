@@ -1,3 +1,5 @@
+/* Resizes the image face to the size reported by one of its own virtual methods (vtable offset 0x1B8, which writes two floats: width and height, inferred from func_0025B4C8 taking them as new size).
+ * The entry carries a this-adjustment (delta) like a multiple-inheritance thunk, which is why `this` is shifted before the call. */
 #include "types.h"
 
 struct Widget;
@@ -21,8 +23,8 @@ struct Vec2 {
 extern "C" void func_0025B4C8(struct Widget *arg0, f32 fparg0, f32 fparg1);
 
 extern "C" void func_002A2310(struct Widget *self) {
-    struct Vec2 v;
-    VEntry *e = (VEntry *)(self->vtbl + 0x1B8);
-    e->fn((char *)self + e->delta, &v.x, &v.y);
-    func_0025B4C8(self, v.x, v.y);
+    struct Vec2 size;
+    VEntry *entry = (VEntry *)(self->vtbl + 0x1B8);
+    entry->fn((char *)self + entry->delta, &size.x, &size.y);
+    func_0025B4C8(self, size.x, size.y);
 }

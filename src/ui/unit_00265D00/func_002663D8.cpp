@@ -1,3 +1,6 @@
+/* Sets (nonzero argument) or clears (zero) bit 5 (mask 0x20) of the flag word at +0x9C of the UI object.
+ * The argument is first normalised to 0/1 and shifted into place, which is why the mask/or sequence is spelled out.
+ * What the bit controls is unknown (field stays unk9C). */
 #include "types.h"
 
 struct S002663D8 {
@@ -5,10 +8,10 @@ struct S002663D8 {
     s32 unk9C;
 };
 
-extern "C" void func_002663D8(struct S002663D8 *arg0, s32 arg1) {
-    s32 temp = (s32)(arg1 != 0);
-    s32 v = arg0->unk9C;
-    v = v & ~0x20;
-    v = v | (temp << 5);
-    arg0->unk9C = v;
+extern "C" void func_002663D8(struct S002663D8 *obj, s32 enable) {
+    s32 enableBit = (s32)(enable != 0);
+    s32 flags = obj->unk9C;
+    flags = flags & ~0x20;
+    flags = flags | (enableBit << 5);
+    obj->unk9C = flags;
 }

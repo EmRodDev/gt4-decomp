@@ -1,3 +1,5 @@
+/* Resets the text face read state: clears the field at +0xF4, calls func_002B7310 on the object at +0x104 (purpose unknown) and sets the field at +0x114 to 1.
+ * The class folder holds mTextFace and two reader classes; which one this belongs to is not known. */
 #include "types.h"
 
 struct Obj {
@@ -9,12 +11,12 @@ struct Obj {
     s32 unk114;
 };
 
-extern "C" void func_002B7310(s32 arg0);
+extern "C" void func_002B7310(s32 face);
 
-extern "C" void func_00245270(struct Obj *arg0) {
-    struct Obj *s0 = arg0;
+extern "C" void func_00245270(struct Obj *face) {
+    struct Obj *self = face;
 
-    s0->unkF4 = 0;
-    func_002B7310(s0->unk104);
-    s0->unk114 = 1;
+    self->unkF4 = 0;
+    func_002B7310(self->unk104);
+    self->unk114 = 1;
 }

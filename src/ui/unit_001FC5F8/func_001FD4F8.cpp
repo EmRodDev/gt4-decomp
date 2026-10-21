@@ -1,3 +1,4 @@
+/* Releases the resource whose handle is stored at +0xB4 (by calling func_0054E1D0, purpose unknown) and clears the field at +0xDC. */
 #include "types.h"
 
 struct Obj_001FD4F8 {
@@ -7,9 +8,9 @@ struct Obj_001FD4F8 {
     s32 unkDC;
 };
 
-extern "C" void func_0054E1D0(s32 arg0);
+extern "C" void func_0054E1D0(s32 obj);
 
-extern "C" void func_001FD4F8(Obj_001FD4F8 *arg0) {
-    func_0054E1D0(arg0->unkB4);
-    arg0->unkDC = 0;
+extern "C" void func_001FD4F8(Obj_001FD4F8 *obj) {
+    func_0054E1D0(obj->unkB4);
+    obj->unkDC = 0;
 }

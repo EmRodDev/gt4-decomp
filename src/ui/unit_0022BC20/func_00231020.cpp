@@ -1,18 +1,20 @@
+/* Translates a 2D position by (dx, dy): reads the current pair with func_00230EC0, adds the offsets and writes the result back with func_00230ED8.
+ * (Getter/setter roles inferred from the out-parameters and the write-back.) */
 #include "types.h"
 
-extern "C" void func_00230EC0(void *arg0, f32 *arg1, f32 *arg2);
-extern "C" void func_00230ED8(void *arg0, f32 fparg0, f32 fparg1);
+extern "C" void func_00230EC0(void *obj, f32 *arg1, f32 *arg2);
+extern "C" void func_00230ED8(void *obj, f32 dx, f32 dy);
 
-extern "C" void func_00231020(void *arg0, f32 fparg0, f32 fparg1) {
-    f32 sp0;
-    f32 sp4;
-    f32 temp_f0;
-    f32 temp_f1;
+extern "C" void func_00231020(void *obj, f32 dx, f32 dy) {
+    f32 x;
+    f32 y;
+    f32 newX;
+    f32 newY;
 
-    func_00230EC0(arg0, &sp0, &sp4);
-    temp_f0 = sp0 + fparg0;
-    temp_f1 = sp4 + fparg1;
-    sp0 = temp_f0;
-    sp4 = temp_f1;
-    func_00230ED8(arg0, temp_f0, temp_f1);
+    func_00230EC0(obj, &x, &y);
+    newX = x + dx;
+    newY = y + dy;
+    x = newX;
+    y = newY;
+    func_00230ED8(obj, newX, newY);
 }

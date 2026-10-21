@@ -1,3 +1,4 @@
+/* Moves the widget at +0x11C: calls mWidget::setWindowPosition with (x, y) as given when the flag at +0xB0 is zero and swapped when it is nonzero (a horizontal/vertical orientation switch, inferred from the swap). */
 #include "types.h"
 
 void mWidget__setWindowPosition(void *c, f32 x, f32 y);      /* extern */
@@ -9,9 +10,9 @@ struct func_002B2188_arg0 {
     void *unk11C;
 };
 
-void func_002B2188(struct func_002B2188_arg0 *arg0, f32 fparg0, f32 fparg1) {
-    if (arg0->unkB0 == 0) {
-        return mWidget__setWindowPosition(arg0->unk11C, fparg0, fparg1);
+void func_002B2188(struct func_002B2188_arg0 *obj, f32 a, f32 b) {
+    if (obj->unkB0 == 0) {
+        return mWidget__setWindowPosition(obj->unk11C, a, b);
     }
-    mWidget__setWindowPosition(arg0->unk11C, fparg1, fparg0);
+    mWidget__setWindowPosition(obj->unk11C, b, a);
 }

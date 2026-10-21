@@ -1,3 +1,5 @@
+/* Calls func_004CF580 with the handle at +0x42C of the object and three values, turning the last one into a 0/1 flag, and returns whether it reported nonzero.
+ * What func_004CF580 does is unknown. */
 #include "types.h"
 
 struct Obj {
@@ -5,8 +7,8 @@ struct Obj {
     s32 unk42C;
 };
 
-extern "C" s32 func_004CF580(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+extern "C" s32 func_004CF580(s32 obj, s32 a, s32 b, s32 flag);
 
-extern "C" s32 func_0026D320(Obj *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return func_004CF580(arg0->unk42C, arg1, arg2, arg3 != 0) != 0;
+extern "C" s32 func_0026D320(Obj *obj, s32 a, s32 b, s32 flag) {
+    return func_004CF580(obj->unk42C, a, b, flag != 0) != 0;
 }

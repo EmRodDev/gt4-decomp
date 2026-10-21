@@ -1,3 +1,4 @@
+/* Copies one of two float fields into +0x20 according to the flag at +0x2C: +0x1C when the flag is nonzero, +0x18 otherwise (a pick between two alternatives; their meaning is unknown). */
 #include "types.h"
 
 struct Obj {
@@ -9,10 +10,10 @@ struct Obj {
     s32 unk2C;
 };
 
-extern "C" void func_002CDAC0(struct Obj *arg0) {
-    if (arg0->unk2C != 0) {
-        arg0->unk20 = arg0->unk1C;
+extern "C" void func_002CDAC0(struct Obj *actor) {
+    if (actor->unk2C != 0) {
+        actor->unk20 = actor->unk1C;
         return;
     }
-    arg0->unk20 = arg0->unk18;
+    actor->unk20 = actor->unk18;
 }

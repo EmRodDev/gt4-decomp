@@ -1,3 +1,4 @@
+/* Returns the number of 16-byte entries in the vector member at +0xA0 of mColorFace (begin/end pointer pair, inferred from the shift by 4). */
 #include "types.h"
 
 struct S_Vec {
@@ -12,6 +13,6 @@ struct mColorFace {
     S_Vec vec;
 };
 
-extern "C" s32 func_00286060(mColorFace *arg0) {
-    return arg0->vec.size();
+extern "C" s32 func_00286060(mColorFace *face) {
+    return face->vec.size();
 }

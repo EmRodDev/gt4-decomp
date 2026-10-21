@@ -1,3 +1,5 @@
+/* Returns how far the value at +0x18 lies between the range start at +0x10 and the range end at +0x14, as a fraction ((value - start) / (end - start)), or 1.0 when the range is empty (start == end).
+ * (Field roles inferred from the interpolation formula.) */
 #include "types.h"
 
 struct Obj00228A38 {
@@ -7,13 +9,13 @@ struct Obj00228A38 {
     f32 unk18;
 };
 
-extern "C" f32 func_00228A38(struct Obj00228A38 *arg0) {
-    f32 temp_f2 = arg0->unk10;
-    f32 temp_f1 = arg0->unk14;
-    f32 var_f0 = 1.0f;
+extern "C" f32 func_00228A38(struct Obj00228A38 *obj) {
+    f32 rangeStart = obj->unk10;
+    f32 rangeEnd = obj->unk14;
+    f32 fraction = 1.0f;
 
-    if (temp_f1 != temp_f2) {
-        var_f0 = (arg0->unk18 - temp_f2) / (temp_f1 - temp_f2);
+    if (rangeEnd != rangeStart) {
+        fraction = (obj->unk18 - rangeStart) / (rangeEnd - rangeStart);
     }
-    return var_f0;
+    return fraction;
 }

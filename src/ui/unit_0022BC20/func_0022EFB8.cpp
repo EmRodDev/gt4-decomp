@@ -1,3 +1,5 @@
+/* Returns the total element count of two pointer-pair vectors embedded at +0x14 and +0x34 of the object ((end - begin) / 4 for each, summed).
+ * The element type (4 bytes, pointer or int) and the owner class are unknown. */
 #include "types.h"
 
 struct Sub {
@@ -6,9 +8,9 @@ struct Sub {
     s32 unk8;
 };
 
-extern "C" s32 func_0022EFB8(char *arg0) {
-    Sub *p0 = (Sub *)(arg0 + 0x14);
-    Sub *p1 = (Sub *)(arg0 + 0x34);
+extern "C" s32 func_0022EFB8(char *obj) {
+    Sub *vecA = (Sub *)(obj + 0x14);
+    Sub *vecB = (Sub *)(obj + 0x34);
 
-    return ((s32)(p0->unk8 - p0->unk4) >> 2) + ((s32)(p1->unk8 - p1->unk4) >> 2);
+    return ((s32)(vecA->unk8 - vecA->unk4) >> 2) + ((s32)(vecB->unk8 - vecB->unk4) >> 2);
 }

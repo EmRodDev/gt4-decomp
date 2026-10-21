@@ -1,19 +1,20 @@
+/* Stores `requested` clamped to [min, max] into the scale bar's current value at +0xC4. min is the float at +0xC8 and max the one at +0xCC (field roles inferred from the clamp; the fields keep their offsets in their names). */
 #include "types.h"
 
 struct Obj {
     char pad[0xC4];
-    f32 unkC4;
-    f32 unkC8;
-    f32 unkCC;
+    f32 valueC4;
+    f32 minValueC8;
+    f32 maxValueCC;
 };
 
-extern "C" void func_00239020(Obj *arg0, f32 arg1) {
-    f32 v = arg1;
-    if (v < arg0->unkC8) {
-        v = arg0->unkC8;
+extern "C" void func_00239020(Obj *bar, f32 requested) {
+    f32 clamped = requested;
+    if (clamped < bar->minValueC8) {
+        clamped = bar->minValueC8;
     }
-    if (arg0->unkCC < v) {
-        v = arg0->unkCC;
+    if (bar->maxValueCC < clamped) {
+        clamped = bar->maxValueCC;
     }
-    arg0->unkC4 = v;
+    bar->valueC4 = clamped;
 }

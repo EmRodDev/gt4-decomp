@@ -1,3 +1,4 @@
+/* Returns 1 when either the field at +0x88 or the field at +0xD8 is nonzero, else 0 (an 'is anything set' test; field meanings unknown). */
 #include "types.h"
 
 struct Struct_001FE1D8 {
@@ -7,12 +8,12 @@ struct Struct_001FE1D8 {
     s32 unkD8;
 };
 
-extern "C" s32 func_001FE1D8(struct Struct_001FE1D8 *arg0) {
-    s32 var_v1;
+extern "C" s32 func_001FE1D8(struct Struct_001FE1D8 *obj) {
+    s32 result;
 
-    var_v1 = 0;
-    if ((arg0->unk88 != 0) || (arg0->unkD8 != 0)) {
-        var_v1 = 1;
+    result = 0;
+    if ((obj->unk88 != 0) || (obj->unkD8 != 0)) {
+        result = 1;
     }
-    return var_v1;
+    return result;
 }

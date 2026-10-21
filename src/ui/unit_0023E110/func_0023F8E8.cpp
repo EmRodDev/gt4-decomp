@@ -1,3 +1,5 @@
+/* Calls func_002C3BE0 with the handle at +0x10 and the name `arg1`, but only when func_0057F238 says `arg1` matches the string D_00698EF0.
+ * func_0057F238 looks like a string comparison (inferred from its use with the literal "keep" in func_0023F938). */
 #include "types.h"
 #define NULL 0
 void *memcpy(void *, const void *, unsigned int);
@@ -11,8 +13,8 @@ struct func_0023F8E8_arg0 {
     s32 unk10;
 };
 
-void func_0023F8E8(void *arg0, s32 arg1) {
-    if (func_0057F238(arg1, (s32)D_00698EF0) != 0) {
-        func_002C3BE0(((struct func_0023F8E8_arg0 *)arg0)->unk10, arg1);
+void func_0023F8E8(void *obj, s32 name) {
+    if (func_0057F238(name, (s32)D_00698EF0) != 0) {
+        func_002C3BE0(((struct func_0023F8E8_arg0 *)obj)->unk10, name);
     }
 }

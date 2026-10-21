@@ -1,3 +1,4 @@
+/* Stores the argument in the field at +0x10 and zeroes the five words that follow (+0x14 to +0x24): re-initialises a small record around a new first value. */
 #include "types.h"
 
 struct Obj001FCA80 {
@@ -10,11 +11,11 @@ struct Obj001FCA80 {
     s32 unk24;
 };
 
-extern "C" void func_001FCA80(struct Obj001FCA80 *arg0, s32 arg1) {
-    arg0->unk10 = arg1;
-    arg0->unk14 = 0;
-    arg0->unk18 = 0;
-    arg0->unk1C = 0;
-    arg0->unk20 = 0;
-    arg0->unk24 = 0;
+extern "C" void func_001FCA80(struct Obj001FCA80 *obj, s32 firstValue) {
+    obj->unk10 = firstValue;
+    obj->unk14 = 0;
+    obj->unk18 = 0;
+    obj->unk1C = 0;
+    obj->unk20 = 0;
+    obj->unk24 = 0;
 }
