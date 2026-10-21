@@ -1,3 +1,8 @@
+/* For every slot (stride 0xEC from +0x164, count from the table func_00359510 returns) turns the product unk54 * unk4C (negated when
+ * byte +0x45 is negative) into two value pairs: the signed product goes to the first or second output depending on the sign of byte
+ * +0x44, the other output is 0, and the outputs written at +0x7C/+0x80 hold the values scaled by unk3C. The pair at +0x70/+0x74 gets the same
+ * scaled values when the global bytes D_00620CD8+0xB6 / +0xB7 equal 2 and the unscaled ones otherwise. The purpose of these slot fields is
+ * unknown, so they keep their unkNN names. */
 #include "types.h"
 
 struct Obj {
@@ -37,50 +42,50 @@ struct Elem {
 extern char D_00620CD8[];
 extern "C" void *func_00359510(s32 arg0);
 
-extern "C" void func_003518E8(void *arg0) {
+extern "C" void func_003518E8(void *carBlock) {
     struct Obj *self;
-    struct TempV0 *temp_v0;
-    struct Glob *g;
-    struct Elem *e;
+    struct TempV0 *slotTable;
+    struct Glob *globalFlags;
+    struct Elem *slot;
     u32 i;
-    f32 f0, f1, f2, f3;
+    f32 valueA, valueB, plainA, plainB;
 
-    self = (struct Obj *)arg0;
-    temp_v0 = (struct TempV0 *)func_00359510(self->unk10);
+    self = (struct Obj *)carBlock;
+    slotTable = (struct TempV0 *)func_00359510(self->unk10);
     i = 0;
-    if (temp_v0->unk1 != 0) {
-        e = (struct Elem *)((char *)self + 0x164);
-        g = (struct Glob *)D_00620CD8;
+    if (slotTable->unk1 != 0) {
+        slot = (struct Elem *)((char *)self + 0x164);
+        globalFlags = (struct Glob *)D_00620CD8;
         do {
-            f1 = e->unk54 * e->unk4C;
-            if (e->unk45 < 0) {
-                f1 = -f1;
+            valueB = slot->unk54 * slot->unk4C;
+            if (slot->unk45 < 0) {
+                valueB = -valueB;
             }
-            f0 = e->unk3C * f1;
-            if (e->unk44 > 0) {
-                f3 = 0.0f;
-                f2 = f1;
-                f1 = f3;
+            valueA = slot->unk3C * valueB;
+            if (slot->unk44 > 0) {
+                plainB = 0.0f;
+                plainA = valueB;
+                valueB = plainB;
             } else {
-                f2 = 0.0f;
-                f3 = f1;
-                f1 = f0;
-                f0 = f2;
+                plainA = 0.0f;
+                plainB = valueB;
+                valueB = valueA;
+                valueA = plainA;
             }
-            e->unk7C = f0;
-            e->unk80 = f1;
-            if (g->unkB6 == 2) {
-                e->unk74 = f1;
+            slot->unk7C = valueA;
+            slot->unk80 = valueB;
+            if (globalFlags->unkB6 == 2) {
+                slot->unk74 = valueB;
             } else {
-                e->unk74 = f3;
+                slot->unk74 = plainB;
             }
-            if (g->unkB7 == 2) {
-                e->unk70 = f0;
+            if (globalFlags->unkB7 == 2) {
+                slot->unk70 = valueA;
             } else {
-                e->unk70 = f2;
+                slot->unk70 = plainA;
             }
             i += 1;
-            e = (struct Elem *)((char *)e + 0xEC);
-        } while (i < temp_v0->unk1);
+            slot = (struct Elem *)((char *)slot + 0xEC);
+        } while (i < slotTable->unk1);
     }
 }

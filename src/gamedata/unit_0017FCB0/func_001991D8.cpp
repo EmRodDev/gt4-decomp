@@ -1,3 +1,8 @@
+/* Script-engine registration for MPhotoRenderFace: sets its name through the vtable, links it to its parent class mWidget (class id from mWidget__GetClassID),
+ * then registers 23 methods, 6 attributes (getter/setter), 1 registration on a global symbol object
+ * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
+ * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
+ * the repeated inline blocks are the compiler expansion of that string constructor/destructor and are kept as is. */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 #include "gt4/mWidget.h"
@@ -36,10 +41,10 @@ extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
-extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));
-extern "C" void func_002F3860(Obj *arg0, Str *arg1, void (*arg2)(void), void (*arg3)(void));
-extern "C" void func_00306780(Obj *arg0, void *arg1, void (*arg2)(void));
+extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
+extern "C" void func_002F3818(Obj *cls, Str *name, void (*method)(void));
+extern "C" void func_002F3860(Obj *cls, Str *name, void (*getter)(void), void (*setter)(void));
+extern "C" void func_00306780(Obj *cls, void *symbol, void (*function)(void));
 extern char D_006923F0[];
 extern char D_00692408[];
 extern char D_00692418[];
@@ -102,670 +107,670 @@ extern "C" void MPhotoRenderFace__get_imageHeight(void);
 extern "C" void MPhotoRenderFace__get_portrait(void);
 extern "C" void MPhotoRenderFace__setPhotoFile(void);
 
-extern "C" void func_001991D8(Obj *arg0) {
-    Str s;
+extern "C" void func_001991D8(Obj *cls) {
+    Str name;
     {
-        Str *ps = &s;
-        const char *src = D_006923F0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006923F0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
         {
-            VEntry *e = (VEntry *)(arg0->vtbl + 0x190);
-            e->fn((char *)arg0 + e->delta, &s);
+            VEntry *entry = (VEntry *)(cls->vtbl + 0x190);
+            entry->fn((char *)cls + entry->delta, &name);
         }
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002F3A30(arg0, mWidget__GetClassID());
-    func_00306780(arg0, D_00825200, MPhotoRenderFace__global_00825200);
+    func_002F3A30(cls, mWidget__GetClassID());
+    func_00306780(cls, D_00825200, MPhotoRenderFace__global_00825200);
     {
-        Str *ps = &s;
-        const char *src = D_00692408;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692408;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__printout);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__printout);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
-            }
-        }
-    }
-    {
-        Str *ps = &s;
-        const char *src = D_00692418;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
-        } else {
-            d = (char *)(r + 1);
-            r->ref++;
-        }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__cleaning);
-        {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692428;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692418;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__nozzleCheck);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__cleaning);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692438;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692428;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__rendering);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__nozzleCheck);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692448;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692438;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__isRendering);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__rendering);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692458;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692448;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__printCancel);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__isRendering);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692468;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692458;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__getPrinterProgress);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__printCancel);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692480;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692468;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setPrinterNotifyResult);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__getPrinterProgress);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692498;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692480;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__scanPrinter);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setPrinterNotifyResult);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692498;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__endPrinter);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__scanPrinter);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924B8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__getSupportPaper);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__endPrinter);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924C8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924B8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__getSupportMedia);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__getSupportPaper);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924D8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924C8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__isFuchinashi);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__getSupportMedia);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924E8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924D8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__getPrinterName);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__isFuchinashi);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006924F8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924E8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setPaper);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__getPrinterName);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692508;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006924F8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setMedia);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setPaper);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692518;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692508;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setMargin);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setMedia);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692528;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692518;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setTriming);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setMargin);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692538;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692528;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setHighQuality);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setTriming);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692548;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692538;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setCopy);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setHighQuality);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692550;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692548;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__outUSBStorage);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setCopy);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692560;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692550;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__allocateImageBuffer);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__outUSBStorage);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692578;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692560;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_ofs_x, MPhotoRenderFace__get_ofs_x);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__allocateImageBuffer);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692580;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692578;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_ofs_y, MPhotoRenderFace__get_ofs_y);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_ofs_x, MPhotoRenderFace__get_ofs_x);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692588;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692580;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_imageScale, MPhotoRenderFace__get_imageScale);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_ofs_y, MPhotoRenderFace__get_ofs_y);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00692598;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692588;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_imageWidth, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_imageScale, MPhotoRenderFace__get_imageScale);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006925A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00692598;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_imageHeight, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_imageWidth, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006925B8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006925A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MPhotoRenderFace__get_portrait, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_imageHeight, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006925C8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006925B8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MPhotoRenderFace__setPhotoFile);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MPhotoRenderFace__get_portrait, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
+            }
+        }
+    }
+    {
+        Str *namePtr = &name;
+        const char *literal = D_006925C8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
+        } else {
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
+        }
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MPhotoRenderFace__setPhotoFile);
+        {
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }

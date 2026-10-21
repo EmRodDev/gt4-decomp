@@ -1,4 +1,10 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Moves a share of some per-slot quantity between two paired slots of the car (inferred from the arithmetic; looks like a
+ * steering-dependent load transfer between a wheel and its partner, but what the +0x84 value really is stays unknown).
+ * For each entry of the table from func_00359510 it needs a partner slot (0x7F means none), a mode value of 6 or 7, a speed
+ * at +0x53C inside a window and a non-zero weight. |steering| (+0x468) scaled and clamped to 1 times that weight is split 7/16 and 9/16
+ * between the two slots, towards the one whose +0x20 value is below a steering-biased midpoint. The volatile read of the
+ * +0x20 value only keeps the compiler's load order. */
 typedef unsigned char u8;
 typedef float f32;
 
@@ -32,53 +38,53 @@ extern "C" Pair *func_00359510(Obj *);
 
 extern "C" void func_0036D2F8(Car *self) {
     Obj *obj = self->obj;
-    State *st = (State*)&obj->state;
-    Win *win = (Win *)((char *)self + 0x104);
-    if (st->state == 7)
+    State *modeState = (State*)&obj->state;
+    Win *drive = (Win *)((char *)self + 0x104);
+    if (modeState->state == 7)
         func_00356418();
-    Pair *p = func_00359510(obj);
-    for (int i = 0; i < p->count; i++) {
-        int x = p->a[i];
-        int y = p->c[x];
-        if (y == 0x7F)
+    Pair *slotTable = func_00359510(obj);
+    for (int i = 0; i < slotTable->count; i++) {
+        int slotIndex = slotTable->a[i];
+        int partnerIndex = slotTable->c[slotIndex];
+        if (partnerIndex == 0x7F)
             continue;
-        int m = p->get(i);
-        int v = st->values[m];
-        if (v < 0)
+        int modeIndex = slotTable->get(i);
+        int modeValue = modeState->values[modeIndex];
+        if (modeValue < 0)
             continue;
-        if (v < 6)
+        if (modeValue < 6)
             continue;
-        if (v >= 8)
+        if (modeValue >= 8)
             continue;
-        f32 spd = win->f53C;
+        f32 spd = drive->f53C;
         if (spd < 0x1.638e36p+1f || spd > 0x1.8ffffep+5f)
             continue;
-        f32 steer = win->f468;
-        f32 t = steer < 0.0f ? -steer : steer;
-        t = t * 0x1.e8ec90p+1f;
-        if (t > 1.0f)
-            t = 1.0f;
-        Wt *wt = (Wt *)((char *)obj + 0x238);
-        f32 k = t * wt->f[m];
-        if (k == 0.0f)
+        f32 steer = drive->f468;
+        f32 steerScaled = steer < 0.0f ? -steer : steer;
+        steerScaled = steerScaled * 0x1.e8ec90p+1f;
+        if (steerScaled > 1.0f)
+            steerScaled = 1.0f;
+        Wt *weights = (Wt *)((char *)obj + 0x238);
+        f32 shift = steerScaled * weights->f[modeIndex];
+        if (shift == 0.0f)
             continue;
-        Slot *s0 = &self->slots[x];
-        Slot *s1 = &self->slots[y];
-        f32 mid = (s0->f20 + s1->f20) * 0.5f;
-        f32 d = mid * 0.125f;
+        Slot *slotA = &self->slots[slotIndex];
+        Slot *slotB = &self->slots[partnerIndex];
+        f32 mid = (slotA->f20 + slotB->f20) * 0.5f;
+        f32 biasStep = mid * 0.125f;
         if (steer > 0.0f)
-            mid += d;
+            mid += biasStep;
         else if (steer < 0.0f)
-            mid -= d;
-        f32 lo = k * 0.4375f;
-        f32 hi = k * 0.5625f;
-        f32 cur = *(volatile f32*)&s1->f20;
-        if (cur < mid) {
-            s1->f84 = s1->f84 + lo;
-            s0->f84 = s0->f84 - hi;
-        } else if (mid < cur) {
-            s1->f84 = s1->f84 - hi;
-            s0->f84 = s0->f84 + lo;
+            mid -= biasStep;
+        f32 smallShare = shift * 0.4375f;
+        f32 largeShare = shift * 0.5625f;
+        f32 currentValue = *(volatile f32*)&slotB->f20;
+        if (currentValue < mid) {
+            slotB->f84 = slotB->f84 + smallShare;
+            slotA->f84 = slotA->f84 - largeShare;
+        } else if (mid < currentValue) {
+            slotB->f84 = slotB->f84 - largeShare;
+            slotA->f84 = slotA->f84 + smallShare;
         }
     }
 }

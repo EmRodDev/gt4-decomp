@@ -1,3 +1,8 @@
+/* Script-engine registration for MTransition: sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
+ * then registers 6 methods
+ * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
+ * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
+ * the repeated inline blocks are the compiler expansion of that string constructor/destructor and are kept as is. */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;
@@ -35,8 +40,8 @@ extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
-extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));
+extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
+extern "C" void func_002F3818(Obj *cls, Str *name, void (*method)(void));
 extern "C" void MTransition__panOut(void);
 extern "C" void MTransition__panIn(void);
 extern "C" void MTransition__panOutIn(void);
@@ -44,163 +49,163 @@ extern "C" void MTransition__syncOut(void);
 extern "C" void MTransition__syncWait(void);
 extern "C" void MTransition__syncIn(void);
 
-extern "C" void mTransition__InitClass(Obj *arg0) {
-    Str s;
+extern "C" void mTransition__InitClass(Obj *cls) {
+    Str name;
     {
-        Str *ps = &s;
-        const char *src = "MTransition";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "MTransition";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
         {
-            VEntry *e = (VEntry *)(arg0->vtbl + 0x190);
-            e->fn((char *)arg0 + e->delta, &s);
+            VEntry *entry = (VEntry *)(cls->vtbl + 0x190);
+            entry->fn((char *)cls + entry->delta, &name);
         }
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002F3A30(arg0, hObject__GetClassID());
+    func_002F3A30(cls, hObject__GetClassID());
     {
-        Str *ps = &s;
-        const char *src = "panOut";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "panOut";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__panOut);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__panOut);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
-            }
-        }
-    }
-    {
-        Str *ps = &s;
-        const char *src = "panIn";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
-        } else {
-            d = (char *)(r + 1);
-            r->ref++;
-        }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__panIn);
-        {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = "panOutIn";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "panIn";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__panOutIn);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__panIn);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = "syncOut";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "panOutIn";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__syncOut);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__panOutIn);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = "syncWait";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "syncOut";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__syncWait);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__syncOut);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = "syncIn";
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = "syncWait";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MTransition__syncIn);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__syncWait);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
+            }
+        }
+    }
+    {
+        Str *namePtr = &name;
+        const char *literal = "syncIn";
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
+        } else {
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
+        }
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MTransition__syncIn);
+        {
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }

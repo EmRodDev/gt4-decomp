@@ -1,3 +1,7 @@
+/* Purpose unknown. It is not a registration function although it sits in the script-registration unit: it creates a handle
+ * object (func_002EFBF0), builds a 16-byte object from the float argument (func_002F9360 / func_002EEEB0), builds a refcounted
+ * string from the literal at D_00692250 and passes it, with the three object arguments, to func_0023A538 and func_00250CE0,
+ * then destroys everything. The inline string block is the compiler expansion of the string constructor/destructor. */
 #include "types.h"
 
 struct Rep {
@@ -38,47 +42,47 @@ extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" char *func_005C2560(void *);
 extern "C" void *func_005C2630(void *, u32, u32, const char *, u32);
 
-extern "C" void func_00193FC8(void *arg0, void *arg1, void *arg2, float f1) {
-    struct { void *p; char pad[0xC]; } h;
-    Obj16 res;
-    Obj16 a;
-    Str s;
-    const char *src;
-    Obj16 *pr;
-    func_002EFBF0(&h);
-    pr = &res;
+extern "C" void func_00193FC8(void *first, void *second, void *third, float amount) {
+    struct { void *p; char pad[0xC]; } handle;
+    Obj16 result;
+    Obj16 temp;
+    Str text;
+    const char *literal;
+    Obj16 *resultPtr;
+    func_002EFBF0(&handle);
+    resultPtr = &result;
     {
-        Obj16 *pa = &a;
-        void *hp = h.p;
-        func_002F9360(pa, f1);
-        func_002EEEB0(pr, hp, pa);
-        func_00309378(pr, 2);
-        func_002F7B68(pa, 2);
+        Obj16 *tempPtr = &temp;
+        void *handleObj = handle.p;
+        func_002F9360(tempPtr, amount);
+        func_002EEEB0(resultPtr, handleObj, tempPtr);
+        func_00309378(resultPtr, 2);
+        func_002F7B68(tempPtr, 2);
     }
     {
-        Str *ps = &s;
-        src = D_00692250;
+        Str *textPtr = &text;
+        literal = D_00692250;
         {
-            Rep *r = &D_00659FA8;
-            char *d = (char *)(r + 1);
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            char *chars = (char *)(emptyRep + 1);
+            if (emptyRep->sel != 0) {
+                chars = func_005C2560(emptyRep);
             } else {
-                r->ref++;
+                emptyRep->ref++;
             }
-            ps->p = d;
+            textPtr->p = chars;
         }
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_0023A538(pr, arg2, arg0, ps, &h);
-        func_00250CE0(arg1, pr);
-        func_00239F08(pr, 2);
+        func_005C2630(textPtr, 0, -1, literal, func_0057F260(literal));
+        func_0023A538(resultPtr, third, first, textPtr, &handle);
+        func_00250CE0(second, resultPtr);
+        func_00239F08(resultPtr, 2);
         {
-            Rep *q = (Rep *)(ps->p - 0x10);
-            if (--q->ref == 0) {
-                s32 size = q->cap + 0x10;
-                func_00326798(q, size, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(textPtr->p - 0x10);
+            if (--rep->ref == 0) {
+                s32 bytes = rep->cap + 0x10;
+                func_00326798(rep, bytes, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002ED5C0(&h, 2);
+    func_002ED5C0(&handle, 2);
 }

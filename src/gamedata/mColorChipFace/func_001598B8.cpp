@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Stretches the image object `image` over the widget's full window rectangle through the painter object `painter` (inferred
+ * from the calls: widget size from mWidget__getWindowSize, image width/height from its virtuals at +0x70 / +0x78, a destination quad and a
+ * source quad of four corners, then painter virtual +0x1B0 with both quads). Does nothing unless image virtual +0x58 is non-zero.
+ * The meaning of the 16-byte scratch object set up before the draw (virtual +0x198 of the painter) is unknown; the VCALL macros
+ * spell out the compiler's virtual-call form with the this-adjustment stored next to each slot. */
 typedef int s32;
 typedef float f32;
 struct VEntry {
@@ -24,39 +29,39 @@ extern "C" void *func_002030A0(void *);
 extern "C" void func_00203118(void *, int);
 extern "C" void mWidget__getWindowSize(void *, f32 *, f32 *);
 
-extern "C" void func_001598B8(void *self, void *arg1, void *arg2) {
-    f32 sx, sy;
-    if (arg2 != 0) {
-        if (VCALL0(s32, arg2, 0x58) != 0) {
-            mWidget__getWindowSize(self, &sx, &sy);
-            Quad a;
-            Pt *pa = a.p;
-            pa[0].set(0,0);
-            pa[1].set(sx,0);
-            pa[2].set(0,sy);
-            pa[3].set(sx,sy);
-            f32 w = VCALL0(f32, arg2, 0x70);
-            f32 h = VCALL0(f32, arg2, 0x78);
-            Quad b;
-            Pt *pb = b.p;
-            pb[0].x = 0;
-            pb[0].y = 0;
-            pb[1].x = w;
-            pb[1].y = 0;
-            pb[2].x = 0;
-            pb[2].y = h;
-            pb[3].x = w;
-            pb[3].y = h;
-            char v[16];
-            func_002030A0(v);
-            VCALL1(void, arg1, 0x198, v);
-            func_00203118(v, 2);
-            VCALL0(void, arg1, 0x1D0);
-            VCALL1(void, arg1, 0x1C0, 1);
-            VCALL0(void, arg2, 0x68);
-            VCALL4(arg1, 0x1B0, 4, pa, pb, 0);
-            VCALL0(void, arg1, 0x1C8);
-            VCALL0(void, arg1, 0x1D8);
+extern "C" void func_001598B8(void *self, void *painter, void *image) {
+    f32 windowWidth, windowHeight;
+    if (image != 0) {
+        if (VCALL0(s32, image, 0x58) != 0) {
+            mWidget__getWindowSize(self, &windowWidth, &windowHeight);
+            Quad destQuad;
+            Pt *destCorners = destQuad.p;
+            destCorners[0].set(0,0);
+            destCorners[1].set(windowWidth,0);
+            destCorners[2].set(0,windowHeight);
+            destCorners[3].set(windowWidth,windowHeight);
+            f32 imageWidth = VCALL0(f32, image, 0x70);
+            f32 imageHeight = VCALL0(f32, image, 0x78);
+            Quad sourceQuad;
+            Pt *sourceCorners = sourceQuad.p;
+            sourceCorners[0].x = 0;
+            sourceCorners[0].y = 0;
+            sourceCorners[1].x = imageWidth;
+            sourceCorners[1].y = 0;
+            sourceCorners[2].x = 0;
+            sourceCorners[2].y = imageHeight;
+            sourceCorners[3].x = imageWidth;
+            sourceCorners[3].y = imageHeight;
+            char scratch[16];
+            func_002030A0(scratch);
+            VCALL1(void, painter, 0x198, scratch);
+            func_00203118(scratch, 2);
+            VCALL0(void, painter, 0x1D0);
+            VCALL1(void, painter, 0x1C0, 1);
+            VCALL0(void, image, 0x68);
+            VCALL4(painter, 0x1B0, 4, destCorners, sourceCorners, 0);
+            VCALL0(void, painter, 0x1C8);
+            VCALL0(void, painter, 0x1D8);
         }
     }
 }

@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Resets a race overlay object to its defaults (inferred from the member classes it constructs): clears the first 0xA0 bytes
+ * except flags at +0x44, +0x74 and +0x78 (1), a 1.0f at +0x84 and -1 at +0x9C, then runs the constructors of the embedded
+ * RaceMiniMap (+0x298), RaceFuelMeter (+0x300), RaceTireWearDisplay (+0x328), RaceTooltipDisplay (+0x358) and one more member
+ * at +0x12B4 (func_0042DC80, class unknown). What the individual fields hold is unknown. The void function returns the last call's
+ * value because that is the shape that matched. */
 typedef int s32;
 typedef float f32;
 #define NULL 0
@@ -53,50 +58,50 @@ struct Obj {
     int f98;
     int f9c;
 };
-extern "C" void func_003D7700(Obj *arg0) {
-    arg0->f0 = 0;
-    arg0->f4 = 0;
-    arg0->f8 = 0;
-    arg0->fc = 0;
-    arg0->f10 = 0;
-    arg0->f14 = 0;
-    arg0->f18 = 0;
-    arg0->f1c = 0;
-    arg0->f20 = 0;
-    arg0->f24 = 0;
-    arg0->f28 = 0;
-    arg0->f2c = 0;
-    arg0->f30 = 0;
-    arg0->f34 = 0;
-    arg0->f38 = 0;
-    arg0->f3c = 0;
-    arg0->f40 = 0;
-    arg0->f44 = 1;
-    arg0->f48 = 0;
-    arg0->f4c = 0;
-    arg0->f50 = 0;
-    arg0->f54 = 0;
-    arg0->f58 = 0;
-    arg0->f5c = 0;
-    arg0->f60 = 0;
-    arg0->f64 = 0;
-    arg0->f68 = 0;
-    arg0->f6c = 0;
-    arg0->f70 = 0;
-    arg0->f74 = 1;
-    arg0->f78 = 1;
-    arg0->f7c = 0;
-    arg0->f80 = 0;
-    arg0->f84 = 1.0f;
-    arg0->f88 = 0;
-    arg0->f8c = 0;
-    arg0->f90 = 0;
-    arg0->f94 = 0;
-    arg0->f98 = 0;
-    arg0->f9c = -1;
-    RaceMiniMap__structor_1((char *)arg0 + 0x298);
-    RaceFuelMeter__structor_1((char *)arg0 + 0x300);
-    RaceTireWearDisplay__structor_1((char *)arg0 + 0x328);
-    RaceTooltipDisplay__structor_0((char *)arg0 + 0x358);
-    return func_0042DC80((char *)arg0 + 0x12B4);
+extern "C" void func_003D7700(Obj *self) {
+    self->f0 = 0;
+    self->f4 = 0;
+    self->f8 = 0;
+    self->fc = 0;
+    self->f10 = 0;
+    self->f14 = 0;
+    self->f18 = 0;
+    self->f1c = 0;
+    self->f20 = 0;
+    self->f24 = 0;
+    self->f28 = 0;
+    self->f2c = 0;
+    self->f30 = 0;
+    self->f34 = 0;
+    self->f38 = 0;
+    self->f3c = 0;
+    self->f40 = 0;
+    self->f44 = 1;
+    self->f48 = 0;
+    self->f4c = 0;
+    self->f50 = 0;
+    self->f54 = 0;
+    self->f58 = 0;
+    self->f5c = 0;
+    self->f60 = 0;
+    self->f64 = 0;
+    self->f68 = 0;
+    self->f6c = 0;
+    self->f70 = 0;
+    self->f74 = 1;
+    self->f78 = 1;
+    self->f7c = 0;
+    self->f80 = 0;
+    self->f84 = 1.0f;
+    self->f88 = 0;
+    self->f8c = 0;
+    self->f90 = 0;
+    self->f94 = 0;
+    self->f98 = 0;
+    self->f9c = -1;
+    RaceMiniMap__structor_1((char *)self + 0x298);
+    RaceFuelMeter__structor_1((char *)self + 0x300);
+    RaceTireWearDisplay__structor_1((char *)self + 0x328);
+    RaceTooltipDisplay__structor_0((char *)self + 0x358);
+    return func_0042DC80((char *)self + 0x12B4);
 }

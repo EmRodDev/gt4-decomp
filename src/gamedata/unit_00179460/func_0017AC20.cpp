@@ -1,3 +1,8 @@
+/* Script-engine registration for MMemoryCardManager: sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
+ * then registers 20 methods, 5 static functions (inferred from knowledge/script-engine.md, section 3.3), 8 attributes (getter/setter), 2 registrations on a global symbol object
+ * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
+ * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
+ * the repeated inline blocks are the compiler expansion of that string constructor/destructor and are kept as is. */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;
@@ -35,12 +40,12 @@ extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
-extern "C" void func_002F36E0(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));
-extern "C" void func_002F3860(Obj *arg0, Str *arg1, void (*arg2)(void), void (*arg3)(void));
-extern "C" void func_00306780(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_003068A8(Obj *arg0, Str *arg1, void (*arg2)(void));
+extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
+extern "C" void func_002F36E0(Obj *cls, void *symbol, void (*method)(void));
+extern "C" void func_002F3818(Obj *cls, Str *name, void (*method)(void));
+extern "C" void func_002F3860(Obj *cls, Str *name, void (*getter)(void), void (*setter)(void));
+extern "C" void func_00306780(Obj *cls, void *symbol, void (*function)(void));
+extern "C" void func_003068A8(Obj *cls, Str *name, void (*function)(void));
 extern char D_00690F90[];
 extern char D_00690FA8[];
 extern char D_00690FB0[];
@@ -112,759 +117,759 @@ extern "C" void MMemoryCardManager__getExistValidGameData(void);
 extern "C" void MMemoryCardManager__setAction(void);
 extern "C" void MMemoryCardManager__getAction(void);
 
-extern "C" void func_0017AC20(Obj *arg0) {
-    Str s;
+extern "C" void func_0017AC20(Obj *cls) {
+    Str name;
     {
-        Str *ps = &s;
-        const char *src = D_00690F90;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690F90;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
         {
-            VEntry *e = (VEntry *)(arg0->vtbl + 0x190);
-            e->fn((char *)arg0 + e->delta, &s);
+            VEntry *entry = (VEntry *)(cls->vtbl + 0x190);
+            entry->fn((char *)cls + entry->delta, &name);
         }
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002F3A30(arg0, hObject__GetClassID());
-    func_00306780(arg0, D_00824480, MMemoryCardManager__global_00824480);
-    func_002F36E0(arg0, D_00824478, MMemoryCardManager__global_00824478);
+    func_002F3A30(cls, hObject__GetClassID());
+    func_00306780(cls, D_00824480, MMemoryCardManager__global_00824480);
+    func_002F36E0(cls, D_00824478, MMemoryCardManager__global_00824478);
     {
-        Str *ps = &s;
-        const char *src = D_00690FA8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FA8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__test);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__test);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
-            }
-        }
-    }
-    {
-        Str *ps = &s;
-        const char *src = D_00690FB0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
-        } else {
-            d = (char *)(r + 1);
-            r->ref++;
-        }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__test);
-        {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00690FB8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FB0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isConnect);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__test);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00690FC8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FB8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isFormat);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isConnect);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00690FD8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FC8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isChanged);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isFormat);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00690FE8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FD8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isUseNewFile);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isChanged);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00690FF8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FE8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isNoFile);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isUseNewFile);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691008;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00690FF8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isAutoSaveDisabled);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isNoFile);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691020;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691008;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__clearAutoSaveDisabled);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isAutoSaveDisabled);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691038;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691020;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__requestPause);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__clearAutoSaveDisabled);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691048;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691038;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__waitPause);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__requestPause);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691058;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691048;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__start);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__waitPause);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691060;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691058;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__restart);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__start);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691068;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691060;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__clear);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__restart);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691070;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691068;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__getFile);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__clear);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691078;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691070;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__getNewFile);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__getFile);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691088;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691078;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isExistGT4pData);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__getNewFile);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691098;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691088;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__inheritGT4pData);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isExistGT4pData);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691098;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__isExistGT3Data);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__inheritGT4pData);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910B8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MMemoryCardManager__inheritGT3Data);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__isExistGT3Data);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910C8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910B8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_free, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MMemoryCardManager__inheritGT3Data);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910D0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910C8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_realFree, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_free, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910E0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910D0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_count, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_realFree, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910E8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910E0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, 0, MMemoryCardManager__set_cursorPos);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_count, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_006910F8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910E8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_progress, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, 0, MMemoryCardManager__set_cursorPos);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691108;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_006910F8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, 0, MMemoryCardManager__set_list);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_progress, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691110;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691108;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_autoloadPlayList, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, 0, MMemoryCardManager__set_list);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691128;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691110;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MMemoryCardManager__get_autoloadPlayListResult, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_autoloadPlayList, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691140;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691128;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MMemoryCardManager__getPrintList);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MMemoryCardManager__get_autoloadPlayListResult, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691150;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691140;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MMemoryCardManager__setExistValidGameData);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MMemoryCardManager__getPrintList);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691168;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691150;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MMemoryCardManager__getExistValidGameData);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MMemoryCardManager__setExistValidGameData);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691180;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691168;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MMemoryCardManager__setAction);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MMemoryCardManager__getExistValidGameData);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_00691190;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_00691180;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MMemoryCardManager__getAction);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MMemoryCardManager__setAction);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
+            }
+        }
+    }
+    {
+        Str *namePtr = &name;
+        const char *literal = D_00691190;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
+        } else {
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
+        }
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MMemoryCardManager__getAction);
+        {
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }

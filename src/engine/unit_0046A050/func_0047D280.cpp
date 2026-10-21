@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Constructor of an object bound to an Info record (purpose of the object and of the records is unknown). Stores the first
+ * and fifth arguments and a constant pointer (D_00688A20), starts an empty refcounted string, and when the record exists copies its
+ * name (if any), its value at +8 and one 9-int item of its vector at +0x18, selected by `itemIndex - info->f2` clamped to the last element
+ * (inferred from the min() helper); with no record both items are cleared by func_00474ED0. */
 typedef int s32;
 typedef unsigned int u32;
 typedef unsigned short u16;
@@ -23,39 +27,39 @@ extern char D_00688A20[];
 
 static inline const int &mn(const int &a, const int &b) { return b < a ? b : a; }
 
-extern "C" void func_0047D280(Self *self, s32 a1, Info *a2, s32 a3, Cnt a4, s32 a5) {
-    Str *ps = &self->s;
-    self->f0 = a1;
+extern "C" void func_0047D280(Self *self, s32 param1, Info *infoArg, s32 unusedParam3, Cnt itemIndex, s32 param5) {
+    Str *namePtr = &self->s;
+    self->f0 = param1;
     self->f5C = (s32)D_00688A20;
-    self->f4 = a2;
-    Rep *g = (Rep *)D_00659E20;
-    char *r;
-    if (g->sel != 0) {
-        r = (char *)strobe__toUpper(g);
+    self->f4 = infoArg;
+    Rep *emptyRep = (Rep *)D_00659E20;
+    char *chars;
+    if (emptyRep->sel != 0) {
+        chars = (char *)strobe__toUpper(emptyRep);
     } else {
-        r = (char *)((char *)g + 0x10);
-        g->ref++;
+        chars = (char *)((char *)emptyRep + 0x10);
+        emptyRep->ref++;
     }
-    ps->p = r;
-    self->f58 = a5;
+    namePtr->p = chars;
+    self->f58 = param5;
     Info *info = self->f4;
     if (!info) {
         self->f50 = 0;
         func_00474ED0(&self->i8);
         func_00474ED0(&self->i2c);
     } else {
-        SV *sv = &info->f20;
-        if (sv->len != 0) {
-            const char *q = sv->p;
-            strobe__Any__setMember(ps, 0, (u32)-1, q, func_0057F260(q));
+        SV *nameView = &info->f20;
+        if (nameView->len != 0) {
+            const char *literal = nameView->p;
+            strobe__Any__setMember(namePtr, 0, (u32)-1, literal, func_0057F260(literal));
             info = self->f4;
         }
         self->f50 = info->f8;
-        a4 = (Cnt)((s32)a4 - info->f2);
-        Cnt sp4;
-        Vec *v = &info->v18;
-        if (v->size != 0) {
-            self->i2c = (*v)[mn(a4, v->size - 1)];
+        itemIndex = (Cnt)((s32)itemIndex - info->f2);
+        Cnt unusedScratch;
+        Vec *items = &info->v18;
+        if (items->size != 0) {
+            self->i2c = (*items)[mn(itemIndex, items->size - 1)];
         } else {
             func_00474ED0(&self->i2c);
         }

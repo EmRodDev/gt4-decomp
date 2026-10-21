@@ -1,3 +1,8 @@
+/* Script-engine registration for MCalendar: sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
+ * then registers 17 methods, 5 static functions (inferred from knowledge/script-engine.md, section 3.3), 1 attribute (getter/setter), 2 registrations on a global symbol object
+ * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
+ * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
+ * the repeated inline blocks are the compiler expansion of that string constructor/destructor and are kept as is. */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;
@@ -35,12 +40,12 @@ extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
-extern "C" void func_002F36E0(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));
-extern "C" void func_002F3860(Obj *arg0, Str *arg1, void (*arg2)(void), void (*arg3)(void));
-extern "C" void func_00306780(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_003068A8(Obj *arg0, Str *arg1, void (*arg2)(void));
+extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
+extern "C" void func_002F36E0(Obj *cls, void *symbol, void (*method)(void));
+extern "C" void func_002F3818(Obj *cls, Str *name, void (*method)(void));
+extern "C" void func_002F3860(Obj *cls, Str *name, void (*getter)(void), void (*setter)(void));
+extern "C" void func_00306780(Obj *cls, void *symbol, void (*function)(void));
+extern "C" void func_003068A8(Obj *cls, Str *name, void (*function)(void));
 extern char D_0068EAE0[];
 extern char D_0068EAF0[];
 extern char D_0068EAF8[];
@@ -92,539 +97,539 @@ extern "C" void MCalendar__dayToWeekDay(void);
 extern "C" void MCalendar__dayToGameDay(void);
 extern "C" void MCalendar__gameDayToDay(void);
 
-extern "C" void func_00136550(Obj *arg0) {
-    Str s;
+extern "C" void func_00136550(Obj *cls) {
+    Str name;
     {
-        Str *ps = &s;
-        const char *src = D_0068EAE0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EAE0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
         {
-            VEntry *e = (VEntry *)(arg0->vtbl + 0x190);
-            e->fn((char *)arg0 + e->delta, &s);
+            VEntry *entry = (VEntry *)(cls->vtbl + 0x190);
+            entry->fn((char *)cls + entry->delta, &name);
         }
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002F3A30(arg0, hObject__GetClassID());
-    func_00306780(arg0, D_008222B8, MCalendar__global_008222B8);
-    func_002F36E0(arg0, D_008222B0, MCalendar__global_008222B0);
+    func_002F3A30(cls, hObject__GetClassID());
+    func_00306780(cls, D_008222B8, MCalendar__global_008222B8);
+    func_002F36E0(cls, D_008222B0, MCalendar__global_008222B0);
     {
-        Str *ps = &s;
-        const char *src = D_0068EAF0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EAF0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCalendar__get_today, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCalendar__get_today, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
-            }
-        }
-    }
-    {
-        Str *ps = &s;
-        const char *src = D_0068EAF8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
-        } else {
-            d = (char *)(r + 1);
-            r->ref++;
-        }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__getElapsedWeek);
-        {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB08;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EAF8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__getElapsedDate);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__getElapsedWeek);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB18;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB08;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__getEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__getElapsedDate);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB28;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB18;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__getEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB38;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB28;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB50;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB38;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyUsedCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB68;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB50;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyTradeCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyUsedCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB80;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB68;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putPresentCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyTradeCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EB98;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB80;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putSellCarEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putPresentCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EBA8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EB98;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyWheelEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putSellCarEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EBC0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EBA8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putBuyWingEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyWheelEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EBD0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EBC0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putRunRaceEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putBuyWingEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EBE0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EBD0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putRunLicenseEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putRunRaceEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EBF8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EBE0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putRunMissionEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putRunLicenseEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC10;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EBF8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putRunFreeRunEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putRunMissionEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC28;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC10;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__putRunCourseEvent);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putRunFreeRunEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC40;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC28;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCalendar__incDate);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__putRunCourseEvent);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC48;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC40;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCalendar__dateToDay);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCalendar__incDate);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC58;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC48;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCalendar__dayToDate);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCalendar__dateToDay);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC68;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC58;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCalendar__dayToWeekDay);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCalendar__dayToDate);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC78;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC68;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCalendar__dayToGameDay);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCalendar__dayToWeekDay);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EC88;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EC78;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCalendar__gameDayToDay);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCalendar__dayToGameDay);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
+            }
+        }
+    }
+    {
+        Str *namePtr = &name;
+        const char *literal = D_0068EC88;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
+        } else {
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
+        }
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCalendar__gameDayToDay);
+        {
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }

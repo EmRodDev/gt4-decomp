@@ -1,3 +1,8 @@
+/* Script-engine registration for MCarGarage: sets its name through the vtable, links it to its parent class hObject (class id from hObject__GetClassID),
+ * then registers 73 methods, 13 static functions (inferred from knowledge/script-engine.md, section 3.3), 6 attributes (getter/setter), 2 registrations on a global symbol object
+ * so scripts can call into C++ (see knowledge/script-engine.md, section 3.3).
+ * Each registration builds the member name as a refcounted string from a literal and releases it afterwards;
+ * the repeated inline blocks are the compiler expansion of that string constructor/destructor and are kept as is. */
 #define GT4_DECLS
 #include "gt4/hObject.h"
 typedef int s32;
@@ -35,13 +40,13 @@ extern "C" s32 func_0057F260(const char *s);
 extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" void func_002F3A30(Obj *arg0, s32 arg1);
-extern "C" void func_0014EF00(Obj *arg0);
-extern "C" void func_002F36E0(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_002F3818(Obj *arg0, Str *arg1, void (*arg2)(void));
-extern "C" void func_002F3860(Obj *arg0, Str *arg1, void (*arg2)(void), void (*arg3)(void));
-extern "C" void func_00306780(Obj *arg0, void *arg1, void (*arg2)(void));
-extern "C" void func_003068A8(Obj *arg0, Str *arg1, void (*arg2)(void));
+extern "C" void func_002F3A30(Obj *cls, s32 parentClassId);
+extern "C" void func_0014EF00(Obj *cls);
+extern "C" void func_002F36E0(Obj *cls, void *symbol, void (*method)(void));
+extern "C" void func_002F3818(Obj *cls, Str *name, void (*method)(void));
+extern "C" void func_002F3860(Obj *cls, Str *name, void (*getter)(void), void (*setter)(void));
+extern "C" void func_00306780(Obj *cls, void *symbol, void (*function)(void));
+extern "C" void func_003068A8(Obj *cls, Str *name, void (*function)(void));
 extern char D_0068EEB8[];
 extern char D_0068EEC8[];
 extern char D_0068EED8[];
@@ -229,2059 +234,2059 @@ extern "C" void MCarGarage__sortByDriveTrain(void);
 extern "C" void MCarGarage__sortByRideHistory(void);
 extern "C" void MCarGarage__sortByAspiration(void);
 
-extern "C" void func_00141B90(Obj *arg0) {
-    Str s;
+extern "C" void func_00141B90(Obj *cls) {
+    Str name;
     {
-        Str *ps = &s;
-        const char *src = D_0068EEB8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EEB8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
         {
-            VEntry *e = (VEntry *)(arg0->vtbl + 0x190);
-            e->fn((char *)arg0 + e->delta, &s);
+            VEntry *entry = (VEntry *)(cls->vtbl + 0x190);
+            entry->fn((char *)cls + entry->delta, &name);
         }
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_002F3A30(arg0, hObject__GetClassID());
-    func_00306780(arg0, D_00822738, MCarGarage__global_00822738);
-    func_002F36E0(arg0, D_00822730, MCarGarage__global_00822730);
+    func_002F3A30(cls, hObject__GetClassID());
+    func_00306780(cls, D_00822738, MCarGarage__global_00822738);
+    func_002F36E0(cls, D_00822730, MCarGarage__global_00822730);
     {
-        Str *ps = &s;
-        const char *src = D_0068EEC8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EEC8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__copyFrom);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__copyFrom);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EED8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EED8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__dump);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__dump);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EEE0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EEE0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCarCode);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCarCode);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EEF0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EEF0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__setCarCode);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__setCarCode);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF00;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF00;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getColorNum);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getColorNum);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF10;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF10;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getColors);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getColors);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF20;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF20;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getAllColors);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getAllColors);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF30;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF30;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getColorName);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getColorName);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF40;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF40;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getColorIndex);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getColorIndex);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF50;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF50;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getDTrain);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getDTrain);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF60;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF60;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getDTrainType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getDTrainType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF70;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF70;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatPs);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatPs);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF80;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF80;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatTq);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatTq);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EF90;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EF90;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatMs);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatMs);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFA0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFA0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatDisplacement);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatDisplacement);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFB8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFB8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatLength);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatLength);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFC8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFC8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatHeight);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatHeight);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFD8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFD8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatWidth);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatWidth);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFE8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFE8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatEngineCam);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatEngineCam);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068EFF8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068EFF8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCatEngineType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCatEngineType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F010;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F010;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getLength);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getLength);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F020;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F020;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getHeight);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getHeight);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F030;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F030;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getWidth);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getWidth);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F040;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F040;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getWheelBase);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getWheelBase);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F050;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F050;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__makeUsed);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__makeUsed);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F060;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F060;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getUsedPrice);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getUsedPrice);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F070;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F070;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getUsedSellPrice);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getUsedSellPrice);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F088;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F088;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getAspiration);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getAspiration);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F098;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F098;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getOdometer);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getOdometer);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentPs);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentPs);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0B8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0B8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentTq);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentTq);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0C8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0C8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentMs);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentMs);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0D8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0D8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentPWR);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentPWR);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0E8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0E8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentPower);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentPower);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F0F8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F0F8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCurrentWeight);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCurrentWeight);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F110;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F110;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getDate);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getDate);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F118;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F118;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getGarageIndex);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getGarageIndex);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F128;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F128;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__updateCurrentStatus);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__updateCurrentStatus);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F140;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F140;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getCarLabel);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getCarLabel);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F150;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F150;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isAutomaticOnly);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isAutomaticOnly);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F160;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F160;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isTireSelectable);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isTireSelectable);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F178;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F178;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isStrange);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isStrange);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F188;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F188;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isOpenCar);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isOpenCar);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F198;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F198;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isChangeWheelDisabled);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isChangeWheelDisabled);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F1B0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F1B0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isChangeWingDisabled);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isChangeWingDisabled);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F1C8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F1C8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isDefaultNoParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isDefaultNoParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F1E0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F1E0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isTurbo);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isTurbo);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F1E8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F1E8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isNAtune);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isNAtune);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F1F8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F1F8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isSuperCharger);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isSuperCharger);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F208;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F208;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isVacant);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isVacant);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F218;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F218;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__loadPartsInfo);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__loadPartsInfo);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F228;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F228;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__setupPartsBuffer);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__setupPartsBuffer);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F240;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F240;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__beginSetting);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__beginSetting);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F250;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F250;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__endSetting);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__endSetting);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F260;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F260;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__endSetting);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__endSetting);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F270;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F270;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getPartsTypeCount);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getPartsTypeCount);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F288;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F288;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getPartsTypeMax);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getPartsTypeMax);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F298;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F298;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isExistPartsType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isExistPartsType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F2B0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F2B0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isExistParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isExistParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F2C0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F2C0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getPartsPrice);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getPartsPrice);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F2D0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F2D0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F2E0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F2E0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__setParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__setParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F2F0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F2F0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__setParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__setParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F300;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F300;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__removeParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__removeParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F310;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F310;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getEquipedParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getEquipedParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F320;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F320;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isHavingParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isHavingParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F330;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F330;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isHavingStiffnessParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isHavingStiffnessParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F348;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F348;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isAllowedParts);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isAllowedParts);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F358;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F358;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isReversibilityType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isReversibilityType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F370;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F370;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isRemovableType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isRemovableType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F380;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F380;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__isRemovedNormalType);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__isRemovedNormalType);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F398;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F398;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__getCarCode, MCarGarage__setCarCode);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__getCarCode, MCarGarage__setCarCode);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__get_name, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__get_name, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3B0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3B0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__get_short_name, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__get_short_name, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3C0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3C0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__get_short_name_no_year, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__get_short_name_no_year, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3D8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3D8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__get_slot, MCarGarage__get_slot);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__get_slot, MCarGarage__get_slot);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3E0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3E0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__canTune);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__canTune);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3E8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3E8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3818(arg0, &s, MCarGarage__getTunerList);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3818(cls, &name, MCarGarage__getTunerList);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F3F8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F3F8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_002F3860(arg0, &s, MCarGarage__get_rideHistory, 0);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_002F3860(cls, &name, MCarGarage__get_rideHistory, 0);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F408;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F408;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByDate);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByDate);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F418;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F418;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByPower);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByPower);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F428;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F428;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByWeight);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByWeight);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F438;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F438;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByPWR);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByPWR);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F448;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F448;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByName);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByName);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F458;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F458;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByPrice);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByPrice);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F468;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F468;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByYear);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByYear);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F478;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F478;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByColor);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByColor);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F488;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F488;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByCountry);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByCountry);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F498;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F498;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByTuner);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByTuner);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F4A8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F4A8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByDriveTrain);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByDriveTrain);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F4C0;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F4C0;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByRideHistory);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByRideHistory);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
     {
-        Str *ps = &s;
-        const char *src = D_0068F4D8;
-        Rep *r = &D_00659FA8;
-        char *d;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+        Str *namePtr = &name;
+        const char *literal = D_0068F4D8;
+        Rep *emptyRep = &D_00659FA8;
+        char *chars;
+        if (emptyRep->sel != 0) {
+            chars = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            chars = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        ps->p = d;
-        func_005C2630(ps, 0, -1, src, func_0057F260(src));
-        func_003068A8(arg0, &s, MCarGarage__sortByAspiration);
+        namePtr->p = chars;
+        func_005C2630(namePtr, 0, -1, literal, func_0057F260(literal));
+        func_003068A8(cls, &name, MCarGarage__sortByAspiration);
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(name.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 capacity = rep->cap + 0x10;
+                func_00326798(rep, capacity, 4, func_005C11A8()->name);
             }
         }
     }
-    func_0014EF00(arg0);
+    func_0014EF00(cls);
 }

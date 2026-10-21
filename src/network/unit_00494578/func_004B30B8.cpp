@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Looks up the record for (id, key) in a paged store (inferred from the buffer layout and the handle loop). Builds the query as the id
+ * in four big-endian bytes followed by the key, walks the handle forward while the page tag at its data is 1, then asks
+ * func_004B27D0 to locate the entry; on a hit it returns a Result built from the id and the entry's data pointer, otherwise an empty
+ * Result. The meaning of the store and of the `outCount` value (used as outCount*8 from the end of the page) is not known. */
 typedef unsigned char u8;
 typedef signed char s8;
 
@@ -45,33 +49,33 @@ static inline unsigned rd16(const u8 *p)
     return p[0] | (p[1] << 8);
 }
 
-extern "C" Result func_004B30B8(Src *obj, int id, char *key, int len)
+extern "C" Result func_004B30B8(Src *store, int id, char *key, int keyLength)
 {
-    char *buf = (char *)__builtin_alloca(len + 4);
-    int total = len + 4;
-    buf[0] = id >> 24;
-    buf[1] = id >> 16;
-    buf[2] = id >> 8;
-    buf[3] = id;
-    func_005A4724(buf + 4, key, len);
-    VEnt *e = &obj->vt->e18;
-    Handle h(obj, e->fn((char *)obj + e->delta));
-    if (rd16(h.data) == 1) {
+    char *query = (char *)__builtin_alloca(keyLength + 4);
+    int queryLength = keyLength + 4;
+    query[0] = id >> 24;
+    query[1] = id >> 16;
+    query[2] = id >> 8;
+    query[3] = id;
+    func_005A4724(query + 4, key, keyLength);
+    VEnt *idSlot = &store->vt->e18;
+    Handle handle(store, idSlot->fn((char *)store + idSlot->delta));
+    if (rd16(handle.data) == 1) {
         do {
-            h.assign(func_004B2518(&h, buf, total));
-        } while (rd16(h.data) == 1);
+            handle.assign(func_004B2518(&handle, query, queryLength));
+        } while (rd16(handle.data) == 1);
     }
-    unsigned sp10 = 0;
-    if (func_004B27D0(&h, buf, total, &sp10) == 0) {
+    unsigned outCount = 0;
+    if (func_004B27D0(&handle, query, queryLength, &outCount) == 0) {
         return Result();
     } else {
-        VEnt *e2 = &h.src->vt->e10;
-        int end = e2->fn((char *)h.src + e2->delta);
-        u8 *d = h.data;
-        int offset = end - sp10 * 8;
-        offset -= 4;
+        VEnt *endSlot = &handle.src->vt->e10;
+        int pageEnd = endSlot->fn((char *)handle.src + endSlot->delta);
+        u8 *pageData = handle.data;
+        int entryOffset = pageEnd - outCount * 8;
+        entryOffset -= 4;
         struct Bytes { u8 bytes[1]; };
-        u8 *p = &((Bytes *)d)->bytes[offset];
-        return Result(id, d + rd16(p));
+        u8 *entryPtr = &((Bytes *)pageData)->bytes[entryOffset];
+        return Result(id, pageData + rd16(entryPtr));
     }
 }

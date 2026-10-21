@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Recomputes the value at +0x4C of every slot (stride 0xEC from self+0x164, count taken from the table returned by
+ * func_00359510) as slot+0x48, scaled by a lookup (func_00359830 over func_003573A8), by slot+0x50 when func_00356EF0 reports a
+ * flag, by a per-index table entry, an item table entry and func_00467470. A difference of two values at +0x56C / +0x578
+ * of the block at +0x104 is added to or subtracted from slot+4 depending on a per-slot side code. What these quantities
+ * physically are is unknown. */
 struct Item { char p0[8]; float tab[0x1A0 / 4]; char pad[0x1AC - 0x8 - 0x1A0]; char m1AC[0x2E]; unsigned char m1DA; };
 struct V12 { float a, b, c; };
 struct Data { char p[0x3B8]; V12 ent[0x18]; char q[0xFD0 - 0x3B8 - 0x18 * 12]; float tab[8]; };
@@ -19,39 +24,39 @@ extern "C" float func_00359830(void *, float);
 extern "C" float func_00467470(void *, int);
 
 extern "C" void func_00357418(Self *self) {
-    int i = 0;
-    char *b = (char *)self + 0x104;
-    Data *d = self->m10;
-    Obj *o = func_00359510(d);
-    int f7 = func_00356EF0(self, self->m4 + 4);
-    float diff = *(float *)(b + 0x56C) - *(float *)(b + 0x578);
-    if (o->m1 != 0) {
-    Slot *p = (Slot *)((char *)self + 0x164);
+    int slotIndex = 0;
+    char *block = (char *)self + 0x104;
+    Data *data = self->m10;
+    Obj *slotTable = func_00359510(data);
+    int flagResult = func_00356EF0(self, self->m4 + 4);
+    float delta = *(float *)(block + 0x56C) - *(float *)(block + 0x578);
+    if (slotTable->m1 != 0) {
+    Slot *slot = (Slot *)((char *)self + 0x164);
     do {
-        unsigned s5 = 0;
-        Item *it = func_00360F80(d, i, p->m89);
-        if (i < o->m1) s5 = o->m14[i];
-        float f = p->m48;
-        p->mDD = it->m1DA;
-        f = f * func_00359830(it->m1AC, func_003573A8(d, i, f));
-        if (f7) f = f * p->m50;
-        f = f * d->tab[s5];
-        float x;
-        if (o->m0 != 1) {
-            x = 0.0f;
-            unsigned t = o->m1C[i];
-            if (t == 0) x = -diff;
+        unsigned tableIndex = 0;
+        Item *item = func_00360F80(data, slotIndex, slot->m89);
+        if (slotIndex < slotTable->m1) tableIndex = slotTable->m14[slotIndex];
+        float value = slot->m48;
+        slot->mDD = item->m1DA;
+        value = value * func_00359830(item->m1AC, func_003573A8(data, slotIndex, value));
+        if (flagResult) value = value * slot->m50;
+        value = value * data->tab[tableIndex];
+        float input;
+        if (slotTable->m0 != 1) {
+            input = 0.0f;
+            unsigned sideCode = slotTable->m1C[slotIndex];
+            if (sideCode == 0) input = -delta;
             else {
-                unsigned u = t ^ 1;
-                if (u == 0) x = diff;
+                unsigned sideFlipped = sideCode ^ 1;
+                if (sideFlipped == 0) input = delta;
             }
-            x = x + p->m4;
+            input = input + slot->m4;
         } else {
-            x = 0.0f;
+            input = 0.0f;
         }
-        p->m4C = f * it->tab[p->m89] * func_00359830(&d->ent[s5], x);
-        p->m4C = p->m4C * func_00467470(self, p->m89);
-        i++; p++;
-    } while (i < o->m1);
+        slot->m4C = value * item->tab[slot->m89] * func_00359830(&data->ent[tableIndex], input);
+        slot->m4C = slot->m4C * func_00467470(self, slot->m89);
+        slotIndex++; slot++;
+    } while (slotIndex < slotTable->m1);
     }
 }
