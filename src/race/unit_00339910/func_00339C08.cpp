@@ -1,5 +1,5 @@
 /* Down-casts the object at +0x2880 of top from VehicleModel to RaceCarModel and runs setup on the result: GT4MC::FileGT4GameData::loadInstance
- * is called here with the argument shape of an old-ABI __dynamic_cast (type_info taken from the object's vtable, target type RaceCarModel,
+ * is called here with the argument shape of an old-ABI dynamic_cast (type_info taken from the object's vtable, target type RaceCarModel,
  * source type VehicleModel; inferred from the arguments, the symbol name is a GT HD guess). It then calls two virtual methods of the
  * result (+0xE8 and +0xF0, the second with floatArg) and, when the fields at +0x1670 / +0x1674 are nonzero, runs 00339AD0 on two pairs of
  * sub-blocks (indices 0 and 1). The calls on raceCar come before its null test, exactly as in the original code. */

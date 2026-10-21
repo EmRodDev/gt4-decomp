@@ -1,5 +1,5 @@
 /* Checked downcast of a reference-counted handle to mPhotoMapWindow (inferred from the __tf type-info arguments: this is the shape of GCC 2.96's
- * __dynamic_cast call). On success the new reference is added (func_003285A8) and the previous one released (func_003285F8,
+ * dynamic_cast call). On success the new reference is added (func_003285A8) and the previous one released (func_003285F8,
  * inferred from the increment-before-replace order) and 1 is returned; otherwise the destination is left untouched and 0 is returned. */
 struct Unk64 {
     short unk0;

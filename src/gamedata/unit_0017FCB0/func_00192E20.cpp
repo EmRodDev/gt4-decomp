@@ -1,5 +1,5 @@
 /* Returns the current RacePhotoMode instance, or 0: takes the holder returned by func_00192E10 and downcasts the RacePS2Base inside it to
- * RacePhotoMode (GCC 2.96 __dynamic_cast shape, inferred from the __tf arguments). */
+ * RacePhotoMode (GCC 2.96 dynamic_cast shape, inferred from the __tf arguments). */
 struct Unk64 {
     short unk0;
     short pad2;
