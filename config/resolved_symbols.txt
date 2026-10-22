@@ -101,3 +101,17 @@ __sjthrow = 0x005BCC20; // type:func preserve GCC runtime ABI spelling
 __terminate = 0x005BC5F0; // type:func preserve GCC runtime ABI spelling
 __throw_type_match = 0x005BC608; // type:func preserve GCC runtime ABI spelling
 __unwinding_cleanup = 0x005BD2B8; // type:func preserve GCC runtime ABI spelling
+
+// libio stream virtual-base tables and array deletion: relocation targets agree
+// across the recovered stream constructors/destructors (tools/resolve_symbols.py).
+__builtin_vec_delete = 0x005C1648; // type:func
+_vt$3ios = 0x0068A148; // type:data
+_vt$7istream$3ios = 0x00689FE8; // type:data
+_vt$7ostream$3ios = 0x0068A000; // type:data
+_vt$8iostream$3ios = 0x00689FD0; // type:data
+
+// Derived stream identities confirmed by the original tables' RTTI getters.
+_vt$22_IO_istream_withassign$3ios = 0x00689FB8; // type:data
+_vt$22_IO_ostream_withassign$3ios = 0x00689FA0; // type:data
+_vt$12istdiostream$3ios = 0x0068A178; // type:data
+_vt$12ostdiostream$3ios = 0x0068A160; // type:data
