@@ -26,16 +26,16 @@ to the other (`tools/crossgame.py`).
 - A first pilot matched 13 of 20 randomly picked functions by hand; see [PILOT.md](PILOT.md).
 - 14% of the functions are exact copies of another; one match settles a whole group.
 <!-- progress:start -->
-- **Progress (October 2026, commit `ed95a74b5d9b`): 29,948 of 30,879 functions match (97.0%), 86.9% of the code bytes; 87.3% of the sources are clean.**
-  Clean source: 87.3% of the 29,939 function sources are free of m2c
+- **Progress (October 2026, commit `959fb4e259aa`): 30,013 of 30,879 functions match (97.2%), 87.8% of the code bytes; 87.3% of the sources are clean.**
+  Clean source: 87.3% of the 30,004 function sources are free of m2c
   macros, raw offset casts, temp_/var_ names and pasted headers (`tools/clean_report.py`).
   The live numbers are on the `progress` branch (objdiff report format); this paragraph is written by
   `tools/update_readme.py` from `progress/report.json`, never by hand.
 - **The full build reproduces the original executable** (both loaded segments, SHA-1 checked):
-  29,874 functions, 86.2% of the code bytes, are linked from C/C++
+  29,939 functions, 87.1% of the code bytes, are linked from C/C++
   source at their original addresses, and the rest is assembled from splat's disassembly of your own
-  executable. 66,740 of 2,664,152 data bytes (2.51%; `.data` plus `.bss`)
-  are the constants of 1,541 functions, placed from source at their original addresses.
+  executable. 66,990 of 2,664,152 data bytes (2.51%; `.data` plus `.bss`)
+  are the constants of 1,545 functions, placed from source at their original addresses.
   285 functions that were hand-written assembly in the original are listed in
   [`config/asm_functions.txt`](config/asm_functions.txt) and not counted.
 <!-- progress:end -->
