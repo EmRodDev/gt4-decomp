@@ -1,0 +1,32 @@
+{
+ "generated": "2026-10-22T01:43:21Z",
+ "commit": "1c46c39f7185e4690de1bf5882888e0b4df573a9",
+ "dirty": false,
+ "build": {
+  "generated": "2026-10-22T01:42:45Z",
+  "partial": false,
+  "text_matches": true,
+  "data_matches": true,
+  "text_sha1": "28422e7e20a6298224294255355487b9a22cef31",
+  "data_sha1": "c28c833f9716467545bf362f321e9acc876c3603",
+  "orphan_sources": 0,
+  "duplicate_sources": 0
+ },
+ "linked_functions": 29939,
+ "data_functions": 1545,
+ "asm_functions": 285,
+ "data_bytes": 779132,
+ "bss_bytes": 1885020,
+ "clean": {
+  "sources": 30004,
+  "clean": 26191,
+  "clean_percent": 87.29,
+  "marks": {
+   "m2c macros": 522,
+   "raw offsets": 1115,
+   "temp names": 2446,
+   "pasted header": 56
+  }
+ },
+ "published": "2026-10-22T01:43:40Z"
+}
