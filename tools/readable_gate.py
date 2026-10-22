@@ -76,6 +76,49 @@ def protected_names(code):
     return names
 
 
+BANNED = re.compile(
+    r"Subsystem (processing|routines)|Internal procedure implementation|Component logic and state|"
+    r"computational (sequences|loops|cycles)|operational steps|property validation|runtime transformation|"
+    r"state variable updates|numerical processing|for (race|engine|ui|gamedata|network|media|adhoc|runtime|"
+    r"libstream|online|startup) \((?:unit|class)_", re.I)
+STOPWORDS = set("types struct extern const unsigned signed return static inline double float void char short int long".split())
+UNIT_OR_NUM = re.compile(r"\((?:unit|class)_[0-9A-Fa-f]+\)|0x[0-9A-Fa-f]+|\d+")
+
+
+def header_of(text):
+    t = re.sub(r"\A/\* compiler:[^\n]*\*/\s*", "", text)
+    m = re.match(r"\s*/\*(.*?)\*/", t, re.S)
+    return re.sub(r"^\s*\*+ ?", "", m.group(1), flags=re.M).strip() if m else ""
+
+
+def sentences_of(header):
+    return {s.strip() for s in re.split(r"(?<=[.;])\s+", UNIT_OR_NUM.sub("#", header)) if len(s.split()) >= 6}
+
+
+def anchors_of(header, code):
+    found = set(re.findall(r"0x[0-9A-Fa-f]+|func_[0-9A-Fa-f]{8}|D_[0-9A-Fa-f]{8}|(?<![\w.])\d{2,}(?![\w])", header))
+    ids = set(re.findall(r"\b[A-Za-z_][A-Za-z0-9_]{4,}\b", code)) - STOPWORDS
+    found |= {w for w in re.findall(r"\b[A-Za-z_][A-Za-z0-9_]{4,}\b", header) if w in ids and re.search(r"[a-z][A-Z]|_|\d", w)}
+    return found
+
+
+def quality_check(old, new):
+    """A new header comment must say something about THIS function: no filler phrases, and at least one
+    concrete anchor (an offset, an address, a number or an identifier of the file)."""
+    h_old, h_new = header_of(old), header_of(new)
+    if h_new == h_old:
+        return None
+    if not h_new:
+        return "quality", "the edit added no header comment"
+    if BANNED.search(h_new):
+        return "quality", "filler phrase: this header could be pasted on any function; say what THIS function does, with its concrete values"
+    if len(h_new.split()) < 8:
+        return "quality", "header too short to explain anything"
+    if len(anchors_of(h_new, strip_comments(new))) < 1:
+        return "quality", "the header names no offset, address, number or identifier of this file: it says nothing specific"
+    return None
+
+
 def static_checks(path, old, new):
     if b"\r" in new.encode("utf-8", "replace"):
         return "endings", "CR characters found: LF only"
@@ -95,7 +138,7 @@ def static_checks(path, old, new):
     op, np_ = protected_names(oc), protected_names(nc)
     if op != np_:
         return "protected", f"protected names differ: gone {sorted(op - np_)[:4]}, new {sorted(np_ - op)[:4]}"
-    return None
+    return quality_check(old, new)
 
 
 def main(argv):
@@ -125,6 +168,18 @@ def main(argv):
             results[p] = ("judge", "no function address maps to this file")
         else:
             pending.append(p)
+    # the same sentence in 3 or more edited files is filler, whatever it says
+    import collections
+    counts = collections.Counter()
+    sents = {}
+    for p in pending:
+        sents[p] = sentences_of(header_of(open(p, encoding="utf-8", errors="replace").read()))
+        counts.update(sents[p])
+    for p in list(pending):
+        rep = [s for s in sents[p] if counts[s] >= 3]
+        if rep:
+            results[p] = ("quality", "a header sentence appears in 3+ edited files (filler): " + rep[0][:80])
+            pending.remove(p)
     if pending:
         D = os.path.join(ROOT, "build", "gate")
         os.makedirs(D, exist_ok=True)
