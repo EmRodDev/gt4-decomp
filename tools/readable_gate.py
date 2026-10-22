@@ -146,6 +146,11 @@ def main(argv):
         print(__doc__)
         return 2
     cmd = argv[0]
+    if os.name == "nt":      # the compilers live in WSL: if it is down every compile fails, which is not a verdict
+        ok = subprocess.run(["wsl", "-d", "Ubuntu", "--", "true"], capture_output=True).returncode == 0
+        if not ok:
+            print("WSL is not answering (try `wsl --shutdown` and run again): the gate was not run and nothing was changed")
+            return 3
     import asm_policy
     import match
     import project
