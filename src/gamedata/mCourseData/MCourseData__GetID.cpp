@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script native for MCourseData.GetID (inferred from the symbol name): turns a course name string into an integer id.
+ * args[0] is read as a string through vtable slot 0x18 (the union u holds the string, then is reused as an int handle buffer),
+ * c_str() is taken (empty string falls back to D_00693270), the std::string is released, and func_00447C78(name) gives the id,
+ * masked with 0xFFFFFFFF as the compiler wants a long truncated to 32 bits. func_002FE278 boxes the id into an int handle that is
+ * stored into ret with retain-new / release-old. Skipped when argc <= 0. */
 typedef int s32;
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -15,10 +20,10 @@ extern char D_00693270[];
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" long func_00447C78(const char *s);
-extern "C" void func_002FE278(void *arg0, s32 arg1);
-extern "C" void func_002FC870(void *arg0, int arg1);
-extern "C" void func_003285A8(s32 arg0);
-extern "C" void func_003285F8(s32 arg0);
+extern "C" void func_002FE278(void *ret, s32 argc);
+extern "C" void func_002FC870(void *ret, int argc);
+extern "C" void func_003285A8(s32 ret);
+extern "C" void func_003285F8(s32 ret);
 
 static inline void vcall(void *ret, VObj *o) {
     VEntry *e = &o->vtbl[3];
@@ -39,30 +44,30 @@ static inline void release(Str *s) {
     if (--q->ref == 0) { s32 size = q->cap + 0x10; func_00326798(q, size, 4, func_005C11A8()->name); }
 }
 
-extern "C" void MCourseData__GetID(s32 *arg0, s32 arg1, VObj **arg2) {
-    if (arg1 > 0) {
-        const char *cs;
-        U u;
-        s32 s3;
+extern "C" void MCourseData__GetID(s32 *ret, s32 argc, VObj **args) {
+    if (argc > 0) {
+        const char *nameText;
+        U tmp;
+        s32 courseId;
         s32 newVal;
         s32 oldVal;
 
-        vcall(&u, *arg2);
-        cs = c_str(&u.s);
-        release(&u.s);
-        s3 = func_00447C78(cs) & 0xFFFFFFFFL;
-        func_002FE278(&u, s3);
-        if (arg0 != u.h) {
-            newVal = u.h[0];
+        vcall(&tmp, *args);
+        nameText = c_str(&tmp.s);
+        release(&tmp.s);
+        courseId = func_00447C78(nameText) & 0xFFFFFFFFL;
+        func_002FE278(&tmp, courseId);
+        if (ret != tmp.h) {
+            newVal = tmp.h[0];
             if (newVal != 0) {
                 func_003285A8(newVal);
             }
-            oldVal = *arg0;
+            oldVal = *ret;
             if (oldVal != 0) {
                 func_003285F8(oldVal);
             }
-            *arg0 = newVal;
+            *ret = newVal;
         }
-        func_002FC870(&u, 2);
+        func_002FC870(&tmp, 2);
     }
 }

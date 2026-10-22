@@ -1,3 +1,9 @@
+/* Writes every entry of a table to its own file (inferred from the fwrite/fclose calls). For each index below the
+ * 16-bit count, when the key entry in the pointer array at +0x14 is non-null, a file name is formatted into an
+ * 0x80-byte buffer with func_0057DA20 from the format string D_006AE550 and the key's value, the file is opened
+ * with func_005A3830 using the mode string D_006AE558, the data entry at the same index of the array at +0x18 is
+ * written with fwrite for the number of bytes in its field +0xC, and the file is closed. The count is re-read
+ * after every file written, as in the matched source. Whether the entries are dumps of some resource is unknown. */
 #include "types.h"
 
 struct E1 {
@@ -20,29 +26,29 @@ struct Obj {
 extern char D_006AE550[];
 extern char D_006AE558[];
 
-extern "C" void func_0057DA20(int arg0, int arg1, ...);
-extern "C" s32 func_005A3830(int arg0, int arg1);
-extern "C" void fwrite(void *arg0, s32 arg1, s32 arg2, s32 arg3);
-extern "C" s32 fclose(void *arg0);
+extern "C" void func_0057DA20(int table, int arg1, ...);
+extern "C" s32 func_005A3830(int table, int arg1);
+extern "C" void fwrite(void *table, s32 arg1, s32 arg2, s32 arg3);
+extern "C" s32 fclose(void *table);
 
-extern "C" void func_004918B0(Obj *arg0) {
-    char buf[0x80];
+extern "C" void func_004918B0(Obj *table) {
+    char fileName[0x80];
     s32 i = 0;
-    u16 cnt = arg0->count;
+    u16 currentCount = table->count;
 
-    if (cnt != 0) {
+    if (currentCount != 0) {
         do {
-            s32 off = i << 2;
-            E1 *a = *(E1 **)(off + (s32)arg0->t14);
+            s32 byteOffset = i << 2;
+            E1 *entry = *(E1 **)(byteOffset + (s32)table->t14);
             i += 1;
-            if (a != 0) {
-                func_0057DA20((int)buf, (int)D_006AE550, a->v);
-                s32 n = (*(E2 **)(off + (s32)arg0->t18))->c;
-                s32 r = func_005A3830((int)buf, (int)D_006AE558);
-                fwrite(*(E2 **)(off + (s32)arg0->t18), 1, n, r);
-                fclose((void *)r);
-                cnt = arg0->count;
+            if (entry != 0) {
+                func_0057DA20((int)fileName, (int)D_006AE550, entry->v);
+                s32 size = (*(E2 **)(byteOffset + (s32)table->t18))->c;
+                s32 file = func_005A3830((int)fileName, (int)D_006AE558);
+                fwrite(*(E2 **)(byteOffset + (s32)table->t18), 1, size, file);
+                fclose((void *)file);
+                currentCount = table->count;
             }
-        } while (i < (s32)cnt);
+        } while (i < (s32)currentCount);
     }
 }

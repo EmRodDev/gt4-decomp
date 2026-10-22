@@ -1,3 +1,8 @@
+/* Script native for MUtility.GetMoneyString (inferred from the symbol name): returns the first int argument formatted as money text.
+ * With argc > 0 it reads the int through vtable slot 0x58 of args[0], formats it into a 0x40-byte buffer with func_0042E7C8(value, buf, 0x40)
+ * (buf0..buf3 are the four 16-byte pieces of that one buffer), copies the C string into a fresh std::string (empty-rep clone,
+ * then replace(0, npos, text, string length)), wraps it in a string handle (func_00314B20) and stores that handle into ret with the
+ * retain-new / release-old idiom. arg1 and arg2 are declared as a void pointer and an s32 because that is how the compiler saw argc and the args pointer. */
 #include "types.h"
 
 struct Rep {
@@ -42,49 +47,49 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void MUtility__GetMoneyString(s32 *arg0, void *arg1, s32 arg2) {
-    s32 buf0[4];
-    s32 buf1[4];
-    s32 buf2[4];
-    s32 buf3[4];
-    s32 buf4[4];
-    s32 buf5[4];
-    Str s6;
-    Str *p_s3;
-    s32 *p_s0;
-    s32 *p_s1;
+extern "C" void MUtility__GetMoneyString(s32 *ret, void *argc, s32 args) {
+    s32 moneyBuf0[4];
+    s32 moneyBuf1[4];
+    s32 moneyBuf2[4];
+    s32 moneyBuf3[4];
+    s32 resultHandle[4];
+    s32 unusedBuf5[4];
+    Str strStorage;
+    Str *str;
+    s32 *text;
+    s32 *resultPtr;
     s32 newVal;
     s32 oldVal;
-    if ((s32)arg1 > 0) {
-        func_0042E7C8(vcall_58((char *)(*(s32 *)(char *)arg2)), buf0, 0x40);
-        p_s3 = &s6;
-        p_s0 = buf0;
+    if ((s32)argc > 0) {
+        func_0042E7C8(vcall_58((char *)(*(s32 *)(char *)args)), moneyBuf0, 0x40);
+        str = &strStorage;
+        text = moneyBuf0;
         {
-            Rep *r = &D_00659FA8;
-            char *d;
-            if (r->sel != 0) {
-                d = func_005C2560(r);
+            Rep *emptyRep = &D_00659FA8;
+            char *data;
+            if (emptyRep->sel != 0) {
+                data = func_005C2560(emptyRep);
             } else {
-                d = (char *)(r + 1);
-                r->ref++;
+                data = (char *)(emptyRep + 1);
+                emptyRep->ref++;
             }
-            p_s3->p = d;
+            str->p = data;
         }
-        func_005C2630(p_s3, 0, -0x1, p_s0, func_0057F260(p_s0));
-        p_s1 = buf4;
-        func_00314B20(p_s1, p_s3);
-        if (arg0 != p_s1) {
-            newVal = *p_s1;
+        func_005C2630(str, 0, -0x1, text, func_0057F260(text));
+        resultPtr = resultHandle;
+        func_00314B20(resultPtr, str);
+        if (ret != resultPtr) {
+            newVal = *resultPtr;
             if (newVal != 0) {
                 func_003285A8(newVal);
             }
-            oldVal = *arg0;
+            oldVal = *ret;
             if (oldVal != 0) {
                 func_003285F8(oldVal);
             }
-            *arg0 = newVal;
+            *ret = newVal;
         }
-        func_00312318(p_s1, 0x2);
-        str_release(p_s3);
+        func_00312318(resultPtr, 0x2);
+        str_release(str);
     }
 }

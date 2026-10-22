@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script native for MCalendar.putBuyWheelEvent (inferred from the symbol name); needs argc >= 3, otherwise it does nothing.
+ * Argument 0 is read as a string through a handle (func_00312370, then func_00314920 extracts the string), argument 1 is a string
+ * from vtable slot 0x18 that func_0042EF18 turns into an int (a lookup by name, purpose of the number unknown), argument 2 is an int
+ * from slot 0x58. The calendar owner pointer comes from +0x10 of the context handle. Result goes to func_0042F3C0(owner, text, id, int);
+ * the ret slot is not written. The same handle buffer is reused for the context and the argument handle, so it is declared once. */
 typedef int s32;
 typedef short s16;
 typedef unsigned char u8;
@@ -23,7 +28,7 @@ void func_0042F3C0(s32, const char *, s32, s32);
 struct S00659988 *func_005C11A8(void);
 
 static inline Rep *str_rep(Str *s) { return (Rep *)s->p - 1; }
-static inline char *rep_data(Rep *r) { return (char *)(r + 1); }
+static inline char *rep_data(Rep *text0Str) { return (char *)(text0Str + 1); }
 static inline s32 str_length(Str *s) { return str_rep(s)->len; }
 static inline void str_terminate(Str *s) { rep_data(str_rep(s))[str_length(s)] = 0; }
 static inline const char *c_str(Str *s) {
@@ -32,32 +37,32 @@ static inline const char *c_str(Str *s) {
     return rep_data(str_rep(s));
 }
 
-void MCalendar__putBuyWheelEvent(void *arg0, void *arg1, s32 arg2, VO **arg3) {
-    if (arg2 >= 3) {
-        HO *h[4];
-        func_00132DB8(h, arg1);
-        s32 s4 = h[0]->f10;
-        func_00132D60(h, 2);
-        func_00312370(h, arg3);
-        Str *r = func_00314920(h[0]);
-        const char *s5 = c_str(r);
-        s32 s3;
+void MCalendar__putBuyWheelEvent(void *unusedRet, void *ctx, s32 argc, VO **args) {
+    if (argc >= 3) {
+        HO *handleBuf[4];
+        func_00132DB8(handleBuf, ctx);
+        s32 owner = handleBuf[0]->f10;
+        func_00132D60(handleBuf, 2);
+        func_00312370(handleBuf, args);
+        Str *text0Str = func_00314920(handleBuf[0]);
+        const char *text0 = c_str(text0Str);
+        s32 lookupId;
         {
-            Str st;
-            VO *o = arg3[1];
+            Str text1Str;
+            VO *o = args[1];
             VEntS *e = &o->vt->e18;
-            e->fn(&st, (char *)o + e->delta);
-            s3 = func_0042EF18(c_str(&st));
-            Rep *q = str_rep(&st);
-            if (--q->ref == 0) {
-                s32 size = q->cap + 0x10;
-                func_00326798(q, size, 4, func_005C11A8()->name);
+            e->fn(&text1Str, (char *)o + e->delta);
+            lookupId = func_0042EF18(c_str(&text1Str));
+            Rep *rep = str_rep(&text1Str);
+            if (--rep->ref == 0) {
+                s32 size = rep->cap + 0x10;
+                func_00326798(rep, size, 4, func_005C11A8()->name);
             }
         }
-        VO *o2 = arg3[2];
-        VEntI *e2 = &o2->vt->e58;
-        func_0042F3C0(s4, s5, s3, e2->fn((char *)o2 + e2->delta));
-        func_00312318(h, 2);
+        VO *obj2 = args[2];
+        VEntI *slot2 = &obj2->vt->e58;
+        func_0042F3C0(owner, text0, lookupId, slot2->fn((char *)obj2 + slot2->delta));
+        func_00312318(handleBuf, 2);
     }
 }
 }

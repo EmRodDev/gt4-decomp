@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Script native for MCalendar.putSellCarEvent (inferred from the symbol name and the (ret, ctx, argc, args) callback shape).
+ * Builds a context handle (func_00132DB8), reads the owner pointer at +0x10 of the object it holds, then reads up to three script
+ * arguments: a string through vtable slot 0x18 and two ints through slot 0x58 (the second and third only when argc >= 2 / >= 3, else 0).
+ * Everything is forwarded to func_0042F218(owner, text, int1, int2). The ret slot is never written. The std::string rep is
+ * released by hand (ref count at -4 words, size cap + 0x10) because the compiler needs the inlined release in this order. */
 typedef int s32;
 typedef short s16;
 typedef unsigned char u8;
@@ -28,41 +33,41 @@ static inline const char *c_str(Str *s) {
     return rep_data(str_rep(s));
 }
 
-void MCalendar__putSellCarEvent(void *arg0, void *arg1, s32 arg2, VO **arg3) {
-    if (arg2 > 0) {
-        s32 s5;
+void MCalendar__putSellCarEvent(void *unusedRet, void *ctx, s32 argc, VO **args) {
+    if (argc > 0) {
+        s32 owner;
         {
-            HO *h[4];
-            func_00132DB8(h, arg1);
-            s5 = h[0]->f10;
-            func_00132D60(h, 2);
+            HO *ctxHandle[4];
+            func_00132DB8(ctxHandle, ctx);
+            owner = ctxHandle[0]->f10;
+            func_00132D60(ctxHandle, 2);
         }
-        const char *s4;
+        const char *text;
         {
-            Str st;
-            VO *o = arg3[0];
+            Str textStr;
+            VO *o = args[0];
             VEntS *e = &o->vt->e18;
-            e->fn(&st, (char *)o + e->delta);
-            s4 = c_str(&st);
-            Rep *q = str_rep(&st);
-            if (--q->ref == 0) {
-                s32 size = q->cap + 0x10;
-                func_00326798(q, size, 4, func_005C11A8()->name);
+            e->fn(&textStr, (char *)o + e->delta);
+            text = c_str(&textStr);
+            Rep *rep = str_rep(&textStr);
+            if (--rep->ref == 0) {
+                s32 size = rep->cap + 0x10;
+                func_00326798(rep, size, 4, func_005C11A8()->name);
             }
         }
-        s32 s0 = 0;
-        if (arg2 >= 2) {
-            VO *o = arg3[1];
+        s32 int1 = 0;
+        if (argc >= 2) {
+            VO *o = args[1];
             VEntI *e = &o->vt->e58;
-            s0 = e->fn((char *)o + e->delta);
+            int1 = e->fn((char *)o + e->delta);
         }
-        s32 a3 = 0;
-        if (arg2 >= 3) {
-            VO *o = arg3[2];
+        s32 int2 = 0;
+        if (argc >= 3) {
+            VO *o = args[2];
             VEntI *e = &o->vt->e58;
-            a3 = e->fn((char *)o + e->delta);
+            int2 = e->fn((char *)o + e->delta);
         }
-        func_0042F218(s5, s4, s0, a3);
+        func_0042F218(owner, text, int1, int2);
     }
 }
 }

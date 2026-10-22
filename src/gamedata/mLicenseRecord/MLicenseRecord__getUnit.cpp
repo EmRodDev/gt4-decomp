@@ -1,3 +1,7 @@
+/* Script native for MLicenseRecord.getUnit (inferred from the symbol name), same shape as the course-record variant but with license-record callees.
+ * func_001724F0 builds the context handle, whose object keeps a lookup table at +0x10; the name string comes from vtable slot 0x18 of args[0]
+ * and func_004323D0(table, name) finds the entry. If found, func_00171488 wraps it into a handle that is stored into ret (retain new,
+ * release old) and func_001711F0 destroys it. Nothing happens when argc <= 0. */
 #include "types.h"
 
 struct Rep {
@@ -34,18 +38,18 @@ struct Obj {
 
 extern char D_00690BD8[];
 
-extern "C" void func_001711F0(void *arg0, int arg1) throw();
-extern "C" void func_00171488(void *arg0, void *arg1) throw();
-extern "C" void func_00172498(void *arg0, int arg1) throw();
-extern "C" void func_001724F0(void *arg0, void *arg1) throw();
+extern "C" void func_001711F0(void *ret, int ctx) throw();
+extern "C" void func_00171488(void *ret, void *ctx) throw();
+extern "C" void func_00172498(void *ret, int ctx) throw();
+extern "C" void func_001724F0(void *ret, void *ctx) throw();
 extern "C" s32 func_004323D0(Obj *o, const char *name) throw();
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name) throw();
 extern "C" void func_003285A8(void *p) throw();
 extern "C" void func_003285F8(void *p) throw();
 extern "C" struct S00659988 *func_005C11A8(void) throw();
 
-static inline void str_release(Str *s) {
-    Rep *q = (Rep *)(s->p - 0x10);
+static inline void str_release(Str *nameStr) {
+    Rep *q = (Rep *)(nameStr->p - 0x10);
     if (--q->ref == 0) {
         s32 size = q->cap + 0x10;
         func_00326798(q, size, 4, func_005C11A8()->name);
@@ -59,38 +63,38 @@ static inline const char *c_str(Str *t) {
     return t->p;
 }
 
-extern "C" void MLicenseRecord__getUnit(void **arg0, void *arg1, s32 arg2, void **arg3) {
-    if (arg2 > 0) {
-        Handle h;
-        Str s;
-        Str *ps;
-        int res;
+extern "C" void MLicenseRecord__getUnit(void **ret, void *ctx, s32 argc, void **args) {
+    if (argc > 0) {
+        Handle handle;
+        Str nameStr;
+        Str *namePtr;
+        int unit;
 
-        func_001724F0(&h, arg1);
+        func_001724F0(&handle, ctx);
         {
-            Obj *o = *(Obj **)arg3;
-            Obj *x = *(Obj **)((char *)h.p + 0x10);
+            Obj *o = *(Obj **)args;
+            Obj *table = *(Obj **)((char *)handle.p + 0x10);
             VEntry *e;
-            ps = &s;
+            namePtr = &nameStr;
             e = (VEntry *)(o->vtbl + 0x18);
-            e->fn(ps, (char *)o + e->delta);
-            res = func_004323D0(x, c_str(ps));
+            e->fn(namePtr, (char *)o + e->delta);
+            unit = func_004323D0(table, c_str(namePtr));
         }
-        str_release(ps);
-        func_00172498(&h, 2);
-        if (res != 0) {
-            func_00171488(&h, (void *)res);
-            if ((void *)arg0 != (void *)&h) {
-                void *p = h.p;
+        str_release(namePtr);
+        func_00172498(&handle, 2);
+        if (unit != 0) {
+            func_00171488(&handle, (void *)unit);
+            if ((void *)ret != (void *)&handle) {
+                void *p = handle.p;
                 if (p != 0) {
                     func_003285A8(p);
                 }
-                if (*arg0 != 0) {
-                    func_003285F8(*arg0);
+                if (*ret != 0) {
+                    func_003285F8(*ret);
                 }
-                *arg0 = p;
+                *ret = p;
             }
-            func_001711F0(&h, 2);
+            func_001711F0(&handle, 2);
         }
     }
 }

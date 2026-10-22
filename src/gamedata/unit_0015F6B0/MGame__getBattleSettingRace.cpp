@@ -1,14 +1,18 @@
+/* Script native for MGame.getBattleSettingRace (inferred from the symbol name): builds a 0x18-byte settings record for a race and returns it as a handle.
+ * The game state is the object at +0x10 of the context handle (func_0015F3E0). malloc(0x18) provides the record whose six words are copied from
+ * state+0x38CB0+0x10FC, +0x1104, +0x1108, the flag (+0x1100 != 0), the word at state+0x3A090, and +0x10E4 (in that order; field meanings unknown).
+ * func_00200140(result, record, 1) wraps the record into a handle that is stored into ret with retain-new / release-old. */
 #include "types.h"
 
 struct RefCounter;
 
-extern "C" void func_0015F3E0(void *arg0, void *arg1);
-extern "C" s32 malloc(s32 arg0);
-extern "C" void func_00200140(void *arg0, void *arg1, void *arg2);
+extern "C" void func_0015F3E0(void *ret, void *ctx);
+extern "C" s32 malloc(s32 ret);
+extern "C" void func_00200140(void *ret, void *ctx, void *arg2);
 extern "C" void func_003285A8(RefCounter *p);
 extern "C" void func_003285F8(RefCounter *p);
-extern "C" void func_001FFF30(void *arg0, int arg1);
-extern "C" void func_0015F388(void *arg0, int arg1);
+extern "C" void func_001FFF30(void *ret, int ctx);
+extern "C" void func_0015F388(void *ret, int ctx);
 
 struct BS_dst {
     s32 u0;
@@ -29,38 +33,38 @@ struct BS_src {
     s32 u1108;
 };
 
-extern "C" void MGame__getBattleSettingRace(s32 *arg0, void *arg1) {
-    s32 buf0[4];
-    s32 buf1[4];
-    s32 v_s0;
-    s32 v_s1;
-    s32 *p_s2;
+extern "C" void MGame__getBattleSettingRace(s32 *ret, void *ctx) {
+    s32 ctxHandle[4];
+    s32 resultHandle[4];
+    s32 gameState;
+    s32 recordMem;
+    s32 *resultPtr;
     s32 newVal;
     s32 oldVal;
-    func_0015F3E0(buf0, arg1);
-    v_s0 = *(s32 *)((char *)buf0[0] + 0x10);
-    v_s1 = malloc(0x18);
-    p_s2 = buf1;
-    BS_src *src = (BS_src *)(0x38cb0 + v_s0);
-    BS_dst *d = (BS_dst *)v_s1;
-    d->u0 = src->u10FC;
-    d->u4 = src->u1104;
-    d->u8 = src->u1108;
-    d->uC = (src->u1100 != 0);
-    d->u10 = *(s32 *)((char *)v_s0 + 0x3A090);
-    d->u14 = src->u10E4;
-    func_00200140(p_s2, d, (void *)1);
-    if (arg0 != p_s2) {
-        newVal = *p_s2;
+    func_0015F3E0(ctxHandle, ctx);
+    gameState = *(s32 *)((char *)ctxHandle[0] + 0x10);
+    recordMem = malloc(0x18);
+    resultPtr = resultHandle;
+    BS_src *src = (BS_src *)(0x38cb0 + gameState);
+    BS_dst *dst = (BS_dst *)recordMem;
+    dst->u0 = src->u10FC;
+    dst->u4 = src->u1104;
+    dst->u8 = src->u1108;
+    dst->uC = (src->u1100 != 0);
+    dst->u10 = *(s32 *)((char *)gameState + 0x3A090);
+    dst->u14 = src->u10E4;
+    func_00200140(resultPtr, dst, (void *)1);
+    if (ret != resultPtr) {
+        newVal = *resultPtr;
         if (newVal != 0) {
             func_003285A8((RefCounter *)newVal);
         }
-        oldVal = *arg0;
+        oldVal = *ret;
         if (oldVal != 0) {
             func_003285F8((RefCounter *)oldVal);
         }
-        *arg0 = newVal;
+        *ret = newVal;
     }
-    func_001FFF30(p_s2, 2);
-    func_0015F388(buf0, 2);
+    func_001FFF30(resultPtr, 2);
+    func_0015F388(ctxHandle, 2);
 }

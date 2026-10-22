@@ -1,3 +1,9 @@
+/* Serializes a race entry into a binary stream. func_0045B4D8 opens a block on the writer (tag D_0069F308) and
+ * func_0045B548 closes it with the same scope object at the end (begin/end pair, inferred from the arguments).
+ * Inside: a version byte 1, four values obtained from the entry through func_003B5A20 (called with 1 and with 0),
+ * func_003B5AF8 and func_003B5B80, each written with func_0045B040, and finally the byte at entry+0x345C. The same
+ * scratch buffer is passed to all four getters (purpose of that buffer unknown); the selector goes only to the
+ * first two. */
 #include "types.h"
 
 struct Rep {
@@ -31,17 +37,17 @@ struct func_0033A1B0_arg1 {
     s32 unk345C;
 };
 
-extern "C" void func_0033A1B0(s32 *arg0, struct func_0033A1B0_arg1 *arg1, s32 arg2) {
-    s32 buf0[4];
-    s32 buf1[4];
-    s32 *p_s1;
-    func_0045B4D8(buf0, arg0, &D_0069F308);
-    GT4Model__BinStreamWriter__write8u(arg0, 0x1);
-    p_s1 = buf1;
-    func_0045B040(arg0, func_003B5A20(arg1, 0x1, arg2, p_s1));
-    func_0045B040(arg0, func_003B5A20(arg1, 0, arg2, p_s1));
-    func_0045B040(arg0, func_003B5AF8(arg1, p_s1));
-    func_0045B040(arg0, func_003B5B80(arg1, p_s1));
-    GT4Model__BinStreamWriter__write8(arg0, arg1->unk345C);
-    func_0045B548(buf0, arg0);
+extern "C" void func_0033A1B0(s32 *writer, struct func_0033A1B0_arg1 *entry, s32 selector) {
+    s32 blockScope[4];
+    s32 scratch[4];
+    s32 *scratchPtr;
+    func_0045B4D8(blockScope, writer, &D_0069F308);
+    GT4Model__BinStreamWriter__write8u(writer, 0x1);
+    scratchPtr = scratch;
+    func_0045B040(writer, func_003B5A20(entry, 0x1, selector, scratchPtr));
+    func_0045B040(writer, func_003B5A20(entry, 0, selector, scratchPtr));
+    func_0045B040(writer, func_003B5AF8(entry, scratchPtr));
+    func_0045B040(writer, func_003B5B80(entry, scratchPtr));
+    GT4Model__BinStreamWriter__write8(writer, entry->unk345C);
+    func_0045B548(blockScope, writer);
 }

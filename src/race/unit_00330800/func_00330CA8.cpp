@@ -1,3 +1,9 @@
+/* Same sequence as func_003C8808 (RacePhotoDevelop), found in the unit at 0x330800: it takes the two-entry table
+ * of 0x3C-byte records at D_0061850C (current index in the word at +0x78), calls func_004A3078(0) and
+ * func_004A2980(-1), runs func_001056A0 plus func_004A3230(1) on the current record and then on the other one (1 -
+ * current index), and clears the word at +0x30 in each. Treating the table as a pair of buffers is an inference
+ * from the 1 - index pattern. The index * 60 address arithmetic is spelled as shift and subtract in the matched
+ * source. The argument is unused. */
 #include "types.h"
 
 struct Rep {
@@ -24,21 +30,21 @@ extern "C" void func_004A3230(s32);
 
 struct func_00330CA8_v_s0 {
     char pad0[0x78];
-    s32 unk78;
+    s32 currentIndex;
 };
 
-extern "C" void func_00330CA8(s32 *arg0) {
-    char *v_s0;
-    s32 v_s1;
-    v_s0 = (char *)&D_0061850C;
+extern "C" void func_00330CA8(s32 *unusedArg) {
+    char *frames;
+    s32 otherIndex;
+    frames = (char *)&D_0061850C;
     func_004A3078(0);
-    v_s1 = 0x1;
+    otherIndex = 0x1;
     func_004A2980(-0x1);
-    func_001056A0((char *)v_s0 + (((((struct func_00330CA8_v_s0 *)v_s0)->unk78 << 4) - ((struct func_00330CA8_v_s0 *)v_s0)->unk78) << 2));
+    func_001056A0((char *)frames + (((((struct func_00330CA8_v_s0 *)frames)->currentIndex << 4) - ((struct func_00330CA8_v_s0 *)frames)->currentIndex) << 2));
     func_004A3230(0x1);
-    func_001056A0((char *)v_s0 + ((((v_s1 - ((struct func_00330CA8_v_s0 *)v_s0)->unk78) << 4) - (v_s1 - ((struct func_00330CA8_v_s0 *)v_s0)->unk78)) << 2));
+    func_001056A0((char *)frames + ((((otherIndex - ((struct func_00330CA8_v_s0 *)frames)->currentIndex) << 4) - (otherIndex - ((struct func_00330CA8_v_s0 *)frames)->currentIndex)) << 2));
     func_004A3230(0x1);
-    *(s32 *)((char *)v_s0 + (((((struct func_00330CA8_v_s0 *)v_s0)->unk78 << 4) - ((struct func_00330CA8_v_s0 *)v_s0)->unk78) << 2) + 0x30) = 0;
-    v_s1 = (v_s1 - ((struct func_00330CA8_v_s0 *)v_s0)->unk78);
-    *(s32 *)((char *)v_s0 + (((v_s1 << 4) - v_s1) << 2) + 0x30) = 0;
+    *(s32 *)((char *)frames + (((((struct func_00330CA8_v_s0 *)frames)->currentIndex << 4) - ((struct func_00330CA8_v_s0 *)frames)->currentIndex) << 2) + 0x30) = 0;
+    otherIndex = (otherIndex - ((struct func_00330CA8_v_s0 *)frames)->currentIndex);
+    *(s32 *)((char *)frames + (((otherIndex << 4) - otherIndex) << 2) + 0x30) = 0;
 }

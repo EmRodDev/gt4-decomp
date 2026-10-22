@@ -1,3 +1,7 @@
+/* Script native for MQuickWork.getGridCarName (inferred from the symbol name): returns the name of the car at a starting-grid slot as a string.
+ * A context handle is built first (func_00124130); gridIndex is args[0] read through vtable slot 0x58, or 0 when argc == 0. The name pointer
+ * comes from func_00127B38(*ctxHandle, gridIndex), is copied into a new std::string (empty-rep clone + replace with string length) and wrapped
+ * by func_00314B20 into resultHandle, which is stored into ret with retain-new / release-old. The context handle is destroyed last (func_001240D8, 2). */
 #include "types.h"
 
 struct Rep {
@@ -45,49 +49,49 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void MQuickWork__getGridCarName(s32 *arg0, void *arg1, s32 arg2, void **arg3) {
-    s32 buf0[4];
-    s32 buf1[4];
-    Str s2;
-    Str *p_s3;
-    s32 v_s0;
-    s32 *p_s1;
+extern "C" void MQuickWork__getGridCarName(s32 *ret, void *ctx, s32 argc, void **args) {
+    s32 ctxHandle[4];
+    s32 resultHandle[4];
+    Str strStorage;
+    Str *str;
+    s32 carName;
+    s32 *resultPtr;
     s32 newVal;
     s32 oldVal;
-    s32 r;
-    func_00124130(buf0, arg1);
-    r = 0;
-    if (arg2 > 0) {
-        r = vcall_58((char *)arg3[0]);
+    s32 gridIndex;
+    func_00124130(ctxHandle, ctx);
+    gridIndex = 0;
+    if (argc > 0) {
+        gridIndex = vcall_58((char *)args[0]);
     }
-    p_s3 = &s2;
-    v_s0 = (s32)func_00127B38((void *)buf0[0], r);
+    str = &strStorage;
+    carName = (s32)func_00127B38((void *)ctxHandle[0], gridIndex);
     {
-        Rep *rp = &D_00659FA8;
-        char *d;
-        if (rp->sel != 0) {
-            d = func_005C2560(rp);
+        Rep *emptyRep = &D_00659FA8;
+        char *data;
+        if (emptyRep->sel != 0) {
+            data = func_005C2560(emptyRep);
         } else {
-            d = (char *)(rp + 1);
-            rp->ref++;
+            data = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        p_s3->p = d;
+        str->p = data;
     }
-    func_005C2630(p_s3, 0, -0x1, v_s0, func_0057F260(v_s0));
-    p_s1 = buf1;
-    func_00314B20(p_s1, p_s3);
-    if (arg0 != p_s1) {
-        newVal = *p_s1;
+    func_005C2630(str, 0, -0x1, carName, func_0057F260(carName));
+    resultPtr = resultHandle;
+    func_00314B20(resultPtr, str);
+    if (ret != resultPtr) {
+        newVal = *resultPtr;
         if (newVal != 0) {
             func_003285A8(newVal);
         }
-        oldVal = *arg0;
+        oldVal = *ret;
         if (oldVal != 0) {
             func_003285F8(oldVal);
         }
-        *arg0 = newVal;
+        *ret = newVal;
     }
-    func_00312318(p_s1, 0x2);
-    str_release(p_s3);
-    func_001240D8(buf0, 0x2);
+    func_00312318(resultPtr, 0x2);
+    str_release(str);
+    func_001240D8(ctxHandle, 0x2);
 }

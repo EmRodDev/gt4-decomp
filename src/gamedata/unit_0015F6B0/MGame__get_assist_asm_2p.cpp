@@ -1,3 +1,7 @@
+/* Script accessor MGame.get_assist_asm_2p (inferred from the symbol name): getter and setter of the second player's ASM driving-aid flag.
+ * The game state is the object at +0x10 of the handle from func_0015F3E0; the second-player assist block starts at state+0x140 and the flag is the word at +0x54
+ * of that block (state+0x194). With argc > 0 it stores (args[0] via vtable slot 0x58) != 0 there; otherwise it boxes (flag != 0) with func_002FE278 and assigns it to ret.
+ * ASM meaning is inferred from the name only. The 1P variant uses the block at +0xD8. */
 #include "types.h"
 
 struct Rep {
@@ -29,29 +33,29 @@ extern "C" void func_003285A8(s32);
 extern "C" void func_003285F8(s32);
 extern "C" void func_002FC870(void *, s32);
 
-extern "C" void MGame__get_assist_asm_2p(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 v_s2;
+extern "C" void MGame__get_assist_asm_2p(s32 *ret, void *ctx, s32 argc, char **args) {
+    s32 handle[4];
+    s32 assistBlock;
     s32 newVal;
     s32 oldVal;
-    func_0015F3E0(buf0);
-    v_s2 = *(s32 *)((char *)buf0[0] + 0x10) + 0x140;
-    func_0015F388(buf0, 0x2);
-    if (arg2 > 0) {
-        *(s32 *)((char *)v_s2 + 0x54) = vcall_58((char *)(*(s32 *)(char *)arg3)) != 0;
+    func_0015F3E0(handle);
+    assistBlock = *(s32 *)((char *)handle[0] + 0x10) + 0x140;
+    func_0015F388(handle, 0x2);
+    if (argc > 0) {
+        *(s32 *)((char *)assistBlock + 0x54) = vcall_58((char *)(*(s32 *)(char *)args)) != 0;
     } else {
-        func_002FE278(buf0, *(s32 *)((char *)v_s2 + 0x54) != 0);
-        if (arg0 != buf0) {
-            newVal = buf0[0];
+        func_002FE278(handle, *(s32 *)((char *)assistBlock + 0x54) != 0);
+        if (ret != handle) {
+            newVal = handle[0];
             if (newVal != 0) {
                 func_003285A8(newVal);
             }
-            oldVal = *arg0;
+            oldVal = *ret;
             if (oldVal != 0) {
                 func_003285F8(oldVal);
             }
-            *arg0 = newVal;
+            *ret = newVal;
         }
-        func_002FC870(buf0, 0x2);
+        func_002FC870(handle, 0x2);
     }
 }

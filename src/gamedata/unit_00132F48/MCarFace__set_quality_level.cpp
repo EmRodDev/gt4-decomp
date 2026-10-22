@@ -1,3 +1,6 @@
+/* Script setter MCarFace.set_quality_level (inferred from the symbol name): stores args[0], read through vtable slot 0x58, into the int at +0xA4 of the face object.
+ * The face object is the target of the handle func_00137DB8 builds from the context; the handle is destroyed afterwards (func_00137D60, 2).
+ * Unlike most setters here it does not test argc first, so a call without arguments would read a missing slot. ret is untouched. */
 #include "types.h"
 
 struct Rep {
@@ -25,13 +28,13 @@ static inline s32 vcall_58(char *o) {
 extern "C" void func_00137DB8(void *, void *);
 extern "C" void func_00137D60(void *, s32);
 
-extern "C" void MCarFace__set_quality_level(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 v_s1;
-    s32 t1;
-    func_00137DB8(buf0, arg1);
-    v_s1 = buf0[0];
-    t1 = vcall_58((char *)(*(s32 *)(char *)arg3));
-    *(s32 *)((char *)v_s1 + 0xa4) = t1;
-    func_00137D60(buf0, 0x2);
+extern "C" void MCarFace__set_quality_level(s32 *unusedRet, void *ctx, s32 argc, char **args) {
+    s32 handle[4];
+    s32 face;
+    s32 level;
+    func_00137DB8(handle, ctx);
+    face = handle[0];
+    level = vcall_58((char *)(*(s32 *)(char *)args));
+    *(s32 *)((char *)face + 0xa4) = level;
+    func_00137D60(handle, 0x2);
 }

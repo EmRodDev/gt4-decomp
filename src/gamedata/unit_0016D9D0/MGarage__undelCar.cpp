@@ -1,3 +1,6 @@
+/* Script native for MGarage.undelCar (inferred from the symbol name): restores a deleted car; takes an int and an optional flag.
+ * With argc > 0 the garage pointer is read from +0x10 of the context handle (func_0016D848) and the handle is destroyed at once. args[0] (vtable slot 0x58)
+ * is the int; the flag is args[1] != 0 when argc >= 2, else 0. All three go to func_004358C8(garage, int, flag). ret is not written. */
 #include "types.h"
 
 struct VEntry_58 { s16 delta; s16 index; s32 (*fn)(void *); };
@@ -7,24 +10,24 @@ static inline s32 vcall_58(char *o) {
     return e->fn(o + e->delta);
 }
 
-extern "C" void func_0016D7F0(void *arg0, int arg1);
-extern "C" void func_0016D848(void *arg0, void *arg1);
-extern "C" void func_004358C8(void *arg0, s32 arg1, s32 arg2);
+extern "C" void func_0016D7F0(void *unusedRet, int ctx);
+extern "C" void func_0016D848(void *unusedRet, void *ctx);
+extern "C" void func_004358C8(void *unusedRet, s32 ctx, s32 argc);
 
-extern "C" void MGarage__undelCar(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 v_s3;
-    s32 v_s2;
-    s32 v_flag;
-    if (arg2 > 0) {
-        func_0016D848(buf0, arg1);
-        v_s3 = ((s32 *)buf0[0])[4];
-        func_0016D7F0(buf0, 2);
-        v_s2 = vcall_58((char *)(*(s32 *)(char *)arg3));
-        v_flag = 0;
-        if (!((arg2 < 0x2))) {
-            v_flag = vcall_58((char *)(*(s32 *)((char *)arg3 + 4))) != 0;
+extern "C" void MGarage__undelCar(s32 *unusedRet, void *ctx, s32 argc, char **args) {
+    s32 handle[4];
+    s32 garage;
+    s32 firstInt;
+    s32 flag;
+    if (argc > 0) {
+        func_0016D848(handle, ctx);
+        garage = ((s32 *)handle[0])[4];
+        func_0016D7F0(handle, 2);
+        firstInt = vcall_58((char *)(*(s32 *)(char *)args));
+        flag = 0;
+        if (!((argc < 0x2))) {
+            flag = vcall_58((char *)(*(s32 *)((char *)args + 4))) != 0;
         }
-        func_004358C8((void *)v_s3, v_s2, v_flag);
+        func_004358C8((void *)garage, firstInt, flag);
     }
 }
