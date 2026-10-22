@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Refer to the original shared constant pool so this individually matched
+ * routine can also take part in the complete link. */
+extern const char largeIntSourceFile[] __asm__("D_006C5200");
+extern const char primeBitCountAssertion[] __asm__("D_006C5250");
 typedef unsigned char u8;
 extern u8 D_0064C2A8[];
 extern u8 D_0064C1A8[];
@@ -25,7 +29,7 @@ void func_00545308(int *prime, int nBits) {
         func_00545208(prime, nBits);
         *prime |= 1;
         if (nBits != func_00545A54(prime)) {
-            func_005A2E98("/usr/people/ikiuo/work/rtime/rtime-040920/rt_crypt/src/LargeInt.c", 0x374, "nBits == lintGetBits(pPrime)");
+            func_005A2E98(largeIntSourceFile, 0x374, primeBitCountAssertion);
         }
         func_00544978(prime, nBits - 2);
         func_00544830(buf, 0xD2);
