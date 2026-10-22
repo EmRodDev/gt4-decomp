@@ -191,13 +191,24 @@ def main(argv):
         objs = match.compile_many(pending + olds, 3)
         for p, o in zip(pending, olds):
             a, b = objs.get(p), objs.get(o)
+            if not (a and b):          # a compile that fails when many run at once: retry the pair alone
+                again = match.compile_many([p, o], 1)
+                a, b = again.get(p), again.get(o)
             why = "compile failed" if not (a and b) else tidy.same_object(a, b)
             if why:
                 results[p] = ("object", why)
         good = [p for p in pending if p not in results]
+        retry = []
         for addr, s, ok, rep in match.judge_many([(byrel[p], p) for p in good], jobs=3, chunk=40):
             if not ok:
-                results[s] = ("judge", rep.splitlines()[0][:160])
+                if rep.strip() == "compile failed":
+                    retry.append(s)        # infrastructure hiccup, not a verdict: judge again alone
+                else:
+                    results[s] = ("judge", rep.splitlines()[0][:160])
+        for s in retry:
+            for addr, s2, ok, rep in match.judge_many([(byrel[s], s)], jobs=1, chunk=1):
+                if not ok:
+                    results[s] = ("judge", rep.splitlines()[0][:160])
         for p in good:
             if p not in results:
                 v = asm_policy.violations(open(p, encoding="utf-8").read(), byrel[p])
@@ -220,6 +231,9 @@ def main(argv):
         return 0 if not failed else 1
     for p in sorted(failed):
         if p in changed:
+            if "compile failed" in failed[p][1]:
+                print("kept (not committed, compile failed twice: run the gate again)", p)
+                continue
             subprocess.run(["git", "checkout", "--", p])
             print("reverted", p)
     if cmd == "commit":
