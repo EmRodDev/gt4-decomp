@@ -1,3 +1,8 @@
+/**
+ * Updates all active particle emitters in the particle manager linked list.
+ * Calls each particle's virtual update method (slot 0x10); if it returns zero,
+ * removes the particle node from the active list.
+ */
 typedef int s32;
 typedef short s16;
 typedef float f32;
@@ -18,19 +23,19 @@ struct VEntry_003C2780 {
     s32 (*fn)(void *self, s32 arg1, f32 f);
 };
 
-extern "C" void ParticleManager__remove(Obj *arg0, Node *arg1, void **arg2);
+extern "C" void ParticleManager__remove(Obj *managerObj, Node *targetNode, void **prevNodePtr);
 
-extern "C" void ParticleManager__Update(Obj *arg0, s32 arg1, f32 fparg0) {
-    Node *prev = 0;
-    Node *n = arg0->head;
-    while (n != 0) {
-        Node *next = n->next;
-        VEntry_003C2780 *e = (VEntry_003C2780 *)((char *)n->vtbl + 0x10);
-        if (e->fn((char *)n + e->delta, arg1, fparg0) == 0) {
-            ParticleManager__remove(arg0, n, (void **)prev);
+extern "C" void ParticleManager__Update(Obj *managerObj, s32 updateFlags, f32 deltaTime) {
+    Node *prevNode = 0;
+    Node *currentNode = managerObj->head;
+    while (currentNode != 0) {
+        Node *nextNode = currentNode->next;
+        VEntry_003C2780 *vtableEntry = (VEntry_003C2780 *)((char *)currentNode->vtbl + 0x10);
+        if (vtableEntry->fn((char *)currentNode + vtableEntry->delta, updateFlags, deltaTime) == 0) {
+            ParticleManager__remove(managerObj, currentNode, (void **)prevNode);
         } else {
-            prev = n;
+            prevNode = currentNode;
         }
-        n = next;
+        currentNode = nextNode;
     }
 }
