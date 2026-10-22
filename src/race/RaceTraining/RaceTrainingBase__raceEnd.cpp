@@ -1,6 +1,11 @@
+/**
+ * Handles training session completion.
+ * Dispatches training result virtual callback (slot 0x2B8) if the training
+ * target condition is satisfied, otherwise falls back to standard race end sequence.
+ */
 #include "types.h"
 
-extern "C" void RacePS2Base__raceEnd(struct RaceTrainingBase *arg0);
+extern "C" void RacePS2Base__raceEnd(struct RaceTrainingBase *trainingContext);
 
 struct VEntry {
     s16 delta;
@@ -22,11 +27,11 @@ struct RaceTrainingBase__raceEnd_arg0 {
     s32 unk125F8;
 };
 
-extern "C" void RaceTrainingBase__raceEnd(struct RaceTrainingBase *arg0) {
-    if ((((struct RaceTrainingBase__raceEnd_arg0 *)arg0)->unk125F8 != 0 || arg0->unkCD0 != 0) && arg0->unkCE0 == 0) {
-        VEntry *e = (VEntry *)((char *)arg0->unk64 + 0x2B8);
-        e->fn((char *)arg0 + e->delta, 1, 0.0f, 0.0f);
+extern "C" void RaceTrainingBase__raceEnd(struct RaceTrainingBase *trainingContext) {
+    if ((((struct RaceTrainingBase__raceEnd_arg0 *)trainingContext)->unk125F8 != 0 || trainingContext->unkCD0 != 0) && trainingContext->unkCE0 == 0) {
+        VEntry *vtableEntry = (VEntry *)((char *)trainingContext->unk64 + 0x2B8);
+        vtableEntry->fn((char *)trainingContext + vtableEntry->delta, 1, 0.0f, 0.0f);
         return;
     }
-    RacePS2Base__raceEnd(arg0);
+    RacePS2Base__raceEnd(trainingContext);
 }

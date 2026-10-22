@@ -1,3 +1,8 @@
+/**
+ * Updates camera target transform in race photo mode.
+ * Queries active camera object via vtable dispatch; if inactive, clears the
+ * viewpoint buffer; otherwise evaluates target orientation via virtual slot 0x68.
+ */
 #include "types.h"
 
 extern "C" void func_003FB4C0(void *, s32);
@@ -14,15 +19,15 @@ static inline void vcallB378100(void *o, void *x) {
     ((void (*)(void *, void *))fn)((char *)o + *(s16 *)ent, x);
 }
 
-extern "C" void func_00378100(void *arg0) {
-    char *ent;
-    void *fn;
-    void *obj;
-    if (vcall378100(arg0) == 0) {
-        return func_003FB4C0((char *)arg0 + 0x9C0, 0);
+extern "C" void func_00378100(void *cameraManager) {
+    char *entryPtr;
+    void *functionPtr;
+    void *cameraObject;
+    if (vcall378100(cameraManager) == 0) {
+        return func_003FB4C0((char *)cameraManager + 0x9C0, 0);
     }
-    ent = *(char **)arg0 + 0x1E8;
-    fn = *(void **)(ent + 4);
-    obj = ((void *(*)(void *, s32))fn)((char *)arg0 + *(s16 *)ent, 0);
-    vcallB378100(obj, (char *)arg0 + 0x9C0);
+    entryPtr = *(char **)cameraManager + 0x1E8;
+    functionPtr = *(void **)(entryPtr + 4);
+    cameraObject = ((void *(*)(void *, s32))functionPtr)((char *)cameraManager + *(s16 *)entryPtr, 0);
+    vcallB378100(cameraObject, (char *)cameraManager + 0x9C0);
 }
