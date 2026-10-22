@@ -1,4 +1,8 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Same initializer as func_00419430 without the final call: it sets up the face part (vtable D_00686518), 8
+ * segment parts (vtable D_00686570), a second face part and 10 more segments. Each part gets the vector (0, 0, 0,
+ * 1) at +0x10, the vtable pointer at +0x20 and zeros in the two floats at +0x40 and +0x44. The function is
+ * declared to return int but has no return statement. */
 struct Vec { float x,y,z,w; };
 struct Segment { char p0[16]; Vec v; void *vt; char p24[28]; float a,b; char p48[8]; };
 struct Face { Segment s; char p50[32]; };

@@ -1,3 +1,7 @@
+/* Script native for MNetConf.SetDefault (inferred from the symbol name): takes two string arguments and forwards them to a virtual method.
+ * The context handle (func_00221B28) wraps an object; its vtable slot 0x338 is called with (this adjusted by delta, firstText, secondText),
+ * where both texts come from vtable slot 0x18 of args[0] and args[1]. The call result is boxed by func_002FE278 and stored into ret with
+ * retain-new / release-old; both strings and the context handle are then destroyed. What the slot 0x338 method does is unknown. */
 #include "types.h"
 
 struct Rep {
@@ -42,49 +46,49 @@ static inline void str_release(Str *s) {
     }
 }
 
-extern "C" void MNetConf__SetDefault(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 bufA[4];
-    Str s20;
-    Str s30;
-    s32 *pA;
-    Str *ps20;
-    char *o3;
-    char *o1;
-    char *vt;
+extern "C" void MNetConf__SetDefault(s32 *ret, void *ctx, s32 argc, char **args) {
+    s32 resultHandle[4];
+    s32 ctxHandleBuf[4];
+    Str firstTextStr;
+    Str secondTextStr;
+    s32 *ctxHandle;
+    Str *firstText;
+    char *firstArg;
+    char *ctxObj;
+    char *vtable;
     VEntry_338 *e;
-    char *self1;
-    char *o4;
-    void *r;
+    char *target;
+    char *secondArg;
+    void *callResult;
     s32 newVal;
     s32 oldVal;
 
-    pA = bufA;
-    func_00221B28(pA, arg1);
-    o3 = *(char **)arg3;
-    ps20 = &s20;
-    o1 = (char *)pA[0];
-    vt = *(char **)(o1 + 4);
-    e = (VEntry_338 *)(vt + 0x338);
-    self1 = o1 + e->delta;
-    vcall_18_ret((char *)ps20, o3);
-    o4 = *(char **)((char *)arg3 + 4);
-    vcall_18_ret((char *)&s30, o4);
-    r = e->fn(self1, ps20, &s30);
-    func_002FE278(buf0, r);
-    if (arg0 != buf0) {
-        newVal = buf0[0];
+    ctxHandle = ctxHandleBuf;
+    func_00221B28(ctxHandle, ctx);
+    firstArg = *(char **)args;
+    firstText = &firstTextStr;
+    ctxObj = (char *)ctxHandle[0];
+    vtable = *(char **)(ctxObj + 4);
+    e = (VEntry_338 *)(vtable + 0x338);
+    target = ctxObj + e->delta;
+    vcall_18_ret((char *)firstText, firstArg);
+    secondArg = *(char **)((char *)args + 4);
+    vcall_18_ret((char *)&secondTextStr, secondArg);
+    callResult = e->fn(target, firstText, &secondTextStr);
+    func_002FE278(resultHandle, callResult);
+    if (ret != resultHandle) {
+        newVal = resultHandle[0];
         if (newVal != 0) {
             func_003285A8(newVal);
         }
-        oldVal = *arg0;
+        oldVal = *ret;
         if (oldVal != 0) {
             func_003285F8(oldVal);
         }
-        *arg0 = newVal;
+        *ret = newVal;
     }
-    func_002FC870(buf0, 0x2);
-    str_release(&s30);
-    str_release(ps20);
-    func_00221AD0(pA, 0x2);
+    func_002FC870(resultHandle, 0x2);
+    str_release(&secondTextStr);
+    str_release(firstText);
+    func_00221AD0(ctxHandle, 0x2);
 }

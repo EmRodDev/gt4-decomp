@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Advances a damped spring by one 1/60 s step with a weight, like func_00350D40 but with more inputs (inferred
+ * from the division by 60 and the velocity update). Fields: f0 is the value, f4 its rate, f8 a gain, fC a damping
+ * factor, f10 a multiplier. The sub-objects at +0x14 and +0x11C are updated first (func_00384DB8 gets the target,
+ * func_00384C48 gets arg1, 1.0 and the weight), the error is func_0036EB98(target, value) plus the measured value
+ * minus the target, the scale is 1.0 or, when arg2 is non-zero, func_00384D70 * 0.9 + 0.6 (the hex float
+ * 0x1.333332p-1), and the weight is clamped to 0..1. Then rate += ((gain * scale * error * weight + damping *
+ * rate) / 60) * multiplier, and the value becomes func_0036EAD8(value + rate / 60). What the value stands for is
+ * unknown. */
 struct Sub14 {
     char pad[0x104];
 };
@@ -23,18 +31,18 @@ extern "C" float func_00384D70(Sub11C *) throw();
 extern "C" void func_00384DB8(Sub14 *, float) throw();
 extern "C" float func_00384E38(Sub14 *) throw();
 
-extern "C" void func_00384EE8(Obj *o, int arg1, int arg2, float a, float b) {
-    o->f118 = b;
-    func_00384DB8(&o->s14, a);
-    func_00384C48(&o->s11C, arg1, 1.0f, b);
-    float t = func_00384E38(&o->s14);
-    float u = func_0036EB98(a, o->f0) + (t - a);
-    float k = 1.0f;
-    if (arg2 != 0) k = func_00384D70(&o->s11C) * 0.9f + 0x1.333332p-1f;
-    if (b <= 0.0f) b = 0.0f;
-    if (b >= 1.0f) b = 1.0f;
-    float f4 = o->f4;
-    f4 = f4 + ((o->f8 * k * u * b + o->fC * f4) / 60.0f) * o->f10;
-    o->f4 = f4;
-    o->f0 = func_0036EAD8(o->f0 + f4 / 60.0f);
+extern "C" void func_00384EE8(Obj *self, int arg1, int arg2, float target, float weight) {
+    self->f118 = weight;
+    func_00384DB8(&self->s14, target);
+    func_00384C48(&self->s11C, arg1, 1.0f, weight);
+    float measured = func_00384E38(&self->s14);
+    float error = func_0036EB98(target, self->f0) + (measured - target);
+    float scale = 1.0f;
+    if (arg2 != 0) scale = func_00384D70(&self->s11C) * 0.9f + 0x1.333332p-1f;
+    if (weight <= 0.0f) weight = 0.0f;
+    if (weight >= 1.0f) weight = 1.0f;
+    float f4 = self->f4;
+    f4 = f4 + ((self->f8 * scale * error * weight + self->fC * f4) / 60.0f) * self->f10;
+    self->f4 = f4;
+    self->f0 = func_0036EAD8(self->f0 + f4 / 60.0f);
 }

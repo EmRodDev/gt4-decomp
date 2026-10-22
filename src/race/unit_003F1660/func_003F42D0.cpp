@@ -1,42 +1,50 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Measures whether carB is ahead of carA on the course and by how much (inferred from the signs and the lap wrap).
+ * Distances along the course are the floats at +0x104+0x4A4 of each car; if carA is in the last quarter of the
+ * course length (DynamicsConductor__GetCourseLength of carA's owner) and carB in the first quarter, carB's
+ * distance gets the course length added (a lap wrap). The gap is that difference minus carB's float at +4 and
+ * carA's float at +0 of their data blocks (probably the car extents; names unknown). A gap that is zero or less
+ * returns 0. When the gap is under 20.0, the last argument p must lie within half the sum of both cars' float at
+ * +8 (a width), otherwise 0. On success outGap gets the gap, outSide the negated difference of the floats at
+ * +0x650, and 1 is returned. The unused float parameter is part of the signature. */
 struct Dat { float f0, f4, f8; };
 struct Inner { char p[0x4A4]; float f4a4; char q[0x650 - 0x4A8]; float f650; };
 struct Obj { char p[4]; Obj *f4; char q[8]; Dat *d; char r[0x104 - 0x14]; Inner s; };
 extern "C" float DynamicsConductor__GetCourseLength(Obj *);
 
-extern "C" int func_003F42D0(Obj *a, Obj *b, float *o1, float *o2, float unused, float p)
+extern "C" int func_003F42D0(Obj *carA, Obj *carB, float *outGap, float *outSide, float unused, float p)
 {
-    Inner *s1 = &a->s;
-    Inner *s0 = &b->s;
-    Dat *da = a->d;
+    Inner *s1 = &carA->s;
+    Inner *s0 = &carB->s;
+    Dat *da = carA->d;
     float f21 = da->f0;
-    Dat *db = b->d;
+    Dat *db = carB->d;
     float f20 = db->f4;
     float f24 = db->f8;
     float f23 = da->f8;
-    *(int *)o1 = 0;
-    *(int *)o2 = 0;
-    float len = DynamicsConductor__GetCourseLength(a->f4);
+    *(int *)outGap = 0;
+    *(int *)outSide = 0;
+    float courseLength = DynamicsConductor__GetCourseLength(carA->f4);
     int r = 0;
-    float f2 = s1->f4a4;
-    float f1 = s0->f4a4;
-    float v;
-    if (len * 0.75f < f2 && f1 < len * 0.25f)
-        v = (f1 + len) - f2;
+    float distA = s1->f4a4;
+    float distB = s0->f4a4;
+    float ahead;
+    if (courseLength * 0.75f < distA && distB < courseLength * 0.25f)
+        ahead = (distB + courseLength) - distA;
     else
-        v = f1 - f2;
-    float d = (v - f20) - f21;
+        ahead = distB - distA;
+    float d = (ahead - f20) - f21;
     if (d <= 0.0f) return r;
-    float g = s0->f650 - s1->f650;
+    float sideDelta = s0->f650 - s1->f650;
     if (d < 20.0f) {
-        float w = (f23 + f24) * 0.5f;
-        if (w < p)
+        float halfWidth = (f23 + f24) * 0.5f;
+        if (halfWidth < p)
             return 0;
-        if (p < -w)
+        if (p < -halfWidth)
             return 0;
     }
-    *o1 = d;
+    *outGap = d;
     r = 1;
-    *o2 = -g;
+    *outSide = -sideDelta;
     return r;
 }

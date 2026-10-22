@@ -1,8 +1,10 @@
+/* mNetConfPS2 virtual 87 (inferred from the symbol name): fetches the text of entry `index` from the helper func_004EE728 called on the object at +0x268.
+ * The pointer is wrapped in a temporary std::string and the temporary is duplicated into ret (rep shared or cloned according to its flag word); the temporary's ref count is dropped afterwards, freeing it when it reaches 0. */
 #include "types.h"
 
 struct Rep {
     s32 len;
-    s32 cap;
+    s32 capacity;
     s32 ref;
     s32 sel;
 };
@@ -27,16 +29,16 @@ struct Self {
 extern Rep D_00659FA8;
 
 extern "C" char *func_005C2560(Rep *r);
-extern "C" s32 func_0057F260(const char *s);
-extern "C" void *func_005C2630(Str *s, s32 pos, s32 n, const char *src, s32 len);
+extern "C" s32 func_0057F260(const char *localStr);
+extern "C" void *func_005C2630(Str *localStr, s32 pos, s32 n, const char *text, s32 len);
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" const char *func_004EE728(Obj *arg0, s32 arg1);
 
-extern "C" Str *mNetConfPS2__virtual_87(Str *ret, Self *self, s32 arg2) {
-    Str s;
-    Str *ps = &s;
-    const char *src = func_004EE728(self->p268, arg2);
+extern "C" Str *mNetConfPS2__virtual_87(Str *ret, Self *self, s32 index) {
+    Str localStr;
+    Str *localPtr = &localStr;
+    const char *text = func_004EE728(self->p268, index);
     {
         Rep *r = &D_00659FA8;
         char *d = (char *)(r + 1);
@@ -45,11 +47,11 @@ extern "C" Str *mNetConfPS2__virtual_87(Str *ret, Self *self, s32 arg2) {
         } else {
             r->ref++;
         }
-        ps->p = d;
+        localPtr->p = d;
     }
-    func_005C2630(ps, 0, -1, src, func_0057F260(src));
+    func_005C2630(localPtr, 0, -1, text, func_0057F260(text));
     {
-        s32 p = *(s32 *)&s.p;
+        s32 p = *(s32 *)&localStr.p;
         Rep *r = (Rep *)(p - 0x10);
         s32 d = p;
         if (r->sel != 0) {
@@ -60,10 +62,10 @@ extern "C" Str *mNetConfPS2__virtual_87(Str *ret, Self *self, s32 arg2) {
         *(s32 *)&ret->p = d;
     }
     {
-        Rep *q = (Rep *)(*(s32 *)&s.p - 0x10);
-        if (--q->ref == 0) {
-            s32 cap = q->cap + 0x10;
-            func_00326798(q, cap, 4, func_005C11A8()->name);
+        Rep *rep = (Rep *)(*(s32 *)&localStr.p - 0x10);
+        if (--rep->ref == 0) {
+            s32 capacity = rep->capacity + 0x10;
+            func_00326798(rep, capacity, 4, func_005C11A8()->name);
         }
     }
     return ret;

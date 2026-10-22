@@ -1,3 +1,7 @@
+/* Deleting destructor of mInputTextFace (object size 0xDF0, large because of the member block at 0x578; freed with the allocator name "RefCounter" when bit 0 of flags is set).
+ * Members go in reverse order: the object at 0x578 (func_004B4400), six 0x10-byte objects at 0x154, 0x144, 0x134, 0x124, 0x114 and 0x104 and one at 0xE0 (all func_00203118, 2),
+ * then the member at 0xA0, whose destructor (member_dtor_0) releases the std::string at +0x10 and then runs func_00203118 on +0. The mWidget base destructor finishes it.
+ * The repeated func_00203118 calls are individual members, not a loop, because the offsets are not evenly spaced as a whole. */
 #include "gt4/mInputTextFace.h"
 typedef int s32;
 
@@ -25,19 +29,19 @@ static inline void member_dtor_0(char *m) {
     str_release((Str *)(m + 0x10));
     func_00203118(m, 2);
 }
-extern "C" void mInputTextFace__structor_1(void *arg0, s32 arg1) {
-    ((struct mInputTextFace *)arg0)->unk4 = &mInputTextFace__vtable;
-    func_004B4400((char *)arg0 + 0x578, 0x2);
-    func_00203118((char *)arg0 + 0x154, 0x2);
-    func_00203118((char *)arg0 + 0x144, 0x2);
-    func_00203118((char *)arg0 + 0x134, 0x2);
-    func_00203118((char *)arg0 + 0x124, 0x2);
-    func_00203118((char *)arg0 + 0x114, 0x2);
-    func_00203118((char *)arg0 + 0x104, 0x2);
-    func_00203118((char *)arg0 + 0xe0, 0x2);
-    member_dtor_0((char *)arg0 + 0xa0);
-    mWidget__structor_1(arg0, 0x0);
-    if ((arg1 & 0x1) != 0) {
-        return func_00326798(arg0, 0xdf0, 0x4, "RefCounter");
+extern "C" void mInputTextFace__structor_1(void *self, s32 flags) {
+    ((struct mInputTextFace *)self)->unk4 = &mInputTextFace__vtable;
+    func_004B4400((char *)self + 0x578, 0x2);
+    func_00203118((char *)self + 0x154, 0x2);
+    func_00203118((char *)self + 0x144, 0x2);
+    func_00203118((char *)self + 0x134, 0x2);
+    func_00203118((char *)self + 0x124, 0x2);
+    func_00203118((char *)self + 0x114, 0x2);
+    func_00203118((char *)self + 0x104, 0x2);
+    func_00203118((char *)self + 0xe0, 0x2);
+    member_dtor_0((char *)self + 0xa0);
+    mWidget__structor_1(self, 0x0);
+    if ((flags & 0x1) != 0) {
+        return func_00326798(self, 0xdf0, 0x4, "RefCounter");
     }
 }

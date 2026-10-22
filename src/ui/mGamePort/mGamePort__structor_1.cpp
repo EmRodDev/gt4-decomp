@@ -1,3 +1,5 @@
+/* Deleting destructor of mGamePort (object size 0xC8, freed with the allocator name "RefCounter" when bit 0 of flags is set).
+ * It resets the vtable at +4, releases the only owned member, the std::string at +0xC4, and runs the hObject base destructor (hObject__structor_2) with flag 0. */
 #include "gt4/mGamePort.h"
 typedef int s32;
 
@@ -19,11 +21,11 @@ static inline void str_release(Str *s) {
 }
 
 
-extern "C" void mGamePort__structor_1(void *arg0, s32 arg1) {
-    ((struct mGamePort *)arg0)->unk4 = &mGamePort__vtable;
-    str_release((Str *)((char *)arg0 + 0xc4));
-    hObject__structor_2(arg0, 0x0);
-    if ((arg1 & 0x1) != 0) {
-        return func_00326798(arg0, 0xc8, 0x4, "RefCounter");
+extern "C" void mGamePort__structor_1(void *self, s32 flags) {
+    ((struct mGamePort *)self)->unk4 = &mGamePort__vtable;
+    str_release((Str *)((char *)self + 0xc4));
+    hObject__structor_2(self, 0x0);
+    if ((flags & 0x1) != 0) {
+        return func_00326798(self, 0xc8, 0x4, "RefCounter");
     }
 }

@@ -1,4 +1,9 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Virtual slot 3 of MRectangleReader (inferred from the symbol name): parses a rectangle from the script/config token stream into 4 floats.
+ * First func_005CD320 compares the current tag (arg2) against the keyword D_00698480 at position 0 (a string compare taking self, char*, pos, count);
+ * only on a match (result 0) does it read. It then pulls tokens with func_0020EEA0 until end of stream (-1) or the closing brace (0x7D, '}'), converting each
+ * token text with func_005A2F70 (double result, narrowed to f32) into v[0..3]; the cap is 4 values (zero-filled with a 0x10 byte clear first).
+ * Without a closing brace func_0020FC58(lexer, 1) is called. The 4 floats are copied through the pointer at +4 of dest. The std::string token buffer is released inline. */
 typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -28,57 +33,57 @@ extern Rep D_00659FA8;
 extern char D_00698480[];
 extern char D_00698490[];
 
-extern "C" s32 func_0020EEA0(void *arg1, Str *s);
-extern "C" void func_0020FC58(void *r, int depth);
+extern "C" s32 func_0020EEA0(void *lexer, Str *tokenStr);
+extern "C" void func_0020FC58(void *emptyRep, int depth);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
-extern "C" s32 func_0057F260(const char *s) throw();
-extern "C" double func_005A2F70(const char *s);
-extern "C" void func_005A48D8(void *p, s32 v, u32 n);
+extern "C" s32 func_0057F260(const char *tokenStr) throw();
+extern "C" double func_005A2F70(const char *tokenStr);
+extern "C" void func_005A48D8(void *p, s32 values, u32 n);
 extern "C" struct S00659988 *func_005C11A8(void);
-extern "C" char *func_005C2560(Rep *r);
-extern "C" s32 func_005CD320(void *self, const char *s, u32 pos, u32 n);
+extern "C" char *func_005C2560(Rep *emptyRep);
+extern "C" s32 func_005CD320(void *self, const char *tokenStr, u32 pos, u32 n);
 
-extern "C" void MRectangleReader__virtual_03(Holder *arg0, void *arg1, void *arg2) {
-    Str s;
-    f32 v[4];
-    if (func_005CD320(arg2, D_00698480, 0, func_0057F260(D_00698480)) == 0) {
-        Rep *r = &D_00659FA8;
-        char *d;
-        s32 i;
-        s32 t;
-        if (r->sel != 0) {
-            d = func_005C2560(r);
+extern "C" void MRectangleReader__virtual_03(Holder *dest, void *lexer, void *tagName) {
+    Str tokenStr;
+    f32 values[4];
+    if (func_005CD320(tagName, D_00698480, 0, func_0057F260(D_00698480)) == 0) {
+        Rep *emptyRep = &D_00659FA8;
+        char *data;
+        s32 count;
+        s32 tokenType;
+        if (emptyRep->sel != 0) {
+            data = func_005C2560(emptyRep);
         } else {
-            d = (char *)(r + 1);
-            r->ref++;
+            data = (char *)(emptyRep + 1);
+            emptyRep->ref++;
         }
-        s.p = d;
-        func_0020EEA0(arg1, &s);
-        i = 0;
-        func_005A48D8(v, 0, 0x10);
-        while ((t = func_0020EEA0(arg1, &s)) != -1 && t != 0x7D) {
-            const char *c = D_00698490;
-            if (*(s32 *)(s.p - 0x10) != 0) {
-                s.p[*(s32 *)(s.p - 0x10)] = 0;
-                c = s.p;
+        tokenStr.p = data;
+        func_0020EEA0(lexer, &tokenStr);
+        count = 0;
+        func_005A48D8(values, 0, 0x10);
+        while ((tokenType = func_0020EEA0(lexer, &tokenStr)) != -1 && tokenType != 0x7D) {
+            const char *tokenText = D_00698490;
+            if (*(s32 *)(tokenStr.p - 0x10) != 0) {
+                tokenStr.p[*(s32 *)(tokenStr.p - 0x10)] = 0;
+                tokenText = tokenStr.p;
             }
-            v[i++] = (f32)func_005A2F70(c);
-            if (i >= 4) {
+            values[count++] = (f32)func_005A2F70(tokenText);
+            if (count >= 4) {
                 break;
             }
         }
-        if (t != 0x7D) {
-            func_0020FC58(arg1, 1);
+        if (tokenType != 0x7D) {
+            func_0020FC58(lexer, 1);
         }
-        arg0->out[0] = v[0];
-        arg0->out[1] = v[1];
-        arg0->out[2] = v[2];
-        arg0->out[3] = v[3];
+        dest->out[0] = values[0];
+        dest->out[1] = values[1];
+        dest->out[2] = values[2];
+        dest->out[3] = values[3];
         {
-            Rep *q = (Rep *)(s.p - 0x10);
-            if (--q->ref == 0) {
-                s32 cap = q->cap + 0x10;
-                func_00326798(q, cap, 4, func_005C11A8()->name);
+            Rep *rep = (Rep *)(tokenStr.p - 0x10);
+            if (--rep->ref == 0) {
+                s32 cap = rep->cap + 0x10;
+                func_00326798(rep, cap, 4, func_005C11A8()->name);
             }
         }
     }

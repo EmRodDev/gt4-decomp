@@ -1,3 +1,6 @@
+/* Deleting destructor of mInputNumberFace (object size 0x124, freed with the allocator name "RefCounter" when bit 0 of flags is set).
+ * Resets the vtable at +4, releases the std::string at +0x104, destroys the member at 0xE0 (func_00203118) and the one at 0xA0 (member_0 = string at +0x10 then func_00203118 on it),
+ * and finishes with the mWidget base destructor. A shorter relative of the mInputTextFace destructor: it has only three members. */
 #include "gt4/mInputNumberFace.h"
 typedef int s32;
 
@@ -24,13 +27,13 @@ static inline void member_0(char *m) {
     func_00203118(m, 0x2);
 }
 
-extern "C" void mInputNumberFace__structor_1(void *arg0, s32 arg1) {
-    ((struct mInputNumberFace *)arg0)->unk4 = &mInputNumberFace__vtable;
-    str_release((Str *)((char *)arg0 + 0x104));
-    func_00203118((char *)arg0 + 0xe0, 0x2);
-    member_0((char *)arg0 + 0xa0);
-    mWidget__structor_1(arg0, 0x0);
-    if ((arg1 & 0x1) != 0) {
-        return func_00326798(arg0, 0x124, 0x4, "RefCounter");
+extern "C" void mInputNumberFace__structor_1(void *self, s32 flags) {
+    ((struct mInputNumberFace *)self)->unk4 = &mInputNumberFace__vtable;
+    str_release((Str *)((char *)self + 0x104));
+    func_00203118((char *)self + 0xe0, 0x2);
+    member_0((char *)self + 0xa0);
+    mWidget__structor_1(self, 0x0);
+    if ((flags & 0x1) != 0) {
+        return func_00326798(self, 0x124, 0x4, "RefCounter");
     }
 }

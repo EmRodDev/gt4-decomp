@@ -1,3 +1,7 @@
+/* Script accessor MRenderContext.get_follow_mode (inferred from the symbol name): getter and setter of a follow-mode flag.
+ * The render context object comes from the handle func_0022AD20 returns; the flag is the word at +0x1D50. Unlike the other accessors the setter is selected by argc == 1 (not argc > 0):
+ * it stores (args[0] via vtable slot 0x58) != 0. Otherwise func_002FE278 boxes (flag != 0) and the handle is assigned to ret with retain-new / release-old.
+ * The context handle is destroyed at the end in both paths (func_0022ACC8, 2). */
 #include "types.h"
 
 struct Rep {
@@ -29,32 +33,32 @@ extern "C" void func_003285F8(s32);
 extern "C" void func_002FC870(void *, s32);
 extern "C" void func_0022ACC8(void *, s32);
 
-extern "C" void MRenderContext__get_follow_mode(s32 *arg0, void *arg1, s32 arg2, char **arg3) {
-    s32 buf0[4];
-    s32 buf1[4];
-    s32 *p_s3;
-    s32 v_s0;
+extern "C" void MRenderContext__get_follow_mode(s32 *ret, void *ctx, s32 argc, char **args) {
+    s32 ctxHandle[4];
+    s32 resultHandle[4];
+    s32 *resultPtr;
+    s32 renderContext;
     s32 newVal;
     s32 oldVal;
-    func_0022AD20(buf0);
-    p_s3 = buf1;
-    if (arg2 == 0x1) {
-        v_s0 = buf0[0];
-        *(s32 *)((char *)v_s0 + 0x1d50) = vcall_58((char *)(*(s32 *)(char *)arg3)) != 0;
+    func_0022AD20(ctxHandle);
+    resultPtr = resultHandle;
+    if (argc == 0x1) {
+        renderContext = ctxHandle[0];
+        *(s32 *)((char *)renderContext + 0x1d50) = vcall_58((char *)(*(s32 *)(char *)args)) != 0;
     } else {
-        func_002FE278(p_s3, *(s32 *)((char *)buf0[0] + 0x1d50) != 0);
-        if (arg0 != p_s3) {
-            newVal = *p_s3;
+        func_002FE278(resultPtr, *(s32 *)((char *)ctxHandle[0] + 0x1d50) != 0);
+        if (ret != resultPtr) {
+            newVal = *resultPtr;
             if (newVal != 0) {
                 func_003285A8(newVal);
             }
-            oldVal = *arg0;
+            oldVal = *ret;
             if (oldVal != 0) {
                 func_003285F8(oldVal);
             }
-            *arg0 = newVal;
+            *ret = newVal;
         }
-        func_002FC870(p_s3, 0x2);
+        func_002FC870(resultPtr, 0x2);
     }
-    func_0022ACC8(buf0, 0x2);
+    func_0022ACC8(ctxHandle, 0x2);
 }

@@ -1,3 +1,5 @@
+/* Deleting destructor of mLocalizedText (a tiny object of 0x10 bytes: base, vtable at +4 and two std::strings at +8 and +0xC; inferred from the offsets released).
+ * The strings are released in reverse order (+0xC, then +8), the RefCounter base destructor runs with flag 0, and bit 0 of flags frees the object (size 0x10, alignment 4). */
 #include "gt4/mLocalizedText.h"
 typedef int s32;
 
@@ -19,12 +21,12 @@ static inline void str_release(Str *s) {
 }
 
 
-extern "C" void mLocalizedText__structor_1(void *arg0, s32 arg1) {
-    ((struct mLocalizedText *)arg0)->unk4 = &mLocalizedText__vtable;
-    str_release((Str *)((char *)arg0 + 0xc));
-    str_release((Str *)((char *)arg0 + 0x8));
-    RefCounter__structor_2(arg0, 0x0);
-    if ((arg1 & 0x1) != 0) {
-        return func_00326798(arg0, 0x10, 0x4, "RefCounter");
+extern "C" void mLocalizedText__structor_1(void *self, s32 flags) {
+    ((struct mLocalizedText *)self)->unk4 = &mLocalizedText__vtable;
+    str_release((Str *)((char *)self + 0xc));
+    str_release((Str *)((char *)self + 0x8));
+    RefCounter__structor_2(self, 0x0);
+    if ((flags & 0x1) != 0) {
+        return func_00326798(self, 0x10, 0x4, "RefCounter");
     }
 }

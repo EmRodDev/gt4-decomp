@@ -1,4 +1,12 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Tries to activate an object in a slot table and reports success. func_003FDA00 looks up a 3-int position for
+ * self->id in self->source; on failure the function returns false. Otherwise it converts self->param to a float
+ * with func_00578598, calls the virtual method at vtable offset 0x138 of self->object (the vtable entry holds a
+ * this-adjustment and a function pointer, so the call is written out by hand) with id, the int at source+0x80, the
+ * y and z of the position, the constant 1 and the float, then stores the object pointer into slot slotIndex of the
+ * table (0x19C bytes per slot, pointer at +0x13C), sets doneFlag to 1 and returns true. The x component of the
+ * lookup is never used. The inline helper vcall is left unused; the call is spelled out in the body because that
+ * is what matched. */
 typedef int s32;
 typedef short s16;
 struct V;
@@ -11,33 +19,33 @@ static inline void vcall(V *o, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, float f) 
     e->fn((char *)o + e->delta, a1, a2, a3, a4, a5, f);
 }
 struct A {
-    Q *p0;
-    Slot *p4;
-    V *p8;
+    Q *source;
+    Slot *slots;
+    V *object;
     s32 pC;
-    s32 p10;
-    s32 p14;
-    s32 *p18;
-    s32 p1C;
+    s32 slotIndex;
+    s32 id;
+    s32 *doneFlag;
+    s32 param;
 };
 struct Vec3i { s32 x, y, z; };
 extern "C" bool func_003FDA00(Q *, s32, Vec3i *);
 extern "C" float func_00578598(s32);
 extern "C" bool func_00376E68(struct A *self) {
     Vec3i v;
-    bool r = func_003FDA00(self->p0, self->p14, &v);
+    bool r = func_003FDA00(self->source, self->id, &v);
     if (!r) return 0;
     {
         s32 z = v.z;
-        s32 s0 = self->p0->u80;
-        float f = func_00578598(self->p1C);
-        V *o = self->p8;
+        s32 qValue80 = self->source->u80;
+        float f = func_00578598(self->param);
+        V *o = self->object;
         VEntry *e = (VEntry *)(o->vtbl + 0x138);
-        e->fn((char *)o + e->delta, self->p14, s0, v.y, z, 1, f);
-        char *slot = (char *)self->p4;
-        slot += self->p10 * 0x19C;
-        *(V **)(slot + 0x13C) = self->p8;
-        *self->p18 = 1;
+        e->fn((char *)o + e->delta, self->id, qValue80, v.y, z, 1, f);
+        char *slot = (char *)self->slots;
+        slot += self->slotIndex * 0x19C;
+        *(V **)(slot + 0x13C) = self->object;
+        *self->doneFlag = 1;
         return 1;
     }
 
