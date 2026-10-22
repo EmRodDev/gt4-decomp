@@ -1,4 +1,13 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Shared startup strings are declared at their verified original addresses;
+ * the standalone function pools do not follow the executable's pool order. */
+extern const char fontHn16[] __asm__("D_0068DD80");
+extern const char fontHc20[] __asm__("D_0068DD58");
+extern const char metricDistanceFormat[] __asm__("D_0068DD88");
+extern const char imperialDistanceFormat[] __asm__("D_0068DD90");
+extern const char speedKmhFormat[] __asm__("D_0068DD98");
+extern const char speedMphFormat[] __asm__("D_0068DDA8");
+
 typedef int s32;
 typedef float f32;
 
@@ -78,21 +87,21 @@ extern "C" void func_00121FF0(Obj *self, s32 arg1, s32 arg2, f32 y) {
     f32 mid = (self->f2D4 + self->f2DC) * 0.5f;
     f32 inv = 1.0f / self->f2E4;
     f32 yc = y < lo ? lo : y;
-    func_00490290(PDISTD__global_font_manager, "hn_16");
+    func_00490290(PDISTD__global_font_manager, fontHn16);
     func_004AB2E8(0.9f, 0.5f, 0x1.999998p-4f);
     f32 w = self->f2FC - self->f2F8;
     func_004A7288(w, h, 0.0f, w, lo, 0.0f);
     func_004A1638(9);
     func_004AB040(6);
     func_004A2808(0x44, 1.0f);
-    func_00490290(PDISTD__global_font_manager, "hc_20");
+    func_00490290(PDISTD__global_font_manager, fontHc20);
     setScale(PDISTD__global_font_manager, 0.7f, 0.7f);
     func_00490518(PDISTD__global_font_manager, 0.9f, 0.9f, 0.9f, 1.0f);
     func_00490890(PDISTD__global_font_manager, self->f2EC * 0.5f + 15.0f, self->f2F4 - (yc + 4.0f + 2.0f));
     if (self->f2B8 != 0) {
-        func_00490950(PDISTD__global_font_manager, "%.1tm", (s32)(mid * 10.0f));
+        func_00490950(PDISTD__global_font_manager, metricDistanceFormat, (s32)(mid * 10.0f));
     } else {
-        func_00490950(PDISTD__global_font_manager, "%.1tml", (s32)(mid * 0x1.45C73Cp-11f * 1000.0f));
+        func_00490950(PDISTD__global_font_manager, imperialDistanceFormat, (s32)(mid * 0x1.45C73Cp-11f * 1000.0f));
     }
     void *curve = self->f2B4;
     f32 t = (self->f308 / (f32)self->i30C) / self->f2E8;
@@ -110,7 +119,7 @@ extern "C" void func_00121FF0(Obj *self, s32 arg1, s32 arg2, f32 y) {
     }
     f32 inv2 = 1.0f / self->f2E4;
     f32 sideB = -1.0f;
-    func_00490290(PDISTD__global_font_manager, "hc_20");
+    func_00490290(PDISTD__global_font_manager, fontHc20);
     setScale(PDISTD__global_font_manager, 0x1.999998p-1f, 0x1.999998p-1f);
     f32 sideA = -1.0f;
     f32 dirA = inv2;
@@ -141,9 +150,9 @@ extern "C" void func_00121FF0(Obj *self, s32 arg1, s32 arg2, f32 y) {
             func_00490890(PDISTD__global_font_manager, xx + 45.0f, yy);
         }
         if (self->f2B8 != 0) {
-            func_00490950(PDISTD__global_font_manager, "%.1tkm/h", (s32)(va * 10.0f));
+            func_00490950(PDISTD__global_font_manager, speedKmhFormat, (s32)(va * 10.0f));
         } else {
-            func_00490950(PDISTD__global_font_manager, "%.1tmph", (s32)(va * 0x1.3E249p-1f * 10.0f));
+            func_00490950(PDISTD__global_font_manager, speedMphFormat, (s32)(va * 0x1.3E249p-1f * 10.0f));
         }
         resetBox(PDISTD__global_font_manager);
         func_004906F8(PDISTD__global_font_manager, 0);
@@ -158,9 +167,9 @@ extern "C" void func_00121FF0(Obj *self, s32 arg1, s32 arg2, f32 y) {
         func_001205D8(&px, &py, inv2, sideB);
         func_00490890(PDISTD__global_font_manager, self->f2EC * 0.5f + 45.0f, self->f2F4 - py);
         if (self->f2B8 != 0) {
-            func_00490950(PDISTD__global_font_manager, "%.1tkm/h", (s32)(vb * 10.0f));
+            func_00490950(PDISTD__global_font_manager, speedKmhFormat, (s32)(vb * 10.0f));
         } else {
-            func_00490950(PDISTD__global_font_manager, "%.1tmph", (s32)(vb * 0x1.3E249p-1f * 10.0f));
+            func_00490950(PDISTD__global_font_manager, speedMphFormat, (s32)(vb * 0x1.3E249p-1f * 10.0f));
         }
     }
     func_004AB2E8(1.0f, 0.0f, 0.0f);
