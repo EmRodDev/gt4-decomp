@@ -1,5 +1,12 @@
 #include "types.h"
 
+/* The widget module shares these event and diagnostic strings. Referencing
+ * the original pool symbols lets the complete link verify their addresses. */
+extern const char onFocusLeaveName[] __asm__("D_00699FB0");
+extern const char invalidEventResultMessage[] __asm__("D_00699EF0");
+extern const char widgetSourceFile[] __asm__("D_00699F30");
+
+
 struct Rep {
     s32 len;
     s32 cap;
@@ -100,7 +107,7 @@ extern "C" s32 mWidget__onFocusLeave(Obj *self, s32 arg1, s32 arg2) {
         pv = ret;
         {
             Str *ps = &s;
-            const char *src = "onFocusLeave";
+            const char *src = onFocusLeaveName;
             Rep *r = &D_00659FA8;
             char *d;
             if (r->sel != 0) {
@@ -172,7 +179,7 @@ extern "C" s32 mWidget__onFocusLeave(Obj *self, s32 arg1, s32 arg2) {
                     func_00309378(pv, 2);
                     return r;
                 }
-                func_005DB110("!!!!!!!!!!!!!!!!! you should return EventResult (%s:%d)\n", "MWidget.cpp", 0xAF9);
+                func_005DB110(invalidEventResultMessage, widgetSourceFile, 0xAF9);
                 DESTROY_ARGS();
                 func_00309378(pv, 2);
             }

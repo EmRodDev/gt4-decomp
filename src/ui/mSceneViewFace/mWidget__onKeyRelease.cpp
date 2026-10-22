@@ -1,5 +1,13 @@
 #include "types.h"
 
+/* mWidget__onKeyRelease: The event name and diagnostic strings are shared constants in the original
+ * widget module. Their pool order differs from a standalone handler's pool;
+ * reference their original symbols so the full linker can verify every address. */
+extern const char keyReleaseEventName[] __asm__("D_00699F40");
+extern const char invalidEventResultMessage[] __asm__("D_00699EF0");
+extern const char widgetSourceFile[] __asm__("D_00699F30");
+
+
 struct Rep {
     s32 len;
     s32 cap;
@@ -100,7 +108,7 @@ extern "C" s32 mWidget__onKeyRelease(Obj *self, s32 arg1, s32 arg2) {
         pv = ret;
         {
             Str *ps = &s;
-            const char *src = "onKeyRelease";
+            const char *src = keyReleaseEventName;
             Rep *r = &D_00659FA8;
             char *d;
             if (r->sel != 0) {
@@ -172,7 +180,7 @@ extern "C" s32 mWidget__onKeyRelease(Obj *self, s32 arg1, s32 arg2) {
                     func_00309378(pv, 2);
                     return r;
                 }
-                func_005DB110("!!!!!!!!!!!!!!!!! you should return EventResult (%s:%d)\n", "MWidget.cpp", 0xA2C);
+                func_005DB110(invalidEventResultMessage, widgetSourceFile, 0xA2C);
                 DESTROY_ARGS();
                 func_00309378(pv, 2);
             }
