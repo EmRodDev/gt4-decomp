@@ -1,3 +1,9 @@
+/* Use the original shared strings so this routine can be linked from source. */
+extern const char musicPathFormat[] __asm__("D_006AB4B0");
+extern const char musicRootPath[] __asm__("D_006AB4C0");
+extern const char musicSuffixFormat[] __asm__("D_006AB4D0");
+extern const char sequenceSuffix[] __asm__("D_006AB4D8");
+extern const char instrumentSuffix[] __asm__("D_006AB4E0");
 struct Big { int w[8]; };
 struct Jam { int f0, f4, f8, fC, f10, f14, f18; const void *vt; int f20; };
 struct G { int f0, f4, f8, fC, f10; };
@@ -29,14 +35,14 @@ extern "C" void GTSOUNDINSTRUMENTJAM__structor_0(int idx)
     Tab *t = &D_006239A8[idx];
     func_00461068(1);
     func_004611B0();
-    func_005A5A30(buf, 0x70, "%s/%s/%s", "/music", func_004624F0(), t->name);
-    func_005A5A30(buf2, 0x70, "%s%s", buf, ".sqt");
+    func_005A5A30(buf, 0x70, musicPathFormat, musicRootPath, func_004624F0(), t->name);
+    func_005A5A30(buf2, 0x70, musicSuffixFormat, buf, sequenceSuffix);
     func_004AE6B0(&r, buf2);
     func_004AE268(&r2, buf2, D_008468D0.f10, r.w[2], 1);
     func_004627B0(D_008468D0.fC, 0x2800);
     func_00462798(0xAC000);
     GTSOUNDINSTRUMENTJAM__structor_1(&jam);
-    func_005A5A30(buf2, 0x70, "%s%s", buf, ".ins");
+    func_005A5A30(buf2, 0x70, musicSuffixFormat, buf, instrumentSuffix);
     func_00462738(&jam, buf2, 0);
     func_00462900(&jam);
     D_008468D0.f8 = GTSOUNDINSTRUMENTJAM__getJam(&jam);

@@ -1,4 +1,17 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
+/* Shared project names and replay-mode table retain their original pool addresses.
+ * The local table copy preserves the launcher's stack-owned iteration state. */
+extern const char *const replayModeNames[5] __asm__("D_0068CEB8");
+extern "C" void *memcpy(void *, const void *, unsigned int);
+extern const char emptyProjectName[] __asm__("D_0068CE00");
+extern const char gtModeProject[] __asm__("D_0068CE08");
+extern const char optionProject[] __asm__("D_0068CE10");
+extern const char settingProject[] __asm__("D_0068CE18");
+extern const char photoSaveProject[] __asm__("D_0068CE20");
+extern const char printProject[] __asm__("D_0068CE30");
+extern const char laboProject[] __asm__("D_0068CE38");
+extern const char projectPathFormat[] __asm__("D_0068CED0");
+
 typedef int s32;
 typedef unsigned int u32;
 
@@ -147,7 +160,7 @@ struct Scr { s32 a[4]; Scr() { func_0023FB80(this); } ~Scr() { func_0023DDF0(thi
 static inline G *game(GPtr *g) { return (G *)(g->p + 0x3A368); }
 
 extern "C" s32 GranTurismo4__MenuGameObject__startProject(Self *self, const char *name, s32 arg2) {
-    func_0042FCE0(game(&D_00622F4C), "");
+    func_0042FCE0(game(&D_00622F4C), emptyProjectName);
     int was = func_00109398();
     if (!was)
         func_0010AF40(0);
@@ -180,20 +193,15 @@ extern "C" s32 GranTurismo4__MenuGameObject__startProject(Self *self, const char
         mem = 3;
         break;
     }
-    if (func_0057F238(name, "gtmode") == 0) {
+    if (func_0057F238(name, gtModeProject) == 0) {
         mem = 0;
-    } else if (func_0057F238(name, "option") == 0 || func_0057F238(name, "setting") == 0) {
+    } else if (func_0057F238(name, optionProject) == 0 || func_0057F238(name, settingProject) == 0) {
         mem = 1;
-    } else if (func_0057F238(name, "photo_save") == 0 || func_0057F238(name, "print") == 0) {
+    } else if (func_0057F238(name, photoSaveProject) == 0 || func_0057F238(name, printProject) == 0) {
         mem = 3;
-    } else if (func_0057F238(name, "labomode") == 0) {
-        const char *modes[] = {
-            "MODE_LOAD_FULL_REPLAY",
-            "MODE_SAVE_FULL_REPLAY",
-            "MODE_LOAD_BESTLAP_REPLAY",
-            "MODE_SAVE_BESTLAP_REPLAY",
-            0
-        };
+    } else if (func_0057F238(name, laboProject) == 0) {
+        const char *modes[5];
+        memcpy(modes, replayModeNames, sizeof modes);
         const char *cur = g->name;
         for (const char **m = modes; *m; m++) {
             if (func_0057F238(cur, *m) == 0) {
@@ -210,7 +218,7 @@ extern "C" s32 GranTurismo4__MenuGameObject__startProject(Self *self, const char
     {
     Ref root(0);
     char path[0x80];
-    func_0057DA20(path, "/projects/%s/%s", name, name);
+    func_0057DA20(path, projectPathFormat, name, name);
     {
         s32 rd = pm->p;
         MWidgetReader__structor_2(rd, &root, String(path), 0);

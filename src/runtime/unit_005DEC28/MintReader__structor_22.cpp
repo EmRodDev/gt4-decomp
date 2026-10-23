@@ -1,22 +1,16 @@
 /* compiler: ee-gcc2.96-stl */
-/* SGI STL (include/stl/stl_vector.h) instantiated by tools/stl_vector.py: vector<int, GameAlloc> insert_fill */
+/* Resize the destination to one integer and read into that element.
+ * Uses the original SGI vector resize/erase helpers (include/stl).
+ * The allocator is opaque to this operation; insertion remains out of line. */
+#pragma interface
 #include <stl_algobase.h>
 #include <stl_alloc.h>
 #include <stl_construct.h>
 #include <stl_uninitialized.h>
 #include <stl_vector.h>
 
-extern "C" void *func_00326750(int size, int align, const char *name);
-extern "C" void func_00326798(void *p, int size, int align, const char *name);
-
-/* gcc 2.96's type_info: the name first, the vtable pointer after it */
-struct TypeInfo {
-    const char *name;
-};
-
-/* typeid(T).name() without typeid: the game's own __tf getter */
-template <class T> struct TypeTag;
-
+// Only the allocator interface is needed here. Allocation is handled by the
+// separately compiled vector insertion routine; this wrapper owns no vector.
 template <class T>
 class GameAlloc {
 public:
@@ -32,37 +26,35 @@ public:
     GameAlloc(const GameAlloc &) throw() {}
     template <class U> GameAlloc(const GameAlloc<U> &) throw() {}
     ~GameAlloc() throw() {}
-    T *allocate(size_type n, const void * = 0) {
-        return (T *)func_00326750(n * sizeof(T), 4, ((TypeInfo *)TypeTag<T>::tf())->name);
-    }
-    void deallocate(T *p, size_type n) {
-        func_00326798(p, n * sizeof(T), 4, ((TypeInfo *)TypeTag<T>::tf())->name);
-    }
+    T *allocate(size_type n, const void *hint = 0);
+    void deallocate(T *p, size_type n);
     size_type max_size() const throw() { return size_t(-1) / sizeof(T); }
     void construct(T *p, const T &v) { new (p) T(v); }
     void destroy(T *p) { p->~T(); }
 };
 
-typedef int Elem;
-extern "C" void *func_005C1100(void);
-template <> struct TypeTag<Elem> { static void *tf() { return func_005C1100(); } };
-typedef vector<Elem, GameAlloc<Elem> > Vec;
-
-
-struct Obj { int x; Vec *v; };
-struct Reader { int vt; int data; };
-extern char MintReader__vtable[];
-extern "C" int func_0024DB78(Reader *, int);
-extern "C" void MReaderBase__structor_0(Reader *, int);
-extern "C" void MintReader__structor_22(Obj *o,int arg) {
- o->v->resize(1);
- Reader r;
- int v=(int)o->v->begin();
- int tag=(int)MintReader__vtable;
- Reader *pr=&r;
- pr->vt=tag;
- pr->data=v;
- func_0024DB78(pr,arg);
- pr->vt=tag;
- MReaderBase__structor_0(pr,0);
+typedef vector<int, GameAlloc<int> > IntVector;
+template<> void IntVector::insert(int *, unsigned int, const int &)
+    __asm__("func_005E73E8");
+// Partial reader ABI: vtable at +0 and destination pointer at +4.
+// The original translation units own both vtables.
+class MReaderBase {
+public:
+    virtual ~MReaderBase() __asm__("func_0020FCE0");
+};
+class MintReader : public MReaderBase {
+    int *destination;
+public:
+    MintReader(int *value) : destination(value) {}
+    ~MintReader() {}
+};
+struct IntegerVectorReader {
+    void *vtable;
+    IntVector *destination;
+};
+extern "C" int func_0024DB78(MReaderBase *, void *);
+extern "C" void MintReader__structor_22(IntegerVectorReader *self, void *input) {
+    self->destination->resize(1);
+    MintReader reader(self->destination->begin());
+    func_0024DB78(&reader, input);
 }
