@@ -386,6 +386,13 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - `r = f(); if (r != 0) { ...; return 1; } return r;` passes `$v0` straight through on the zero path.
 - Struct returned by value: hidden destination pointer arrives in `$a0` (other args shift by one) and
   is returned in `$v0`; the struct is built on the stack and copied (probe).
+- 32-byte `ld/sd` (or `ldl/ldr`) copy loops plus an `lwl/lwr` + `lh` tail = a 2-byte-aligned struct
+  of 0x20*n + 0xE bytes copied by value (the stream library's 0xAE-byte `PacketBuffer`, a `u16`
+  header and `u16 data[0x55]`; reuse its definition from func_0055FCB0.cpp, not a packed or
+  aligned(8) blob). The copy count tells the form: `m = obj->vf();` into a member gives the
+  return temp, an aligned temp-to-temp copy and a runtime-aligned copy into the member; a named
+  local (`T p = ...; m = p;`) drops one, `T p; p = ...;` adds one; `if (!x) return t;` copies the
+  returned temp straight into `$a0`'s destination (0055f7b0, 00560250).
 - `bool` results are used as is (`$v0` tested directly, no `andi 0xff` after the call) (probe).
 - Use each callee's real return type: `void` vs `s32` vs pointer changes `$v0/$v1` choice, tail
   merging and even which branches get merged after the call.
