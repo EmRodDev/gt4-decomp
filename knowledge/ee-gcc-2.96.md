@@ -238,6 +238,13 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   `if (a == 0 || f(...) != 0) return 0;`; two separate early returns or a nested `if` lay it out
   differently. Common in the stream library 0x5547e8+ (00567018, 005672E0, 00567338, 00566F10,
   00556DC8). Its status-returning siblings use `if (err != 0) ret = err; else { ret = 0; ... }`.
+- Epilogue `ld $s0, ...` BEFORE `daddu $v0, $v1` (and `ld $s0` copied into the delay slots of the
+  branches that reach it) = ONE `return ret;` at the very end of the function; a second
+  `return ret;` earlier (even with the same variable) puts the `daddu $v0` first and the delay
+  slots get the copy. Route the other exits to it: `goto done; ... done: return ret;` (0026f0a8).
+- A case laid out after the main path's tail (its stores end in the shared epilogue) while the
+  test that reaches it sits in the middle = `goto overlap;` to a label placed after the main
+  path; gcc keeps source order of blocks (0026f0a8).
 - A chain of field tests ending `beqz last; li v1,1` (slot) `; li v1,2; jr` = one conditional
   expression over the whole chain, `return (a == 0 && b >= 0 && ... && g == 0) ? 1 : 2;`; nesting
   the last test as `if`/`else` or `r = 1; if (g) r = 2;` is if-converted to `movn` (004F0D48).
