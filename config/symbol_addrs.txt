@@ -9034,3 +9034,6 @@ __floatdisf = 0x0057F480; // type:func
 dptoli = 0x0057FA98; // type:func
 fptodp = 0x0057FB50; // type:func
 litodp = 0x0057FB88; // type:func
+// Function starts splat missed: the code after a break-trap stub and its nop padding (2026-10-22)
+func_0058B3B8 = 0x0058B3B8; // type:func
+func_005C1D50 = 0x005C1D50; // type:func
