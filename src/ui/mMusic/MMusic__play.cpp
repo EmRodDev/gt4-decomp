@@ -32,7 +32,7 @@ extern char D_0069C550[];
 extern "C" struct S00659988 *func_005C11A8(void);
 extern "C" void func_00326798(void *p, s32 size, s32 align, const char *name);
 extern "C" void func_002C2878(void *arg0, int arg1);
-extern "C" void *func_002C28D0(void *arg0);
+extern "C" void func_002C28D0(void *arg0, void *arg1);
 extern "C" void func_002C3CA8(s32 a0, const char *a1);
 
 static inline const char *c_str(Str *s) {
@@ -51,7 +51,7 @@ extern "C" void MMusic__play(void *arg0, void *arg1, s32 n, Obj **args) {
         Str *ps;
         s32 h;
         const char *name;
-        func_002C28D0(tmp);
+        func_002C28D0(tmp, arg1);
         {
             Obj *o = *args;
             VEntry *e;
