@@ -38,6 +38,7 @@
 005c1d18 kernel-call stub
 005c1d20 kernel-call stub
 005c1d28 kernel-call stub
+0057f238 strcmp, hand-written assembly in SDK libstream (lbu/nop/bne/subu)
 0057f260 strlen, hand-written with 128-bit MMI instructions (lq/pceqb/ppac5/plzcw); no C compiles to it
 00100228 kernel-call stub (syscall), SDK assembly macro
 00583b88 privileged-instruction stub (sync ei daddu), SDK assembly
