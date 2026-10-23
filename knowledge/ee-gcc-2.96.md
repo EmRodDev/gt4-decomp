@@ -233,6 +233,14 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   on one return = accumulator: `r = 1; switch (k) { case 0: r = 3; break; ... } return r;`.
 - An if-chain of constant results becomes `movz`/`movn`; retail keeping real branches with a stray
   `slti` first = a small `switch` with grouped cases (`case 0: case 2: case 3: return 2;`).
+- Two failure tests that both `return 0`, where the second keeps its own `b epilogue; daddu v0,zero`
+  block (or `beql` + `bnez` with `v0 = 0` in both slots after a call) = ONE condition,
+  `if (a == 0 || f(...) != 0) return 0;`; two separate early returns or a nested `if` lay it out
+  differently. Common in the stream library 0x5547e8+ (00567018, 005672E0, 00567338, 00566F10,
+  00556DC8). Its status-returning siblings use `if (err != 0) ret = err; else { ret = 0; ... }`.
+- A chain of field tests ending `beqz last; li v1,1` (slot) `; li v1,2; jr` = one conditional
+  expression over the whole chain, `return (a == 0 && b >= 0 && ... && g == 0) ? 1 : 2;`; nesting
+  the last test as `if`/`else` or `r = 1; if (g) r = 2;` is if-converted to `movn` (004F0D48).
 - `case 1: f(); return; case 2: g(); break;`: the arm with `return;` keeps a sibling `j`, the last
   one falls into the shared epilogue as `jal`.
 - Same call written separately in several cases ending `break` can merge into one `jal`; computing

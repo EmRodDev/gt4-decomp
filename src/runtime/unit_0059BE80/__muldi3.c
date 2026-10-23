@@ -23,7 +23,7 @@
 #define func_005C1680 func_005C1680
 #define __deregister_frame func_005BEE38
 #define __deregister_frame_info func_005BED78
-#define func_005BA0D8 func_005BA0D8
+#define __divdi3 __divdi3
 #define func_005C0F40 func_005C0F40
 #define GT4MC__FileGT4GameData__loadInstance GT4MC__FileGT4GameData__loadInstance
 #define func_005BCA88 func_005BCA88
@@ -45,7 +45,7 @@
 #define __lshrdi3 func_005BB940
 #define func_005BE508 func_005BE508
 #define func_005BE1A0 func_005BE1A0
-#define func_005BA770 func_005BA770
+#define __moddi3 __moddi3
 #define __muldi3 __muldi3
 #define __ne__C9type_infoRC9type_info func_006163D0
 #define __negdi2 func_005BB8E8
@@ -1052,10 +1052,10 @@ typedef int word_type __attribute__ ((mode (__word__)));
 #define __fixunssfSI	__NW(fixunssf,)
 
 extern DWtype __muldi3 (DWtype, DWtype);
-extern DWtype func_005BA0D8 (DWtype, DWtype);
+extern DWtype __divdi3 (DWtype, DWtype);
 extern UDWtype __udivdi3 (UDWtype, UDWtype);
 extern UDWtype __umoddi3 (UDWtype, UDWtype);
-extern DWtype func_005BA770 (DWtype, DWtype);
+extern DWtype __moddi3 (DWtype, DWtype);
 
 #if (!defined (L_udivdi3) && !defined (L_divdi3) && \
      !defined (L_umoddi3) && !defined (L_moddi3))

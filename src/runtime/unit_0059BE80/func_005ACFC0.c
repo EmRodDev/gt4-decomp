@@ -118,7 +118,7 @@
 #define fabsf func_005A2E20
 #define fclose fclose
 #define fflush fflush
-#define fileno func_005A3408
+#define fileno fileno
 #define finite func_005A2E48
 #define func_005A36F8 func_005A36F8
 #define floor func_0059C720
