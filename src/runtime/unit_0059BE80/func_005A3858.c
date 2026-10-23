@@ -83,7 +83,7 @@
 #define fabsf func_005A2E20
 #define fclose fclose
 #define fflush fflush
-#define fileno func_005A3408
+#define fileno fileno
 #define finite func_005A2E48
 #define fputs func_005A3948
 #define fread func_005A3998

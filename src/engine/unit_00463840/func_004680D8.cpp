@@ -1,7 +1,7 @@
 /* compiler: ee-gcc2.96-no-strict-aliasing */
 typedef unsigned char u8;typedef unsigned short u16;typedef long long s64;
 extern u8 D_00623E40[];
-extern "C" s64 func_005BA0D8(s64,s64);
+extern "C" s64 __divdi3(s64,s64);
 extern "C" int func_004680D8(u16 *data) {
  int total=0,denom=0;
  int i=0,off=0;
@@ -32,7 +32,7 @@ extern "C" int func_004680D8(u16 *data) {
   }
   i++;off+=8;
  }while(i<8);
- total=(int)func_005BA0D8((s64)total*10000,denom);
+ total=(int)__divdi3((s64)total*10000,denom);
  total=(total*70+(data[120]*10000/59160)*20+(data[184]*10000/59160)*10)/100;
  return total<=10000?total:10000;
 }

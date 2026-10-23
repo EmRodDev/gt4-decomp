@@ -223,6 +223,27 @@ original has `$v0` = `$v0` was in use or conflicting at that point; `$a2` for a 
   in the original, with the loaded field in `$a2`; `__builtin_expect` on either polarity, a third
   argument, and a local for the field do not reproduce it (5-16 differ). The branch probabilities
   come from the `bp` pass (predict.c) and the dump `.12.bp` is the place to compare.
+- When the original did NOT hoist (args set after the branch, the tested field in a low register):
+  haifa-sched.c only schedules a loop-free function as one interblock region while it has at most
+  `MAX_RGN_BLOCKS` = 10 basic blocks (and 100 insn luids); above that every block is its own
+  region and no motion happens. So the source had one block more: count `Start of basic block` in
+  the `.16.regmove` dump (10 = hoists, 11 = does not). func_002D09D8 (mScrollArrow::onButtonPress):
+  `if (window) { if/else of four tail calls } return 0;` matches, `if (!window) return 0;` first has
+  10 blocks and hoists. A function that falls off the end gets an extra block too (`clobber v0`).
+  Other ways out: `is_cfg_nonregular` (a non-jump insn with a REG_LABEL note, computed gotos, EH).
+
+### 8c. `beql`/`bnel` (annulled) where the original has a plain branch, or the reverse
+- Pass: dbr (reorg.c `fill_slots_from_thread`), with liveness from resource.c
+  `mark_target_live_regs`. An insn taken from the branch target goes in without annulling only
+  when it sets nothing live on the fallthrough path. That liveness is approximate: it starts at the
+  basic block that `find_basic_block` finds by scanning back to the previous BARRIER (none: the
+  function start, block 0) and walks forward to the fallthrough insn, and a REG_DEAD note only
+  takes effect at the next CODE_LABEL. So a register that died in the branch (`$v0` compared and
+  dead) still counts as live when no label or barrier lies between, and the slot is annulled.
+- Lever: the layout before the fallthrough. Separate statements with their own early return
+  (`if (a) return 0; if (f()) return 0;`) put a jump + BARRIER before the next test and give plain
+  branches; one `a || f()` condition gives the annulled form (func_00564990: both forms seen, the
+  registers of the separate form still differ there).
 
 ### 8b. Functions that behave as if sched1 never ran (experimental profile ee-gcc2.96-nosched1)
 - Symptom: alloc_table shows a pseudo losing its suggested argument register because sched1
@@ -280,6 +301,7 @@ original has `$v0` = `$v0` was in use or conflicting at that point; `$a2` for a 
 | func_00423EE0 | 3 | `b.y` 5000 before `a.y` 2500 | needs a.y later / b.y earlier | 2 differ, open |
 | func_0032B798 | 6 | two arg moves equal down to LUID | none by statement order | 2 differ, open |
 | func_002D0AD8 | 8 | original hoists `a0 = self` above the `bne`, field in `$a2` | `__builtin_expect`, 3rd arg, local | 5-16 differ, open |
+| func_002D09D8 | 8 | mine hoists `a0`/`a1` above the `bne`, original does not | 11 basic blocks (`if (w) {...} return 0;`) | MATCH |
 | func_00359A38 | - | the recorded draft is a different function (32/32 differ): no register problem to read | | skip |
 | build/rtl/probe0.cpp | 2 | demo: greg order 86 97 85 84 87 = `$s0..$s3` + `$a0` | | - |
 | func_00423EE0 | 3/6 | a.y loaded first (pointer a dies there), 2500 vs 5000 | `f32 ay = a->f.y;` first | MATCH |

@@ -293,3 +293,6 @@
 005b0f78 sceSifWriteBackDCache: hand asm (labelled instruction in a delay slot)
 005b7b18 kernel-mode switch: mtc0 ErrorEPC then eret
 005b9d00 exception handler: COP0 save/restore, syscall, eret
+0058b120 kernel-call stub table (break 0,1 / addiu $zero,$zero,N entries)
+0058b1e0 kernel-call stub table (break 0,1 / addiu $zero,$zero,N entries)
+0058b300 kernel-call stub table (break 0,1 / addiu $zero,$zero,N entries)

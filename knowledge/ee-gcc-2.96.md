@@ -233,6 +233,21 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   on one return = accumulator: `r = 1; switch (k) { case 0: r = 3; break; ... } return r;`.
 - An if-chain of constant results becomes `movz`/`movn`; retail keeping real branches with a stray
   `slti` first = a small `switch` with grouped cases (`case 0: case 2: case 3: return 2;`).
+- Two failure tests that both `return 0`, where the second keeps its own `b epilogue; daddu v0,zero`
+  block (or `beql` + `bnez` with `v0 = 0` in both slots after a call) = ONE condition,
+  `if (a == 0 || f(...) != 0) return 0;`; two separate early returns or a nested `if` lay it out
+  differently. Common in the stream library 0x5547e8+ (00567018, 005672E0, 00567338, 00566F10,
+  00556DC8). Its status-returning siblings use `if (err != 0) ret = err; else { ret = 0; ... }`.
+- Epilogue `ld $s0, ...` BEFORE `daddu $v0, $v1` (and `ld $s0` copied into the delay slots of the
+  branches that reach it) = ONE `return ret;` at the very end of the function; a second
+  `return ret;` earlier (even with the same variable) puts the `daddu $v0` first and the delay
+  slots get the copy. Route the other exits to it: `goto done; ... done: return ret;` (0026f0a8).
+- A case laid out after the main path's tail (its stores end in the shared epilogue) while the
+  test that reaches it sits in the middle = `goto overlap;` to a label placed after the main
+  path; gcc keeps source order of blocks (0026f0a8).
+- A chain of field tests ending `beqz last; li v1,1` (slot) `; li v1,2; jr` = one conditional
+  expression over the whole chain, `return (a == 0 && b >= 0 && ... && g == 0) ? 1 : 2;`; nesting
+  the last test as `if`/`else` or `r = 1; if (g) r = 2;` is if-converted to `movn` (004F0D48).
 - `case 1: f(); return; case 2: g(); break;`: the arm with `return;` keeps a sibling `j`, the last
   one falls into the shared epilogue as `jal`.
 - Same call written separately in several cases ending `break` can merge into one `jal`; computing
@@ -371,6 +386,13 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - `r = f(); if (r != 0) { ...; return 1; } return r;` passes `$v0` straight through on the zero path.
 - Struct returned by value: hidden destination pointer arrives in `$a0` (other args shift by one) and
   is returned in `$v0`; the struct is built on the stack and copied (probe).
+- 32-byte `ld/sd` (or `ldl/ldr`) copy loops plus an `lwl/lwr` + `lh` tail = a 2-byte-aligned struct
+  of 0x20*n + 0xE bytes copied by value (the stream library's 0xAE-byte `PacketBuffer`, a `u16`
+  header and `u16 data[0x55]`; reuse its definition from func_0055FCB0.cpp, not a packed or
+  aligned(8) blob). The copy count tells the form: `m = obj->vf();` into a member gives the
+  return temp, an aligned temp-to-temp copy and a runtime-aligned copy into the member; a named
+  local (`T p = ...; m = p;`) drops one, `T p; p = ...;` adds one; `if (!x) return t;` copies the
+  returned temp straight into `$a0`'s destination (0055f7b0, 00560250).
 - `bool` results are used as is (`$v0` tested directly, no `andi 0xff` after the call) (probe).
 - Use each callee's real return type: `void` vs `s32` vs pointer changes `$v0/$v1` choice, tail
   merging and even which branches get merged after the call.

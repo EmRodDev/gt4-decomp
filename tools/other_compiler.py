@@ -83,6 +83,8 @@ def name_addresses(body):
         return None
     decls = {k: v for k, v in decls.items() if not re.search(r"\b" + k + r"\b", head)}
     lines = head.rsplit("\n", 1)
+    if len(lines) == 1:  # the signature is the first line: declarations go before it
+        return "".join(decls.values()) + head + brace + new
     return lines[0] + "\n" + "".join(decls.values()) + lines[1] + brace + new
 
 
