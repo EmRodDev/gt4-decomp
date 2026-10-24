@@ -321,7 +321,7 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
     `ld` at each use (call arguments, `ldl`/`ldr` copies into a struct) is a PARAMETER of type
     `struct { int lo, hi; }` (no machine mode on MIPS, so it lives in its stack slot); `s64` or a
     DImode struct forwards the register (`daddu`). 2026-10-24, network unit, all as `.c`: 00520F90,
-    00521128 (each 4 off for months), 005223B8 and 0053ECE8 (with `ee-gcc2.96-as2004g`).
+    00521128 (each 4 off for months), 0053ECE8 (with `ee-gcc2.96-as2004g`); 005223B8 matched upstream the same way with `ee-gcc2.9-991111`.
   - `lbu; addiu -1; sb` = `signed char` field decremented; `unsigned char` gives `addiu 0xFF`.
   - `addu a0, idx, self` (index first) for an address passed to a call: write the integer sum
     `(void *)(index * 0x24 + (int)self + 0x6C)`; `&self->block[index]` gives `addu a0, self, idx`.
