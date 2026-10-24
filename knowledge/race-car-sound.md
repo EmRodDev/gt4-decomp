@@ -86,3 +86,14 @@ Names do not agree: GT HD (medium confidence) calls the loader `SetupBrakeHeatPa
 per-frame function that computes the levels, so at least the second name looks wrong [inferred]. The table
 may be a general per-view parameter table that more than one system reads; slot 3 may feed other turbo
 sounds besides the blow-off [unknown].
+
+## Spec II (SCUS_974.36) call chain reported by mat-garcia (live debugging, 2026-10-22)
+
+All addresses below are Spec II; the v1.01 column is our inference from shape, not checked.
+
+| role | Spec II | v1.01 |
+|---|---|---|
+| per-car sound update, called through a vtable from 0x283B48 and 0x2980F8 | 0x001E8B80 (call at 0x1E8C6C) | unknown; same code region as RacePS2Base::updateVolume (Spec II 0x1EC328) [inferred] |
+| builds level[band] (slot 3 table row x car float) | 0x0027E420 | 0x003B5E80 [confirmed in the table above] |
+| band loop (14 bands): gate `0.001 <= level`, then Play | 0x00273480 | 0x00392640 [inferred: it is the voice-group updater that reaches 0x392EB8] |
+| `if (x*y != 0) SePlayer::Play` | 0x00273D48 | 0x00392EB8 [matched in this repo] |
