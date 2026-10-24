@@ -84,7 +84,7 @@ the tools. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Setup
 
-Requirements: Python 3.11+ with `rabbitizer` (`pip install rabbitizer`), and Linux or WSL (Ubuntu).
+Requirements: Python 3.11+ with `rabbitizer` (`pip install rabbitizer`), and Linux or WSL (Ubuntu). To run the unit tests with the right Python (it falls back to the project virtual environment when the default python3 has no `rabbitizer`): `bash tools/run_tests.sh`.
 
 1. Dump your disc and place the image as described in [`orig/README.md`](orig/README.md), then
    extract and convert the executable (commands there).

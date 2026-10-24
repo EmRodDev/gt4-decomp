@@ -21,7 +21,7 @@ the script side is in [script-engine.md](script-engine.md) and the basic types i
   at +4; entry 0 is the type_info pointer, entry `i + 1` is `virtual_i`. The vptr is at object offset +4 for every
   `RefCounter`-derived class (offset 0 holds the reference count word).
 - **fns matched**: RTTI-named functions (virtuals and constructors/destructors in `symbol_addrs.txt`) that have a matched
-  source in `src/`, out of those that exist (snapshot of 2026-10-08). Library-wide numbers are in
+  source in `src/`, out of those that exist (snapshot of 2026-10-08, since then most of these have matched: see coverage-map.md). Library-wide numbers are in
   [coverage-map.md](coverage-map.md).
 - **natives**: script-callable methods registered for the class (`config/adhoc_methods.txt`, 1,061 entries in 113 script
   classes). Script class `MFoo` corresponds to the C++ class `mFoo` (96 of the 113 script names map this way; the

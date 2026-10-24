@@ -4,7 +4,7 @@ What the executable (`CORE.GT4`, NTSC-U SCUS-97328 v1.01) is made of, subsystem 
 classes and address ranges implement it, how much is matched, and how it connects to the rest. This is the
 semantic map that the `func_00xxxxxx` names in `src/` do not give.
 
-Sources: `knowledge/coverage-map.md` and `progress/report.json` (match numbers, 2026-10-08), `config/classes.json`
+Sources: `knowledge/coverage-map.md` and `progress/report.json` (match numbers, refreshed 2026-10-23 in coverage-map.md; the per-class tables below are from the 2026-10-08 snapshot), `config/classes.json`
 (509 RTTI classes), `config/symbol_addrs.txt`, `config/units.txt` (783 units), `config/adhoc_methods.txt`, the matched files in
 `src/`, and the community's [Gran Turismo Modding Hub](https://nenkai.github.io/gt-modding-hub/) for what the game
 does with its data files. Statements marked **inferred** come from names or call shapes; **unknown** means not yet
@@ -121,7 +121,7 @@ behaviour to it directly. "Faces" are the leaf widgets that draw something.
   Readers (`MfloatReader`, `MstringReader`...), `mXml`/`mDomNode`, `mProject` and `mManager` turn layout XML into widgets.
 - Platform side: `mRenderContext(PS2)` (7.5 KB, owns pages and drawing), `mUpdateContext(PS2)` (pad/analog input per frame), `mWindowContext(PS2)`, `mImagePS2`,
   `mMoviePS2`, `mFlashPS2`, `mModelSetPS2`.
-- Range: 0x1FC4D8-0x2EA547 (a unit per class, mostly alphabetical); 180 `m*` units hold 2,000 of 3,416 functions matched (coverage-map.md, 20.5% by bytes there because the
+- Range: 0x1FC4D8-0x2EA547 (a unit per class, mostly alphabetical); 180 `m*` units hold 3,396 of 3,416 functions matched (coverage-map.md, 2026-10-23; the 2026-10-08 snapshot said 2,000 and 20.5% by bytes because the
   large faces are open).
 - Connects to: the script VM (widgets are modules; `mCall` on a widget runs a native or script method), input (pad state), the render path, and the race HUD, which
   is a separate display hierarchy (section 5).

@@ -1,61 +1,71 @@
-# Coverage map (2026-10-08)
+# Coverage map (2026-10-23)
 
 What is matched and what is missing, by logic rather than by address. Numbers from
-`python tools/coverage.py` (progress/report.json before this session's matches, 15,851 functions /
-1.13 MB) and `python tools/families.py`; unit names come from config/units.txt (RTTI class
-clusters), unnamed clusters are `unit_<first address>`.
+`python tools/coverage.py` (progress/report.json built from commit `0d69f6ab`: **30,106 of 30,876
+functions, 88.6% of the code bytes**) and `python tools/families.py`; unit names come from
+config/units.txt (RTTI class clusters), unnamed clusters are `unit_<first address>`.
+Functions written in assembly in the original (config/asm_functions.txt, 289 entries) are not counted.
+The earlier version of this page (2026-10-08, 15,851 functions, 20% of the bytes) is in the git history.
 
 ## By subsystem
 
-| subsystem | units | functions done/total | bytes matched/total | missing |
-|---|---|---|---|---|
-| unnamed clusters (`unit_*`, no RTTI) | 344 | 7,596 / 18,222 | 0.79 / 3.85 MB (20.6%) | 3.06 MB |
-| UI faces (`m*`: mSceneViewFace, mListBox, mFlashFace...) | 180 | 2,000 / 3,416 | 102 / 497 KB (20.5%) | 395 KB |
-| STL, C++ runtime, libc (0x596fa0 and up) | 49 | 4,607 / 6,365 | 162 / 522 KB (31.1%) | 360 KB |
-| race simulation (Race*, Car*, Dynamics*) | 123 | 767 / 1,592 | 27 / 234 KB (11.6%) | 207 KB |
-| engine handles (`h*`: hString, hInt...) | 34 | 610 / 982 | 32 / 121 KB (26.7%) | 89 KB |
-| other named classes | 44 | 222 / 475 | 13 / 78 KB (16.3%) | 65 KB |
-| script-bound model classes (`M*`) | 8 | 49 / 76 | 2 / 7 KB | 6 KB |
+```
+subsystem                                  units  funcs   done    bytes  matched     %  missing
+unnamed clusters (unit_*)                    344  18144  17466  3816372  3295908  86.4   520464
+STL / C++ runtime / libc (library)            49   6191   6149   514712   481816  93.6    32896
+UI faces (m*)                                180   3416   3396   494800   474416  95.9    20384
+race simulation (Race*/Car*/Dynamics*)       123   1592   1571   232308   212916  91.7    19392
+other named classes                           44    475    471    77328    73536  95.1     3792
+engine handles (h*)                           34    982    977   120156   116900  97.3     3256
+script-bound model classes (M*)                8     76     76     7440     7440 100.0        0
+all                                          782  30876  30106  5263116  4662932  88.6   600184
+```
 
-Done or nearly done: the compiler-generated families. Static initialisation (244 of 309, the rest
-parked: one delay-slot decision, see gt4.md), the script-engine class registrations (131 of 135
-after this session, 300 KB -> 43 KB left), two-instruction functions, m2c drafts that compile as
-is. Matched functions are mostly small: 50.9% of functions but 21.3% of bytes.
+## Units with the most unmatched bytes
 
-## The big unnamed clusters (where the bytes are)
+```
+unit                                            start funcs  done   bytes matched     %  subsystem
+unit_00494578                                00494578  3646  3364  742376  581572  78.3  unnamed clusters (unit_*)
+unit_0046A050                                0046a050  1020  1001  170336  145456  85.4  unnamed clusters (unit_*)
+unit_003F7150                                003f7150   238   221   66120   43768  66.2  unnamed clusters (unit_*)
+unit_00415E90                                00415e90   255   237   67480   45552  67.5  unnamed clusters (unit_*)
+unit_005547E8                                005547e8   575   520   75992   55316  72.8  unnamed clusters (unit_*)
+unit_00408DB8                                00408db8   181   171   50432   30280  60.0  unnamed clusters (unit_*)
+unit_0057A128                                0057a128   552   495  101416   81540  80.4  unnamed clusters (unit_*)
+unit_00378778                                00378778   521   510   57412   38580  67.2  unnamed clusters (unit_*)
+unit_0059BE80                                0059be80   528   501  140280  125264  89.3  STL / C++ runtime / libc (library)
+unit_0034E9A0                                0034e9a0   361   350   88920   73952  83.2  unnamed clusters (unit_*)
+unit_003CCAE0                                003ccae0   127   116   35940   21628  60.2  unnamed clusters (unit_*)
+unit_00364818                                00364818   266   259   53964   39780  73.7  unnamed clusters (unit_*)
+```
 
-| unit | range | functions done/total | bytes done/total | what it is (strings, shape) |
-|---|---|---|---|---|
-| unit_00494578 | 0x494578-0x54db98 | 837 / 3,689 | 39 / 755 KB (5%) | network stack, identified in THIRD_PARTY.md: expat 1.95.7 at 0x4ce828-0x4e6bd8 (MIT; 321 of 323 functions match from source with tools/libmatch.py, 236 in src/; doProlog and 3 others wait for nothrow stubs, 9 on a gas quirk), Polyphony's pdistd-http and netcnf (0x4e6bd8-0x4ee7c8), and SCE-RT/Medius 2.8 (Sony Online, not GameSpy: 0x4f10d0-0x5455xx, proprietary: Medius client, MGCL, dme, rt_udp, rt_upnp, rt_crypt with SHA-1/MD5, libnetb); C code, 55% of functions <= 128 B |
-| unit_0046A050 | 0x46a050-0x4944b0 | 309 / 1,033 | 17 / 173 KB (10%) | image/format code: JFIF, Deflated/Inflator (zlib-style C++), replay "getDate", units |
-| unit_004271E8 | 0x4271e8-0x44d3f0 | 677 / 1,452 | 33 / 155 KB (21%) | race front end glue: camera, skinning, snapshot paths, RaceBasic; 79% tiny functions (accessors) |
-| unit_00101400 | 0x101400-0x124178 | 262 / 584 | 40 / 142 KB (28%) | game-mode menus (labomode, race-end, option), script callbacks |
-| unit_001DC8F0 | 0x1dc8f0-0x1fc448 | 185 / 373 | 20 / 130 KB (15%) | online menus (MNetwork::login, account names), car record lists |
-| unit_0017FCB0 | 0x17fcb0-0x19b3a0 | 102 / 306 | 23 / 113 KB (21%) | photo mode (mPhotoMapWindow, MODE_SAVE_PHOTO_FILM), camera |
-| unit_0034E9A0 | 0x34e9a0-0x363b10 | 136 / 361 | 4 / 89 KB (5%) | suspension/physics (Bound/Rebound), almost no strings: float math |
-| unit_005676B0, unit_005547E8 | 0x5547e8-0x57a058 | 353 / 1,044 | 15 / 153 KB (10%) | stream/socket library (iostream, "corrupted stream", nb_ctl, %u.%u.%u.%u): library C++ |
-| unit_0057A128, unit_0059BE80 | 0x57a128-0x5bfb00 | 181 / 1,268 | 6 / 251 KB (2%) | libc/libstdc++ (ostream, istdiostream, (null)); 267 functions have the Sony-SDK prologue (other compiler) |
-| unit_00415E90, unit_003F7150, unit_00364818 | 0x364818-0x4074f0, 0x415e90-0x426600 | 239 / 759 | 9 / 188 KB (5%) | no strings at all: vehicle dynamics / VU-side math (0x4a4550 scratchpad base pattern is nearby) |
+## What is left (open functions with no source: 769, 601 KB)
 
-Library vs game: everything from 0x5547e8 up is library (streams, GameSpy transport, libc,
-libstdc++, SDK), about 1.2 MB of .text, of which the SGI STL templates (rb-tree, vector, list
-members per element type) are the only part that matches with our compiler flags (gt4.md: the
-libraries free stack temporaries per statement, we do not; the Sony SDK parts have another
-compiler's prologue). The network stack at 0x494578-0x54db98 is C, compiled with the game's
-flags, and should match once drafted as C (m2c already matches short C functions there).
+| class | functions | bytes | note |
+|---|---|---|---|
+| ordinary C/C++ | 652 | 511 KB | the hard residue: large functions (many over 1 KB), register-allocation and scheduling differences; see knowledge/deferred-to-last.md |
+| MMI (128-bit) | 47 | 39 KB | `plzcw`, `pcpy*`, `pextl*`: C cannot express most of them; single-instruction intrinsics only (tools/asm_policy.py) |
+| fragment | 16 | 25 KB | borrows its caller's registers or jumps into its neighbours; usually one function cut in pieces by the inventory |
+| VU0 macro | 44 | 24 KB | COP2/VU0 sequences; the pure-vector ones were moved to config/asm_functions.txt |
+| trapping `daddi`/`dsub` | 10 | 2 KB | soft-float library, hand-written in the original |
 
-## Where the next tools should aim
+## How the numbers are verified
 
-1. DONE (tools/accessors.py, 491 functions, ~100 KB): the accessor families and every other
-   straight-line handle/getter function in the inventory, generated from the assembly. What is
-   left of them has real control flow (`branch at` in `scan`'s reasons) or float/other shapes.
-2. PARKED: the 8 remaining mSceneViewFace event virtuals are individual hand variants (gt4.md);
-   the ee-gcc 2.9 functions (tools/other_compiler.py) now compile with their compiler, 10 matched,
-   208 near-miss drafts in build/auto/other/ wait for the permuter and fragments passes.
-3. Static-init leftovers (65 functions, 22 KB): only if the delay-slot decision becomes
-   predictable (reorg.c in the ee-gcc source would settle it); otherwise leave them.
-4. The physics and dynamics clusters (unit_0034E9A0, unit_00415E90, unit_003F7150: 280 KB,
-   5% done): float code with no strings, the right target for the model with the float rules in
-   ee-gcc-2.96.md, not for templates.
-5. The network C code (unit_00494578, 755 KB): C, flat, many tiny functions; m2c drafts plus
-   near_fix.py are the cheapest path, then the model for the XML/GameSpy state machines.
+CI (`.github/workflows/check.yml`, `tools/ci_local.sh`) checks that every source compiles, the asm policy
+and the source layout; it does not prove a match. The proof is `python tools/build.py`: it compiles
+every source, links the result over the executable you supply and compares both loaded segments with
+SHA-1. The figures above are written by `tools/publish_progress.py`, which refuses to run unless the last
+full build describes the current commit and its working tree was clean (the `progress` branch records the
+commit). If you cannot run the build (it needs your own copy of the game), treat a figure as the last
+one the maintainers verified, not as something CI re-checks.
+
+## Where the next effort goes
+
+1. The ordinary residue is matched with compiler profiles (`tools/profile_sweep.py`), the permuter
+   (`tools/finish_near.py`) and public sources where they exist (zlib/gzip, newlib, libio, Expat:
+   `tools/libmatch.py`). New contributors have found most of the recent gains in the SDK and library ranges
+   (0x4A7000-0x5B7000) with the ee-gcc 2.9 profiles.
+2. Readability is tracked separately (`python tools/readability.py`): about 90% of the sources still have no
+   explaining comment; `tools/readable_gate.py` is the gate for edits that only change names and comments.
+3. The pieces the native port needs from the decompilation are listed in the private lab's
+   R1/A1 dependency table; the large model-render and sound-update functions are the open ones.
