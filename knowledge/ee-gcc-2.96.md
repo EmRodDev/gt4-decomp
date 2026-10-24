@@ -317,6 +317,11 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
     seen in the network code 0x536158/0x537770/0x53dac0. A 4-aligned 8-byte struct passed by value
     is declared `typedef unsigned long long T __attribute__((aligned(4)));` (a two-int struct is
     copied through the stack first).
+  - The reverse: an incoming 8-byte argument stored at entry (`sd $a1, 0($sp)`) and reloaded with
+    `ld` at each use (call arguments, `ldl`/`ldr` copies into a struct) is a PARAMETER of type
+    `struct { int lo, hi; }` (no machine mode on MIPS, so it lives in its stack slot); `s64` or a
+    DImode struct forwards the register (`daddu`). 2026-10-24, network unit, all as `.c`: 00520F90,
+    00521128 (each 4 off for months), 005223B8 and 0053ECE8 (with `ee-gcc2.96-as2004g`).
   - `lbu; addiu -1; sb` = `signed char` field decremented; `unsigned char` gives `addiu 0xFF`.
   - `addu a0, idx, self` (index first) for an address passed to a call: write the integer sum
     `(void *)(index * 0x24 + (int)self + 0x6C)`; `&self->block[index]` gives `addu a0, self, idx`.
