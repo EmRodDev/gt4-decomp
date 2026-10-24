@@ -153,16 +153,6 @@ dir = "~/.local/share/gt4/ee-gcc2.96"
 command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -fno-schedule-insns -Iinclude"
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
 
-# EXPERIMENTAL (opus-solo, 2026-10-24): the game's flags plus -falign-labels=8. Every label is
-# 8-aligned, including labels reached by fall-through (cross-jumped shared tails), which the
-# default flags only do after a BARRIER: retail's padding nops before such labels. Found on the
-# twin switches 0x0049def8 / 0x0049e090 (9 -> 0 each, nothing else changed); review before
-# treating it as a real build profile.
-[compilers."ee-gcc2.96-alignlabels"]
-dir = "~/.local/share/gt4/ee-gcc2.96"
-command = "{dir}/bin/ee-gcc -c -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -falign-labels=8 -Iinclude"
-archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
-
 
 [compilers."ee-gcc2.96-as2004g"]
 dir = "~/.local/share/gt4/ee-gcc2.96"
