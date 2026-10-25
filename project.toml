@@ -104,13 +104,13 @@ archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-
 # assembler does not (build/auto/as_test.py), so this is a per-object property, not a project one.
 [compilers."ee-gcc2.96-nsa-nosib-as2004"]
 dir = "~/.local/share/gt4/compilers/ee-gcc2.96-nsa-nosib"
-command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -fno-optimize-sibling-calls -Iinclude\""
+command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as -G0\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -fno-strict-aliasing -fno-optimize-sibling-calls -Iinclude\""
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
 needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
 
 [compilers."ee-gcc2.96-as2004"]
 dir = "~/.local/share/gt4/ee-gcc2.96"
-command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -Iinclude\""
+command = "bash {tools}/cc_as.sh \"$HOME/.local/share/gt4/compilers/ee-gcc3.2-040921/bin/ee-as -G0\" \"{dir}/bin/ee-gcc -B {dir}/bin/ee- -O2 -G0 -fno-exceptions -Iinclude\""
 archive = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc2.96.tar.xz"
 needs = { "ee-gcc3.2-040921" = "https://github.com/decompme/compilers/releases/download/compilers/ee-gcc3.2-040921.tar.xz" }
 
