@@ -214,10 +214,35 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr, section=".ro
         if len(bases) != 1 or None in bases:
             continue
         base = bases.pop()
-        o = base - data_addr
-        if 0 <= o and o + len(rodata) <= len(orig_data) and orig_data[o:o + len(rodata)] == rodata:
+        how = rodata_matches(rodata, orig_data, base - data_addr)
+        if how:
             out[addr] = base
+            if how == "padded":
+                PADDED_DATA.add((addr, section))
     return out
+
+
+# Sections whose bytes are the original's except for the assembler's zero padding at the end
+# (place_rodata): located at their address without loading, like a shared constant pool, so the
+# image keeps the original's bytes after their content.
+PADDED_DATA = set()
+
+
+def rodata_matches(data, orig, o):
+    """Whether an object's section holds the original's bytes at offset o of the original's data:
+    all of it ("full"), or all but a zero tail under 16 bytes where the original has something else
+    ("padded": the assembler rounds the section up to its alignment, so 00451238's 12 bytes of
+    constants come out 16 long and 00537770's 0x18-byte jump table 0x20). None otherwise."""
+    if o < 0:
+        return None
+    if o + len(data) <= len(orig) and orig[o:o + len(data)] == data:
+        return "full"
+    k = 0
+    while k < len(data) and o + k < len(orig) and orig[o + k] == data[k]:
+        k += 1
+    if 0 < k < len(data) and len(data) - k < 16 and len(data) % 8 == 0 and not any(data[k:]):
+        return "padded"
+    return None
 
 
 R_MIPS_32 = 2
@@ -668,8 +693,9 @@ cd "$d/src"
                   for addr, base in placed.items() if addr in objects]
     data_plan, shared, end = [], [], data_addr
     for addr, section, base in sorted(placements, key=lambda item: item[2]):
-        if base < end:
-            # Sharing is safe only after the independent original-byte check.
+        if base < end or (addr, section) in PADDED_DATA:
+            # Sharing is safe only after the independent original-byte check; a padded section is
+            # located the same way, its padding never overwriting the original's next bytes.
             shared.append((addr, section, base))
             continue
         data_plan.append((addr, section, base))
