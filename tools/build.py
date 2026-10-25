@@ -216,6 +216,16 @@ def place_rodata(addrs, data_addr, orig_data, orig_text, text_addr, section=".ro
             continue
         base = bases.pop()
         how = rodata_matches(rodata, orig_data, base - data_addr)
+        o_ = base - data_addr
+        if not how and section == ".gcc_except_table" and len(rodata) >= 12 and rodata[-4:] == b"\xff\xff\xff\xff" \
+                and 0 <= o_ and o_ + len(rodata) <= len(orig_data) and orig_data[o_ + 8:o_ + len(rodata) - 4] == rodata[8:-4]:
+            # A function compiled alone gets an exception table of its own: an 8-byte header, its
+            # entries, the -1 terminator. The original compiled the functions of a file together into
+            # one table, so a function's entries sit inside it, after the previous function's entries
+            # and before the next one's. The code only reaches its entries (8 bytes past the header),
+            # so those are compared, every word; the section is located only (NOLOAD, like a padded
+            # one): the image keeps the original's bytes.
+            how = "padded"
         if how:
             out[addr] = base
             if how == "padded":
