@@ -135,8 +135,9 @@ def select_source_objects(parsed, sources, text_end, section_places, resolve=sym
         if unsupported:
             status[addr] = "brings its own data: " + ", ".join(sorted(unsupported))
         elif unplaced:
+            why = BYREF_WHY.get(addr) if unplaced == {".rodata"} else None
             status[addr] = ("brings its own data: " + ", ".join(sorted(unplaced))
-                            + " (its place in the original could not be confirmed)")
+                            + " (its place in the original could not be confirmed" + (f": {why}" if why else "") + ")")
         elif bad_syms:
             status[addr] = "references unnamed-address symbols: " + ", ".join(bad_syms[:3])
         elif addr + size > text_end:
@@ -272,6 +273,184 @@ def read_elf(path):
             relocs[s[7]] = [(o, i & 0xFF, i >> 8) for o, i in
                             (struct.unpack_from("<II", d, s[4] + 8 * r) for r in range(s[5] // 8))]
     return {"sections": sections, "symbols": symbols, "relocs": relocs}
+
+
+def elf_info(path):
+    """(sections {name: bytes}, relocations {section name: [(offset, type, symbol index)]},
+    symbols [(name, value, section name, is local)]) of an ELF32 little-endian object: read_elf
+    keyed by section name."""
+    e = read_elf(path)
+    names = [x["name"] for x in e["sections"]]
+    sections = {x["name"]: x["data"] for x in e["sections"] if x["name"]}
+    syms = [(n, v, names[sh] if sh < len(names) else "", local) for n, v, sh, local in e["symbols"]]
+    relocs = {names[i]: r for i, r in e["relocs"].items()}
+    return sections, relocs, syms
+
+
+BYREF_WHY = {}
+
+
+def place_rodata_by_reference(addrs, data_addr, orig_data, orig_text, text_addr):
+    """{function address: (patched object path, base)} for objects whose .rodata has no single
+    place in the original (the original's unit keeps some of these constants among other
+    functions' constants): each %hi/%lo pair the code uses gives, from the original's instructions,
+    the address of the constant it reads. Every constant must hold the original's bytes there (to
+    the next constant the code reads, or the section's end less the assembler's zero padding; a
+    jump table relocated like place_rodata does) and every pair reading one constant must agree.
+    The object's copy then gets addends that make each pair resolve to that address when .rodata
+    sits at `base` (the start of .data, NOLOAD): the judge ignores those fields, and the image
+    comparison checks every word. Objects whose .rodata holds pointers into itself, or that read it
+    other than through %hi/%lo pairs, are not taken."""
+    if not addrs:
+        return {}
+    local = os.path.join(OUT, "pobj")
+    os.makedirs(local, exist_ok=True)
+    names = " ".join(f"func_{a:08X}.o" for a in addrs)
+    wsl(f'cd "{WSL_DIR}/obj" && cp {names} {to_wsl(local)}/\n')
+    sext = lambda v: (v & 0xFFFF) - 0x10000 if v & 0x8000 else v & 0xFFFF
+    tword = lambda a: struct.unpack_from("<I", orig_text, a - text_addr)[0]
+    base = data_addr
+    out = {}
+    for addr in addrs:
+        path = os.path.join(local, f"func_{addr:08X}.o")
+        sections, relocs, syms = elf_info(path)
+        rodata = sections.get(".rodata", b"")
+        rrel = relocs.get(".rodata", [])
+        if not rodata or any(t != 2 or syms[si][2] not in (".text", ".rodata") for o, t, si in rrel):
+            BYREF_WHY[addr] = 'pointers inside .rodata to something other than its own code or constants'
+            continue
+        self_ptrs = {o: struct.unpack_from("<I", rodata, o)[0] for o, t, si in rrel if syms[si][2] == ".rodata"}
+        if any(syms[si][0].endswith("tab") or syms[si][2].endswith("tab") for o, t, si in relocs.get(".text", [])):
+            BYREF_WHY[addr] = 'stub table'
+            continue  # code reaching into a section the link discards (libmatch's stub table)
+        words = bytearray(rodata)
+        for o, t, si in rrel:  # a jump table: the function's own addresses (a label's own offset added)
+            if syms[si][2] == ".text":
+                struct.pack_into("<I", words, o, (addr + syms[si][1] + struct.unpack_from("<I", words, o)[0]) & 0xFFFFFFFF)
+        text = sections[".text"]
+        if any(t == 5 and struct.unpack_from("<I", text, o)[0] >> 26 != 0x0F
+               for o, t, si in relocs.get(".text", []) if syms[si][0] == ".rodata"):
+            # ee-as 2.96 can leave a load opcode on the %hi of an indexed-load macro
+            # (knowledge/ee-gcc-2.96.md): the judge ignores relocated words, the image does not.
+            BYREF_WHY[addr] = 'a %hi word that is not a lui (indexed-load macro)'
+            continue
+        pairs, ok = [], True
+        pending, last = [], []
+        for off, t, si in relocs.get(".text", []):  # table order: the MIPS ABI pairs %hi with the next %lo
+            if syms[si][0] != ".rodata":
+                continue
+            if t == 5:
+                pending.append(off)
+            elif t == 6:
+                if pending:
+                    last, pending = pending, []
+                if not last:
+                    ok = False
+                    break
+                lo_mine = struct.unpack_from("<I", text, off)[0]
+                for hi in last:
+                    hi_mine = struct.unpack_from("<I", text, hi)[0]
+                    mine = ((hi_mine & 0xFFFF) << 16) + sext(lo_mine)
+                    target = ((tword(addr + hi) & 0xFFFF) << 16) + sext(tword(addr + off))
+                    pairs.append((hi, off, mine, target))
+            else:
+                ok = False  # read other than through %hi/%lo pairs
+                break
+        if pending:
+            ok = False
+        # one %hi serving several %lo: its upper half must be the same for each of them
+        his = {}
+        for hi, lo, mine, target in pairs:
+            his.setdefault(hi, set()).add(((target - base + 0x8000) >> 16) & 0xFFFF)
+        if any(len(v) > 1 for v in his.values()):
+            ok = False
+        if ok and not pairs and not any(syms[si][0] == ".rodata" or syms[si][2] == ".rodata"
+                                        for o, t, si in relocs.get(".text", [])):
+            # constants nothing in the code reads cannot reach the image: located NOLOAD as they are
+            out[addr] = (path, base)
+            continue
+        if not ok or not pairs:
+            BYREF_WHY[addr] = 'read other than through %hi/%lo pairs' if pairs else 'no %hi/%lo pair reads it'
+            continue
+        at = {}
+        for off, lo, mine, target in pairs:
+            if at.setdefault(mine, target) != target:
+                ok = False
+        if not ok:
+            BYREF_WHY[addr] = 'one constant read at two different addresses'
+            continue
+        # pointers inside .rodata (a table of strings): the original's word names where the
+        # constant it points at is; that constant is then checked there too
+        changed = True
+        while changed and ok:
+            changed = False
+            for a in sorted(at):
+                for po, addend in self_ptrs.items():
+                    if a <= po < a + 4 * 64 and (po - a) % 4 == 0:
+                        o = at[a] + (po - a) - data_addr
+                        if not (0 <= o <= len(orig_data) - 4):
+                            continue
+                        their = struct.unpack_from("<I", orig_data, o)[0]
+                        if addend not in at:
+                            at[addend] = their
+                            changed = True
+                        elif at[addend] != their:
+                            ok = False
+        if not ok:
+            BYREF_WHY[addr] = 'a pointer inside .rodata disagrees with the original'
+            continue
+        # the bytes compared below: pointers inside .rodata are the original's by the closure above
+        for po in self_ptrs:
+            for a in sorted(at, reverse=True):
+                if a <= po:
+                    o = at[a] + (po - a) - data_addr
+                    if 0 <= o <= len(orig_data) - 4:
+                        words[po:po + 4] = orig_data[o:o + 4]
+                    break
+        starts = sorted(at)
+        end = len(words)
+        while end > 0 and words[end - 1] == 0 and len(words) - end < 16:
+            end -= 1
+        for i, a in enumerate(starts):
+            stop = starts[i + 1] if i + 1 < len(starts) else end
+            if stop <= a:
+                stop = a + 1
+            # the assembler's zero padding before the next constant is not part of this one: the
+            # trailing zeros (under 16) are left out but one, a string's terminating NUL
+            pad = stop
+            while pad > a + 1 and words[pad - 1] == 0 and stop - pad < 15:
+                pad -= 1
+            if pad < stop:
+                stop = pad + 1
+            o = at[a] - data_addr
+            if not (0 <= a < len(words) and 0 <= o and o + (stop - a) <= len(orig_data)) or \
+                    orig_data[o:o + stop - a] != bytes(words[a:stop]):
+                d_ = next((i for i in range(min(stop - a, len(orig_data) - o)) if orig_data[o + i] != words[a + i]), stop - a) if 0 <= o < len(orig_data) else 0
+                show = lambda b: (repr(b.split(b'\0')[0].decode()) if b[:1].isalpha() and b.split(b'\0')[0].isascii()
+                                  else b[:16].hex(' '))
+                BYREF_WHY[addr] = (f'constant at +{a:#x} (span {stop - a}) differs from the original at {at[a]:#x}, first at '
+                                   f'+{d_:#x}: ours {show(bytes(words[a:stop]))}, original {show(orig_data[max(o, 0):max(o, 0) + stop - a])}')
+                ok = False
+                break
+        if not ok:
+            continue
+        # the copy: addends such that base + addend is each constant's original address
+        patched = bytearray(open(path, "rb").read())
+        shoff, = struct.unpack_from("<I", patched, 32)
+        shentsize, shnum, shstrndx = struct.unpack_from("<HHH", patched, 46)
+        secs = [struct.unpack_from("<10I", patched, shoff + i * shentsize) for i in range(shnum)]
+        sb = secs[shstrndx][4]
+        tsec = next(x for x in secs if patched[sb + x[0]:patched.index(b"\0", sb + x[0])] == b".text")
+        for off, lo, mine, target in pairs:
+            want = target - base
+            hi_w = struct.unpack_from("<I", patched, tsec[4] + off)[0]
+            lo_w = struct.unpack_from("<I", patched, tsec[4] + lo)[0]
+            struct.pack_into("<I", patched, tsec[4] + off, (hi_w & 0xFFFF0000) | (((want + 0x8000) >> 16) & 0xFFFF))
+            struct.pack_into("<I", patched, tsec[4] + lo, (lo_w & 0xFFFF0000) | (want & 0xFFFF))
+        copy = os.path.join(local, f"func_{addr:08X}.byref.o")
+        open(copy, "wb").write(bytes(patched))
+        out[addr] = (copy, base)
+    return out
 
 
 def relocate(obj, index, place, resolve):
@@ -665,6 +844,17 @@ cd "$d/src"
                               elf[text_off:text_off + text_size], text_addr, section=section)
         for section, candidates in data_candidates.items()
     }
+    # Constants with no single place in the original (the original's unit keeps them among other
+    # functions' constants): each one read where the original's instructions say, through a copy of
+    # the object with rewritten addends (place_rodata_by_reference). Its .rodata is located NOLOAD.
+    byref_at = place_rodata_by_reference(
+        [a for a in data_candidates[".rodata"] if a not in section_places[".rodata"]], data_addr,
+        elf[data_off:data_off + data_size], elf[text_off:text_off + text_size], text_addr)
+    if byref_at:
+        wsl(f'cd "{WSL_DIR}/obj"\n' + "".join(f'cp "{to_wsl(c_)}" func_{a_:08X}.byref.o\n'
+                                             for a_, (c_, b_) in byref_at.items()))
+    for addr_, (_, base_) in byref_at.items():
+        section_places[".rodata"][addr_] = base_
     # C++ objects that bring a vtable bring its companions too (type-info function, implicit
     # destructor, type name): all are placed where the original holds them, or the source is
     # refused. The function's own size leaves the companion code out; that code is linked NOLOAD
@@ -684,7 +874,8 @@ cd "$d/src"
         for n, section in enumerate(sorted(c["noload"]) + sorted(c["data"])):
             if section.startswith((LINKONCE_CODE, LINKONCE_DATA)):
                 renamed[addr, section] = f".cmp{n}"  # no longer linkonce: ld keeps every copy
-    obj_path = lambda addr: f"{'cobj' if addr in companions else 'obj'}/func_{addr:08X}.o"
+    obj_path = lambda addr: (f"obj/func_{addr:08X}.byref.o" if addr in byref_at and addr not in companions
+                             else f"{'cobj' if addr in companions else 'obj'}/func_{addr:08X}.o")
     ref = lambda addr, section: f"{obj_path(addr)}({renamed.get((addr, section), section)})"
     status, objects, undefined = select_source_objects(
         parsed, sources, text_addr + text_size, section_places)
@@ -692,6 +883,8 @@ cd "$d/src"
                   for section, placed in section_places.items()
                   for addr, base in placed.items() if addr in objects]
     data_plan, shared, end = [], [], data_addr
+    byref = [(addr, base) for addr, section, base in placements if section == ".rodata" and addr in byref_at]
+    placements = [p_ for p_ in placements if not (p_[1] == ".rodata" and p_[0] in byref_at)]
     for addr, section, base in sorted(placements, key=lambda item: item[2]):
         if base < end or (addr, section) in PADDED_DATA:
             # Sharing is safe only after the independent original-byte check; a padded section is
@@ -779,7 +972,8 @@ cd "$d/src"
           + "".join(f"  .shared_{n_}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, section)} }}\n"
                     for n_, (a_, section, b_) in enumerate(shared))
           + "".join(f"  .companion_{n_}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, section)} }}\n"
-                    for n_, (a_, section, b_) in enumerate(companion_code)) +
+                    for n_, (a_, section, b_) in enumerate(companion_code))
+          + "".join(f"  .byref_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, '.rodata')} }}\n" for a_, b_ in byref) +
           "  /DISCARD/ : { *(.reginfo) *(.mdebug*) *(.comment) *(.pdr) *(.eh_frame) *(.gcc_except_table) *(*) }\n}\n")
     open(os.path.join(OUT, "link.ld"), "w", newline="\n").write(ld)
 
