@@ -277,7 +277,7 @@
 # endif
 
 # if defined(__STL_CLASS_PARTIAL_SPECIALIZATION) \
-     || defined (__STL_PARTIAL_SPECIALIZATION_SYNTAX)
+     || defined (__STL_PARTIAL_SPECIALIZATION_SYNTAX) || defined(__clang__) || (defined(__GNUC__) && __GNUC__ >= 4)
 #   define __STL_TEMPLATE_NULL template<>
 # else
 #   define __STL_TEMPLATE_NULL
