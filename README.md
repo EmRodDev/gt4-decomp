@@ -91,10 +91,13 @@ Requirements: Python 3.11+ with `rabbitizer` (`pip install rabbitizer`), and Lin
 2. Set up the Linux side once: `bash tools/setup_linux.sh` (compiler, MIPS binutils, permuter).
 3. Split the executable with splat (assembly for every function, under `build/splat/`):
    `bash tools/splat.sh` (in WSL/Linux).
-4. Check that the full build reproduces your executable: `python tools/build.py`.
-5. Build the function list and the duplicate groups:
-   `python tools/find_functions.py orig/SCUS-97328/files/CORE.GT4 build/functions.csv` and
-   `python tools/dedup.py scan`.
+4. Build the function list, which the build reads:
+   `python tools/find_functions.py orig/SCUS-97328/files/CORE.GT4 build/functions.csv`.
+5. Check that the full build reproduces your executable: `python tools/build.py`.
+6. Build the duplicate groups: `python tools/dedup.py scan`.
+
+[SETUP.md](SETUP.md) walks through these steps on a fresh machine, with the places a first build
+gets stuck (the permuter's Python modules, the other compilers that sources ask for).
 
 The automated loop (`tools/autoloop.py`) and how to reuse these tools for another game are
 described in [TOOLS.md](TOOLS.md).
