@@ -1,0 +1,2 @@
+/* data-at: 0x006A6C68 */
+char D_006A6C68[] = "ARCADEINFO_NORMAL";

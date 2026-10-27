@@ -1,0 +1,2 @@
+/* data-at: 0x006C3F20 */
+char D_006C3F20[] = "M-POST /%s HTTP/1.1\r\nHOST: %s:%d\r\nCONNECTION: close\r\nCONTENT-LENGTH: %d\r\nCONTENT-TYPE: text/xml; charset=\"utf-8\"\r\nMAN: \"http://schemas.xmlsoap.org/soap/envelope\";ns=s\r\ns-SOAPACTION: \"urn:schemas-upnp-org:service:%s:1#%s\"\r\n\r\n<s:Envelope \n\txmlns:s=\"http://schemas.xmlsoap.org/soap/envelope\" \n\ts:encodingStyle=\"http://schemas.xmlsoap.org/soap/envelope\">\n\t<s:Body>\n\t\t<u:%s xmlns:u=\"urn:schemas-upnp-org:%s:1\">%s</u:%s>\n\t</s:Body>\n</s:Envelope>";

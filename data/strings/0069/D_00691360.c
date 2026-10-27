@@ -1,0 +1,2 @@
+/* data-at: 0x00691360 */
+char D_00691360[] = "MODE_SAVE_PHOTO_PICTURE";

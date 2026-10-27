@@ -1,0 +1,2 @@
+/* data-at: 0x00691290 */
+char D_00691290[] = "MODE_DEMONSTRATION_SUB";

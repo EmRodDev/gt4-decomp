@@ -1,0 +1,2 @@
+/* data-at: 0x006C2180 */
+char D_006C2180[] = "COULDN'T CREATE PURCHASE HASH TABLE %d";

@@ -1,0 +1,2 @@
+/* data-at: 0x0068E280 */
+char D_0068E280[] = "COMMAND_DEMONSTRATION";

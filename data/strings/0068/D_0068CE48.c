@@ -1,0 +1,2 @@
+/* data-at: 0x0068CE48 */
+char D_0068CE48[] = "MODE_LOAD_FULL_REPLAY";

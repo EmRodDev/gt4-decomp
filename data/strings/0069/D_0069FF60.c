@@ -1,0 +1,2 @@
+/* data-at: 0x0069FF60 */
+char D_0069FF60[] = "GTMODE_FREE_PRACTICE";

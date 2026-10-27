@@ -1,0 +1,2 @@
+/* data-at: 0x006954A8 */
+char D_006954A8[] = "BISCPS-15055GAMEDATA";

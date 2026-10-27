@@ -1,0 +1,2 @@
+/* data-at: 0x006C1D78 */
+char D_006C1D78[] = "UNKNOWN MEDIUSERRORCODE";

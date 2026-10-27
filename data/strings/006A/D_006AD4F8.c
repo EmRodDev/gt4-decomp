@@ -1,0 +1,2 @@
+/* data-at: 0x006AD4F8 */
+char D_006AD4F8[] = "ENABLECANCELBACK";

@@ -1,0 +1,2 @@
+/* data-at: 0x006947D8 */
+char D_006947D8[] = "EPR_NTFY_TRAYCLOSED";

@@ -1,0 +1,2 @@
+/* data-at: 0x006913A8 */
+char D_006913A8[] = "MODE_REPLAY_PLAYLIST";

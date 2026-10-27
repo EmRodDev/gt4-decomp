@@ -1,0 +1,2 @@
+/* data-at: 0x0069ED00 */
+char D_0069ED00[] = "this 0x%x (0x%x) size 0x%x (0x%x)\n";

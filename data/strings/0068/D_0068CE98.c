@@ -1,0 +1,2 @@
+/* data-at: 0x0068CE98 */
+char D_0068CE98[] = "MODE_SAVE_BESTLAP_REPLAY";

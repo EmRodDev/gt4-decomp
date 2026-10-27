@@ -1,0 +1,2 @@
+/* data-at: 0x0068E3D8 */
+char D_0068E3D8[] = "COMMAND_RETIRE_CHAMPIONSHIP";

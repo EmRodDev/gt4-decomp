@@ -1,0 +1,2 @@
+/* data-at: 0x006AE578 */
+char D_006AE578[] = "0123456789ABCDEF";

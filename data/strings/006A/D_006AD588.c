@@ -1,0 +1,2 @@
+/* data-at: 0x006AD588 */
+char D_006AD588[] = "REGISTERCANCELCALLBACK";

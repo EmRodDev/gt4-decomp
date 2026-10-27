@@ -686,6 +686,68 @@ def wsl(script, check=True):
     return res.stdout
 
 
+DATA_DIR = os.path.join(ROOT, "data")
+DATA_AT = re.compile(r"/\*\s*data-at:\s*0x([0-9A-Fa-f]{1,8})\s*\*/")
+
+
+def data_sources():
+    """{address: path} of the data sources under data/: C files whose first line is
+    `/* data-at: 0xADDRESS */`. Each defines the game's own data (strings, tables of pointers and
+    so on) that lies at that address of the original's .data segment; it is compiled with the
+    project compiler, placed there by the linker script and proven by the image comparison like
+    the constants of the matched functions. Returns ({address: path}, [problem])."""
+    out, problems = {}, []
+    for dirpath, dirs, files in os.walk(DATA_DIR):
+        dirs.sort()
+        for name in sorted(files):
+            if not name.endswith(".c"):
+                continue
+            path = os.path.join(dirpath, name)
+            first = open(path, encoding="utf-8", errors="replace").readline()
+            m = DATA_AT.match(first)
+            if not m:
+                problems.append(f"{os.path.relpath(path, ROOT)}: no `/* data-at: 0xADDRESS */` first line")
+                continue
+            addr = int(m.group(1), 16)
+            if addr in out:
+                problems.append(f"{os.path.relpath(path, ROOT)}: address {addr:08X} is also defined by "
+                                f"{os.path.relpath(out[addr], ROOT)}")
+                continue
+            out[addr] = path
+    return out, problems
+
+
+def compile_data(dsrc, jobs):
+    """Compile the data sources on the Linux side into obj/data_ADDR.o (an object is reused while its
+    source and include/ are unchanged). An object that fails to compile is removed."""
+    if not dsrc:
+        return
+    headers = hashlib.sha1()
+    inc = os.path.join(ROOT, "include")
+    for dirpath, dirs, files in os.walk(inc):
+        dirs.sort()
+        for f in sorted(files):
+            fp = os.path.join(dirpath, f)
+            headers.update(os.path.relpath(fp, inc).replace(os.sep, "/").encode() + b"\0" + open(fp, "rb").read())
+    headers = headers.digest()
+    listing = os.path.join(OUT, "data_sources.txt")
+    lines = []
+    for addr, path in sorted(dsrc.items()):
+        digest = hashlib.sha1(open(path, "rb").read() + headers + STRIP.encode()).hexdigest()
+        rel = os.path.relpath(path, DATA_DIR).replace(os.sep, "/")
+        lines.append(f"{rel} data_{addr:08X} {digest}")
+    open(listing, "w", newline="\n").write("\n".join(lines) + "\n")
+    print(f"compiling {len(dsrc)} data sources...", flush=True)
+    print(wsl(f"""
+d="{WSL_DIR}"; mkdir -p "$d/dsrc" "$d/obj"
+cp -rup {to_wsl(os.path.join(ROOT, "include"))} "$d/dsrc/"
+cd "$d/dsrc"
+while read -r f o h; do [ "$(cat "../obj/$o.src" 2>/dev/null)" = "$f $h" ] || echo "$f $o $h"; done < {to_wsl(listing)} > ../dtodo.txt
+echo "stale data sources: $(wc -l < ../dtodo.txt)"
+cat ../dtodo.txt | xargs -r -P{jobs} -L1 bash -c 'f="$0"; o="../obj/$1"; rm -f "$o.o" "$o.src"; cp -f "{to_wsl(DATA_DIR)}/$f" "$1.c" && {project.compiler_command(None)} "$1.c" -o "$o.raw" 2>"$o.err" && mips-linux-gnu-objcopy {STRIP} --wildcard -G "D_*" -G "func_*" "$o.raw" "$o.o" && echo "$f $2" > "$o.src" || {{ rm -f "$o.o" "$o.src"; echo "data source $f does not compile"; head -n 3 "$o.err"; }}; rm -f "$o.raw"; true'
+""").strip(), flush=True)
+
+
 def source_problems():
     """(orphans, duplicates) among the files under src/: sources no address claims (a file named
     after a name the project does not know: config/adhoc_methods.txt or config/symbol_addrs.txt
@@ -806,7 +868,11 @@ def main():
     # Only objects of sources that exist now take part: an object left by a source since deleted,
     # renamed or re-addressed would otherwise be linked as if it were still proven.
     expected = os.path.join(OUT, "objects_expected.txt")
-    open(expected, "w", newline="\n").write("".join(f"func_{addr:08X}.o\n" for addr in sorted(sources)))
+    dsrc, data_problems = data_sources()
+    for p in data_problems:
+        print(f"  data source problem: {p}")
+    open(expected, "w", newline="\n").write("".join(f"func_{addr:08X}.o\n" for addr in sorted(sources))
+                                            + "".join(f"data_{addr:08X}.o\n" for addr in sorted(dsrc)))
     loops = []
     for name, lines in by_compiler.items():
         listing = os.path.join(OUT, f"sources_{name or 'default'}.txt")
@@ -832,6 +898,7 @@ sort {to_wsl(expected)} | comm -23 ../have.txt - > ../stale_objects.txt
 if [ -s ../stale_objects.txt ]; then echo "removing $(wc -l < ../stale_objects.txt) objects without a source"; sed 's/\\.o$//' ../stale_objects.txt | xargs -r -I{{}} rm -f {{}}.o {{}}.src {{}}.err; fi
 cd "$d/src"
 """ + "".join(loops)).strip(), flush=True)
+    compile_data(dsrc, a.jobs)
     if a.compile_only:
         return
     # Read the same ELF section/symbol metadata directly. This avoids tens of
@@ -884,7 +951,8 @@ cd "$d/src"
         for n, section in enumerate(sorted(c["noload"]) + sorted(c["data"])):
             if section.startswith((LINKONCE_CODE, LINKONCE_DATA)):
                 renamed[addr, section] = f".cmp{n}"  # no longer linkonce: ld keeps every copy
-    obj_path = lambda addr: (f"obj/func_{addr:08X}.byref.o" if addr in byref_at and addr not in companions
+    obj_path = lambda addr: (f"obj/data_{addr:08X}.o" if addr in dsrc else
+                             f"obj/func_{addr:08X}.byref.o" if addr in byref_at and addr not in companions
                              else f"{'cobj' if addr in companions else 'obj'}/func_{addr:08X}.o")
     ref = lambda addr, section: f"{obj_path(addr)}({renamed.get((addr, section), section)})"
     status, objects, undefined = select_source_objects(
@@ -892,6 +960,36 @@ cd "$d/src"
     placements = [(addr, section, base)
                   for section, placed in section_places.items()
                   for addr, base in placed.items() if addr in objects]
+    # Data sources (data/): each object lies where its first line says, unless it overlaps constants
+    # the functions already place there or does not fit in the .data segment; those are reported
+    # and left out (the image keeps the original's bytes there).
+    taken = sorted((b_, b_ + parsed[a_]["sections"][s_]) for a_, s_, b_ in placements)
+    placed_data, dropped_data = [], []
+    for addr_ in sorted(dsrc):
+        secs = {k: v for k, v in parsed.get(addr_, {}).get("sections", {}).items()
+                if v and k in (".data", ".rodata", ".sdata")}
+        if len(secs) != 1:
+            dropped_data.append((addr_, "does not compile" if not parsed.get(addr_)
+                                 else "needs exactly one of .data/.rodata/.sdata"))
+            continue
+        section_, size_ = next(iter(secs.items()))
+        unknown_ = [s_ for s_ in parsed[addr_]["undefined"] if symbols.address_of(s_) is None]
+        if unknown_:
+            dropped_data.append((addr_, "uses symbols without an address: " + ", ".join(unknown_[:3])))
+            continue
+        if not (data_addr <= addr_ and addr_ + size_ <= data_addr + data_size):
+            dropped_data.append((addr_, "outside the .data segment"))
+            continue
+        if any(lo < addr_ + size_ and addr_ < hi for lo, hi in taken):
+            dropped_data.append((addr_, "overlaps constants placed from a function"))
+            continue
+        placed_data.append((addr_, section_, addr_))
+        taken.append((addr_, addr_ + size_))
+        taken.sort()
+    for addr_, why in dropped_data:
+        print(f"  data source {addr_:08X} left out: {why}")
+    placements = placements + placed_data
+    undefined = set(undefined) | {s_ for a_, _, _ in placed_data for s_ in parsed[a_]["undefined"]}
     data_plan, shared, end = [], [], data_addr
     byref = [(addr, base) for addr, section, base in placements if section == ".rodata" and addr in byref_at]
     placements = [p_ for p_ in placements if not (p_[1] == ".rodata" and p_[0] in byref_at)]
@@ -1058,8 +1156,11 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
     status = record_source_coverage(status, objects, function_sizes)
     linked_bytes = sum(objects[a] for a in objects if status[a] == "linked")
     data_sizes = {}
+    data_units = {}
     for addr, section, _ in data_plan:
-        if status[addr] == "linked":
+        if addr in dsrc:  # a data source (data/): no function, its bytes count on their own
+            data_units[f"{addr:08x}"] = parsed[addr]["sections"][section]
+        elif status[addr] == "linked":
             key = f"{addr:08x}"
             data_sizes[key] = data_sizes.get(key, 0) + parsed[addr]["sections"][section]
     commit, dirty = git_state()
@@ -1075,12 +1176,13 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
               "linked_functions": sum(s == "linked" for s in status.values()),
               "linked_code_bytes": linked_bytes, "code_bytes": text_size,
               "sizes": {f"{a:08x}": s for a, s in sorted(objects.items())},
-              "data_bytes": data_size, "data_from_source": sum(data_sizes.values()),
+              "data_bytes": data_size, "data_from_source": sum(data_sizes.values()) + sum(data_units.values()),
+              "data_units": {k: v for k, v in sorted(data_units.items())},
               "data_sizes": {k: v for k, v in sorted(data_sizes.items())},
               "data_sections": [{"function": f"{addr:08x}", "section": section,
                                  "address": f"{base:08x}",
                                  "size": parsed[addr]["sections"][section]}
-                                for addr, section, base in placements if status[addr] == "linked"],
+                                for addr, section, base in placements if addr not in dsrc and status[addr] == "linked"],
               # Companion code (type-info functions, implicit destructors) of linked C++ objects:
               # proven identical at these addresses, linked NOLOAD, never counted as code from source.
               "companion_code": [{"function": f"{addr:08x}", "section": section, "address": f"{base:08x}"}
@@ -1093,7 +1195,8 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
         counts[key] = counts.get(key, 0) + 1
     print(f".text {'OK' if text_ok else 'DIFFERS'}  sha1 {sha(built_text)} (original {sha(orig_text)})")
     print(f".data {'OK' if data_ok else 'DIFFERS'} ({placed_rodata} data sections placed from source, "
-          f"{sum(data_sizes.values())} bytes; {sum(status[x] == 'linked' for x, _ in placed_vtables)} of them vtables)")
+          f"{sum(data_sizes.values())} bytes; {sum(status[x] == 'linked' for x, _ in placed_vtables)} of them vtables)"
+          + (f"; {len(data_units)} data sources, {sum(data_units.values())} bytes" if data_units else ""))
     for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
         print(f"  {v:5d}  {k}")
     print(f"code from source: {linked_bytes} of {text_size} bytes ({linked_bytes / text_size:.2%}); "

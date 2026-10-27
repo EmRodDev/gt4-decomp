@@ -57,7 +57,7 @@ def read_info(path):
 def collect(directory, listing):
     result = {}
     for name in Path(listing).read_text().splitlines():
-        m = re.fullmatch(r"func_([0-9A-F]{8})\.o", name)
+        m = re.fullmatch(r"(?:func|data)_([0-9A-F]{8})\.o", name)
         if not m:
             raise ValueError(f"unexpected object name: {name}")
         path = Path(directory) / name

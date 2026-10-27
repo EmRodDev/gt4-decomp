@@ -1,0 +1,2 @@
+/* data-at: 0x0069FF18 */
+char D_0069FF18[] = "GTMODE_LICENSE_COFFEE_BREAK";

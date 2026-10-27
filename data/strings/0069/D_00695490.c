@@ -1,0 +1,2 @@
+/* data-at: 0x00695490 */
+char D_00695490[] = "BKSCKA-20022GAMEDATA";

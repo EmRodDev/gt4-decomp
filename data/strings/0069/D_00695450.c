@@ -1,0 +1,2 @@
+/* data-at: 0x00695450 */
+char D_00695450[] = "BESCES-52438GAMEDATA";
