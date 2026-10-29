@@ -33,6 +33,7 @@ import sys
 
 import match
 import project
+import report as report_tool
 import symbols
 
 ROOT = match.ROOT
@@ -965,9 +966,23 @@ cd "$d/src"
     # and left out (the image keeps the original's bytes there).
     taken = sorted((b_, b_ + parsed[a_]["sections"][s_]) for a_, s_, b_ in placements)
     placed_data, dropped_data = [], []
+    bss_units, bss_taken = [], []
     for addr_ in sorted(dsrc):
         secs = {k: v for k, v in parsed.get(addr_, {}).get("sections", {}).items()
-                if v and k in (".data", ".rodata", ".sdata")}
+                if v and k in (".data", ".rodata", ".sdata", ".bss")}
+        if list(secs) == [".bss"]:
+            # A variable of .bss: no bytes to prove (the executable has no .bss), so it is only
+            # located; the link fails on an overlap and the code that uses it stays identical.
+            bss_lo_, bss_hi_ = report_tool.bss_range()
+            unknown_ = [s_ for s_ in parsed[addr_]["undefined"] if symbols.address_of(s_) is None]
+            if unknown_ or not (bss_lo_ <= addr_ and addr_ + secs[".bss"] <= bss_hi_):
+                dropped_data.append((addr_, "uses unknown symbols" if unknown_ else "outside .bss"))
+            elif any(lo < addr_ + secs[".bss"] and addr_ < hi for lo, hi in bss_taken):
+                dropped_data.append((addr_, "overlaps another .bss variable"))
+            else:
+                bss_units.append((addr_, secs[".bss"]))
+                bss_taken.append((addr_, addr_ + secs[".bss"]))
+            continue
         if len(secs) != 1:
             dropped_data.append((addr_, "does not compile" if not parsed.get(addr_)
                                  else "needs exactly one of .data/.rodata/.sdata"))
@@ -990,6 +1005,7 @@ cd "$d/src"
         print(f"  data source {addr_:08X} left out: {why}")
     placements = placements + placed_data
     undefined = set(undefined) | {s_ for a_, _, _ in placed_data for s_ in parsed[a_]["undefined"]}
+    undefined |= {s_ for a_, _ in bss_units for s_ in parsed[a_]["undefined"]}
     data_plan, shared, end = [], [], data_addr
     byref = [(addr, base) for addr, section, base in placements if section == ".rodata" and addr in byref_at]
     placements = [p_ for p_ in placements if not (p_[1] == ".rodata" and p_[0] in byref_at)]
@@ -1081,7 +1097,8 @@ cd "$d/src"
                     for n_, (a_, section, b_) in enumerate(shared))
           + "".join(f"  .companion_{n_}_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, section)} }}\n"
                     for n_, (a_, section, b_) in enumerate(companion_code))
-          + "".join(f"  .byref_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, '.rodata')} }}\n" for a_, b_ in byref) +
+          + "".join(f"  .byref_{a_:08x} 0x{b_:x} (NOLOAD) : {{ {ref(a_, '.rodata')} }}\n" for a_, b_ in byref)
+          + "".join(f"  .bssunit_{a_:08x} 0x{a_:x} (NOLOAD) : SUBALIGN(1) {{ {ref(a_, ".bss")} }}\n" for a_, _ in bss_units) +
           "  /DISCARD/ : { *(.reginfo) *(.mdebug*) *(.comment) *(.pdr) *(.eh_frame) *(.gcc_except_table) *(*) }\n}\n")
     open(os.path.join(OUT, "link.ld"), "w", newline="\n").write(ld)
 
@@ -1178,6 +1195,7 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
               "sizes": {f"{a:08x}": s for a, s in sorted(objects.items())},
               "data_bytes": data_size, "data_from_source": sum(data_sizes.values()) + sum(data_units.values()),
               "data_units": {k: v for k, v in sorted(data_units.items())},
+              "bss_declared": {f"{a_:08x}": n_ for a_, n_ in sorted(bss_units)},
               "data_sizes": {k: v for k, v in sorted(data_sizes.items())},
               "data_sections": [{"function": f"{addr:08x}", "section": section,
                                  "address": f"{base:08x}",
@@ -1196,7 +1214,8 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
     print(f".text {'OK' if text_ok else 'DIFFERS'}  sha1 {sha(built_text)} (original {sha(orig_text)})")
     print(f".data {'OK' if data_ok else 'DIFFERS'} ({placed_rodata} data sections placed from source, "
           f"{sum(data_sizes.values())} bytes; {sum(status[x] == 'linked' for x, _ in placed_vtables)} of them vtables)"
-          + (f"; {len(data_units)} data sources, {sum(data_units.values())} bytes" if data_units else ""))
+          + (f"; {len(data_units)} data sources, {sum(data_units.values())} bytes" if data_units else "")
+          + (f"; {len(bss_units)} .bss variables declared, {sum(n_ for _, n_ in bss_units)} bytes" if bss_units else ""))
     for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
         print(f"  {v:5d}  {k}")
     print(f"code from source: {linked_bytes} of {text_size} bytes ({linked_bytes / text_size:.2%}); "

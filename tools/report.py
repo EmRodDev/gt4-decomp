@@ -193,7 +193,9 @@ def main():
                       "orphan_sources": len(build.get("orphan_sources", [])),
                       "duplicate_sources": len(build.get("duplicate_sources", {}))},
             "linked_functions": linked, "data_functions": sum(1 for f in funcs if f["data"]),
-            "asm_functions": len(asm), "data_bytes": data_size, "bss_bytes": bss_size}
+            "asm_functions": len(asm), "data_bytes": data_size, "bss_bytes": bss_size,
+            "data_sources": len(build.get("data_units", {})), "data_source_bytes": sum(build.get("data_units", {}).values()),
+            "bss_declared": len(build.get("bss_declared", {})), "bss_declared_bytes": sum(build.get("bss_declared", {}).values())}
     # How many of the sources are clean C/C++ rather than raw decompiler output (tools/clean_report.py)
     try:
         import clean_report

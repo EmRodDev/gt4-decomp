@@ -41,7 +41,10 @@ def render():
         f"  {meta['linked_functions']:,} functions, {m['complete_code_percent']:.1f}% of the code bytes, are linked from C/C++\n"
         f"  source at their original addresses, and the rest is assembled from splat's disassembly of your own\n"
         f"  executable. {matched_data:,} of {total_data:,} data bytes ({m['matched_data_percent']:.2f}%; `.data` plus `.bss`)\n"
-        f"  are the constants of {meta['data_functions']:,} functions, placed from source at their original addresses.\n"
+        f"  are byte-proven from source: the constants of {meta['data_functions']:,} functions plus {meta.get('data_sources', 0):,} typed\n"
+        f"  strings, pointer tables, vtables and arrays under `data/`, all placed at their original addresses. The\n"
+        f"  `.bss` has no bytes to compare: its {meta.get('bss_declared', 0):,} variables ({meta.get('bss_declared_bytes', 0):,} bytes) are declared\n"
+        f"  under `data/bss/`, located by the link, and the code that uses them stays identical.\n"
         f"  {meta['asm_functions']} functions that were hand-written assembly in the original are listed in\n"
         f"  [`config/asm_functions.txt`](config/asm_functions.txt) and not counted.\n"
     )
