@@ -305,6 +305,10 @@ def piece_text(kind, ad, vals, exact=()):
     return "\n".join(lines) + "\n"
 
 
+ZNL = chr(10)
+ZDATA = chr(34) + ".data" + chr(34)
+
+
 def write_file(path, text):
     if os.path.exists(path):
         return False
@@ -415,6 +419,29 @@ def main(argv):
         for k, ad, v in (pieces[:a.limit] if a.limit else pieces):
             path = os.path.join(DATA, k, f"{ad >> 16:04X}", f"D_{ad:08X}.c")
             written += write_file(path, piece_text(k, ad, v))
+    if "zeros" in kinds:
+        # What is left is blocks of zeros (and a few odd bytes between): a zero array placed in .data
+        # by attribute (the 2.96 compiler would put an uninitialised variable in COMMON or .bss).
+        n_zero = n_bytes = 0
+        for lo, hi in free_gaps(da, len(db), taken + unit_ranges()):
+            i = lo
+            while i < hi:
+                j = i
+                zero = db[i - da] == 0
+                while j < hi and (db[j - da] == 0) == zero:
+                    j += 1
+                if zero:
+                    n_zero += 1
+                    path = os.path.join(DATA, "zeros", f"{i >> 16:04X}", f"D_{i:08X}.c")
+                    text = ZNL.join([f"/* data-at: 0x{i:08X} */",
+                                     f"unsigned char D_{i:08X}[{j - i}] __attribute__((section(" + ZDATA + ")));"]) + ZNL
+                else:
+                    path = os.path.join(DATA, "bytes", f"{i >> 16:04X}", f"D_{i:08X}.c")
+                    text = piece_text("bytes", i, list(db[i - da:j - da]))
+                    n_bytes += 1
+                written += write_file(path, text)
+                i = j
+        print(f"zeros: {n_zero} blocks, odd bytes: {n_bytes} pieces")
     print("written", written, "files under data/")
     return 0
 
