@@ -1,2 +1,2 @@
 /* data-at: 0x00833598 */
-unsigned char D_00833598[8] __attribute__((section(".bss")));
+int D_00833598[2] __attribute__((section(".bss")));
