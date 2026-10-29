@@ -13,14 +13,20 @@ project compiler, places it at that address and the image comparison (SHA-1 of .
 Nothing here is trusted: a wrong file makes the build report `.data DIFFERS`, never a false OK.
 
     data_lift.py plan                  what would be written (counts, bytes) without writing
-    data_lift.py write [--kinds strings,tables] [--limit N]
-                                       write the files (existing ones are left alone)
+    data_lift.py write [--kinds strings,tables,rest] [--limit N]
+                                       write the files (existing ones are left alone); `rest` types
+                                       what is left of .data: float arrays, word arrays, byte arrays
+    data_lift.py fixfloats             rewrite, with exact (17-digit) literals, the float elements the
+                                       last build reproduced wrongly: the compiler's decimal-to-float
+                                       conversion is off by one bit for some 9-digit literals
     data_lift.py prune BUILD.log       delete the sources the last build reported as `left out`
                                        (overlapping constants a function already places)
 
 Typed on purpose: strings as char arrays, tables of pointers with the names of the functions they
-point to (a vtable is recognised by tools/rtti.py and says which class it belongs to). What is not
-confidently one of these stays untouched in the original's bytes.
+point to (a vtable is recognised by tools/rtti.py and says which class it belongs to). Then, from
+what is left (`rest`, run after strings and tables are in the build report): runs of plausible
+floats as float arrays, other words as unsigned int arrays, odd edge bytes as unsigned char arrays.
+Blocks of zeros stay untouched in the original's bytes (the compiler would put them in .bss).
 """
 import argparse
 import csv
@@ -182,6 +188,123 @@ def find_tables(db, da, ta, tb, starts, string_addrs, min_ptrs=3):
     return runs
 
 
+FLOAT_EXP = range(100, 161)  # about 1e-9 .. 1e12: a word in this range is read as a float
+
+
+def is_float_word(w):
+    return w != 0 and ((w >> 23) & 255) in FLOAT_EXP
+
+
+def unit_ranges():
+    """[(start, end)] of the data sources the last build placed (build/full/report.json data_units)."""
+    path = os.path.join(ROOT, "build", "full", "report.json")
+    if not os.path.exists(path):
+        return []
+    rep = json.load(open(path))
+    return sorted((int(a, 16), int(a, 16) + int(n)) for a, n in rep.get("data_units", {}).items())
+
+
+def free_gaps(da, size, taken):
+    """[(lo, hi)] of .data not covered by `taken` (sorted, may touch)."""
+    gaps, cur, end = [], da, da + size
+    for a, b in sorted(taken):
+        if a > cur:
+            gaps.append((cur, min(a, end)))
+        cur = max(cur, b)
+        if cur >= end:
+            break
+    if cur < end:
+        gaps.append((cur, end))
+    return [(a, b) for a, b in gaps if b > a]
+
+
+def split_zero_runs(db, da, lo, hi, min_zero=32, max_len=4096):
+    """Pieces of [lo, hi) without long runs of zero bytes, trimmed of zeros at both ends."""
+    pieces, i = [], lo
+    while i < hi:
+        while i < hi and db[i - da] == 0:
+            i += 1
+        if i >= hi:
+            break
+        j, last = i, i
+        while j < hi:
+            if db[j - da] != 0:
+                last = j
+            elif j - last >= min_zero:
+                break
+            j += 1
+        pieces.append((i, last + 1))
+        i = last + 1
+    out = []
+    for a, b in pieces:
+        while b - a > max_len:
+            out.append((a, a + max_len))
+            a += max_len
+        out.append((a, b))
+    return out
+
+
+def float_literal(w, digits=9, bias=0.0):
+    """The literal for a float word. The compiler (gcc 2.96) converts decimal to float imprecisely
+    and can land one bit below the nearest value; `bias` moves the literal that fraction of an ulp
+    away from zero so the conversion lands on the intended bit pattern."""
+    f = struct.unpack("<f", struct.pack("<I", w))[0]
+    if bias:
+        step = abs(struct.unpack("<f", struct.pack("<I", w + 1))[0] - f)
+        f = f + (step * bias if f > 0 else -step * bias)
+    text = "%.*g" % (digits, f)
+    if not any(c in text for c in ".en"):
+        text += ".0"
+    return text + "f"
+
+
+def typed_pieces(db, da, a, b):
+    """[(kind, address, values)] covering [a, b): bytes up to the 4-byte boundary, then words
+    (runs of floats and runs of other words), then the tail bytes."""
+    out = []
+    head = min(b, (a + 3) & ~3)
+    if head > a:
+        out.append(("bytes", a, list(db[a - da:head - da])))
+    wend = head + ((b - head) // 4) * 4
+    n = (wend - head) // 4
+    words = list(struct.unpack_from(f"<{n}I", db, head - da)) if n else []
+    i = 0
+    while i < n:
+        j = i
+        if is_float_word(words[i]):
+            while j < n and (is_float_word(words[j]) or words[j] == 0):
+                j += 1
+            while j > i and words[j - 1] == 0:
+                j -= 1
+            if sum(1 for w in words[i:j] if w) >= 2:
+                out.append(("floats", head + 4 * i, words[i:j]))
+                i = j
+                continue
+        j = i + 1
+        while j < n and not (is_float_word(words[j]) and j + 1 < n and is_float_word(words[j + 1])):
+            j += 1
+        out.append(("words", head + 4 * i, words[i:j]))
+        i = j
+    if b > wend:
+        out.append(("bytes", wend, list(db[wend - da:b - da])))
+    return [(k, ad, v) for k, ad, v in out if any(v)]
+
+
+def piece_text(kind, ad, vals, exact=()):
+    name = f"D_{ad:08X}"
+    if kind == "floats":
+        ctype, body = "float", [float_literal(w, *((17, 0.3) if ad + 4 * i in exact else (9, 0.0))) for i, w in enumerate(vals)]
+    elif kind == "words":
+        ctype, body = "unsigned int", [f"0x{w:08X}" for w in vals]
+    else:
+        ctype, body = "unsigned char", [f"0x{w:02X}" for w in vals]
+    per = 8 if kind == "bytes" else 4
+    lines = [f"/* data-at: 0x{ad:08X} */", f"{ctype} {name}[{len(vals)}] = {{"]
+    lines += ["    " + ", ".join(body[r:r + per]) + "," for r in range(0, len(body), per)]
+    lines.append("};")
+    return "\n".join(lines) + "\n"
+
+
 def write_file(path, text):
     if os.path.exists(path):
         return False
@@ -192,12 +315,31 @@ def write_file(path, text):
 
 def main(argv):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["plan", "write", "prune"])
+    ap.add_argument("cmd", choices=["plan", "write", "prune", "fixfloats"])
     ap.add_argument("log", nargs="?")
-    ap.add_argument("--kinds", default="strings,tables")
+    ap.add_argument("--kinds", default="strings,tables")  # add `rest` once strings/tables are in a build
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args(argv)
 
+    if a.cmd == "fixfloats":
+        built = open(os.path.join(ROOT, "build", "full", "built_data.bin"), "rb").read()
+        _, _, da, db = image()
+        wrong = {da + i - i % 4 for i in range(min(len(built), len(db))) if built[i] != db[i]}
+        fixed = 0
+        for dp, _, fs in os.walk(os.path.join(DATA, "floats")):
+            for fn in fs:
+                ad = int(fn[2:10], 16)
+                path = os.path.join(dp, fn)
+                cnt = int(re.search(r"[[](" + "[0-9]+" + r")[]]", open(path).read()).group(1))
+                if not any(ad + 4 * i in wrong for i in range(cnt)):
+                    continue
+                # the compiler cannot be steered to these bit patterns: keep the exact words
+                vals = list(struct.unpack_from("<%dI" % cnt, db, ad - da))
+                os.remove(path)
+                write_file(os.path.join(DATA, "words", f"{ad >> 16:04X}", fn), piece_text("words", ad, vals))
+                fixed += 1
+        print("moved", fixed, "float sources to exact word arrays")
+        return 0
     if a.cmd == "prune":
         gone = 0
         for line in open(a.log, encoding="utf-8", errors="replace"):
@@ -215,7 +357,7 @@ def main(argv):
     taken = placed_ranges()
     starts = function_starts()
     kinds = set(a.kinds.split(","))
-    strings = [(ad, s) for ad, s in find_strings(db, da) if not overlaps(taken, ad, ad + len(s) + 1)] if "strings" in kinds or "tables" in kinds else []
+    strings = [(ad, s) for ad, s in find_strings(db, da) if not overlaps(taken, ad, ad + len(s) + 1)] if kinds & {"strings", "tables"} else []
     string_addrs = {ad for ad, _ in strings}
     tables = []
     if "tables" in kinds:
@@ -259,6 +401,20 @@ def main(argv):
             lines.append("};")
             path = os.path.join(DATA, "tables", f"{ad >> 16:04X}", f"D_{ad:08X}.c")
             written += write_file(path, "\n".join(lines) + "\n")
+    if "rest" in kinds:
+        pieces = []
+        for lo, hi in free_gaps(da, len(db), taken + unit_ranges()):
+            for a2, b2 in split_zero_runs(db, da, lo, hi):
+                pieces += typed_pieces(db, da, a2, b2)
+        by = {}
+        for k, ad, v in pieces:
+            by.setdefault(k, [0, 0])
+            by[k][0] += 1
+            by[k][1] += len(v) * (1 if k == "bytes" else 4)
+        print("rest:", ", ".join(f"{k} {n} ({b} bytes)" for k, (n, b) in sorted(by.items())))
+        for k, ad, v in (pieces[:a.limit] if a.limit else pieces):
+            path = os.path.join(DATA, k, f"{ad >> 16:04X}", f"D_{ad:08X}.c")
+            written += write_file(path, piece_text(k, ad, v))
     print("written", written, "files under data/")
     return 0
 

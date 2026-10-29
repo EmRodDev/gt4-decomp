@@ -126,7 +126,10 @@ def main():
     fbss, end = bss_range()
     bss_size = max(0, end - fbss)
     total_data = data_size + bss_size
-    m = measures(funcs, total_data)
+    # The data sources under data/ (strings, tables) are placed and byte-compared by the same build;
+    # they belong to no function, so they count in the whole-game figure only.
+    from_source = int(build.get("data_from_source", 0)) if build.get("data_matches") else None
+    m = measures(funcs, total_data, data=from_source)
 
     # Units: config/units.txt (tools/units.py), else one unit for all the code.
     units_path = os.path.join(ROOT, "config", "units.txt")
