@@ -88,6 +88,12 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - `s32 v = (u8)field` copied into a 32-bit local before `v == 1 || v == 2` avoids an `andi 0xff`
   and lets the compiler emit `addiu -1; sltiu 2`.
 
+- A copy of an argument register made at entry (`daddu $v0, $a0`, `mov.s $f0, $f12`) while the
+  original stays live into a later call = the body is an inline helper and the call passes the
+  caller's own value: `play(a, &a->tab, c, t)` with `play(Anim *self, Entry **tab, Ctx *c, float t)`.
+  Before chasing such copies, read the callee's matched source for its real prototype: extra
+  arguments (here an `int x` in `$t1` and `float t` in `$f12`) explain registers that look dead
+  (00474568).
 - A parameter or local stored to the stack on entry (`sw $a1, 0($sp)`) and reloaded later in a
   function with no calls = its address was taken by an inlined reference helper. A pass-through
   `static inline const int &ref(const int &x) { return x; }` around the uses in one condition
@@ -236,6 +242,11 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   `daddu $t0, $v1`) = loop.c hoisted an address the source computes inside the loop: index the
   array member directly (`name.c[i]` through a union), not through a pointer local made before the
   loop (004478F8). Same for `t->h->e` read inside an inline helper (00449190).
+- An up-counting loop that keeps `sll i, 3; addu base, i` (no cursor) and reloads a count field
+  every iteration although nothing is stored = no loop optimisation and no GCSE: write the loop
+  with `goto` (no loop notes, so no strength reduction) and use `ee-gcc2.96-nogcse`. A second
+  register holding a copy of the table base = a second pointer local for the inlined accessor
+  (`E *e = h->e; E *ke = e;`). 00449AF8: 30 -> MATCH.
 
 ## Switch and jump tables
 - `sltu t, k, N; beqz t, default; sll; lw; jr` = jump table: needs about 5 or more distinct case
