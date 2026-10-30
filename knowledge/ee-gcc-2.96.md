@@ -88,6 +88,13 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - `s32 v = (u8)field` copied into a 32-bit local before `v == 1 || v == 2` avoids an `andi 0xff`
   and lets the compiler emit `addiu -1; sltiu 2`.
 
+- A parameter or local stored to the stack on entry (`sw $a1, 0($sp)`) and reloaded later in a
+  function with no calls = its address was taken by an inlined reference helper. A pass-through
+  `static inline const int &ref(const int &x) { return x; }` around the uses in one condition
+  (`if (ref(cur) != 0 && ref(want) != ref(cur))`) gives the slots and keeps the test as branches;
+  an inline `bool ok(const int &, const int &)` gives the slots but evaluates the test to a value
+  (00430A58).
+
 ## Statement order and scheduling
 - m2c lists its temporaries in its own order, not the original's: when the first differing lines
   are loads from another base register (`lw $v0, 0($s4); lw $v1, 4($s4)` before mine's
@@ -220,6 +227,15 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - Biased negative offsets in a loop (`-0x1C($s0)`): pointer advanced alongside the counter with the
   loop starting at 1: `for (i = 1; i < n; i++, p++)`.
 - A loop around the final call (even one iteration) keeps that call `jal`, never `j`.
+- Peeled first iteration (its tests folded for `i = 0`) and then an unrotated loop
+  `i++; tests; body; b top` with the body's store in the `b` slot = `for (; i < N; i++) { if (a && b)
+  { body } else break; }` with `i = 0` set at its declaration. With `i = 0` only in the for-init the
+  guard keeps an unfolded `slt`; with all tests in the for condition the loop rotates to `bnel`
+  (004478F8).
+- A base address built before a loop and copied to a second register (`addiu $v1, $sp, 0x10` ...
+  `daddu $t0, $v1`) = loop.c hoisted an address the source computes inside the loop: index the
+  array member directly (`name.c[i]` through a union), not through a pointer local made before the
+  loop (004478F8). Same for `t->h->e` read inside an inline helper (00449190).
 
 ## Switch and jump tables
 - `sltu t, k, N; beqz t, default; sll; lw; jr` = jump table: needs about 5 or more distinct case
@@ -227,6 +243,9 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - Table entries that repeat (`L1, L2, L3, L3, L3`) = separate cases with identical bodies that were
   merged afterwards; write each case separately.
 - Low cases that do nothing still appear in the table: write them (`case 0: case 1: break;`).
+- Compare tree `beq k,1; slti k,2; beqz k; beq k,2; beq k,3` where cases 1-3 land on one body =
+  three separate identical `case` bodies (merged later by cross-jumping); `case 1: case 2: case 3:`
+  becomes a range test instead (00430A58).
 - Compare tree starting with `beq k, 1` then `slt k, 2` = small signed switch (probe); a `u32`
   selector with 0,1,2 gives a linear `beq` chain instead.
 - Arms ending `j $ra; li $v0, K` = `case X: return K;` (probe). Arms `b common; li $v,K` converging
