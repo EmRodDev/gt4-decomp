@@ -1,0 +1,2 @@
+/* data-at: 0x0069FFA8 */
+char D_0069FFA8[] = "GTMODE_MACHINE_TEST";

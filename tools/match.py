@@ -674,6 +674,9 @@ def main():
     elif len(sys.argv) >= 3 and sys.argv[1] == "gnu":
         sys.stdout.write(gnu_asm(int(sys.argv[2], 16)))
     elif len(sys.argv) >= 4 and sys.argv[1] == "check":
+        if not os.path.isfile(sys.argv[3]):
+            sys.exit(f"no such source file: {sys.argv[3]} (a worker's drafts live under build/swarm/WORKER/ "
+                     f"and build/work/; `swarm.py assign` prints the path of each draft it has)")
         cmd_check(int(sys.argv[2], 16), sys.argv[3])
     elif len(sys.argv) >= 3 and sys.argv[1] == "check-many":
         jobs = int(sys.argv[sys.argv.index("--jobs") + 1]) if "--jobs" in sys.argv else 2

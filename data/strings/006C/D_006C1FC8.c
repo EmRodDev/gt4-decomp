@@ -1,0 +1,2 @@
+/* data-at: 0x006C1FC8 */
+char D_006C1FC8[] = "COULDN'T CREATE PRODUCT HASH TABLE %d";

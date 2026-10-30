@@ -1,0 +1,2 @@
+/* data-at: 0x00841048 */
+int D_00841048[2] __attribute__((section(".bss")));

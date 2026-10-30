@@ -1,0 +1,2 @@
+/* data-at: 0x0069FF38 */
+char D_0069FF38[] = "GTMODE_LICENSE_MISSION";

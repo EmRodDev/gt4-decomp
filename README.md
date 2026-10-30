@@ -26,16 +26,19 @@ to the other (`tools/crossgame.py`).
 - A first pilot matched 13 of 20 randomly picked functions by hand; see [PILOT.md](PILOT.md).
 - 14% of the functions are exact copies of another; one match settles a whole group.
 <!-- progress:start -->
-- **Progress (October 2026, commit `a061fd6e486e`): 30,132 of 30,875 functions match (97.6%), 88.7% of the code bytes; 87.3% of the sources are clean.**
-  Clean source: 87.3% of the 30,133 function sources are free of m2c
+- **Progress (October 2026, commit `a85ca7ae89c2`): 30,159 of 30,875 functions match (97.7%), 89.1% of the code bytes; 87.3% of the sources are clean.**
+  Clean source: 87.3% of the 30,160 function sources are free of m2c
   macros, raw offset casts, temp_/var_ names and pasted headers (`tools/clean_report.py`).
   The live numbers are on the `progress` branch (objdiff report format); this paragraph is written by
   `tools/update_readme.py` from `progress/report.json`, never by hand.
 - **The full build reproduces the original executable** (both loaded segments, SHA-1 checked):
-  30,079 functions, 88.3% of the code bytes, are linked from C/C++
+  30,130 functions, 88.9% of the code bytes, are linked from C/C++
   source at their original addresses, and the rest is assembled from splat's disassembly of your own
-  executable. 68,346 of 2,664,152 data bytes (2.57%; `.data` plus `.bss`)
-  are the constants of 1,549 functions, placed from source at their original addresses.
+  executable. 776,046 of 2,664,152 data bytes (29.13%; `.data` plus `.bss`)
+  are byte-proven from source: the constants of 1,550 functions plus 15,269 typed
+  strings, pointer tables, vtables and arrays under `data/`, all placed at their original addresses. The
+  `.bss` has no bytes to compare: its 18,875 variables (1,885,020 bytes) are declared
+  under `data/bss/`, located by the link, and the code that uses them stays identical.
   289 functions that were hand-written assembly in the original are listed in
   [`config/asm_functions.txt`](config/asm_functions.txt) and not counted.
 <!-- progress:end -->
@@ -91,10 +94,13 @@ Requirements: Python 3.11+ with `rabbitizer` (`pip install rabbitizer`), and Lin
 2. Set up the Linux side once: `bash tools/setup_linux.sh` (compiler, MIPS binutils, permuter).
 3. Split the executable with splat (assembly for every function, under `build/splat/`):
    `bash tools/splat.sh` (in WSL/Linux).
-4. Check that the full build reproduces your executable: `python tools/build.py`.
-5. Build the function list and the duplicate groups:
-   `python tools/find_functions.py orig/SCUS-97328/files/CORE.GT4 build/functions.csv` and
-   `python tools/dedup.py scan`.
+4. Build the function list, which the build reads:
+   `python tools/find_functions.py orig/SCUS-97328/files/CORE.GT4 build/functions.csv`.
+5. Check that the full build reproduces your executable: `python tools/build.py`.
+6. Build the duplicate groups: `python tools/dedup.py scan`.
+
+[SETUP.md](SETUP.md) walks through these steps on a fresh machine, with the places a first build
+gets stuck (the permuter's Python modules, the other compilers that sources ask for).
 
 The automated loop (`tools/autoloop.py`) and how to reuse these tools for another game are
 described in [TOOLS.md](TOOLS.md).

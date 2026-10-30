@@ -1,0 +1,2 @@
+/* data-at: 0x006A75F7 */
+unsigned char D_006A75F7[1] __attribute__((section(".data")));

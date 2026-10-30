@@ -1,0 +1,2 @@
+/* data-at: 0x00691330 */
+char D_00691330[] = "MODE_LOAD_PHOTO_PICTURE";

@@ -1,0 +1,2 @@
+/* data-at: 0x006912E0 */
+char D_006912E0[] = "MODE_SAVE_FULL_REPLAY";

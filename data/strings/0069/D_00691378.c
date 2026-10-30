@@ -1,0 +1,2 @@
+/* data-at: 0x00691378 */
+char D_00691378[] = "MODE_PHOTO_PLAYLIST";

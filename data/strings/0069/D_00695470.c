@@ -1,0 +1,2 @@
+/* data-at: 0x00695470 */
+char D_00695470[] = "BASCUS-97102GAMEDATA";

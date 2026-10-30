@@ -1,0 +1,2 @@
+/* data-at: 0x00694D00 */
+char D_00694D00[] = "DIFFERENT_MEMORYCARD";

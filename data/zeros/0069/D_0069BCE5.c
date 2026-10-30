@@ -1,0 +1,2 @@
+/* data-at: 0x0069BCE5 */
+unsigned char D_0069BCE5[3] __attribute__((section(".data")));

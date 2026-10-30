@@ -1,0 +1,2 @@
+/* data-at: 0x00691390 */
+char D_00691390[] = "MODE_PHOTO_PRINTLIST";

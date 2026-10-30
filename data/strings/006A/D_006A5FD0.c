@@ -1,0 +1,2 @@
+/* data-at: 0x006A5FD0 */
+char D_006A5FD0[] = "BUTTON_LICENCE_BEST_LINE";

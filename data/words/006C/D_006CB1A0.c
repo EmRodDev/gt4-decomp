@@ -1,0 +1,5 @@
+/* data-at: 0x006CB1A0 */
+unsigned int D_006CB1A0[6] = {
+    0xD7FC344A, 0xE1EEE1C6, 0x121E201B, 0x05080318,
+    0x1C1AFDF4, 0xD9FE3F4A,
+};

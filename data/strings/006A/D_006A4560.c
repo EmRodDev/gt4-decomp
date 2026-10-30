@@ -1,0 +1,2 @@
+/* data-at: 0x006A4560 */
+char D_006A4560[] = "TOPOINTRANKINGPHASE";
