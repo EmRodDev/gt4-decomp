@@ -252,6 +252,14 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   declared just before the loop and used for some of the calls, the object itself (`&b`) for the
   others; loop.c turns the in-loop `&b` into a copy of the pointer. Declared at function entry the
   pointer is set too early; inside the body CSE merges the two (004BE980, 0022BC20).
+  If the original leaves the loop guard's `blez` delay slot empty (`nop`) with the `addiu` right
+  after it, the pointer is set after the copied loop test: `i = 0; if (i < count) { p = &b;
+  for (; i < count; i++) ... }` (0022BC20, 0022BCE0; `for (i = 0, p = &b; ...)` fills the slot).
+- A load sitting in the delay slot of the `bne` that splits an if/else (`bne ...; lw $a0, 0x24($s2)`)
+  may be one load per branch in the source (`if (c) { base = self->p24; ... } else { base =
+  self->p24; ... }`): reorg moves the fall-through copy into the slot and deletes the twin at the
+  target. In RTL that is one more reference to `self`, enough to swap two close saved-register
+  priorities (004BE980: self 3600 -> 4000 over a hoisted `&info` at 3636).
 
 ## Switch and jump tables
 - `sltu t, k, N; beqz t, default; sll; lw; jr` = jump table: needs about 5 or more distinct case
@@ -436,6 +444,10 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
 - `bool` results are used as is (`$v0` tested directly, no `andi 0xff` after the call) (probe).
 - Use each callee's real return type: `void` vs `s32` vs pointer changes `$v0/$v1` choice, tail
   merging and even which branches get merged after the call.
+- Interrupt handlers ending `sync; ei; daddu $v0, $zero, $zero; ld $ra` use ee_kernel.h's
+  `ExitHandler()` (one `sync.l; ei` asm) before `return 0;`. Two separate `sync`/`ei` statements
+  put the `$v0` set after `ld $ra` instead, the 2-off residual several tiers stopped on
+  (00555290, 00557AF0, 0055EB08).
 
 ## Integer arithmetic, 64-bit and EE-specific instructions
 - 64-bit `sd`/`ld` save and restore registers; struct copies of 8-byte aligned data use `ld`/`sd`
