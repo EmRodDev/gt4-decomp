@@ -137,6 +137,9 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   (allowed by tools/asm_policy.py); DIntr() is func_005B72A8 (handle retain/release 003285A8/003285F8).
 
 ## Branches, conditions and branch-likely
+- **`xori $v0, $v0, 0` on a compare result before a `movn`** (a no-op that no simple test produces) =
+  a negated `<=`: `if (!(v <= hi)) v = hi;` (slt plus the `<=` inversion plus the `!` inversion,
+  folded into an xori with 0 that combine keeps) (00558DB0).
 - **A branch-likely (`beql`/`bnel`) where the original has a plain branch with the same slot**
   (the slot holds the target's first instruction, e.g. the epilogue's `ld $s0`): declare the
   callees `throw()` (a C++ destructor too: `virtual ~B() throw() __asm__("func_ADDR")`). Without
