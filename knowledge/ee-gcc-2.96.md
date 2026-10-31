@@ -142,6 +142,8 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   callees `throw()` (a C++ destructor too: `virtual ~B() throw() __asm__("func_ADDR")`). Without
   it reorg sees the register live on the fall-through path and annuls the slot. One `throw()` on
   the call right after the branch was enough (00564990, 00556BB8, both 1 off for several tiers).
+  It works the other way too: 00559808 needed `throw()` on the callee to get retail's `bnel`.
+  Whenever the only difference is a branch's likely bit, try `throw()` on each nearby callee.
 - **Byte tests in `$v1` instead of `$v0`** across a whole draft (`lbu $v1; beql $v1, $zero`) while
   the original tests in `$v0`: the draft is compiled as C, the game as C++. The same body as .cpp
   (`char *` instead of `void *` arithmetic, extern "C") takes `$v0` (func_003A78B8: 31 -> 25 differ,
@@ -212,6 +214,12 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   bitfield stores give `sb`.
 
 ## Loops
+- **Three induction registers in a 24-entry pool walk** (`$s0` += size field pointer, `$s1` countdown
+  from n-1, `$s2` += size byte offset with `addu $a0, base, $s2` for the call), where `$s1`/`$s2`
+  are set before a preceding call and `$s0` after it: the countdown and the offset are the
+  source's own variables initialised up front (`off = 0; i = n - 1;`, in that order for the
+  homes), the tested field is read through the global array with a separate index (loop.c
+  reduces that one), and the call argument is `(T *)((char *)pool + off)` (005596F8).
 - Counted loops: write the loop the way a programmer would, e.g. `for (i = 0; i < 125; i++)
   v = f(&obj->elems[i], v);` over an array (or `p++` as its own statement). The compiler itself
   turns it into a down-counting register plus a pointer stride; reproducing that counter by hand
