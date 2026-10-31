@@ -527,6 +527,10 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   global struct `lui; lw %lo(sym+off)` (offset folded, probe). Declare `extern T D_XXXXXXXX;`.
 - One `lui/addiu` pair held in an `$s` register across calls = `T *w = &D_X;` once, used afterwards;
   rematerialised per use = direct `D_X.field` / `((T *)D_X)[i].x` accesses at each site.
+- `lui $sN; addiu $sN, %lo(D_X)` placed in or before the call whose result is stored with
+  `sw $v0, 0($sN)`, while neighbouring globals get `sw $v0, %lo(D_Y)($v1)`: the stored ones go
+  through a pointer, e.g. an inline `get(int *dst, int n) { *dst = read(n); }` called as
+  `get(&D_X, n)`; sched1 then hoists the address above the call (00563CC8).
 - `lui` shared but `addiu %lo` recomputed after a loop or if/else = second use through a pointer local
   (`p = (T *)D_X; ... p->x`).
 - Strings: a literal (`"text"`) lands in the file's own .rodata and match.py compares only opcode and
