@@ -699,6 +699,11 @@ The real `map` from `include/stl` reproduces retail's frame, slots and registers
 - A block temporary in the register a now-dead variable held is that same variable reused (0044FEC0).
 
 ## Open blockers by area (swarm, 2026-10-11/12)
+- `sll $rd, $rt, 0` (a 64-to-32 truncation, rd != 0) occurs in no linked function of the binary and
+  in only seven unmatched ones (0056DF58, 0056E170, 005786F0, 0057F490, 0057F4F8, 0057FAF8,
+  005AEDE0): every 2.96 and 2.9 profile truncates or extends with `dsll32`/`dsra32` instead.
+  005786F0 matches but for its prologue `daddu; sll 0` (2026-10-31): these need a compiler build or
+  a hand-written-asm decision, not more source forms.
 
 - unit_0046A050: family of 11 (0048b450..0048bf60 and 0048af70/ae50/b098): copy a 16-byte return value to a stack temporary, call a helper on it, copy it back field by field; retail keeps the temporary in stack memory and reloads it. Best draft so far is 20 of 38 off; one solution should propagate through siblings.py.
 - `vector<u8, Plain alloc>`: use `char` as the element type (the STL has a no-op `_Destroy(char*, char*)`, so the dtor is a plain `if (p) free(p)`); `unsigned char` adds a `sw $a0, N($sp)` spill (001cfe68, 001cf628).
