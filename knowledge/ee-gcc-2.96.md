@@ -137,6 +137,11 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   (allowed by tools/asm_policy.py); DIntr() is func_005B72A8 (handle retain/release 003285A8/003285F8).
 
 ## Branches, conditions and branch-likely
+- **A branch-likely (`beql`/`bnel`) where the original has a plain branch with the same slot**
+  (the slot holds the target's first instruction, e.g. the epilogue's `ld $s0`): declare the
+  callees `throw()` (a C++ destructor too: `virtual ~B() throw() __asm__("func_ADDR")`). Without
+  it reorg sees the register live on the fall-through path and annuls the slot. One `throw()` on
+  the call right after the branch was enough (00564990, 00556BB8, both 1 off for several tiers).
 - **Byte tests in `$v1` instead of `$v0`** across a whole draft (`lbu $v1; beql $v1, $zero`) while
   the original tests in `$v0`: the draft is compiled as C, the game as C++. The same body as .cpp
   (`char *` instead of `void *` arithmetic, extern "C") takes `$v0` (func_003A78B8: 31 -> 25 differ,
@@ -555,6 +560,13 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   `lbu` = `u8`; `slti` after the load = signed compare, `sltiu` = unsigned.
 
 ## C++ specifics: constructors, destructors, virtual calls, this-adjustment
+- **A matching source whose build status is "brings its own data: .gnu.linkonce.d._vt$..."** emits a
+  class's vtable because none of its virtual functions is a non-inline one declared in the class
+  (only inline destructors, or only inherited virtuals), or because the source defines the class's
+  first non-inline virtual (its destructor). Declare a virtual that is never defined first in
+  the class (`virtual void key();`): g++ 2.96 then only references `_vt$...`, which is the
+  original's data, and the code is unchanged. Eight judged-MATCH sources linked this way
+  (00101450, 00556BB8, 0022F400, 00394A98, 003A3070, 003CCA38, 004ADE08, 005FFC10).
 - Game code is C++ (old g++ ABI); we write extern "C" functions named `func_XXXXXXXX` taking `this`
   as an explicit first parameter, with plain structs. Non-extern "C" names are mangled
   (`name__<len>Class`, ctor `__<len>Class`, dtor `_$_<len>Class`, vtable `_vt$<len>Class`).
