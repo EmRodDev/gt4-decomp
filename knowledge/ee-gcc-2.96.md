@@ -247,6 +247,11 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   with `goto` (no loop notes, so no strength reduction) and use `ee-gcc2.96-nogcse`. A second
   register holding a copy of the table base = a second pointer local for the inlined accessor
   (`E *e = h->e; E *ke = e;`). 00449AF8: 30 -> MATCH.
+- Two saved registers holding the same stack address in a loop (`addiu $s4, $sp, 0x10;
+  daddu $s3, $s4`, one used by some calls, the other by the rest) = a pointer local to the object
+  declared just before the loop and used for some of the calls, the object itself (`&b`) for the
+  others; loop.c turns the in-loop `&b` into a copy of the pointer. Declared at function entry the
+  pointer is set too early; inside the body CSE merges the two (004BE980, 0022BC20).
 
 ## Switch and jump tables
 - `sltu t, k, N; beqz t, default; sll; lw; jr` = jump table: needs about 5 or more distinct case
