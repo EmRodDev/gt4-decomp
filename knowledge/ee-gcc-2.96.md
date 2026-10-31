@@ -268,6 +268,10 @@ shows X, write Y. "(probe)" marks rules re-checked by compiling the C++ shown wi
   If the original leaves the loop guard's `blez` delay slot empty (`nop`) with the `addiu` right
   after it, the pointer is set after the copied loop test: `i = 0; if (i < count) { p = &b;
   for (; i < count; i++) ... }` (0022BC20, 0022BCE0; `for (i = 0, p = &b; ...)` fills the slot).
+  The converse: retail's copied loop test `blez n` carrying a load in its slot with `i = 0` just
+  before it = the load is the last for-init expression, `for (s32 i = 0, pos = c->pos; i < n; i++)`
+  (reorg fills the slot with the insn right before the test); a separate `pos = c->pos;` statement
+  before the loop puts `i = 0` in the slot instead (005560C8).
 - A load sitting in the delay slot of the `bne` that splits an if/else (`bne ...; lw $a0, 0x24($s2)`)
   may be one load per branch in the source (`if (c) { base = self->p24; ... } else { base =
   self->p24; ... }`): reorg moves the fall-through copy into the slot and deletes the twin at the
