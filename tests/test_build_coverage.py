@@ -20,6 +20,13 @@ class SourceCoverageTests(unittest.TestCase):
                                                {0x1000: 0x10, 0x1010: 0x10})
         self.assertNotIn(0x1010, result)
 
+    def test_trailing_padding_of_the_last_piece_is_not_required(self):
+        # build.py passes the inventory sizes without trailing nops: a piece whose only word
+        # past the covering object is alignment padding is covered.
+        result = build.record_source_coverage({0x1000: "linked"}, {0x1000: 0x24},
+                                               {0x1000: 0x10, 0x1010: 0x14})
+        self.assertEqual(result[0x1010], "linked as part of func_00001000")
+
     def test_rejected_parent_clears_earlier_coverage(self):
         for failure in ("differs after linking", "brings its own data: .rodata"):
             with self.subTest(failure=failure):

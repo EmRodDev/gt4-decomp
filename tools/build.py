@@ -1175,8 +1175,13 @@ cp {IMAGE} built_text.bin built_data.bin {to_wsl(OUT)}/
         for row in csv.DictReader(inventory_file):
             address, span = int(row["address"], 16), int(row["max_size"])
             if text_addr <= address and address + span <= text_addr + len(orig_text):
-                function_sizes[address] = 4 * len(match.trim_padding(
-                    match.words_at(text_addr, orig_text, address, span)))
+                words = match.trim_padding(match.words_at(text_addr, orig_text, address, span))
+                # A piece cut off the end of a covering source by the inventory keeps the
+                # alignment nop after that source's last instruction: the nop is padding the
+                # link places, not code of the object, so it does not count against coverage.
+                while len(words) > 1 and words[-1] == match.NOP:
+                    words = words[:-1]
+                function_sizes[address] = 4 * len(words)
     status = record_source_coverage(status, objects, function_sizes)
     linked_bytes = sum(objects[a] for a in objects if status[a] == "linked")
     data_sizes = {}
